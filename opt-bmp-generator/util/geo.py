@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-class GeoObj:
+class Geo:
     """Represent the LRS-Agency-LS-BMP combinations available within a particular county or state
 
         Parameters

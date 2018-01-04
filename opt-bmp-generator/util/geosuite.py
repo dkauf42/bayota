@@ -4,8 +4,8 @@ import pickle
 
 from util.srcdataobj import SrcDataObj
 from util.basecondobj import BaseCondObj
-from util.countyobj import CountyObj
-from util.stateobj import StateObj
+from util.county import County
+from util.state import State
 from config import ConfigObj
 
 
@@ -36,13 +36,13 @@ class GeoSuite:
                 pickle.dump(base_condition, f)
         print('<Loaded> BMP Source Data and Base Condition Data.')
 
-        # A list is generated containing a GeoObj for each state and county.
+        # A list is generated containing a Geo for each state and county.
         self.geoobjs = []
         if 'states' in option_headers:
             for x in options.states:
-                g = StateObj(name=x, srcdata=srcdata, baseconditiondata=base_condition)
+                g = State(name=x, srcdata=srcdata, baseconditiondata=base_condition)
                 self.geoobjs.append(g)
         if 'counties' in option_headers:
             for x in options.counties:
-                g = CountyObj(name=x, srcdata=srcdata, baseconditiondata=base_condition)
+                g = County(name=x, srcdata=srcdata, baseconditiondata=base_condition)
                 self.geoobjs.append(g)

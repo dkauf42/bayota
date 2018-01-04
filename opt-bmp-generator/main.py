@@ -19,10 +19,10 @@ if __name__ == "__main__":
     raise ValueError('<DONE>')
 
     # Create a County Object representing Anne Arundel
-    #AACounty = CountyObj(name='Anne Arundel', srcdata=srcdata)
+    #AACounty = County(name='Anne Arundel', srcdata=srcdata)
 
     # Create a State Object representing Maryland
-    #MDState = StateObj(name='MD', srcdata=srcdata)
+    #MDState = State(name='MD', srcdata=srcdata)
 
     #print(AACounty)
     #print(AACounty.land_river_segments.head())
