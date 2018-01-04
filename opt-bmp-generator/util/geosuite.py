@@ -1,0 +1,48 @@
+import pandas as pd
+import os
+import pickle
+
+from util.srcdataobj import SrcDataObj
+from util.basecondobj import BaseCondObj
+from util.countyobj import CountyObj
+from util.stateobj import StateObj
+from config import ConfigObj
+
+
+class GeoSuite:
+    def __init__(self, optionsfile="../options_AAcounty.txt"):
+
+        # A configuration file, which specifies the geographic regions and agencies to examine, is loaded.
+        configobj = ConfigObj(optionsfile=optionsfile)
+        options = configobj.options
+        option_headers = configobj.option_headers
+
+        # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
+        picklename = 'cast_opt_src.obj'  # BMP Source Data from the Excel Spreadsheet
+        if os.path.exists(picklename):
+            with open(picklename, 'rb') as f:
+                srcdata = pickle.load(f)
+        else:
+            srcdata = SrcDataObj()  # generate source data object if none exists
+            with open(picklename, 'wb') as f:
+                pickle.dump(srcdata, f)
+        picklename = 'cast_opt_base.obj'  # Base Condition Data (which has Load Source acreage per LRS)
+        if os.path.exists(picklename):
+            with open(picklename, 'rb') as f:
+                base_condition = pickle.load(f)
+        else:
+            base_condition = BaseCondObj()  # generate base condition object if none exists
+            with open(picklename, 'wb') as f:
+                pickle.dump(base_condition, f)
+        print('<Loaded> BMP Source Data and Base Condition Data.')
+
+        # A list is generated containing a GeoObj for each state and county.
+        self.geoobjs = []
+        if 'states' in option_headers:
+            for x in options.states:
+                g = StateObj(name=x, srcdata=srcdata, baseconditiondata=base_condition)
+                self.geoobjs.append(g)
+        if 'counties' in option_headers:
+            for x in options.counties:
+                g = CountyObj(name=x, srcdata=srcdata, baseconditiondata=base_condition)
+                self.geoobjs.append(g)
