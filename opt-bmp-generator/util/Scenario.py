@@ -1,11 +1,11 @@
 import os
 import pickle
+import pandas as pd
 
 from util.srcdataobj import SrcDataObj
 from util.BaseCondition import BaseCondition
 from util.county import County
 from util.state import State
-from config import ConfigObj
 
 
 class Scenario:
@@ -14,18 +14,25 @@ class Scenario:
 
         :param optionsfile:
         """
-
-        # An options file (specifying the geographic regions, agencies, etc.) is loaded.
-        configobj = ConfigObj(optionsfile=optionsfile)
-        self.options = configobj.options
-        self.option_headers = configobj.option_headers
-
         self.srcdata = None
         self.base_condition = None
         self.geoobjs = []
 
+        # An options file (specifying the geographic regions, agencies, etc.) is loaded for this scenario.
+        #BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin, OutOfCBWS, AgencyCode
+        self.options = None
+        self.option_headers = None
+        self.optionsload(optionsfile=optionsfile)
+
+        # Load the Source Data and Base Condition tables
         self.tblload()
-        self.suiteload()
+
+        # turn options into a BaseCondition query
+        self.baseconquery()
+
+    def optionsload(self, optionsfile):
+        self.options = pd.read_table(optionsfile, sep=',', header=0)
+        self.option_headers = list(self.options.columns.values)
 
     def tblload(self):
         # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
@@ -47,7 +54,7 @@ class Scenario:
                 pickle.dump(self.base_condition, f)
         print('<Loaded> BMP Source Data and Base Condition Data.')
 
-    def suiteload(self):
+    def baseconquery(self):
         # A list is generated containing a Geo for each state and county.
         if 'states' in self.option_headers:
             for x in self.options.states:
