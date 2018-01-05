@@ -7,10 +7,17 @@ class State(Geo):
 
     def __str__(self):
         """
-        Example Print statement:
 
-        State Object named <MD>
-        with 521 LRSs
+        Example
+        ------
+        # Create a State Object representing Maryland
+        MDState = State(name='MD', srcdata=srcdata, baseconditiondata=base_condition)
+
+        # Using a State's print statement:
+        print(MDState)
+
+        >> State Object named <MD>
+        >>  with 521 LRSs
 
         """
         name_str = 'State Object named <' + self.geoname + '>'

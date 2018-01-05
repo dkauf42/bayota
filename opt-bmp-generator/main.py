@@ -18,17 +18,6 @@ if __name__ == "__main__":
 
     raise ValueError('<DONE>')
 
-    # Create a County Object representing Anne Arundel
-    #AACounty = County(name='Anne Arundel', srcdata=srcdata)
-
-    # Create a State Object representing Maryland
-    #MDState = State(name='MD', srcdata=srcdata)
-
-    #print(AACounty)
-    #print(AACounty.land_river_segments.head())
-    #print(MDState)
-    #print(MDState.land_river_segments.head())
-
     print(AACounty.land_river_segments.iloc[0])
     LSs = AACounty.loadsources_by_lrs(AACounty.land_river_segments.iloc[0])
     print(LSs)

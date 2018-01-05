@@ -7,10 +7,17 @@ class County(Geo):
 
     def __str__(self):
         """
-        Example Print statement:
 
-        County Object named <Anne Arundel>
-        with 31 LRSs
+        Example
+        ------
+        # Create a County Object representing Anne Arundel
+        AAcounty = County(name='Anne Arundel', srcdata=srcdata, baseconditiondata=base_condition)
+
+        # Using a County's print statement:
+        print(AAcount)
+
+        >> County Object named <Anne Arundel>
+        >>  with 31 LRSs
 
         """
         name_str = 'County Object named <' + self.geoname + '>'
