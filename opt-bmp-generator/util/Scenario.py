@@ -48,7 +48,6 @@ class Scenario:
 
         self.validateoptions()  # check to make sure options are present in the Source Data or BaseCondition files
 
-
     def tblload(self):
         # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
         picklename = 'cast_opt_src.obj'  # BMP Source Data from the Excel Spreadsheet
