@@ -31,6 +31,21 @@ class Scenario:
         self.baseconquery()
 
     def optionsload(self, optionsfile):
+
+        """Loads an 'options' file that represents the user choices for a particular scenario
+
+        Parameters
+        ----------
+        optionsfile : `str`
+            file path of the 'options' csv file for the user scenario
+
+        Notes
+        -----
+        The options file should have the following columns:
+            - BaseCondition,LandRiverSegment,CountyName,StateAbbreviation,StateBasin,OutOfCBWS,AgencyCode
+        Any blank options should be specified by a '-'
+
+        """
         self.options = pd.read_table(optionsfile, sep=',', header=0)
         self.option_headers = list(self.options.columns.values)
 
