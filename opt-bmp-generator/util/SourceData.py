@@ -15,18 +15,21 @@ class SourceData:
         self.efficiencyBMPs = None
         self.agencies = None  # Columns of interest: 'AgencyCode' and 'AgencyType'
 
-        self.loadsrc()
+        self.loadsheets()
 
     def __getitem__(self, item):
         return getattr(self, item)
 
-    def loadsrc(self):
+    def loadsheets(self):
         data = pd.read_excel(self.fullpath, sheet_name=['Geographic References', 'Efficiency BMPs', 'Agencies'])
 
         # Data from Excel Sheets
         self.georefs = data['Geographic References']
         self.efficiencyBMPs = data['Efficiency BMPs']
         self.agencies = data['Agencies']
+
+    def list_bmps_by_loadsource(self):
+
 
     def get(self, sheetabbrev='georefs', getcolumn='LandRiverSegment', by='CountyName', equalto='Anne Arundel'):
         """
