@@ -1,11 +1,10 @@
 import os
 import pickle
 import pandas as pd
+import numpy as np
 
 from util.SourceData import SourceData
 from util.BaseCondition import BaseCondition
-from util.county import County
-from util.state import State
 
 
 class Scenario:
@@ -16,10 +15,8 @@ class Scenario:
         """
         self.srcdataobj = None
         self.baseconditionobj = None
-        self.geoobjs = []
 
         # An options file (specifying the geographic regions, agencies, etc.) is loaded for this scenario.
-        #BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin, OutOfCBWS, AgencyCode
         self.options = None
         self.option_headers = None
         self.optionsload(optionsfile=optionsfile)
@@ -28,7 +25,9 @@ class Scenario:
         self.tblload()
 
         # turn options into a BaseCondition query
+        self.selectedbase = None
         self.baseconquery()
+        print(self.selectedbase.head())
 
     def optionsload(self, optionsfile):
         """Loads an 'options' file that represents the user choices for a particular scenario
@@ -69,20 +68,25 @@ class Scenario:
         print('<Loaded> BMP Source Data and Base Condition Data.')
 
     def baseconquery(self):
+        # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin, OutOfCBWS, AgencyCode
 
-        self.options
-        self.option_headers
+        oh = self.option_headers
+        #booldf = pd.DataFrame(columns=oh)
+        booldf = pd.DataFrame()
+        for h in oh:
+            optionscolumn = self.options[h]
+            if (optionscolumn[0] == 'all') | optionscolumn.isnull().values.all():
+                # get a list of all the possibilities for that column
+                #  or, nevermind, just exclude this column from the boolean dataframe
+                pass
+            else:
+                # generate boolean for each basecondition row, if its value is in this options column
+                booldf[h] = self.baseconditionobj.LSacres[h].isin(optionscolumn)
+        optionsbool = booldf.all(axis=1)
+        print(np.sum(optionsbool))
 
-        self.baseconditionobj
+        nonzero_ls_bool = self.baseconditionobj.LSacres['PreBMPAcres'] != 0
 
+        print(np.sum(optionsbool & nonzero_ls_bool))
 
-        # A list is generated containing a Geo for each state and county.
-        if 'states' in self.option_headers:
-            for x in self.options.states:
-                g = State(name=x, srcdata=self.srcdataobj, baseconditiondata=self.baseconditionobj)
-                self.geoobjs.append(g)
-        if 'counties' in self.option_headers:
-            for x in self.options.counties:
-                g = County(name=x, srcdata=self.srcdataobj, baseconditiondata=self.baseconditionobj)
-                self.geoobjs.append(g)
-        print('<Loaded> Geo-objects: ')
+        self.selectedbase = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
