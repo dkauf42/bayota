@@ -11,7 +11,7 @@ class State(Geo):
         Example
         ------
         # Create a State Object representing Maryland
-        MDState = State(name='MD', srcdata=srcdata, baseconditiondata=base_condition)
+        MDState = State(name='MD', srcdataobj=srcdataobj, baseconditiondata=baseconditionobj)
 
         # Using a State's print statement:
         print(MDState)

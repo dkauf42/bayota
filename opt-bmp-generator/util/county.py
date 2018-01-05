@@ -11,7 +11,7 @@ class County(Geo):
         Example
         ------
         # Create a County Object representing Anne Arundel
-        AAcounty = County(name='Anne Arundel', srcdata=srcdata, baseconditiondata=base_condition)
+        AAcounty = County(name='Anne Arundel', srcdataobj=srcdataobj, baseconditiondata=baseconditionobj)
 
         # Using a County's print statement:
         print(AAcount)
