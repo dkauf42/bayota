@@ -24,9 +24,9 @@ class Scenario:
         self.loadoptions(optionsfile=optionsfile)
 
         # turn options into a BaseCondition query
-        self.load_source_subset = None
+        self.chosen_load_sources = None
         self.baseconquery()
-        print(self.load_source_subset.head())
+        print(self.chosen_load_sources.head())
 
     def loadoptions(self, optionsfile):
         """Loads an 'options' file that represents the user choices for a particular scenario
@@ -108,7 +108,7 @@ class Scenario:
         nonzero_ls_bool = self.baseconditionobj.LSacres['PreBMPAcres'] != 0
         print(np.sum(optionsbool & nonzero_ls_bool))
 
-        self.load_source_subset = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
+        self.chosen_load_sources = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
 
     def validateoptions(self):
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
