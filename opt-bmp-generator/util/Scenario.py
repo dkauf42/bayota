@@ -13,15 +13,14 @@ class Scenario:
 
         :param optionsfile:
         """
-        self.srcdataobj = None
-        self.baseconditionobj = None
-
         # An options file (specifying the geographic regions, agencies, etc.) is loaded for this scenario.
         self.options = None
         self.option_headers = None
-        self.optionsload(optionsfile=optionsfile)
+        self.loadoptions(optionsfile=optionsfile)
 
         # Load the Source Data and Base Condition tables
+        self.srcdataobj = None
+        self.baseconditionobj = None
         self.tblload()
 
         # turn options into a BaseCondition query
@@ -29,7 +28,7 @@ class Scenario:
         self.baseconquery()
         print(self.selectedbase.head())
 
-    def optionsload(self, optionsfile):
+    def loadoptions(self, optionsfile):
         """Loads an 'options' file that represents the user choices for a particular scenario
 
         Parameters
@@ -70,10 +69,10 @@ class Scenario:
         print('<Loaded> BMP Source Data and Base Condition Data.')
 
     def baseconquery(self):
-        # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin, OutOfCBWS, AgencyCode
+        # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
+        #           OutOfCBWS, AgencyCode, Sector
 
         oh = self.option_headers
-        #booldf = pd.DataFrame(columns=oh)
         booldf = pd.DataFrame()
         for h in oh:
             optionscolumn = self.options[h]
@@ -93,7 +92,7 @@ class Scenario:
               then we want to include load sources from all of those places, not just the intersection of them.
               
               Then, we want the logical AND of those geooptions with the other options
-                                                                               (BaseCondition, OutOfCBWS, AgencyCode)
+                                                                        (BaseCondition, OutOfCBWS, AgencyCode, Sector)
                                                                                
               Then, we want logical AND of those options with the load sources that have non-zero values
         """
