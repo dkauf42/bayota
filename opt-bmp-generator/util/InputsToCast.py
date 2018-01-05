@@ -5,7 +5,7 @@ writedir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScient
               'Optimization_Tool/2-ExperimentFolder/data_tables/inputs_generated_by_cast_opt_tests/'
 
 
-class CastInputObj:
+class InputsToCast:
     def __init__(self):
         self.template = None
         self.df = None
