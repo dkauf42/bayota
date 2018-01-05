@@ -24,9 +24,9 @@ class Scenario:
         self.loadoptions(optionsfile=optionsfile)
 
         # turn options into a BaseCondition query
-        self.selectedbase = None
+        self.load_source_subset = None
         self.baseconquery()
-        print(self.selectedbase.head())
+        print(self.load_source_subset.head())
 
     def loadoptions(self, optionsfile):
         """Loads an 'options' file that represents the user choices for a particular scenario
@@ -76,8 +76,7 @@ class Scenario:
         for h in oh:
             optionscolumn = self.options[h]
             if (optionscolumn[0] == 'all') | optionscolumn.isnull().values.all():
-                # get a list of all the possibilities for that column
-                #  or, nevermind, just exclude this column from the boolean dataframe
+                # exclude this column from the boolean dataframe if we're just going to get all of the values
                 pass
             else:
                 # generate boolean for each basecondition row, if its value is in this options column
@@ -109,7 +108,7 @@ class Scenario:
         nonzero_ls_bool = self.baseconditionobj.LSacres['PreBMPAcres'] != 0
         print(np.sum(optionsbool & nonzero_ls_bool))
 
-        self.selectedbase = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
+        self.load_source_subset = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
 
     def validateoptions(self):
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
