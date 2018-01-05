@@ -36,21 +36,3 @@ class BaseCondition:
         retval = df[df[getcolumn].notnull() & (df[by] == equalto)][getcolumn]
 
         return retval
-
-    def getnonzero(self, sheetabbrev='LSacres', getcolumn='LoadSource', by='LandRiverSegment', equalto='',
-                   zerocheck='PreBMPAcres'):
-        df = self[sheetabbrev]
-
-        ####print(df[df[zerocheck] != 0].head())
-        ####print(df[df[getcolumn].notnull() & (df[zerocheck] != 0) & (df[by] == equalto)].size)
-        # Select all cases where the values are not missing and the by column is equal to equalto
-        retval = df[df[getcolumn].notnull() & (df[zerocheck] != 0) & (df[by] == equalto)][getcolumn]
-        ####print(retval)
-        return retval
-
-    def _nonzeroloadsourcequery(self, sheetabbrev='LSacres', load_source_query_str=''):
-
-        df = self[sheetabbrev]
-
-        retval = df.query(load_source_query_str)
-        return retval
