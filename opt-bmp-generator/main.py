@@ -10,9 +10,8 @@ from util.geosuite import GeoSuite
 #  MAIN FUNCTION  #
 if __name__ == "__main__":
 
+    # A suite of Geo objects, specified in the options file, is loaded.
     geosuite = GeoSuite(optionsfile="../test/options_state_and_county.txt")
-
-    print('<Loaded> Geo-objects: ')
     for g in geosuite.geoobjs:
         print(g)
 

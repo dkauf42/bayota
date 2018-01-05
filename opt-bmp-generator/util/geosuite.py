@@ -10,6 +10,10 @@ from config import ConfigObj
 
 class GeoSuite:
     def __init__(self, optionsfile="../options_AAcounty.txt"):
+        """A wrapper to generate and hold multiple Geo objects
+
+        :param optionsfile:
+        """
 
         # A configuration file, which specifies the geographic regions and agencies to examine, is loaded.
         configobj = ConfigObj(optionsfile=optionsfile)
@@ -45,3 +49,4 @@ class GeoSuite:
             for x in options.counties:
                 g = County(name=x, srcdata=srcdata, baseconditiondata=base_condition)
                 self.geoobjs.append(g)
+        print('<Loaded> Geo-objects: ')
