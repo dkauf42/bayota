@@ -17,36 +17,44 @@ class GeoSuite:
 
         # A configuration file, which specifies the geographic regions and agencies to examine, is loaded.
         configobj = ConfigObj(optionsfile=optionsfile)
-        options = configobj.options
-        option_headers = configobj.option_headers
+        self.options = configobj.options
+        self.option_headers = configobj.option_headers
 
+        self.srcdata = None
+        self.base_condition = None
+        self.geoobjs = []
+
+        self.tblload()
+        self.suiteload()
+
+    def tblload(self):
         # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
         picklename = 'cast_opt_src.obj'  # BMP Source Data from the Excel Spreadsheet
         if os.path.exists(picklename):
             with open(picklename, 'rb') as f:
-                srcdata = pickle.load(f)
+                self.srcdata = pickle.load(f)
         else:
-            srcdata = SrcDataObj()  # generate source data object if none exists
+            self.srcdata = SrcDataObj()  # generate source data object if none exists
             with open(picklename, 'wb') as f:
-                pickle.dump(srcdata, f)
+                pickle.dump(self.srcdata, f)
         picklename = 'cast_opt_base.obj'  # Base Condition Data (which has Load Source acreage per LRS)
         if os.path.exists(picklename):
             with open(picklename, 'rb') as f:
-                base_condition = pickle.load(f)
+                self.base_condition = pickle.load(f)
         else:
-            base_condition = BaseCondObj()  # generate base condition object if none exists
+            self.base_condition = BaseCondObj()  # generate base condition object if none exists
             with open(picklename, 'wb') as f:
-                pickle.dump(base_condition, f)
+                pickle.dump(self.base_condition, f)
         print('<Loaded> BMP Source Data and Base Condition Data.')
 
+    def suiteload(self):
         # A list is generated containing a Geo for each state and county.
-        self.geoobjs = []
-        if 'states' in option_headers:
-            for x in options.states:
-                g = State(name=x, srcdata=srcdata, baseconditiondata=base_condition)
+        if 'states' in self.option_headers:
+            for x in self.options.states:
+                g = State(name=x, srcdata=self.srcdata, baseconditiondata=self.base_condition)
                 self.geoobjs.append(g)
-        if 'counties' in option_headers:
-            for x in options.counties:
-                g = County(name=x, srcdata=srcdata, baseconditiondata=base_condition)
+        if 'counties' in self.option_headers:
+            for x in self.options.counties:
+                g = County(name=x, srcdata=self.srcdata, baseconditiondata=self.base_condition)
                 self.geoobjs.append(g)
         print('<Loaded> Geo-objects: ')
