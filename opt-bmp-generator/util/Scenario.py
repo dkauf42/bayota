@@ -13,15 +13,15 @@ class Scenario:
 
         :param optionsfile:
         """
-        # An options file (specifying the geographic regions, agencies, etc.) is loaded for this scenario.
-        self.options = None
-        self.option_headers = None
-        self.loadoptions(optionsfile=optionsfile)
-
         # Load the Source Data and Base Condition tables
         self.srcdataobj = None
         self.baseconditionobj = None
         self.tblload()
+
+        # An options file (specifying the geographic regions, agencies, etc.) is loaded for this scenario.
+        self.options = None
+        self.option_headers = None
+        self.loadoptions(optionsfile=optionsfile)
 
         # turn options into a BaseCondition query
         self.selectedbase = None
@@ -46,7 +46,8 @@ class Scenario:
         self.options = pd.read_table(optionsfile, sep=',', header=0)
         self.option_headers = list(self.options.columns.values)
 
-        # TODO: add input checks to make sure that options are present in the source data or BaseCondition files?
+        self.validateoptions()  # check to make sure options are present in the Source Data or BaseCondition files
+
 
     def tblload(self):
         # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
@@ -71,7 +72,6 @@ class Scenario:
     def baseconquery(self):
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
         #           OutOfCBWS, AgencyCode, Sector
-
         oh = self.option_headers
         booldf = pd.DataFrame()
         for h in oh:
@@ -111,3 +111,32 @@ class Scenario:
         print(np.sum(optionsbool & nonzero_ls_bool))
 
         self.selectedbase = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
+
+    def validateoptions(self):
+        # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
+        #           OutOfCBWS, AgencyCode, Sector
+        oh = self.option_headers
+        for h in oh:
+            optionscolumn = self.options[h]
+            if (optionscolumn[0] == 'all') | optionscolumn.isnull().values.all():
+                # these are always valid options
+                # TODO: include checks for 'all' and null options
+                pass
+            else:
+                vo = self.validoptions(h)
+                if ~optionscolumn.dropna().isin(vo).all():
+                    raise LookupError('An option specified in the "%s" column of the options file is unrecognized' % h)
+        print('<Validated options>')
+
+    def validoptions(self, argument):
+        switcher = {
+                    'BaseCondition': "zero",  # TODO: include checks for valid basecondition options?
+                    'LandRiverSegment': self.srcdataobj.getallnames('LandRiverSegment'),
+                    'CountyName': self.srcdataobj.getallnames('CountyName'),
+                    'StateAbbreviation': self.srcdataobj.getallnames('StateAbbreviation'),
+                    'StateBasin': self.srcdataobj.getallnames('StateBasin'),
+                    'OutOfCBWS': ('N', 'Y'),
+                    'AgencyCode': self.srcdataobj.getallnames('AgencyCode'),
+                    'Sector': self.srcdataobj.getallnames('Sector')
+                   }
+        return switcher[argument]

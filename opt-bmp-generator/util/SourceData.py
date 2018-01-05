@@ -14,6 +14,7 @@ class SourceData:
         self.georefs = None
         self.efficiencyBMPs = None
         self.agencies = None  # Columns of interest: 'AgencyCode' and 'AgencyType'
+        self.lsdefinitions = None
 
         self.loadsheets()
 
@@ -21,15 +22,34 @@ class SourceData:
         return getattr(self, item)
 
     def loadsheets(self):
-        data = pd.read_excel(self.fullpath, sheet_name=['Geographic References', 'Efficiency BMPs', 'Agencies'])
+        data = pd.read_excel(self.fullpath, sheet_name=['Geographic References', 'Efficiency BMPs',
+                                                        'Agencies', 'Load Source Definitions'])
 
         # Data from Excel Sheets
         self.georefs = data['Geographic References']
         self.efficiencyBMPs = data['Efficiency BMPs']
         self.agencies = data['Agencies']
+        self.lsdefinitions = data['Load Source Definitions']
+
+    def getallnames(self, nametype):
+        if nametype == 'LandRiverSegment':
+            listofall = self.georefs[nametype].unique()
+        elif nametype == 'CountyName':
+            listofall = self.georefs[nametype].unique()
+        elif nametype == 'StateAbbreviation':
+            listofall = self.georefs[nametype].unique()
+        elif (nametype == 'StateBasin') | (nametype == 'MajorBasin'):
+            listofall = self.georefs['MajorBasin'].unique()
+        elif nametype == 'AgencyCode':
+            listofall = self.agencies[nametype].unique()
+        elif nametype == 'Sector':
+            listofall = self.lsdefinitions[nametype].unique()
+        else:
+            raise ValueError('Unrecognized nametype: "%s"' % nametype)
+        return listofall
 
     def list_bmps_by_loadsource(self):
-
+        pass
 
     def get(self, sheetabbrev='georefs', getcolumn='LandRiverSegment', by='CountyName', equalto='Anne Arundel'):
         """
