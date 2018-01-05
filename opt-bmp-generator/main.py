@@ -3,15 +3,18 @@
 """
 Test various BMP-load source combinations
 """
-
+import timeit
 from util.castinputobj import CastInputObj
 from util.geosuite import GeoSuite
 
 #  MAIN FUNCTION  #
 if __name__ == "__main__":
 
+    start_time = timeit.default_timer()
     # A suite of Geo objects, specified in the options file, is loaded.
     geosuite = GeoSuite(optionsfile="../test/options_state_and_county.txt")
+    print("Loading time", timeit.default_timer() - start_time)
+
     for g in geosuite.geoobjs:
         print(g)
 
