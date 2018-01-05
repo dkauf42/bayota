@@ -8,7 +8,7 @@ from util.BaseCondition import BaseCondition
 
 
 class Scenario:
-    def __init__(self, optionsfile="../options_AAcounty.txt"):
+    def __init__(self, optionsfile=''):
         """A wrapper to generate and hold multiple Geo objects
 
         :param optionsfile:
@@ -47,6 +47,8 @@ class Scenario:
         self.options = pd.read_table(optionsfile, sep=',', header=0)
         self.option_headers = list(self.options.columns.values)
 
+        # TODO: add input checks to make sure that options are present in the source data or BaseCondition files?
+
     def tblload(self):
         # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
         picklename = 'cast_opt_src.obj'  # BMP Source Data from the Excel Spreadsheet
@@ -82,11 +84,28 @@ class Scenario:
             else:
                 # generate boolean for each basecondition row, if its value is in this options column
                 booldf[h] = self.baseconditionobj.LSacres[h].isin(optionscolumn)
-        optionsbool = booldf.all(axis=1)
+
+        """
+        Note: For the geographic options (LandRiverSegment, CountyName, StateAbbreviation, StateBasin),
+              we want to include rows that are logical ORs of these column values
+         
+              For example, if options include {County: Anne Arundel, State: DE, StateBasin: WV James River Basin},
+              then we want to include load sources from all of those places, not just the intersection of them.
+              
+              Then, we want the logical AND of those geooptions with the other options
+                                                                               (BaseCondition, OutOfCBWS, AgencyCode)
+                                                                               
+              Then, we want logical AND of those options with the load sources that have non-zero values
+        """
+        geo_options_list = ('LandRiverSegment', 'CountyName', 'StateAbbreviation', 'StateBasin')
+        geooptionsbooldf = booldf[booldf.columns[booldf.columns.isin(geo_options_list)]]
+        geooptionsbool = geooptionsbooldf.any(axis=1)
+
+        nongeooptionsbooldf = booldf[booldf.columns.difference(geooptionsbooldf.columns)]
+        optionsbool = geooptionsbool & nongeooptionsbooldf.all(axis=1)
         print(np.sum(optionsbool))
 
         nonzero_ls_bool = self.baseconditionobj.LSacres['PreBMPAcres'] != 0
-
         print(np.sum(optionsbool & nonzero_ls_bool))
 
         self.selectedbase = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
