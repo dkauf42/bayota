@@ -9,7 +9,7 @@ from util.BaseCondition import BaseCondition
 
 class Scenario:
     def __init__(self, optionsfile=''):
-        """A wrapper to generate and hold multiple Geo objects
+        """A wrapper to generate and hold the metadata for a scenario
 
         :param optionsfile:
         """
