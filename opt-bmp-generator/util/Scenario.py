@@ -2,7 +2,7 @@ import os
 import pickle
 import pandas as pd
 
-from util.srcdataobj import SrcDataObj
+from util.SourceData import SourceData
 from util.BaseCondition import BaseCondition
 from util.county import County
 from util.state import State
@@ -55,7 +55,7 @@ class Scenario:
             with open(picklename, 'rb') as f:
                 self.srcdataobj = pickle.load(f)
         else:
-            self.srcdataobj = SrcDataObj()  # generate source data object if none exists
+            self.srcdataobj = SourceData()  # generate source data object if none exists
             with open(picklename, 'wb') as f:
                 pickle.dump(self.srcdataobj, f)
         picklename = 'cast_opt_base.obj'  # Base Condition Data (which has Load Source acreage per LRS)

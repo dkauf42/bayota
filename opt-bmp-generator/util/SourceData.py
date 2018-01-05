@@ -4,7 +4,7 @@ srcdatadir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScie
               'Optimization_Tool/2-ExperimentFolder/possibilities_calculation/'
 
 
-class SrcDataObj:
+class SourceData:
     def __init__(self, filename='SourceData_wPossibilities.xlsx'):
 
         self.filename = filename
