@@ -10,9 +10,10 @@ class SrcDataObj:
         self.filename = filename
         self.fullpath = srcdatadir + self.filename
 
+        # Data from Excel Sheets
         self.georefs = None
         self.efficiencyBMPs = None
-        self.deliveryfactors = None
+        self.agencies = None  # Columns of interest: 'AgencyCode' and 'AgencyType'
 
         self.loadsrc()
 
@@ -20,11 +21,12 @@ class SrcDataObj:
         return getattr(self, item)
 
     def loadsrc(self):
-        data = pd.read_excel(self.fullpath, sheet_name=['Geographic References', 'Efficiency BMPs', 'Delivery Factors'])
+        data = pd.read_excel(self.fullpath, sheet_name=['Geographic References', 'Efficiency BMPs', 'Agencies'])
 
+        # Data from Excel Sheets
         self.georefs = data['Geographic References']
         self.efficiencyBMPs = data['Efficiency BMPs']
-        self.deliveryfactors = data['Delivery Factors']
+        self.agencies = data['Agencies']
 
     def get(self, sheetabbrev='georefs', getcolumn='LandRiverSegment', by='CountyName', equalto='Anne Arundel'):
         """
