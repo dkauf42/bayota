@@ -97,14 +97,17 @@ class Scenario:
                                                                                
               Then, we want logical AND of those options with the load sources that have non-zero values
         """
+        # A logical OR amongst the geographic options is computed.
         geo_options_list = ('LandRiverSegment', 'CountyName', 'StateAbbreviation', 'StateBasin')
         geooptionsbooldf = booldf[booldf.columns[booldf.columns.isin(geo_options_list)]]
         geooptionsbool = geooptionsbooldf.any(axis=1)
 
+        # A logical AND between the geo-options result and the non-geo-options is computed.
         nongeooptionsbooldf = booldf[booldf.columns.difference(geooptionsbooldf.columns)]
         optionsbool = geooptionsbool & nongeooptionsbooldf.all(axis=1)
         print(np.sum(optionsbool))
 
+        # Only load sources that have non-zero values are included.
         nonzero_ls_bool = self.baseconditionobj.LSacres['PreBMPAcres'] != 0
         print(np.sum(optionsbool & nonzero_ls_bool))
 
