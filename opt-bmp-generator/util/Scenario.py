@@ -2,20 +2,20 @@ import os
 import pickle
 
 from util.srcdataobj import SrcDataObj
-from util.basecondobj import BaseCondObj
+from util.BaseCondition import BaseCondition
 from util.county import County
 from util.state import State
 from config import ConfigObj
 
 
-class GeoSuite:
+class Scenario:
     def __init__(self, optionsfile="../options_AAcounty.txt"):
         """A wrapper to generate and hold multiple Geo objects
 
         :param optionsfile:
         """
 
-        # A configuration file, which specifies the geographic regions and agencies to examine, is loaded.
+        # An options file (specifying the geographic regions, agencies, etc.) is loaded.
         configobj = ConfigObj(optionsfile=optionsfile)
         self.options = configobj.options
         self.option_headers = configobj.option_headers
@@ -42,7 +42,7 @@ class GeoSuite:
             with open(picklename, 'rb') as f:
                 self.base_condition = pickle.load(f)
         else:
-            self.base_condition = BaseCondObj()  # generate base condition object if none exists
+            self.base_condition = BaseCondition()  # generate base condition object if none exists
             with open(picklename, 'wb') as f:
                 pickle.dump(self.base_condition, f)
         print('<Loaded> BMP Source Data and Base Condition Data.')
