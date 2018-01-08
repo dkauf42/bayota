@@ -11,8 +11,13 @@ class OptionLoader:
             file path of the 'options' csv file for the user scenario
         srcdataobj : 'obj'
             a SourceData object
-        baseconditionobj : 'obj'
-            a BaseCondition object
+
+        Attributes
+        ----------
+        options : 'pandas dataframe'
+            values specified in the options file
+        headers : 'list'
+            names of each type of option (headers in the options file)
 
         Notes
         -----
