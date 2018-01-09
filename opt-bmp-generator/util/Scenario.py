@@ -22,12 +22,14 @@ class Scenario:
         # The scenario options (particular geographic region(s), agencies, etc.) are loaded for this scenario.
         self.options = OptionLoader(optionsfile=optionsfile, srcdataobj=self.srcdataobj)
 
-        # turn options into a BaseCondition query
+        # Options are used to query the BaseCondition data and filter only Load Sources with the chosen characteristics
         self.chosen_load_sources = None
         self.baseconquery()
-        print(self.chosen_load_sources.head())
+        #print(self.chosen_load_sources.head())
 
-        # get the BMPs available on the chosen load sources
+        # Get the list of BMPs available on the chosen load sources
+        self.geo_seg_source_bmps = None
+        self.bmpquery()
 
     def tblload(self):
         # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
@@ -83,10 +85,44 @@ class Scenario:
         # A logical AND between the geo-options result and the non-geo-options is computed.
         nongeooptionsbooldf = booldf[booldf.columns.difference(geooptionsbooldf.columns)]
         optionsbool = geooptionsbool & nongeooptionsbooldf.all(axis=1)
-        print(np.sum(optionsbool))
+        print('All load sources for chosen geo+agency+sector region: %d' % np.sum(optionsbool))
 
         # Only load sources that have non-zero values are included.
         nonzero_ls_bool = self.baseconditionobj.LSacres['PreBMPAcres'] != 0
-        print(np.sum(optionsbool & nonzero_ls_bool))
+        print('Load sources for chosen geo+agency+sector region with >0 acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
 
-        self.chosen_load_sources = self.baseconditionobj.LSacres[optionsbool & nonzero_ls_bool]
+        self.chosen_load_sources = self.baseconditionobj.LSacres.loc[optionsbool & nonzero_ls_bool, :]
+
+    def bmpquery(self):
+        # Get all the BMPs that are possible on the set of Load sources
+        #booldf = pd.DataFrame()
+        #booldf[h] = self.baseconditionobj.LSacres[h].isin(optionscolumn)
+        self.geo_seg_source_bmps = self.chosen_load_sources.copy()
+
+
+        # Efficiency BMPs
+        bmplist = []  # Create a list to store the data
+        totalnumbmps = 0
+        for index, row in self.chosen_load_sources.iterrows():
+            thesebmps = self.srcdataobj.get(sheetabbrev='efficiencyBMPs', getcolumn='BMPShortName',
+                                            by='LoadSource', equalto=row.LoadSource)
+            thesebmps = thesebmps.str.lower().unique()
+            totalnumbmps += thesebmps.size
+            bmplist.append(thesebmps)
+        self.geo_seg_source_bmps['eligible_efficiency_bmps'] = bmplist
+        print('total no. of eligible "efficiency" BMPs: <%d>' % totalnumbmps)
+
+        # Land Conversion BMPs
+        bmplist = []
+        totalnumbmps = 0
+        for index, row in self.chosen_load_sources.iterrows():
+            thesebmps = self.srcdataobj.get(sheetabbrev='sourceconversionBMPs', getcolumn='BMPShortName',
+                                            by='FromLoadSource', equalto=row.LoadSource)
+            thesebmps = thesebmps.str.lower().unique()
+            totalnumbmps += thesebmps.size
+            bmplist.append(thesebmps)
+        self.geo_seg_source_bmps['eligible_landconversion_bmps'] = bmplist
+        print('total no. of eligible "land conversion" BMPs: <%d>' % totalnumbmps)
+
+        print(self.geo_seg_source_bmps.head())
+        #print(bmplist[0])
