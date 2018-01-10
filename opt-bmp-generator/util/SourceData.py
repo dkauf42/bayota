@@ -1,7 +1,7 @@
 from util.ExcelDataTable import ExcelDataTable
 
 srcdatadir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScientist-Optimization/' \
-              'Optimization_Tool/2-ExperimentFolder/possibilities_calculation/'
+              'Optimization_Tool/2-ExperimentFolder/data_tables/'
 
 
 class SourceData(ExcelDataTable):
