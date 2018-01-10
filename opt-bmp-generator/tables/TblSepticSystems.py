@@ -4,7 +4,7 @@ reportsdir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScie
               'Optimization_Tool/2-ExperimentFolder/data_tables/source_and_base/2016progress/'
 
 
-class TblPreBmpLoadSourceAgriculture(ExcelDataTable):
+class TblSepticSystems(ExcelDataTable):
     def __init__(self, filename='2016 Progress V8 - COPY_PreBmpLoadSourceAgriculture.xlsx', dirpath=reportsdir):
 
         ExcelDataTable.__init__(self, filename=filename, dirpath=dirpath,
