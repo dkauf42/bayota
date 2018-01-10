@@ -14,44 +14,52 @@ class TblLoader:
     def __init__(self):
         """Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
         """
-        self.srcdataobj = None
-        self.baseconditionobj = None
-        self.tableobjs = {}
+        self.srcdata = None
+        self.basecond = None
+        self.lsnatural = None
+        self.lsdeveloped = None
+        self.lsagriculture = None
+        self.manuretons = None
+        self.septicsystems = None
 
         self.load_source_and_base_files()
 
     def load_source_and_base_files(self):
         # BMP Source Data from the Excel Spreadsheet
-        self.load_or_generate(savename='cast_opt_src.obj', tableobjname='srcdataobj', cls=SourceData)
+        self.srcdata = self.load_or_generate(savename='cast_opt_src.obj', cls=SourceData)
 
         # Base Condition Data from the Excel Spreadsheet (which has Load Source acreage per LRS)
-        self.load_or_generate(savename='cast_opt_base.obj', tableobjname='baseconditionobj', cls=BaseCondition)
+        self.basecond = self.load_or_generate(savename='cast_opt_base.obj',
+                                              cls=BaseCondition)
 
         # PreBmpLoadSourceNatural from the Excel Spreadsheet
-        self.load_or_generate(savename='cast_opt_loadsourcenatural.obj', tableobjname='loadsourcenaturalobj',
-                              cls=TblPreBmpLoadSourceNatural)
+        self.lsnatural = self.load_or_generate(savename='cast_opt_loadsourcenatural.obj',
+                                               cls=TblPreBmpLoadSourceNatural)
 
         # PreBmpLoadSourceDeveloped from the Excel Spreadsheet
-        self.load_or_generate(savename='cast_opt_loadsourcedeveloped.obj', tableobjname='loadsourcedevelopedobj',
-                              cls=TblPreBmpLoadSourceDeveloped)
+        self.lsdeveloped = self.load_or_generate(savename='cast_opt_loadsourcedeveloped.obj',
+                                                 cls=TblPreBmpLoadSourceDeveloped)
 
         # PreBmpLoadSourceAgriculture from the Excel Spreadsheet
-        self.load_or_generate(savename='cast_opt_loadsourceagriculture.obj', tableobjname='loadsourceagricultureobj',
-                              cls=TblPreBmpLoadSourceAgriculture)
+        self.lsagriculture = self.load_or_generate(savename='cast_opt_loadsourceagriculture.obj',
+                                                   cls=TblPreBmpLoadSourceAgriculture)
 
         # ManureTonsProduced from the Excel Spreadsheet
-        self.load_or_generate(savename='cast_opt_manuretonsproduced.obj', tableobjname='manuretonsproducedobj',
-                              cls=ManureTonsProduced)
+        self.manuretons = self.load_or_generate(savename='cast_opt_manuretonsproduced.obj',
+                                                cls=ManureTonsProduced)
 
         # SepticSystems from the Excel Spreadsheet
-        self.load_or_generate(savename='cast_opt_septicsystems.obj', tableobjname='septicsystemsobj',
-                              cls=TblSepticSystems)
+        self.septicsystems = self.load_or_generate(savename='cast_opt_septicsystems.obj',
+                                                   cls=TblSepticSystems)
 
-    def load_or_generate(self, savename='', tableobjname='', cls=None):
+    @staticmethod
+    def load_or_generate(savename='', cls=None):
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
-                self.tableobjs[tableobjname] = pickle.load(f)
+                tableobj = pickle.load(f)
         else:
-            self.tableobjs[tableobjname] = cls()  # generate data table object if none exists
+            tableobj = cls()  # generate data table object if none exists
             with open(savename, 'wb') as f:
-                pickle.dump(self.tableobjs[tableobjname], f)
+                pickle.dump(tableobj, f)
+
+        return tableobj
