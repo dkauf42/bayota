@@ -9,9 +9,6 @@ from tables.TblPreBmpLoadSourceAgriculture import TblPreBmpLoadSourceAgriculture
 from tables.TblManureTonsProduced import ManureTonsProduced
 from tables.TblSepticSystems import TblSepticSystems
 
-srcdatadir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScientist-Optimization/' \
-              'Optimization_Tool/2-ExperimentFolder/data_tables/'
-
 
 class TblLoader:
     def __init__(self):
