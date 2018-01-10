@@ -5,7 +5,7 @@ reportsdir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScie
 
 
 class TblSepticSystems(ExcelDataTable):
-    def __init__(self, filename='2016 Progress V8 - COPY_PreBmpLoadSourceAgriculture.xlsx', dirpath=reportsdir):
+    def __init__(self, filename='2016 Progress V8 - COPY_SepticSystems.xlsx', dirpath=reportsdir):
 
         ExcelDataTable.__init__(self, filename=filename, dirpath=dirpath,
                                 sheet_names=['SepticSystems'])
