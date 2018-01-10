@@ -1,10 +1,7 @@
-import os
-import pickle
 import pandas as pd
 import numpy as np
 
-from util.SourceData import SourceData
-from util.BaseCondition import BaseCondition
+from util.TblLoader import TblLoader
 from util.OptionLoader import OptionLoader
 
 
@@ -15,12 +12,11 @@ class Scenario:
         :param optionsfile:
         """
         # Load the Source Data and Base Condition tables
-        self.srcdataobj = None
-        self.baseconditionobj = None
-        self.tblload()
+        self.tables = TblLoader()
+        #self.load_source_and_base()
 
         # The scenario options (particular geographic region(s), agencies, etc.) are loaded for this scenario.
-        self.options = OptionLoader(optionsfile=optionsfile, srcdataobj=self.srcdataobj)
+        self.options = OptionLoader(optionsfile=optionsfile, srcdataobj=self.tables.srcdata)
 
         # Options are used to query the BaseCondition data and filter only Load Sources with the chosen characteristics
         self.chosen_load_sources = None
@@ -30,26 +26,6 @@ class Scenario:
         # Get the list of BMPs available on the chosen load sources
         self.geo_seg_source_bmps = None
         self.bmpquery()
-
-    def tblload(self):
-        # Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
-        picklename = 'cast_opt_src.obj'  # BMP Source Data from the Excel Spreadsheet
-        if os.path.exists(picklename):
-            with open(picklename, 'rb') as f:
-                self.srcdataobj = pickle.load(f)
-        else:
-            self.srcdataobj = SourceData()  # generate source data object if none exists
-            with open(picklename, 'wb') as f:
-                pickle.dump(self.srcdataobj, f)
-        picklename = 'cast_opt_base.obj'  # Base Condition Data (which has Load Source acreage per LRS)
-        if os.path.exists(picklename):
-            with open(picklename, 'rb') as f:
-                self.baseconditionobj = pickle.load(f)
-        else:
-            self.baseconditionobj = BaseCondition()  # generate base condition object if none exists
-            with open(picklename, 'wb') as f:
-                pickle.dump(self.baseconditionobj, f)
-        print('<Loaded> BMP Source Data and Base Condition Data.')
 
     def baseconquery(self):
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
@@ -63,7 +39,7 @@ class Scenario:
                 pass
             else:
                 # generate boolean for each basecondition row, if its value is in this options column
-                booldf[h] = self.baseconditionobj.LSacres[h].isin(optionscolumn)
+                booldf[h] = self.tables.basecond.LSacres[h].isin(optionscolumn)
 
         """
         Note: For the geographic options (LandRiverSegment, CountyName, StateAbbreviation, StateBasin),
@@ -88,10 +64,10 @@ class Scenario:
         print('All load sources for chosen geo+agency+sector region: %d' % np.sum(optionsbool))
 
         # Only load sources that have non-zero values are included.
-        nonzero_ls_bool = self.baseconditionobj.LSacres['PreBMPAcres'] != 0
+        nonzero_ls_bool = self.tables.basecond.LSacres['PreBMPAcres'] != 0
         print('Load sources for chosen geo+agency+sector region with >0 acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
 
-        self.chosen_load_sources = self.baseconditionobj.LSacres.loc[optionsbool & nonzero_ls_bool, :]
+        self.chosen_load_sources = self.tables.basecond.LSacres.loc[optionsbool & nonzero_ls_bool, :]
 
     def bmpquery(self):
         # Get all the BMPs that are possible on the set of Load sources
@@ -99,13 +75,29 @@ class Scenario:
         #booldf[h] = self.baseconditionobj.LSacres[h].isin(optionscolumn)
         self.geo_seg_source_bmps = self.chosen_load_sources.copy()
 
+        # All BMPs (by the load source group page info)
+        bmplist = []  # Create a list to store the data
+        totalnumbmps = 0
+        for index, row in self.chosen_load_sources.iterrows():
+            # Get the Load Source groups that this Load source is in.
+            theseLSgroups = self.tables.srcdata.get(sheetabbrev='loadsourcegroupcomponents',
+                                                    getcolumn='LoadSourceGroup', by='LoadSource',
+                                                    equalto=row.LoadSource)  # pandas.core.series.Series
+            for x in theseLSgroups:
+                # Get the BMPs that can be applied on this load source group
+                thesebmps = self.tables.srcdata.get(sheetabbrev='loadsourcegroups', getcolumn='BmpShortName',
+                                                    by='LoadSourceGroup', equalto=x)
+            totalnumbmps += thesebmps.size
+            bmplist.append(thesebmps)
+        self.geo_seg_source_bmps['eligible_bmps'] = bmplist
+        print('total no. of eligible BMPs: <%d>' % totalnumbmps)
 
         # Efficiency BMPs
         bmplist = []  # Create a list to store the data
         totalnumbmps = 0
         for index, row in self.chosen_load_sources.iterrows():
-            thesebmps = self.srcdataobj.get(sheetabbrev='efficiencyBMPs', getcolumn='BMPShortName',
-                                            by='LoadSource', equalto=row.LoadSource)
+            thesebmps = self.tables.srcdata.get(sheetabbrev='efficiencyBMPs', getcolumn='BMPShortName',
+                                                by='LoadSource', equalto=row.LoadSource)
             thesebmps = thesebmps.str.lower().unique()
             totalnumbmps += thesebmps.size
             bmplist.append(thesebmps)
@@ -116,13 +108,38 @@ class Scenario:
         bmplist = []
         totalnumbmps = 0
         for index, row in self.chosen_load_sources.iterrows():
-            thesebmps = self.srcdataobj.get(sheetabbrev='sourceconversionBMPs', getcolumn='BMPShortName',
-                                            by='FromLoadSource', equalto=row.LoadSource)
+            thesebmps = self.tables.srcdata.get(sheetabbrev='sourceconversionBMPs', getcolumn='BMPShortName',
+                                                by='FromLoadSource', equalto=row.LoadSource)
             thesebmps = thesebmps.str.lower().unique()
             totalnumbmps += thesebmps.size
             bmplist.append(thesebmps)
         self.geo_seg_source_bmps['eligible_landconversion_bmps'] = bmplist
         print('total no. of eligible "land conversion" BMPs: <%d>' % totalnumbmps)
+
+        # Load Reduction BMPs (Get data from PreBMPLoadSourceNatural spreadsheet)
+        bmplist = []
+        totalnumbmps = 0
+        for index, row in self.chosen_load_sources.iterrows():
+            thesebmps = self.tables.srcdata.get(sheetabbrev='loadreductionBMPs', getcolumn='BMPShortName',
+                                                by='FromLoadSource', equalto=row.LoadSource)
+            thesebmps = thesebmps.str.lower().unique()
+            totalnumbmps += thesebmps.size
+            bmplist.append(thesebmps)
+        self.geo_seg_source_bmps['eligible_landconversion_bmps'] = bmplist
+        print('total no. of eligible "land conversion" BMPs: <%d>' % totalnumbmps)
+
+
+        # Animal BMPs
+        # TODO: Get data from BaseCondition 'Animal Counts' spreadsheet
+
+        # Manure BMPs
+        # TODO: Get data from ManureTonsProduced spreadsheet
+
+        # Septic Systems
+        # TODO: Get data from BaseCondition 'Septic Systems' spreadsheet
+
+
+
 
         print(self.geo_seg_source_bmps.head())
         #print(bmplist[0])
