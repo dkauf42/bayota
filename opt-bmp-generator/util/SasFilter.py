@@ -6,7 +6,7 @@ class SasFilter:
     def __init__(self, optionloaderobj=None, baseconditionobj=None):
         """Find the segment - agency - source combinations available in the specified options."""
         self.all_sas = None
-        self.chosen_load_sources = None
+        self.nonzero_load_sources = None
         self.filter_from_options(optionloaderobj, baseconditionobj)
 
     def filter_from_options(self, optionsobj, baseobj):
@@ -56,7 +56,7 @@ class SasFilter:
 
         # Wen can also only include load sources that have non-zero values.
         nonzero_ls_bool = baseobj.LSacres['PreBMPAcres'] != 0
-        self.chosen_load_sources = baseobj.LSacres.loc[optionsbool & nonzero_ls_bool, :]
+        self.nonzero_load_sources = baseobj.LSacres.loc[optionsbool & nonzero_ls_bool, :]
         print('Seg+agency specific load sources with >0 pre-bmp acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
         print('<BaseCondition Querying Complete>')
 
