@@ -21,8 +21,8 @@ class SourceData(ExcelDataTable):
         self.sourceconversionBMPs = self.data[sheet_names[3]]
         self.loadreductionBMPs = self.data[sheet_names[4]]
         self.animalBMPs = self.data[sheet_names[5]]
-        self.loadsourcegroups = self.data[sheet_names[6]]  # shows load source groups to which each bmp is applicable
-        self.loadsourcegroupcomponents = self.data[sheet_names[7]]  # shows load sources represented by each LS group
+        self.sourcegrps = self.data[sheet_names[6]]  # shows load source groups to which each bmp is applicable
+        self.sourcegrpcomponents = self.data[sheet_names[7]]  # shows load sources represented by each LS group
         self.agencies = self.data[sheet_names[8]]  # Columns of interest: 'AgencyCode' and 'AgencyType'
         self.lsdefinitions = self.data[sheet_names[9]]
 

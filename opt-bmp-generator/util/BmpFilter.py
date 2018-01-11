@@ -9,20 +9,20 @@ class BmpFilter:
 
     def filter_from_sas(self, sasobj, srcdataobj):
         # Get all the BMPs that are possible on the set of Load sources
-        self.geo_seg_source_bmps = sasobj.chosen_load_sources.copy()
+        self.geo_seg_source_bmps = sasobj.all_sas.copy()
         bmplistoflists = []  # Create a list to store the data
         bmptypeslistoflists = []
         overallbmplist = []
         totalnumbmps = 0
-        for index, row in sasobj.chosen_load_sources.iterrows():  # iterate through the load sources
+        for index, row in sasobj.all_sas.iterrows():  # iterate through the load sources
             # Get the Load Source groups that this Load source is in.
-            loadsourcegroups = srcdataobj.get(sheetabbrev='loadsourcegroupcomponents', getcolumn='LoadSourceGroup',
+            loadsourcegroups = srcdataobj.get(sheetabbrev='sourcegrpcomponents', getcolumn='LoadSourceGroup',
                                               by='LoadSource', equalto=row.LoadSource)  # pandas.core.series.Series
 
             bmplist = []  # Create a list to store the data
             for x in loadsourcegroups:  # iterate through the load source groups
                 # Get the BMPs that can be applied on this load source group
-                thesebmps = srcdataobj.get(sheetabbrev='loadsourcegroups', getcolumn='BmpShortName',
+                thesebmps = srcdataobj.get(sheetabbrev='sourcegrps', getcolumn='BmpShortName',
                                            by='LoadSourceGroup', equalto=x).tolist()
                 bmplist += thesebmps
             bmplist = self.removedups(bmplist)
