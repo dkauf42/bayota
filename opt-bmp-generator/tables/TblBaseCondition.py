@@ -7,8 +7,11 @@ reportsdir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScie
 class BaseCondition(ExcelDataTable):
     def __init__(self, filename='2016ProgressV8-BaseConditions.xlsx', dirpath=reportsdir):
 
-        ExcelDataTable.__init__(self, filename=filename, dirpath=dirpath,
-                                sheet_names=['Landuse Acres'])
+        sheet_names = ['Animal Counts', 'Landuse Acres', 'Septic Systems']
+
+        ExcelDataTable.__init__(self, filename=filename, dirpath=dirpath, sheet_names=sheet_names)
 
         # Data from excel sheets are saved to class attributes.
-        self.LSacres = self.data['Landuse Acres']
+        self.animalcounts = self.data[sheet_names[0]]
+        self.LSacres = self.data[sheet_names[1]]
+        self.septicsystems = self.data[sheet_names[2]]
