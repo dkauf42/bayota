@@ -47,7 +47,7 @@ class SourceData(ExcelDataTable):
         if isinstance(bmpshortname_orlist, str):
             thesebmptypes = self.__singlebmptype(bmpshortname_orlist)
         elif isinstance(bmpshortname_orlist, list):
-            if all(isinstance(item, str) for item in bmpshortname_orlist): # check iterable for stringness of all items.
+            if all(isinstance(item, str) for item in bmpshortname_orlist):  # check iterable for stringness of all items.
                 thesebmptypes = []
                 for item in bmpshortname_orlist:
                     thesebmptypes.append(self.__singlebmptype(item))
