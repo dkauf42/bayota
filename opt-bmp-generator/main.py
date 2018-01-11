@@ -3,7 +3,6 @@
 """
 Test various BMP-load source combinations
 """
-import timeit
 import sys
 import os
 
@@ -11,6 +10,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of 
 sys.path.append(script_dir)
 
 from util.InputsToCast import InputsToCast
+import timeit
 from util.Scenario import Scenario
 
 #  MAIN FUNCTION  #
