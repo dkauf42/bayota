@@ -86,73 +86,79 @@ class Scenario:
 
     def bmpquery(self):
         # Get all the BMPs that are possible on the set of Load sources
-        #booldf = pd.DataFrame()
-        #booldf[h] = self.baseconditionobj.LSacres[h].isin(optionscolumn)
         self.geo_seg_source_bmps = self.chosen_load_sources.copy()
-
-        print('geo_seg_source_bmps:')
-        print(self.geo_seg_source_bmps.head())
-        print(':geo_seg_source_bmps')
-
-        # All BMPs (by the load source group page info)
-        bmplistoflists = []  # Create a Series to store the data
+        bmplistoflists = []  # Create a list to store the data
+        bmptypeslistoflists = []
+        overallbmplist = []
         totalnumbmps = 0
         for index, row in self.chosen_load_sources.iterrows():  # iterate through the load sources
             # Get the Load Source groups that this Load source is in.
-            theseLSgroups = self.tables.srcdata.get(sheetabbrev='loadsourcegroupcomponents',
-                                                    getcolumn='LoadSourceGroup', by='LoadSource',
-                                                    equalto=row.LoadSource)  # pandas.core.series.Series
+            loadsourcegroups = self.tables.srcdata.get(sheetabbrev='loadsourcegroupcomponents',
+                                                       getcolumn='LoadSourceGroup', by='LoadSource',
+                                                       equalto=row.LoadSource)  # pandas.core.series.Series
 
             bmplist = []  # Create a list to store the data
-            for x in theseLSgroups:
+            for x in loadsourcegroups:  # iterate through the load source groups
                 # Get the BMPs that can be applied on this load source group
                 thesebmps = self.tables.srcdata.get(sheetabbrev='loadsourcegroups', getcolumn='BmpShortName',
                                                     by='LoadSourceGroup', equalto=x).tolist()
-                #bmplist.append(thesebmps)
                 bmplist += thesebmps
             bmplist = self.removedups(bmplist)
             totalnumbmps += len(bmplist)
-            #print('"bmplist" has %d BMPs for load source "%s"' % (len(bmplist), row.LoadSource))
-            #print(bmplist)
-            #print(set(bmplist))
-            #print('"bmplist" as a set has %d BMPs for load source "%s"' % (len(set(bmplist)), row.LoadSource))
-            bmplistoflists.append(bmplist)
+            overallbmplist += bmplist
 
-        print('The shape of "bmpSeries" is: %d' % len(bmplistoflists))
+            # For each BMP, figure out which type it is
+            thesebmptypes = self.tables.srcdata.findbmptype(bmplist)
+
+            #print('"bmplist" has %d BMPs for load source "%s"' % (len(bmplist), row.LoadSource))
+            bmplistoflists.append(bmplist)
+            bmptypeslistoflists.append(thesebmptypes)
+
+        overallbmplist = self.removedups(overallbmplist)
+        overallbmptypes = self.tables.srcdata.findbmptype(overallbmplist)
+        print('length of overall bmp list: %d' % len(overallbmplist))
+        print(overallbmplist)
+        print(overallbmptypes)
+
         self.geo_seg_source_bmps['eligible_bmps'] = bmplistoflists
+        self.geo_seg_source_bmps['eligible_bmps_types'] = bmptypeslistoflists
         print('total no. of eligible BMPs: <%d>' % totalnumbmps)
 
 
-        df = self.tables.srcdata['efficiencyBMPs']
-        df['BMPShortName'] = df['BMPShortName'].str.lower()
-        print(df.head())
-        df = df.drop_duplicates(subset=['BMPShortName'])
-        # Efficiency BMPs
-        bmplist = []  # Create a list to store the data
-        totalnumbmps = 0
-        for index, row in self.chosen_load_sources.iterrows():
-            thesebmps = df[df['BMPShortName'].notnull() & (df['LoadSource'] == row.LoadSource)]['BMPShortName']
+        # # Efficiency BMPs
+        # df = self.tables.srcdata['efficiencyBMPs']
+        # df['BMPShortName'] = df['BMPShortName'].str.lower()
+        # df = df.drop_duplicates(subset=['BMPShortName'])
+        # bmplist = []  # Create a list to store the data
+        # totalnumbmps = 0
+        # for index, row in self.chosen_load_sources.iterrows():
+        #     thesebmps = df[df['BMPShortName'].notnull() & (df['LoadSource'] == row.LoadSource)]['BMPShortName']
+        #     #thesebmps = self.tables.srcdata.get(sheetabbrev='efficiencyBMPs', getcolumn='BMPShortName',
+        #     #                                    by='LoadSource', equalto=row.LoadSource)
+        #     thesebmps = thesebmps.str.lower().unique()
+        #     totalnumbmps += thesebmps.size
+        #     bmplist.append(thesebmps)
+        # self.geo_seg_source_bmps['eligible_efficiency_bmps'] = bmplist
+        # print('total no. of eligible "efficiency" BMPs: <%d>' % totalnumbmps)
+        #
+        # # Land Conversion BMPs
+        # df = self.tables.srcdata['sourceconversionBMPs']
+        # df['BMPShortName'] = df['BMPShortName'].str.lower()
+        # df = df.drop_duplicates(subset=['BMPShortName'])
+        # bmplist = []
+        # totalnumbmps = 0
+        # for index, row in self.chosen_load_sources.iterrows():
+        #     thesebmps = df[df['BMPShortName'].notnull() & (df['FromLoadSource'] == row.LoadSource)]['BMPShortName']
+        #     #thesebmps = self.tables.srcdata.get(sheetabbrev='sourceconversionBMPs', getcolumn='BMPShortName',
+        #     #                                    by='FromLoadSource', equalto=row.LoadSource)
+        #     thesebmps = thesebmps.str.lower().unique()
+        #     totalnumbmps += thesebmps.size
+        #     bmplist.append(thesebmps)
+        # self.geo_seg_source_bmps['eligible_landconversion_bmps'] = bmplist
+        # print('total no. of eligible "land conversion" BMPs: <%d>' % totalnumbmps)
 
-            #thesebmps = self.tables.srcdata.get(sheetabbrev='efficiencyBMPs', getcolumn='BMPShortName',
-            #                                    by='LoadSource', equalto=row.LoadSource)
-            thesebmps = thesebmps.str.lower().unique()
-            totalnumbmps += thesebmps.size
-            bmplist.append(thesebmps)
-        self.geo_seg_source_bmps['eligible_efficiency_bmps'] = bmplist
-        print('total no. of eligible "efficiency" BMPs: <%d>' % totalnumbmps)
-
-        # Land Conversion BMPs
-        bmplist = []
-        totalnumbmps = 0
-        for index, row in self.chosen_load_sources.iterrows():
-            thesebmps = self.tables.srcdata.get(sheetabbrev='sourceconversionBMPs', getcolumn='BMPShortName',
-                                                by='FromLoadSource', equalto=row.LoadSource)
-            thesebmps = thesebmps.str.lower().unique()
-            totalnumbmps += thesebmps.size
-            bmplist.append(thesebmps)
-        self.geo_seg_source_bmps['eligible_landconversion_bmps'] = bmplist
-        print('total no. of eligible "land conversion" BMPs: <%d>' % totalnumbmps)
-
+        # Load Reudction BMPs
+        # TODO: Get data from
 
         # Animal BMPs
         # TODO: Get data from BaseCondition 'Animal Counts' spreadsheet
@@ -163,5 +169,7 @@ class Scenario:
         # Septic Systems
         # TODO: Get data from BaseCondition 'Septic Systems' spreadsheet
 
-        print(self.geo_seg_source_bmps.head())
+        #print(self.geo_seg_source_bmps.head())
         #print(bmplist[0])
+        self.geo_seg_source_bmps.to_csv('testwrite_geo_seg_source_bmps.csv')
+
