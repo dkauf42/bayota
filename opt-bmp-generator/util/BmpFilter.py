@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 
 
 class BmpFilter:
@@ -7,9 +5,9 @@ class BmpFilter:
         """Find the segment - agency - source combinations available in the specified options.
         """
         self.geo_seg_source_bmps = None
-        self.filterbmpsby_sas(sasobj, sourcedataobj)
+        self.filter_from_sas(sasobj, sourcedataobj)
 
-    def filterbmpsby_sas(self, sasobj, srcdataobj):
+    def filter_from_sas(self, sasobj, srcdataobj):
         # Get all the BMPs that are possible on the set of Load sources
         self.geo_seg_source_bmps = sasobj.chosen_load_sources.copy()
         bmplistoflists = []  # Create a list to store the data
@@ -18,9 +16,8 @@ class BmpFilter:
         totalnumbmps = 0
         for index, row in sasobj.chosen_load_sources.iterrows():  # iterate through the load sources
             # Get the Load Source groups that this Load source is in.
-            loadsourcegroups = srcdataobj.get(sheetabbrev='loadsourcegroupcomponents',
-                                              getcolumn='LoadSourceGroup', by='LoadSource',
-                                              equalto=row.LoadSource)  # pandas.core.series.Series
+            loadsourcegroups = srcdataobj.get(sheetabbrev='loadsourcegroupcomponents', getcolumn='LoadSourceGroup',
+                                              by='LoadSource', equalto=row.LoadSource)  # pandas.core.series.Series
 
             bmplist = []  # Create a list to store the data
             for x in loadsourcegroups:  # iterate through the load source groups
