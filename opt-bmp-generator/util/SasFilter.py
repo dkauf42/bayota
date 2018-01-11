@@ -9,7 +9,6 @@ class SasFilter:
         self.all_sas = None
         self.chosen_load_sources = None
         self.filter_from_options(optionloaderobj, baseconditionobj)
-        # Load the Source Data and Base Condition tables
 
     def filter_from_options(self, optionsobj, baseobj):
         """Find the load sources (with non-zero acreage) in the specified agency-sector-segments
