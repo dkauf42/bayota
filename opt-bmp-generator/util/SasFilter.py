@@ -4,8 +4,7 @@ import numpy as np
 
 class SasFilter:
     def __init__(self, optionloaderobj=None, baseconditionobj=None):
-        """Find the segment - agency - source combinations available in the specified options.
-        """
+        """Find the segment - agency - source combinations available in the specified options."""
         self.all_sas = None
         self.chosen_load_sources = None
         self.filter_from_options(optionloaderobj, baseconditionobj)
