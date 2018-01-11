@@ -31,6 +31,7 @@ class OptionLoader:
         self.headers = list(self.options.columns.values)
 
         self.validateoptions()  # check to make sure options are present in the Source Data or BaseCondition files
+        print('<Option Validation and Loading Complete>')
 
     def validateoptions(self):
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
@@ -46,7 +47,6 @@ class OptionLoader:
                 vo = self.validoptions(h)
                 if ~optionscolumn.dropna().isin(vo).all():
                     raise LookupError('An option specified in the "%s" column of the options file is unrecognized' % h)
-        print('<Validated options>')
 
     def validoptions(self, argument):
         switcher = {
