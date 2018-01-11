@@ -28,6 +28,10 @@ class Scenario:
         self.bmpquery()
 
     def baseconquery(self):
+        """Find the load sources (with non-zero acreage) in the specified agency-sector-segments
+
+        :return:
+        """
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
         #           OutOfCBWS, AgencyCode, Sector
         oh = self.options.headers
@@ -75,6 +79,10 @@ class Scenario:
         #booldf[h] = self.baseconditionobj.LSacres[h].isin(optionscolumn)
         self.geo_seg_source_bmps = self.chosen_load_sources.copy()
 
+        print('geo_seg_source_bmps:')
+        print(self.geo_seg_source_bmps.head())
+        print(':geo_seg_source_bmps')
+
         # All BMPs (by the load source group page info)
         bmplist = []  # Create a list to store the data
         totalnumbmps = 0
@@ -92,12 +100,19 @@ class Scenario:
         self.geo_seg_source_bmps['eligible_bmps'] = bmplist
         print('total no. of eligible BMPs: <%d>' % totalnumbmps)
 
+
+        df = self.tables.srcdata['efficiencyBMPs']
+        df['BMPShortName'] = df['BMPShortName'].str.lower()
+        print(df.head())
+        df = df.drop_duplicates(subset=['BMPShortName'])
         # Efficiency BMPs
         bmplist = []  # Create a list to store the data
         totalnumbmps = 0
         for index, row in self.chosen_load_sources.iterrows():
-            thesebmps = self.tables.srcdata.get(sheetabbrev='efficiencyBMPs', getcolumn='BMPShortName',
-                                                by='LoadSource', equalto=row.LoadSource)
+            thesebmps = df[df['BMPShortName'].notnull() & (df['LoadSource'] == row.LoadSource)]['BMPShortName']
+
+            #thesebmps = self.tables.srcdata.get(sheetabbrev='efficiencyBMPs', getcolumn='BMPShortName',
+            #                                    by='LoadSource', equalto=row.LoadSource)
             thesebmps = thesebmps.str.lower().unique()
             totalnumbmps += thesebmps.size
             bmplist.append(thesebmps)
@@ -116,18 +131,6 @@ class Scenario:
         self.geo_seg_source_bmps['eligible_landconversion_bmps'] = bmplist
         print('total no. of eligible "land conversion" BMPs: <%d>' % totalnumbmps)
 
-        # Load Reduction BMPs (Get data from PreBMPLoadSourceNatural spreadsheet)
-        bmplist = []
-        totalnumbmps = 0
-        for index, row in self.chosen_load_sources.iterrows():
-            thesebmps = self.tables.srcdata.get(sheetabbrev='loadreductionBMPs', getcolumn='BMPShortName',
-                                                by='FromLoadSource', equalto=row.LoadSource)
-            thesebmps = thesebmps.str.lower().unique()
-            totalnumbmps += thesebmps.size
-            bmplist.append(thesebmps)
-        self.geo_seg_source_bmps['eligible_landconversion_bmps'] = bmplist
-        print('total no. of eligible "land conversion" BMPs: <%d>' % totalnumbmps)
-
 
         # Animal BMPs
         # TODO: Get data from BaseCondition 'Animal Counts' spreadsheet
@@ -137,9 +140,6 @@ class Scenario:
 
         # Septic Systems
         # TODO: Get data from BaseCondition 'Septic Systems' spreadsheet
-
-
-
 
         print(self.geo_seg_source_bmps.head())
         #print(bmplist[0])
