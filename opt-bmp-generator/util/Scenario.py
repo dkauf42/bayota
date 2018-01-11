@@ -20,13 +20,13 @@ class Scenario:
 
         # Options are used to query the BaseCondition data and filter only Load Sources with the chosen characteristics
         self.chosen_load_sources = None
-        self.baseconquery()
+        self.allsegsources = None
+        self.filtersegmentsfromoptions()
         #print(self.chosen_load_sources.head())
 
         # Get the list of BMPs available on the chosen load sources
         self.geo_seg_source_bmps = None
-        self.bmpquery()
-
+        self.filterbmpsbysegagencysources()
         print('<Scenario Loading Complete>')
 
     # Python code to remove duplicate elements
@@ -38,13 +38,15 @@ class Scenario:
                 final_list.append(num)
         return final_list
 
-    def baseconquery(self):
+    def filtersegmentsfromoptions(self):
         """Find the load sources (with non-zero acreage) in the specified agency-sector-segments
 
+            option headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
+                             OutOfCBWS, AgencyCode, Sector
         :return:
         """
-        # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
-        #           OutOfCBWS, AgencyCode, Sector
+
+        # Generate boolean mask for the Base Conditions spreadsheet based on the option specifications
         oh = self.options.headers
         booldf = pd.DataFrame()
         for h in oh:
@@ -68,6 +70,7 @@ class Scenario:
                                                                                
               Then, we want logical AND of those options with the load sources that have non-zero values
         """
+
         # A logical OR amongst the geographic options is computed.
         geo_options_list = ('LandRiverSegment', 'CountyName', 'StateAbbreviation', 'StateBasin')
         geooptionsbooldf = booldf[booldf.columns[booldf.columns.isin(geo_options_list)]]
@@ -76,15 +79,19 @@ class Scenario:
         # A logical AND between the geo-options result and the non-geo-options is computed.
         nongeooptionsbooldf = booldf[booldf.columns.difference(geooptionsbooldf.columns)]
         optionsbool = geooptionsbool & nongeooptionsbooldf.all(axis=1)
-        print('All load sources for chosen geo+agency+sector region: %d' % np.sum(optionsbool))
+        print('All load sources for chosen seg+agency region: %d' % np.sum(optionsbool))
+        self.allsegsources = self.tables.basecond.LSacres.loc[optionsbool,
+                                                              ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
+        self.allsegsources = self.allsegsources.set_index(['LandRiverSegment', 'AgencyCode'])
+        self.allsegsources.to_csv('testwrite_allsegsources.csv')
 
-        # Only load sources that have non-zero values are included.
+        # Wen can also only include load sources that have non-zero values.
         nonzero_ls_bool = self.tables.basecond.LSacres['PreBMPAcres'] != 0
-        print('Load sources for chosen geo+agency+sector region with >0 acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
-
+        print('Load sources for chosen seg+agency region with >0 acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
         self.chosen_load_sources = self.tables.basecond.LSacres.loc[optionsbool & nonzero_ls_bool, :]
+        print('<BaseCondition Querying Complete>')
 
-    def bmpquery(self):
+    def filterbmpsbysegagencysources(self):
         # Get all the BMPs that are possible on the set of Load sources
         self.geo_seg_source_bmps = self.chosen_load_sources.copy()
         bmplistoflists = []  # Create a list to store the data
