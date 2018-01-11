@@ -29,6 +29,15 @@ class Scenario:
 
         print('<Scenario Loading Complete>')
 
+    # Python code to remove duplicate elements
+    @staticmethod
+    def removedups(listwithduplicates):
+        final_list = []
+        for num in listwithduplicates:
+            if num not in final_list:
+                final_list.append(num)
+        return final_list
+
     def baseconquery(self):
         """Find the load sources (with non-zero acreage) in the specified agency-sector-segments
 
@@ -86,21 +95,31 @@ class Scenario:
         print(':geo_seg_source_bmps')
 
         # All BMPs (by the load source group page info)
-        bmplist = []  # Create a list to store the data
+        bmplistoflists = []  # Create a Series to store the data
         totalnumbmps = 0
-        for index, row in self.chosen_load_sources.iterrows():
+        for index, row in self.chosen_load_sources.iterrows():  # iterate through the load sources
             # Get the Load Source groups that this Load source is in.
             theseLSgroups = self.tables.srcdata.get(sheetabbrev='loadsourcegroupcomponents',
                                                     getcolumn='LoadSourceGroup', by='LoadSource',
                                                     equalto=row.LoadSource)  # pandas.core.series.Series
+
+            bmplist = []  # Create a list to store the data
             for x in theseLSgroups:
                 # Get the BMPs that can be applied on this load source group
                 thesebmps = self.tables.srcdata.get(sheetabbrev='loadsourcegroups', getcolumn='BmpShortName',
                                                     by='LoadSourceGroup', equalto=x).tolist()
-                totalnumbmps += thesebmps.size
-                bmplist.append(thesebmps)
-        print(bmplist.size)
-        self.geo_seg_source_bmps['eligible_bmps'] = bmplist
+                #bmplist.append(thesebmps)
+                bmplist += thesebmps
+            bmplist = self.removedups(bmplist)
+            totalnumbmps += len(bmplist)
+            #print('"bmplist" has %d BMPs for load source "%s"' % (len(bmplist), row.LoadSource))
+            #print(bmplist)
+            #print(set(bmplist))
+            #print('"bmplist" as a set has %d BMPs for load source "%s"' % (len(set(bmplist)), row.LoadSource))
+            bmplistoflists.append(bmplist)
+
+        print('The shape of "bmpSeries" is: %d' % len(bmplistoflists))
+        self.geo_seg_source_bmps['eligible_bmps'] = bmplistoflists
         print('total no. of eligible BMPs: <%d>' % totalnumbmps)
 
 
