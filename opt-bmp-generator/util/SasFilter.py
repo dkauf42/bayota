@@ -4,9 +4,7 @@ import numpy as np
 
 class SasFilter:
     def __init__(self, optionloaderobj=None, baseconditionobj=None):
-        """A wrapper to generate and hold the metadata for a scenario
-
-        :param optionsfile:
+        """Find the segment - agency - source combinations available in the specified options.
         """
         self.all_sas = None
         self.chosen_load_sources = None
