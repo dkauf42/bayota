@@ -7,22 +7,24 @@ srcdatadir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScie
 class SourceData(ExcelDataTable):
     def __init__(self, filename='SourceData.xlsx', dirpath=srcdatadir):
 
-        sheet_names = ['Geographic References', 'Efficiency BMPs',
+        sheet_names = ['Geographic References', 'BMP Definitions', 'Efficiency BMPs',
                        'Load Source Conversion BMPs', 'Load Reduction BMPs',
-                       'BMP Load Source Groups', 'Load Source Group Components',
+                       'Animal BMPs', 'BMP Load Source Groups', 'Load Source Group Components',
                        'Agencies', 'Load Source Definitions']
 
         ExcelDataTable.__init__(self, filename=filename, dirpath=dirpath, sheet_names=sheet_names)
 
         # Data from excel sheets are saved to class attributes.
         self.georefs = self.data[sheet_names[0]]
-        self.efficiencyBMPs = self.data[sheet_names[1]]
-        self.sourceconversionBMPs = self.data[sheet_names[2]]
-        self.loadreductionBMPs = self.data[sheet_names[3]]
-        self.loadsourcegroups = self.data[sheet_names[4]]  # shows load source groups to which each bmp is applicable
-        self.loadsourcegroupcomponents = self.data[sheet_names[5]]  # shows load sources represented by each LS group
-        self.agencies = self.data[sheet_names[6]]  # Columns of interest: 'AgencyCode' and 'AgencyType'
-        self.lsdefinitions = self.data[sheet_names[7]]
+        self.bmpDefinitions = self.data[sheet_names[1]]
+        self.efficiencyBMPs = self.data[sheet_names[2]]
+        self.sourceconversionBMPs = self.data[sheet_names[3]]
+        self.loadreductionBMPs = self.data[sheet_names[4]]
+        self.animalBMPs = self.data[sheet_names[5]]
+        self.loadsourcegroups = self.data[sheet_names[6]]  # shows load source groups to which each bmp is applicable
+        self.loadsourcegroupcomponents = self.data[sheet_names[7]]  # shows load sources represented by each LS group
+        self.agencies = self.data[sheet_names[8]]  # Columns of interest: 'AgencyCode' and 'AgencyType'
+        self.lsdefinitions = self.data[sheet_names[9]]
 
     def getallnames(self, nametype):
         if nametype == 'LandRiverSegment':
@@ -40,6 +42,48 @@ class SourceData(ExcelDataTable):
         else:
             raise ValueError('Unrecognized nametype: "%s"' % nametype)
         return listofall
+
+    def findbmptype(self, bmpshortname_orlist=''):
+        if isinstance(bmpshortname_orlist, str):
+            thesebmptypes = self.singlebmptype(bmpshortname_orlist)
+        elif isinstance(bmpshortname_orlist, list):
+            if all(isinstance(item, str) for item in bmpshortname_orlist): # check iterable for stringness of all items.
+                thesebmptypes = []
+                for item in bmpshortname_orlist:
+                    thesebmptypes.append(self.singlebmptype(item))
+            else:
+                raise ValueError('unexpected type found in list')
+        else:
+            raise ValueError('unexpected type')
+        return thesebmptypes
+
+    def singlebmptype(self, bmpshortname=''):
+        bmptype = ''
+        numtypes = 0
+        if bmpshortname in self.efficiencyBMPs['BMPShortName'].values:
+            bmptype = 'efficiency'
+            numtypes += 1
+        if bmpshortname in self.sourceconversionBMPs['BMPShortName'].values:
+            bmptype = 'sourceconversion'
+            numtypes += 1
+        if bmpshortname in self.loadreductionBMPs['BMPShortName'].values:
+            bmptype = 'loadreduction'
+            numtypes += 1
+        if bmpshortname in self.animalBMPs['BMPShortName'].values:
+            bmptype = 'animal'
+            numtypes += 1
+
+        if numtypes == 0:
+            if bmpshortname in self.bmpDefinitions['BMPShortName'].values:
+                df = self.bmpDefinitions
+                bmptype = df[df['BMPType'].notnull() & (df['BMPShortName'] == bmpshortname)]['BMPType'].iloc[0]
+                numtypes += 1
+            else:
+                raise ValueError('No BMP type found for "%s"' % bmpshortname)
+        elif numtypes > 1:
+            raise ValueError('More than one BMP type found for "%s"' % bmpshortname)
+
+        return bmptype
 
     def list_bmps_by_loadsource(self):
         pass
