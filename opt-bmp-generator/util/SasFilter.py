@@ -56,12 +56,12 @@ class SasFilter:
         self.all_sas = baseobj.LSacres.loc[optionsbool, ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
         self.all_sas = self.all_sas.set_index(['LandRiverSegment', 'AgencyCode'])
         self.all_sas.to_csv('testwrite_allsegsources.csv')
-        print('All load sources for chosen seg+agency region: %d' % np.sum(optionsbool))
+        print('All seg+agency region load sources: %d' % np.sum(optionsbool))
 
         # Wen can also only include load sources that have non-zero values.
         nonzero_ls_bool = baseobj.LSacres['PreBMPAcres'] != 0
         self.chosen_load_sources = baseobj.LSacres.loc[optionsbool & nonzero_ls_bool, :]
-        print('Load sources for chosen seg+agency region with >0 pre-bmp acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
+        print('Seg+agency region load sources with >0 pre-bmp acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
         print('<BaseCondition Querying Complete>')
 
         # TODO: Septic Systems
