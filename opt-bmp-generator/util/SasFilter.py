@@ -3,14 +3,14 @@ import numpy as np
 
 
 class SasFilter:
-    def __init__(self, OptionLoaderObj=None, BaseConditionObj=None):
+    def __init__(self, optionloaderobj=None, baseconditionobj=None):
         """A wrapper to generate and hold the metadata for a scenario
 
         :param optionsfile:
         """
         self.all_sas = None
         self.chosen_load_sources = None
-        self.filter_from_options(OptionLoaderObj, BaseConditionObj)
+        self.filter_from_options(optionloaderobj, baseconditionobj)
         # Load the Source Data and Base Condition tables
 
     def filter_from_options(self, optionsobj, baseobj):
