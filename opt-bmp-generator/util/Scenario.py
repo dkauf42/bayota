@@ -3,6 +3,7 @@ from util.OptionLoader import OptionLoader
 from util.SasFilter import SasFilter
 from util.BmpFilter import BmpFilter
 from util.PossibilitiesMatrix import PossibilitiesMatrix
+from util.ScenarioRandomizer import ScenarioRandomizer
 
 
 class Scenario:
@@ -25,6 +26,9 @@ class Scenario:
 
         # Get the list of BMPs available on the chosen load sources
         self.bmpfilter = BmpFilter(sasobj=self.sas, sourcedataobj=self.tables.srcdata, possmatrix=self.possmatrix)
+
+        # Populate the Possibilities Matrix with a random assortment of numbers for each SAS-B combination
+        ScenarioRandomizer(self.possmatrix)
 
         self.possmatrix.data.to_csv('testwrite_possmatrix.csv')  # write possibilities matrix to file
 
