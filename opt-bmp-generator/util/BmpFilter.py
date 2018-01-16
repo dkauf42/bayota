@@ -1,4 +1,4 @@
-from tqdm import tqdm
+from tqdm import tqdm  # Loop progress indicator module
 
 
 class BmpFilter:
@@ -30,10 +30,12 @@ class BmpFilter:
             bmplist = self.removedups(bmplist)
             bmplistoflists.append(bmplist)
             totalnumbmps += len(bmplist)
-            thesebmptypes = srcdataobj.findbmptype(bmplist)  # For each BMP, figure out which type it is
+            overallbmplist += bmplist
+
+            # For each BMP, also figure out which type it is
+            thesebmptypes = srcdataobj.findbmptype(bmplist)
             bmptypeslistoflists.append(thesebmptypes)
             # print('"bmplist" has %d BMPs for load source "%s"' % (len(bmplist), row.LoadSource))
-            overallbmplist += bmplist
 
         overallbmplist = self.removedups(overallbmplist)
         overallbmptypes = srcdataobj.findbmptype(overallbmplist)
@@ -45,7 +47,7 @@ class BmpFilter:
         self.geo_seg_source_bmps['eligible_bmps_types'] = bmptypeslistoflists
         print('total no. of eligible BMPs: <%d>' % totalnumbmps)
 
-        # Load Reudction BMPs
+        # Load Reduction BMPs
         # TODO: Get data from
 
         # Animal BMPs
