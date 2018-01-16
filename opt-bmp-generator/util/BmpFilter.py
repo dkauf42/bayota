@@ -1,3 +1,4 @@
+from tqdm import tqdm
 
 
 class BmpFilter:
@@ -14,7 +15,8 @@ class BmpFilter:
         bmptypeslistoflists = []
         overallbmplist = []
         totalnumbmps = 0
-        for index, row in sasobj.all_sas.iterrows():  # iterate through the load sources
+        n = len(sasobj.all_sas.index)
+        for index, row in tqdm(sasobj.all_sas.iterrows(), total=n):  # iterate through the load sources
             # Get the Load Source groups that this Load source is in.
             loadsourcegroups = srcdataobj.get(sheetabbrev='sourcegrpcomponents', getcolumn='LoadSourceGroup',
                                               by='LoadSource', equalto=row.LoadSource)  # pandas.core.series.Series
