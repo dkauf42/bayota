@@ -7,6 +7,7 @@ class SasFilter:
         """Find the segment - agency - source combinations available in the specified options."""
         self.all_sas = None
         self.nonzero_load_sources = None
+        self.sas_indices = None
         self.filter_from_options(optionloaderobj, baseconditionobj)
 
     def filter_from_options(self, optionsobj, baseobj):
@@ -53,6 +54,11 @@ class SasFilter:
         self.all_sas = self.all_sas.set_index(['LandRiverSegment', 'AgencyCode'])
         self.all_sas.to_csv('testwrite_allsegsources.csv')
         print('All seg+agency specific load sources: %d' % np.sum(optionsbool))
+
+        self.sas_indices = baseobj.LSacres.loc[optionsbool, ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
+        self.sas_indices = self.sas_indices.set_index(['LandRiverSegment', 'AgencyCode', 'LoadSource'])
+        self.sas_indices.to_csv('testwrite_sas_indices.csv')
+
 
         # Wen can also only include load sources that have non-zero values.
         nonzero_ls_bool = baseobj.LSacres['PreBMPAcres'] != 0

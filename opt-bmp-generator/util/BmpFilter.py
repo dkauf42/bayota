@@ -2,13 +2,13 @@ from tqdm import tqdm  # Loop progress indicator module
 
 
 class BmpFilter:
-    def __init__(self, sasobj=None, sourcedataobj=None):
+    def __init__(self, sasobj=None, sourcedataobj=None, possmatrix=None):
         """Find the segment - agency - source combinations available in the specified options.
         """
         self.geo_seg_source_bmps = None
-        self.filter_from_sas(sasobj, sourcedataobj)
+        self.filter_from_sas(sasobj, sourcedataobj, possmatrix)
 
-    def filter_from_sas(self, sasobj, srcdataobj):
+    def filter_from_sas(self, sasobj, srcdataobj, possmatrix):
         # Get all the BMPs that are possible on the set of Load sources
         self.geo_seg_source_bmps = sasobj.all_sas.copy()
         bmplistoflists = []  # Create a list to store the data
@@ -27,6 +27,10 @@ class BmpFilter:
                 thesebmps = srcdataobj.get(sheetabbrev='sourcegrps', getcolumn='BmpShortName',
                                            by='LoadSourceGroup', equalto=x).tolist()
                 bmplist += thesebmps
+                for b in thesebmps:
+                    # Put a 999 in the possmatrix at this (i) seg-agency-source and (j) bmp coordinate
+                    possmatrix.data.loc[(index[0], index[1], row.LoadSource), b] = 999
+
             bmplist = self.removedups(bmplist)
             bmplistoflists.append(bmplist)
             totalnumbmps += len(bmplist)
@@ -37,6 +41,7 @@ class BmpFilter:
             bmptypeslistoflists.append(thesebmptypes)
             # print('"bmplist" has %d BMPs for load source "%s"' % (len(bmplist), row.LoadSource))
 
+        possmatrix.data.to_csv('testwrite_possmatrix.csv')
         overallbmplist = self.removedups(overallbmplist)
         overallbmptypes = srcdataobj.findbmptype(overallbmplist)
         print('length of overall bmp list: %d' % len(overallbmplist))
