@@ -26,6 +26,24 @@ class SourceData(ExcelDataTable):
         self.agencies = self.data[sheet_names[8]]  # Columns of interest: 'AgencyCode' and 'AgencyType'
         self.lsdefinitions = self.data[sheet_names[9]]
 
+        self.allbmps_shortnames = self.get_list_of_all_bmps()
+
+    def get_list_of_all_bmps(self):
+        """
+        Don't use the list generated from the "BMP Definitions" sheet, i.e.
+        >> bmplist1 = self.bmpDefinitions['BMPShortName']
+        ...because it is missing the following BMPs:
+        {'Biofilters', 'DairyPrecFeed', 'LitAmend', 'MTT19', 'AWMS', 'MTT18', 'ImperviousDisconnection', 'MTT5',
+         'MTT11', 'MTT16', 'MTT4', 'MortalityComp', 'MTT1', 'MTT10', 'ManureTransport', 'MTT9', 'MTT14', 'MTT6',
+         'CSOConnect', 'LagoonCovers', 'MTT7', 'MTT17', 'MTT13', 'MTT3', 'MTT12', 'MTT2', 'MTT15', 'MTT8'}
+
+         ^ This was checked with the following code:
+         >> print(set(bmplist1).symmetric_difference(set(bmplist2)))
+         """
+        bmplist2 = self.sourcegrps['BmpShortName'].unique()
+
+        return bmplist2
+
     def getallnames(self, nametype):
         if nametype == 'LandRiverSegment':
             listofall = self.georefs[nametype].unique()
@@ -84,6 +102,3 @@ class SourceData(ExcelDataTable):
             raise ValueError('More than one BMP type found for "%s"' % bmpshortname)
 
         return bmptype
-
-    def list_bmps_by_loadsource(self):
-        pass

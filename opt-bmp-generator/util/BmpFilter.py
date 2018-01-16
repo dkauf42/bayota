@@ -2,34 +2,47 @@ from tqdm import tqdm  # Loop progress indicator module
 
 
 class BmpFilter:
-    def __init__(self, sasobj=None, sourcedataobj=None, possmatrix=None):
+    def __init__(self, sasobj=None, sourcedataobj=None):
         """Find the segment - agency - source combinations available in the specified options.
         """
         self.geo_seg_source_bmps = None
-        self.filter_from_sas(sasobj, sourcedataobj, possmatrix)
+        self.bmpdict = {}
+        self.srcdataobj = sourcedataobj
+        self.sasobj = sasobj
 
-    def filter_from_sas(self, sasobj, srcdataobj, possmatrix):
-        # Get all the BMPs that are possible on the set of Load sources
-        self.geo_seg_source_bmps = sasobj.all_sas.copy()
-        bmplistoflists = []  # Create a list to store the data
-        bmptypeslistoflists = []
-        overallbmplist = []
-        totalnumbmps = 0
-        n = len(sasobj.all_sas.index)
-        for index, row in tqdm(sasobj.all_sas.iterrows(), total=n):  # iterate through the load sources
+    def dict_of_bmps_by_loadsource(self, load_sources):
+        ls_to_bmp_dict = {}
+
+        for ls in load_sources:
             # Get the Load Source groups that this Load source is in.
-            loadsourcegroups = srcdataobj.get(sheetabbrev='sourcegrpcomponents', getcolumn='LoadSourceGroup',
-                                              by='LoadSource', equalto=row.LoadSource)  # pandas.core.series.Series
+            loadsourcegroups = self.srcdataobj.get(sheetabbrev='sourcegrpcomponents', getcolumn='LoadSourceGroup',
+                                                   by='LoadSource', equalto=ls)  # pandas.core.series.Series
 
             bmplist = []  # Create a list to store the data
             for x in loadsourcegroups:  # iterate through the load source groups
                 # Get the BMPs that can be applied on this load source group
-                thesebmps = srcdataobj.get(sheetabbrev='sourcegrps', getcolumn='BmpShortName',
-                                           by='LoadSourceGroup', equalto=x).tolist()
+                thesebmps = self.srcdataobj.get(sheetabbrev='sourcegrps', getcolumn='BmpShortName',
+                                                by='LoadSourceGroup', equalto=x).tolist()
                 bmplist += thesebmps
-                for b in thesebmps:
-                    # Put a 999 in the possmatrix at this (i) seg-agency-source and (j) bmp coordinate
-                    possmatrix.data.loc[(index[0], index[1], row.LoadSource), b] = 999
+
+            ls_to_bmp_dict[ls] = bmplist
+
+        self.bmpdict = ls_to_bmp_dict
+
+    def filter_from_sas(self, possmatrix):
+        if self.bmpdict is None:
+            raise ValueError('Cannot filter_from_sas() because bmpdict has not yet been set for this BmpFilter object')
+        # Get all the BMPs that are possible on the set of Load sources
+        self.geo_seg_source_bmps = self.sasobj.all_sas.copy()
+        bmplistoflists = []  # Create a list to store the data
+        bmptypeslistoflists = []
+        overallbmplist = []
+        totalnumbmps = 0
+        n = len(self.sasobj.all_sas.index)
+        for index, row in tqdm(self.sasobj.all_sas.iterrows(), total=n):  # iterate through the load sources
+
+            bmplist = self.bmpdict[row.LoadSource]
+            possmatrix.data.loc[(index[0], index[1], row.LoadSource), bmplist] = 999
 
             bmplist = self.removedups(bmplist)
             bmplistoflists.append(bmplist)
@@ -37,13 +50,13 @@ class BmpFilter:
             overallbmplist += bmplist
 
             # For each BMP, also figure out which type it is
-            thesebmptypes = srcdataobj.findbmptype(bmplist)
+            thesebmptypes = self.srcdataobj.findbmptype(bmplist)
             bmptypeslistoflists.append(thesebmptypes)
             # print('"bmplist" has %d BMPs for load source "%s"' % (len(bmplist), row.LoadSource))
 
         possmatrix.data.to_csv('testwrite_possmatrix.csv')
         overallbmplist = self.removedups(overallbmplist)
-        overallbmptypes = srcdataobj.findbmptype(overallbmplist)
+        overallbmptypes = self.srcdataobj.findbmptype(overallbmplist)
         print('length of overall bmp list: %d' % len(overallbmplist))
         print(overallbmplist)
         print(overallbmptypes)

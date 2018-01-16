@@ -20,11 +20,12 @@ class Scenario:
         # Options are used to query the BaseCondition data and filter only Load Sources with the chosen characteristics
         self.sas = SasFilter(optionloaderobj=self.options, baseconditionobj=self.tables.basecond)
 
+        bmpfilter = BmpFilter(sasobj=self.sas, sourcedataobj=self.tables.srcdata)
+        # Generate a dictionary of bmps that are eligible for every load source
+        bmpfilter.dict_of_bmps_by_loadsource(self.sas.all_sas.LoadSource.unique())
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
         self.possmatrix = PossibilitiesMatrix(sasobj=self.sas, allbmps=self.tables.srcdata.allbmps_shortnames)
-        print(self.possmatrix.data.head())
-
         # Get the list of BMPs available on the chosen load sources
-        self.bmps = BmpFilter(sasobj=self.sas, sourcedataobj=self.tables.srcdata, possmatrix=self.possmatrix)
+        bmpfilter.filter_from_sas(self.possmatrix)
         print('<Scenario Loading Complete>')
 
