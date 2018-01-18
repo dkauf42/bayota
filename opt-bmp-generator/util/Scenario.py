@@ -4,6 +4,7 @@ from util.SasFilter import SasFilter
 from util.BmpFilter import BmpFilter
 from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
+from util.InputsToCast import InputsToCast
 
 
 class Scenario:
@@ -32,6 +33,8 @@ class Scenario:
 
         self.possmatrix.data.to_csv('testwrite_possmatrix.csv')  # write possibilities matrix to file
 
+        inputobj = InputsToCast(self.possmatrix)
+        inputobj.matrix_to_table()
 
         print('<Scenario Loading Complete>')
 

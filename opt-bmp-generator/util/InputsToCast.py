@@ -6,9 +6,10 @@ writedir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScient
 
 
 class InputsToCast:
-    def __init__(self):
+    def __init__(self, possmatrixobj=None):
         self.template = None
         self.df = None
+        self.possmatrixobj = possmatrixobj
 
         self.headers_land = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation',
                              'BmpShortname', 'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']
@@ -18,6 +19,11 @@ class InputsToCast:
         self.headers_manure = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation',
                                'BmpShortname', 'GeographyName', 'AnimalGroup', 'LoadSourceGroup',
                                'Amount', 'Unit', 'NReductionFraction', 'PReductionFraction']
+
+    def matrix_to_table(self):
+        stackedmatrix = self.possmatrixobj.data.stack()
+        print(stackedmatrix.head())
+        stackedmatrix.to_csv('testwrite_stackedmatrix.csv')
 
     def create_landbmp_file(self, datatowrite):
         self.writecsv(filename=writedir + 'landbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
