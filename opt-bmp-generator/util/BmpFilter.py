@@ -15,6 +15,7 @@ class BmpFilter:
         overallbmplist = []
         totalnumbmps = 0
         n = len(sasobj.all_sas.index)
+        print('Generating nonzero markers for eligible SAS-B combinations in the possibilities matrix')
         for index, row in tqdm(sasobj.all_sas.iterrows(), total=n):  # iterate through the load sources
 
             # Mark the eligible BMPs for each Load Source with a 999 instead of a NaN
