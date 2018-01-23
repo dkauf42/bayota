@@ -6,7 +6,6 @@ class SegmentAgencyTypeFilter:
     def __init__(self, optionloaderobj=None, baseconditionobj=None):
         """Find the segment - agency - source combinations available in the specified options."""
         self.all_sat = None
-        self.nonzero_load_sources = None
         self.sat_indices = None
         self.filter_from_options(optionloaderobj, baseconditionobj)
 
@@ -58,13 +57,6 @@ class SegmentAgencyTypeFilter:
         self.sat_indices = baseobj.LSacres.loc[optionsbool, ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
         self.sat_indices = self.sat_indices.set_index(['LandRiverSegment', 'AgencyCode', 'LoadSource'])
         self.sat_indices.to_csv('testwrite_sat_indices.csv')
-
-
-        # Wen can also only include load sources that have non-zero values.
-        nonzero_ls_bool = baseobj.LSacres['PreBMPAcres'] != 0
-        self.nonzero_load_sources = baseobj.LSacres.loc[optionsbool & nonzero_ls_bool, :]
-        print('Seg+agency specific load sources with >0 pre-bmp acres: %d' % np.sum(optionsbool & nonzero_ls_bool))
-        print('<BaseCondition Querying Complete>')
 
         # TODO: Septic Systems
 
