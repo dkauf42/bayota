@@ -9,12 +9,12 @@ class ExcelDataTable:
         self.sheet_names = sheet_names
 
         self.data = None
-        self.loadsheets()
+        self.__loadsheets()
 
     def __getitem__(self, item):
         return getattr(self, item)
 
-    def loadsheets(self):
+    def __loadsheets(self):
         self.data = pd.read_excel(self.fullpath, sheet_name=self.sheet_names)
 
     def get(self, sheetabbrev='georefs', getcolumn='LandRiverSegment', by='CountyName', equalto='Anne Arundel'):
