@@ -1,7 +1,5 @@
 from util.TblLoader import TblLoader
 from util.OptionLoader import OptionLoader
-from util.SegmentAgencyTypeFilter import SegmentAgencyTypeFilter
-from util.BmpFilter import BmpFilter
 from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
@@ -19,14 +17,10 @@ class Scenario:
         # The scenario options (particular geographic region(s), agencies, etc.) are loaded for this scenario.
         self.options = OptionLoader(optionsfile=optionsfile, srcdataobj=self.tables.srcdata)
 
-        # Options are used to query the BaseCondition data and get the Load Sources for each segment-agency pair
-        self.sat = SegmentAgencyTypeFilter(optionloaderobj=self.options, baseconditionobj=self.tables.basecond)
-
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        self.possmatrix = PossibilitiesMatrix(satobj=self.sat, sourcedataobj=self.tables.srcdata)
-
-        # Get the list of BMPs available on the chosen load sources
-        self.bmpfilter = BmpFilter(satobj=self.sat, sourcedataobj=self.tables.srcdata, possmatrix=self.possmatrix)
+        self.possmatrix = PossibilitiesMatrix(sourcedataobj=self.tables.srcdata,
+                                              optionloaderobj=self.options,
+                                              baseconditionobj=self.tables.basecond)
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         ScenarioRandomizer(self.possmatrix)
