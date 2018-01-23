@@ -1,4 +1,3 @@
-import scipy
 from scipy import sparse
 import pandas as pd
 
