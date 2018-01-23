@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 
 
-class SasFilter:
+class SegmentAgencyTypeFilter:
     def __init__(self, optionloaderobj=None, baseconditionobj=None):
         """Find the segment - agency - source combinations available in the specified options."""
-        self.all_sas = None
+        self.all_sat = None
         self.nonzero_load_sources = None
-        self.sas_indices = None
+        self.sat_indices = None
         self.filter_from_options(optionloaderobj, baseconditionobj)
 
     def filter_from_options(self, optionsobj, baseobj):
@@ -50,14 +50,14 @@ class SasFilter:
         # A logical AND between the geo-options result and the non-geo-options is computed.
         nongeooptionsbooldf = booldf[booldf.columns.difference(geooptionsbooldf.columns)]
         optionsbool = geooptionsbool & nongeooptionsbooldf.all(axis=1)
-        self.all_sas = baseobj.LSacres.loc[optionsbool, ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
-        self.all_sas = self.all_sas.set_index(['LandRiverSegment', 'AgencyCode'])
-        self.all_sas.to_csv('testwrite_allsegsources.csv')
+        self.all_sat = baseobj.LSacres.loc[optionsbool, ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
+        self.all_sat = self.all_sat.set_index(['LandRiverSegment', 'AgencyCode'])
+        self.all_sat.to_csv('testwrite_allsegsources.csv')
         print('All seg+agency specific load sources: %d' % np.sum(optionsbool))
 
-        self.sas_indices = baseobj.LSacres.loc[optionsbool, ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
-        self.sas_indices = self.sas_indices.set_index(['LandRiverSegment', 'AgencyCode', 'LoadSource'])
-        self.sas_indices.to_csv('testwrite_sas_indices.csv')
+        self.sat_indices = baseobj.LSacres.loc[optionsbool, ['LandRiverSegment', 'AgencyCode', 'LoadSource']].copy()
+        self.sat_indices = self.sat_indices.set_index(['LandRiverSegment', 'AgencyCode', 'LoadSource'])
+        self.sat_indices.to_csv('testwrite_sat_indices.csv')
 
 
         # Wen can also only include load sources that have non-zero values.

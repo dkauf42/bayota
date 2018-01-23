@@ -3,17 +3,17 @@ import pandas as pd
 
 
 class PossibilitiesMatrix:
-    def __init__(self, sasobj=None, sourcedataobj=None):
+    def __init__(self, satobj=None, sourcedataobj=None):
         """Create a sparse matrix with rows=seg-agency-sources X columns=BMPs
         """
         self.data = None
-        self.__create_matrix(sasobj, sourcedataobj.allbmps_shortnames)
+        self.__create_matrix(satobj, sourcedataobj.allbmps_shortnames)
 
         self.bmpdict = None
-        self.__dict_of_bmps_by_loadsource(sourcedataobj, sasobj.all_sas.LoadSource.unique())
+        self.__dict_of_bmps_by_loadsource(sourcedataobj, satobj.all_sat.LoadSource.unique())
 
-    def __create_matrix(self, sasobj, allbmps):
-        df = pd.DataFrame(data=sasobj.sas_indices, columns=allbmps)
+    def __create_matrix(self, satobj, allbmps):
+        df = pd.DataFrame(data=satobj.sat_indices, columns=allbmps)
 
         df.sort_index(axis=0, inplace=True, sort_remaining=True)
         df.sort_index(axis=1, inplace=True, sort_remaining=True)

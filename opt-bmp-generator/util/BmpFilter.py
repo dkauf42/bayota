@@ -2,21 +2,21 @@ from tqdm import tqdm  # Loop progress indicator module
 
 
 class BmpFilter:
-    def __init__(self, sasobj=None, sourcedataobj=None, possmatrix=None):
+    def __init__(self, satobj=None, sourcedataobj=None, possmatrix=None):
         """Find the segment - agency - source combinations available in the specified options.
         """
         self.geo_seg_source_bmps = None
-        self.filter_from_sas(sasobj, sourcedataobj, possmatrix)
+        self.filter_from_sat(satobj, sourcedataobj, possmatrix)
 
-    def filter_from_sas(self, sasobj, srcdataobj, possmatrix):
+    def filter_from_sat(self, satobj, srcdataobj, possmatrix):
         # Get all the BMPs that are possible on the set of Load sources
-        self.geo_seg_source_bmps = sasobj.all_sas.copy()
+        self.geo_seg_source_bmps = satobj.all_sat.copy()
         bmplistoflists = []  # Create a list to store the data
         overallbmplist = []
         totalnumbmps = 0
-        n = len(sasobj.all_sas.index)
-        print('Generating nonzero markers for eligible SAS-B combinations in the possibilities matrix')
-        for index, row in tqdm(sasobj.all_sas.iterrows(), total=n):  # iterate through the load sources
+        n = len(satobj.all_sat.index)
+        print('Generating nonzero markers for eligible SAT-B combinations in the possibilities matrix')
+        for index, row in tqdm(satobj.all_sat.iterrows(), total=n):  # iterate through the load sources
 
             # Mark the eligible BMPs for each Load Source with a 999 instead of a NaN
             bmplist = possmatrix.bmpdict[row.LoadSource]
