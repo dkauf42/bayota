@@ -5,12 +5,11 @@ Test various BMP-load source combinations
 """
 import sys
 import os
+import timeit
+from util.Scenario import Scenario
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
-
-import timeit
-from util.Scenario import Scenario
 
 #  MAIN FUNCTION  #
 #if __name__ == "__main__":
