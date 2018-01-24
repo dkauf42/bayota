@@ -42,4 +42,21 @@ class IncludeSpec:
         print('Number of lrsegs included: %d' % geooptionsbool.sum())
 
     def generate_agency(self, optionloaderobj, tables):
-        pass
+        """Determine the complete list of agencies to be included in this Scenario
+
+        Using the options/headers, query the SourceData table to generate a table with inclusive Series
+        that can be used as boolean masks on other Series
+        """
+        agencydf = tables.srcdata.agencies
+        # Generate boolean mask for the dataframe based on the option specifications
+        optionscolumn = optionloaderobj.options['AgencyCode']
+        if (optionscolumn[0] == 'all') | optionscolumn.isnull().values.all():
+            # just get all of the values
+            self.agency = agencydf.loc[:, 'AgencyCode'].copy()
+        else:
+            boolSeries = pd.Series()
+            # generate boolean mask for each basecondition row, if its value is in this options column
+            boolSeries['AgencyCode'] = agencydf['AgencyCode'].isin(optionscolumn)
+            self.agency = agencydf.loc[boolSeries, 'AgencyCode'].copy()
+        self.agency.to_csv('testwrite_agency_include_table.csv')
+        print('Number of agencies included: %d' % len(self.agency))
