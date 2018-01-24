@@ -6,21 +6,21 @@ from filters.SegmentAgencyTypeFilter import SegmentAgencyTypeFilter
 
 
 class PossibilitiesMatrix:
-    def __init__(self, sourcedataobj=None, optionloaderobj=None, baseconditionobj=None):
+    def __init__(self, optionloaderobj=None, tables=None):
         """Filter by Segment-agency_types"""
 
         # Options are used to query the BaseCondition data and get the Load Sources for each segment-agency pair
-        satobj = SegmentAgencyTypeFilter(optionloaderobj=optionloaderobj, baseconditionobj=baseconditionobj)
+        satobj = SegmentAgencyTypeFilter(optionloaderobj=optionloaderobj, tables=tables)
 
         # Create a sparse matrix with rows=seg-agency-sources X columns=BMPs
         self.data = None
-        self.__create_matrix(satobj, sourcedataobj.allbmps_shortnames)
+        self.__create_matrix(satobj, tables.srcdata.allbmps_shortnames)
         self.bmpdict = None
-        self.__dict_of_bmps_by_loadsource(sourcedataobj, satobj.all_sat.LoadSource.unique())
+        self.__dict_of_bmps_by_loadsource(tables.srcdata, satobj.all_sat.LoadSource.unique())
 
         # Get the list of BMPs available on the chosen load sources
         self.geo_seg_source_bmps = None
-        self.filter_from_sat(satobj=satobj, srcdataobj=sourcedataobj)
+        self.filter_from_sat(satobj=satobj, srcdataobj=tables.srcdata)
 
     def __create_matrix(self, satobj, allbmps):
         df = pd.DataFrame(data=satobj.sat_indices, columns=allbmps)

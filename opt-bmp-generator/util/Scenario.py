@@ -18,9 +18,7 @@ class Scenario:
         self.options = OptionLoader(optionsfile=optionsfile, srcdataobj=self.tables.srcdata)
 
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        self.possmatrix = PossibilitiesMatrix(sourcedataobj=self.tables.srcdata,
-                                              optionloaderobj=self.options,
-                                              baseconditionobj=self.tables.basecond)
+        self.possmatrix = PossibilitiesMatrix(optionloaderobj=self.options, tables=self.tables)
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         ScenarioRandomizer(self.possmatrix)

@@ -3,11 +3,12 @@ import numpy as np
 
 
 class SegmentAgencyTypeFilter:
-    def __init__(self, optionloaderobj=None, baseconditionobj=None):
+    def __init__(self, optionloaderobj=None, tables=None):
         """Find the segment - agency - source combinations available in the specified options."""
+
         self.all_sat = None
         self.sat_indices = None
-        self.filter_from_options(optionloaderobj, baseconditionobj)
+        self.filter_from_options(optionloaderobj, tables.basecond)
 
     def filter_from_options(self, optionsobj, baseobj):
         """Find the load sources (with non-zero acreage) in the specified agency-sector-segments
