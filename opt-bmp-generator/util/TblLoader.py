@@ -19,8 +19,8 @@ class TblLoader:
         self.lsnatural = None
         self.lsdeveloped = None
         self.lsagriculture = None
-        self.manuretons = None
-        self.septicsystems = None
+        self.lsmanure = None
+        self.lsseptic = None
 
         self.load_source_and_base_files()
 
@@ -45,12 +45,12 @@ class TblLoader:
                                                    cls=TblPreBmpLoadSourceAgriculture)
 
         # ManureTonsProduced from the Excel Spreadsheet
-        self.manuretons = self.load_or_generate(savename='cast_opt_manuretonsproduced.obj',
-                                                cls=ManureTonsProduced)
+        self.lsmanure = self.load_or_generate(savename='cast_opt_manuretonsproduced.obj',
+                                              cls=ManureTonsProduced)
 
         # SepticSystems from the Excel Spreadsheet
-        self.septicsystems = self.load_or_generate(savename='cast_opt_septicsystems.obj',
-                                                   cls=TblSepticSystems)
+        self.lsseptic = self.load_or_generate(savename='cast_opt_septicsystems.obj',
+                                              cls=TblSepticSystems)
 
     @staticmethod
     def load_or_generate(savename='', cls=None):
@@ -63,3 +63,26 @@ class TblLoader:
                 pickle.dump(tableobj, f)
 
         return tableobj
+
+    def agencytranslate(self, nameorcode):
+        """Convert an Agency Name to its AgencyCode or vice versa
+
+        Examples:
+            >> .agencytranslate('Department of Defense')
+            returns 'DOD'
+
+            >> .agencytranslate('FWS')
+            returns 'US Fish and Wildlife Service'
+        """
+        df = self.srcdata.agencies
+        boolseries1 = df['Agency'] == nameorcode
+        boolseries2 = df['AgencyCode'] == nameorcode
+        if any(boolseries1) & any(boolseries2):
+            raise ValueError('agency <%s> cannot be both an Agency "Name" and "Code"' % nameorcode)
+
+        if any(boolseries1):
+            return df['AgencyCode'][boolseries1].to_string()
+        elif any(boolseries2):
+            return df['Agency'][boolseries2].to_string()
+        else:
+            raise ValueError('agency <%s> cannot be found' % nameorcode)
