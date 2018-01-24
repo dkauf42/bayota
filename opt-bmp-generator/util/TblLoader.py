@@ -64,25 +64,25 @@ class TblLoader:
 
         return tableobj
 
-    def agencytranslate(self, nameorcode):
-        """Convert an Agency Name to its AgencyCode or vice versa
-
-        Examples:
-            >> .agencytranslate('Department of Defense')
-            returns 'DOD'
-
+    def agencytranslate_fromcodes(self, codes):
+        """Convert an AgencyCode to its Agency Name
+        Example:
             >> .agencytranslate('FWS')
             returns 'US Fish and Wildlife Service'
         """
         df = self.srcdata.agencies
-        boolseries1 = df['Agency'] == nameorcode
-        boolseries2 = df['AgencyCode'] == nameorcode
-        if any(boolseries1) & any(boolseries2):
-            raise ValueError('agency <%s> cannot be both an Agency "Name" and "Code"' % nameorcode)
+        dict_agencycodekeys = dict(zip(df.AgencyCode, df.Agency))
 
-        if any(boolseries1):
-            return df['AgencyCode'][boolseries1].to_string()
-        elif any(boolseries2):
-            return df['Agency'][boolseries2].to_string()
-        else:
-            raise ValueError('agency <%s> cannot be found' % nameorcode)
+        return codes.replace(dict_agencycodekeys, inplace=True)
+
+    def agencytranslate_fromnames(self, names):
+        """Convert an Agency Name to its AgencyCode
+
+        Example:
+            >> .agencytranslate('Department of Defense')
+            returns 'DOD'
+        """
+        df = self.srcdata.agencies
+        dict_agencykeys = dict(zip(df.Agency, df.AgencyCode))
+
+        names.replace(dict_agencykeys, inplace=True)
