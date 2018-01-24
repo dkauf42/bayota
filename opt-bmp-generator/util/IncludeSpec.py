@@ -1,8 +1,17 @@
 import pandas as pd
 
 
-class GeoSpec:
+class IncludeSpec:
     def __init__(self, optionloaderobj=None, tables=None):
+        """Determine the complete list of geographic and non-geographic entities to be included in this Scenario"""
+
+        self.geo = None
+        self.generate_geo(optionloaderobj, tables)
+
+        self.agency = None
+        self.generate_agency(optionloaderobj, tables)
+
+    def generate_geo(self, optionloaderobj, tables):
         """Determine the complete list of lrsegs, counties, states, etc. to be included in this Scenario
 
         Using the options/headers, query the SourceData table to generate a table with inclusive Series
@@ -28,8 +37,9 @@ class GeoSpec:
         # A logical OR amongst the geographic options is computed.
         geooptionsbooldf = booldf[booldf.columns[booldf.columns.isin(geo_options_list)]]
         geooptionsbool = geooptionsbooldf.any(axis=1)
-
-        # A logical AND between the geo-options result and the non-geo-options is computed.
-        self.geo_include_table = geodf.loc[geooptionsbool, :].copy()
-        self.geo_include_table.to_csv('testwrite_geo_include_table.csv')
+        self.geo = geodf.loc[geooptionsbool, :].copy()
+        self.geo.to_csv('testwrite_geo_include_table.csv')
         print('Number of lrsegs included: %d' % geooptionsbool.sum())
+
+    def generate_agency(self, optionloaderobj, tables):
+        pass
