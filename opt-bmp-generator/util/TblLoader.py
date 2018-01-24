@@ -73,7 +73,7 @@ class TblLoader:
         df = self.srcdata.agencies
         dict_agencycodekeys = dict(zip(df.AgencyCode, df.Agency))
 
-        return codes.replace(dict_agencycodekeys, inplace=True)
+        return codes.replace(dict_agencycodekeys, inplace=False)
 
     def agencytranslate_fromnames(self, names):
         """Convert an Agency Name to its AgencyCode
@@ -85,4 +85,4 @@ class TblLoader:
         df = self.srcdata.agencies
         dict_agencykeys = dict(zip(df.Agency, df.AgencyCode))
 
-        names.replace(dict_agencykeys, inplace=True)
+        return names.replace(dict_agencykeys, inplace=False)
