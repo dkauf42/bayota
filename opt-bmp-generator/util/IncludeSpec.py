@@ -6,12 +6,12 @@ class IncludeSpec:
         """Determine the complete list of geographic and non-geographic entities to be included in this Scenario"""
 
         self.geo = None
-        self.generate_geo(optionloaderobj, tables)
+        self.__generate_geo(optionloaderobj, tables)
 
         self.agency = None
-        self.generate_agency(optionloaderobj, tables)
+        self.__generate_agency(optionloaderobj, tables)
 
-    def generate_geo(self, optionloaderobj, tables):
+    def __generate_geo(self, optionloaderobj, tables):
         """Determine the complete list of lrsegs, counties, states, etc. to be included in this Scenario
 
         Using the options/headers, query the SourceData table to generate a table with inclusive Series
@@ -41,7 +41,7 @@ class IncludeSpec:
         self.geo.to_csv('testwrite_geo_include_table.csv')
         print('Number of lrsegs included: %d' % geooptionsbool.sum())
 
-    def generate_agency(self, optionloaderobj, tables):
+    def __generate_agency(self, optionloaderobj, tables):
         """Determine the complete list of agencies to be included in this Scenario
 
         Using the options/headers, query the SourceData table to generate a table with inclusive Series
