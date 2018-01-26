@@ -3,7 +3,12 @@ import pandas as pd
 
 class IncludeSpec:
     def __init__(self, optionloaderobj=None, tables=None):
-        """Determine the complete list of geographic and non-geographic entities to be included in this Scenario"""
+        """Determine the complete list of geographic and non-geographic entities to be included in this Scenario
+
+        Attributes:
+            geo: lrsegs, counties, states, etc. to be included in this Scenario (Pandas.DataFrame).
+            agency: agencies to be included in this Scenario (Pandas.DataFrame).
+        """
 
         self.geo = None
         self.__generate_geo(optionloaderobj, tables)
@@ -12,10 +17,14 @@ class IncludeSpec:
         self.__generate_agency(optionloaderobj, tables)
 
     def __generate_geo(self, optionloaderobj, tables):
-        """Determine the complete list of lrsegs, counties, states, etc. to be included in this Scenario
+        """Determines the complete list of lrsegs, counties, states, etc. to be included in this Scenario.
 
-        Using the options/headers, query the SourceData table to generate a table with inclusive Series
-        that can be used as boolean masks on other Series
+        Using the options/headers, query the SourceData table to set the 'self.geo' variable to be a table
+        with inclusive Series that can be used as boolean masks on other Series.
+
+        Args:
+            optionloaderobj: An open OptionLoader instance.
+            tables: A TblLoader instance.
         """
         geodf = tables.srcdata.georefs
 
@@ -42,10 +51,14 @@ class IncludeSpec:
         print('Number of lrsegs included: %d' % geooptionsbool.sum())
 
     def __generate_agency(self, optionloaderobj, tables):
-        """Determine the complete list of agencies to be included in this Scenario
+        """Determines the complete list of agencies to be included in this Scenario.
 
-        Using the options/headers, query the SourceData table to generate a table with inclusive Series
-        that can be used as boolean masks on other Series
+        Using the options/headers, query the SourceData table to set the 'self.agency' variable to be a table
+        with inclusive Series that can be used as boolean masks on other Series
+
+        Args:
+            optionloaderobj: An open OptionLoader instance.
+            tables: A TblLoader instance.
         """
         agencydf = tables.srcdata.agencies
         # Generate boolean mask for the dataframe based on the option specifications
