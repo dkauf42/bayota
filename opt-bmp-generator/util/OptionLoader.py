@@ -30,10 +30,10 @@ class OptionLoader:
         self.options = pd.read_table(optionsfile, sep=',', header=0)
         self.headers = list(self.options.columns.values)
 
-        self.validateoptions()  # check to make sure options are present in the Source Data or BaseCondition files
+        self.__validateoptions()  # check to make sure options are present in the Source Data or BaseCondition files
         print('<Option Validation and Loading Complete>')
 
-    def validateoptions(self):
+    def __validateoptions(self):
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
         #           OutOfCBWS, AgencyCode, Sector
         oh = self.headers
