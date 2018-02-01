@@ -5,6 +5,14 @@ writedir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC-ResearchScient
               'Optimization_Tool/2-ExperimentFolder/data_tables/inputs_generated_by_cast_opt_tests/'
 
 
+def writecsv(filename, headers, datatowrite):
+    with open(filename, 'wb') as f:
+        w = csv.writer(f)
+        w.writerow(headers)
+        for data in datatowrite:
+            w.writerow(data)
+
+
 class InputsToCast:
     def __init__(self, possmatrixobj=None):
         self.template = None
@@ -31,24 +39,17 @@ class InputsToCast:
         stacked_manu.to_csv('testwrite_stacked_manu_matrix.csv')
 
     def create_landbmp_file(self, datatowrite):
-        self.writecsv(filename=writedir + 'landbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
-                      headers=self.headers_land,
-                      datatowrite=datatowrite)
+        writecsv(filename=writedir + 'landbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
+                 headers=self.headers_land,
+                 datatowrite=datatowrite)
 
     def create_animalbmp_file(self, datatowrite):
-        self.writecsv(filename=writedir + 'animalbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
-                      headers=self.headers_animal,
-                      datatowrite=datatowrite)
+        writecsv(filename=writedir + 'animalbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
+                 headers=self.headers_animal,
+                 datatowrite=datatowrite)
 
     def create_manurebmp_file(self, datatowrite):
-        self.writecsv(filename=writedir + 'landbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
-                      headers=self.headers_manure,
-                      datatowrite=datatowrite)
+        writecsv(filename=writedir + 'landbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
+                 headers=self.headers_manure,
+                 datatowrite=datatowrite)
 
-    @staticmethod
-    def writecsv(filename, headers, datatowrite):
-        with open(filename, 'wb') as f:
-            w = csv.writer(f)
-            w.writerow(headers)
-            for data in datatowrite:
-                w.writerow(data)
