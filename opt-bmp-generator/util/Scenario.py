@@ -1,6 +1,6 @@
 from util.TblLoader import TblLoader
 from util.OptionLoader import OptionLoader
-from util.IncludeSpec import IncludeSpec
+from filters.IncludeSpec import IncludeSpec
 from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
