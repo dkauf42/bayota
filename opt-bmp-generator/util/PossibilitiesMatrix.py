@@ -6,29 +6,47 @@ from filters.SegmentAgencyTypeFilter import SegmentAgencyTypeFilter
 
 
 class PossibilitiesMatrix:
-    def __init__(self, optionloaderobj=None, tables=None):
+    def __init__(self, tables=None, includespec=None):
         """Filter by Segment-agency_types"""
 
         # Options are used to query the BaseCondition data and get the Load Sources for each segment-agency pair
-        satobj = SegmentAgencyTypeFilter(optionloaderobj=optionloaderobj, tables=tables)
+        sat = SegmentAgencyTypeFilter(tables=tables, includespec=includespec)
 
-        # Create a sparse matrix with rows=seg-agency-sources X columns=BMPs
-        self.data = None
-        self.__create_matrix(satobj, tables.srcdata.allbmps_shortnames)
-        self.bmpdict = None
-        self.__dict_of_bmps_by_loadsource(tables.srcdata, satobj.all_sat.LoadSource.unique())
+        #upper_bounds = self.__identifyhardupperbounds(sat)
+
+        # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
+        lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
+        self.ndas = self.__create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
+        self.anim = self.__create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        lsman_indexed = sat.lsman.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
+        self.manu = self.__create_emptydf(row_indices=lsman_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+
+        # Get BMPs by LoadSource
+        allloadsources = pd.concat([self.ndas.index.get_level_values('LoadSource').to_series(),
+                                    self.anim.index.get_level_values('LoadSource').to_series(),
+                                    self.manu.index.get_level_values('LoadSource').to_series()],
+                                   ignore_index=True).unique()
+        self.bmpdict = self.__dict_of_bmps_by_loadsource(tables.srcdata, allloadsources)
 
         # Get the list of BMPs available on the chosen load sources
         self.geo_seg_source_bmps = None
-        self.filter_from_sat(satobj=satobj, srcdataobj=tables.srcdata)
+        self.filter_from_sat(dataframe=self.ndas, srcdataobj=tables.srcdata)
+        self.filter_from_sat(dataframe=self.anim, srcdataobj=tables.srcdata)
+        self.filter_from_sat(dataframe=self.manu, srcdataobj=tables.srcdata)
 
-    def __create_matrix(self, satobj, allbmps):
-        df = pd.DataFrame(data=satobj.sat_indices, columns=allbmps)
+        self.ndas.to_csv('testwrite_ndas.csv')
+        self.anim.to_csv('testwrite_anim.csv')
+        self.manu.to_csv('testwrite_manu.csv')
+
+    @staticmethod
+    def __create_emptydf(row_indices, column_names):
+        df = pd.DataFrame(index=row_indices, columns=column_names)
 
         df.sort_index(axis=0, inplace=True, sort_remaining=True)
         df.sort_index(axis=1, inplace=True, sort_remaining=True)
 
-        self.data = df
+        return df
 
     def __dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
         """ Generate a dictionary of BMPs that are eligible for every load source """
@@ -47,23 +65,27 @@ class PossibilitiesMatrix:
             bmplist = self.removedups(bmplist)
             ls_to_bmp_dict[ls] = bmplist
 
-        self.bmpdict = ls_to_bmp_dict
+        return ls_to_bmp_dict
 
-    def filter_from_sat(self, satobj, srcdataobj):
+    def filter_from_sat(self, dataframe, srcdataobj):
         """Find the segment - agency - source combinations available in the specified options.
         """
         # Get all the BMPs that are possible on the set of Load sources
-        self.geo_seg_source_bmps = satobj.all_sat.copy()
+        self.geo_seg_source_bmps = dataframe.copy()
         bmplistoflists = []  # Create a list to store the data
         overallbmplist = []
         totalnumbmps = 0
-        n = len(satobj.all_sat.index)
-        print('Generating nonzero markers for eligible SAT-B combinations in the possibilities matrix')
-        for index, row in tqdm(satobj.all_sat.iterrows(), total=n):  # iterate through the load sources
+        n = len(dataframe.index)
+        print('>> Generating nonempty markers for eligible (Geo, Agency, Source, BMP) '
+              'coordinates in the possibilities matrix')
+        loadsourceindex = dataframe.index.names.index('LoadSource')
+        for index, row in tqdm(dataframe.iterrows(), total=n):  # iterate through the load sources
 
             # Mark the eligible BMPs for each Load Source with a 999 instead of a NaN
-            bmplist = self.bmpdict[row.LoadSource]
-            self.data.loc[(index[0], index[1], row.LoadSource), bmplist] = 1
+            bmplist = self.bmpdict[row.name[loadsourceindex]]
+            #print(bmplist)
+            #dataframe.loc[(index[0], index[1], row.LoadSource), bmplist] = 1
+            row.loc[bmplist] = 1
 
             bmplistoflists.append(bmplist)
             totalnumbmps += len(bmplist)
@@ -74,15 +96,15 @@ class PossibilitiesMatrix:
         print('length of overall bmp list: %d' % len(overallbmplist))
         print(overallbmplist)
 
-        diffbmps = set(self.data.columns.tolist()).symmetric_difference(set(overallbmplist))
+        diffbmps = set(dataframe.columns.tolist()).symmetric_difference(set(overallbmplist))
         print('- There are %d differences between the possibilities matrix BMPs and OverallBMPlist:' % len(diffbmps))
         print(diffbmps)
 
-        print('- Possibilities matrix dimensions are : %s' % (self.data.shape,))
+        print('- Possibilities matrix dimensions are : %s' % (dataframe.shape,))
         print('- Possibilities matrix is made up of %d nonzero and '
-              '%d null elements, out of %d total elements' % (self.data.sum().sum(),
-                                                              self.data.isnull().sum().sum(),
-                                                              self.data.shape[0] * self.data.shape[1]))
+              '%d null elements, out of %d total elements' % (dataframe.sum().sum(),
+                                                              dataframe.isnull().sum().sum(),
+                                                              dataframe.shape[0] * dataframe.shape[1]))
 
         self.geo_seg_source_bmps['eligible_bmps'] = bmplistoflists
         print('total no. of eligible BMPs: <%d>' % totalnumbmps)

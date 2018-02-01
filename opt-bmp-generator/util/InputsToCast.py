@@ -21,9 +21,14 @@ class InputsToCast:
                                'Amount', 'Unit', 'NReductionFraction', 'PReductionFraction']
 
     def matrix_to_table(self):
-        stackedmatrix = self.possmatrixobj.data.stack()
-        print(stackedmatrix.head())
-        stackedmatrix.to_csv('testwrite_stackedmatrix.csv')
+
+        stacked_ndas = self.possmatrixobj.ndas.stack()
+        stacked_anim = self.possmatrixobj.anim.stack()
+        stacked_manu = self.possmatrixobj.manu.stack()
+        print(stacked_ndas.head())
+        stacked_ndas.to_csv('testwrite_stacked_ndas_matrix.csv')
+        stacked_anim.to_csv('testwrite_stacked_anim_matrix.csv')
+        stacked_manu.to_csv('testwrite_stacked_manu_matrix.csv')
 
     def create_landbmp_file(self, datatowrite):
         self.writecsv(filename=writedir + 'landbmp_test' + time.strftime("%Y%m%d%H%M%S") + '.csv',
