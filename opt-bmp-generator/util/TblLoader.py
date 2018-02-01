@@ -22,9 +22,9 @@ class TblLoader:
         self.lsmanure = None
         self.lsseptic = None
 
-        self.__load_source_and_base_files()
+        self._load_source_and_base_files()
 
-    def __load_source_and_base_files(self):
+    def _load_source_and_base_files(self):
         # BMP Source Data from the Excel Spreadsheet
         self.srcdata = self.load_or_generate(savename='cast_opt_src.obj', cls=SourceData)
 

@@ -5,6 +5,16 @@ from tqdm import tqdm  # Loop progress indicator module
 from filters.SegmentAgencyTypeFilter import SegmentAgencyTypeFilter
 
 
+def _create_emptydf(row_indices, column_names):
+    """ Short module-level function for generating the skeleton of a possibility-matrix"""
+    df = pd.DataFrame(index=row_indices, columns=column_names)
+
+    df.sort_index(axis=0, inplace=True, sort_remaining=True)
+    df.sort_index(axis=1, inplace=True, sort_remaining=True)
+
+    return df
+
+
 class PossibilitiesMatrix:
     def __init__(self, tables=None, includespec=None):
         """Filter by Segment-agency_types"""
@@ -16,18 +26,18 @@ class PossibilitiesMatrix:
 
         # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
         lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
-        self.ndas = self.__create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        self.ndas = _create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
         lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
-        self.anim = self.__create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        self.anim = _create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
         lsman_indexed = sat.lsman.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
-        self.manu = self.__create_emptydf(row_indices=lsman_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        self.manu = _create_emptydf(row_indices=lsman_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
 
         # Get BMPs by LoadSource
         allloadsources = pd.concat([self.ndas.index.get_level_values('LoadSource').to_series(),
                                     self.anim.index.get_level_values('LoadSource').to_series(),
                                     self.manu.index.get_level_values('LoadSource').to_series()],
                                    ignore_index=True).unique()
-        self.bmpdict = self.__dict_of_bmps_by_loadsource(tables.srcdata, allloadsources)
+        self.bmpdict = self._dict_of_bmps_by_loadsource(tables.srcdata, allloadsources)
 
         # Get the list of BMPs available on the chosen load sources
         self.geo_seg_source_bmps = None
@@ -39,16 +49,7 @@ class PossibilitiesMatrix:
         self.anim.to_csv('testwrite_anim.csv')
         self.manu.to_csv('testwrite_manu.csv')
 
-    @staticmethod
-    def __create_emptydf(row_indices, column_names):
-        df = pd.DataFrame(index=row_indices, columns=column_names)
-
-        df.sort_index(axis=0, inplace=True, sort_remaining=True)
-        df.sort_index(axis=1, inplace=True, sort_remaining=True)
-
-        return df
-
-    def __dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
+    def _dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
         """ Generate a dictionary of BMPs that are eligible for every load source """
         ls_to_bmp_dict = {}
         for ls in load_sources:
@@ -125,7 +126,7 @@ class PossibilitiesMatrix:
         #print(bmplist[0])
         self.geo_seg_source_bmps.to_csv('testwrite_geo_seg_source_bmps.csv')
 
-    def return_sparse(self):
+    def return_sparse(self):  # TODO: unused method, remove.
         sparsedf = sparse.coo_matrix(self.data.fillna(0))
         print('Density of sparse matrix is %f' % (sparsedf.getnnz() / (sparsedf.shape[0] * sparsedf.shape[1])))
         return sparsedf

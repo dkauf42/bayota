@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 
 class SegmentAgencyTypeFilter:
@@ -11,74 +10,22 @@ class SegmentAgencyTypeFilter:
                                      OutOfCBWS, AgencyCode, Sector
         """
         # Loop through tables (lsnatural, lsdeveloped, lsagriculture, lsmanure, lsanimal (basecond for now), lsmanure)
-        self.lsnat = self.__filter_from_options(includespec, tables,
-                                                prebmpls_df=tables.lsnatural.PreBmpLoadSourceNatural)
-        self.lsdev = self.__filter_from_options(includespec, tables,
-                                                prebmpls_df=tables.lsdeveloped.PreBmpLoadSourceDeveloped)
-        self.lsagr = self.__filter_from_options(includespec, tables,
-                                                prebmpls_df=tables.lsagriculture.PreBmpLoadSourceAgriculture)
-        self.lssep = self.__filter_from_options(includespec, tables,
-                                                prebmpls_df=tables.lsseptic.SepticSystems)
-        self.lsani = self.__filter_animals_from_options(includespec,
-                                                        prebmpls_df=tables.basecond.animalcounts)
-        self.lsman = self.__filter_animals_from_options(includespec,
-                                                        prebmpls_df=tables.lsmanure.ManureTonsProduced)
-
-        print('********ANIMAL********')
-        print(self.lsani.head())
-        print('********MANURE********')
-        print(self.lsman.head())
+        self.lsnat = self._filter_from_options(includespec, tables,
+                                               prebmpls_df=tables.lsnatural.PreBmpLoadSourceNatural)
+        self.lsdev = self._filter_from_options(includespec, tables,
+                                               prebmpls_df=tables.lsdeveloped.PreBmpLoadSourceDeveloped)
+        self.lsagr = self._filter_from_options(includespec, tables,
+                                               prebmpls_df=tables.lsagriculture.PreBmpLoadSourceAgriculture)
+        self.lssep = self._filter_from_options(includespec, tables,
+                                               prebmpls_df=tables.lsseptic.SepticSystems)
+        self.lsani = self._filter_animals_from_options(includespec,
+                                                       prebmpls_df=tables.basecond.animalcounts)
+        self.lsman = self._filter_animals_from_options(includespec,
+                                                       prebmpls_df=tables.lsmanure.ManureTonsProduced)
 
         self.lsndas = pd.concat([self.lsnat, self.lsdev, self.lsagr, self.lssep], ignore_index=True)
-        print('********LSNDAS********')
-        print(self.lsndas.head())
-        #self.lsndas = pd.concat([self.lsnat['LoadSource'],
-        #                         self.lsdev['LoadSource'],
-        #                         self.lsagr['LoadSource'],
-        #                         self.lssep['LoadSource']], ignore_index=True)
 
-        # pd.concat([self.lsnat['LoadSource'],
-        #            self.lsdev['LoadSource'],
-        #            self.lsagr['LoadSource'],
-        #            self.lssep['LoadSource'],
-        #            self.lsani['LoadSource'],
-        #            self.lsman['LoadSource']], ignore_index=True)
-
-    # def __filter_from_PreBMP_tables(self, tables, includespec):
-    #     """Find the load sources (along with their maxes {acres, miles, units, etc.}) in the specified SATs
-    #
-    #         option headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
-    #                          OutOfCBWS, AgencyCode, Sector
-    #     """
-    #
-    #     # Loop through tables (lsnatural, lsdeveloped, lsagriculture, lsmanure, lsanimal (basecond for now), lsmanure)
-    #     self.lsnat = self.__filter_from_options(includespec, tables,
-    #                                             prebmpls_df=tables.lsnatural.PreBmpLoadSourceNatural)
-    #     self.lsdev = self.__filter_from_options(includespec, tables,
-    #                                             prebmpls_df=tables.lsdeveloped.PreBmpLoadSourceDeveloped)
-    #     self.lsagr = self.__filter_from_options(includespec, tables,
-    #                                             prebmpls_df=tables.lsagriculture.PreBmpLoadSourceAgriculture)
-    #     self.lssep = self.__filter_from_options(includespec, tables,
-    #                                             prebmpls_df=tables.lsseptic.SepticSystems)
-    #     self.lsani = self.__filter_animals_from_options(includespec,
-    #                                                     prebmpls_df=tables.basecond.animalcounts)
-    #     self.lsman = self.__filter_animals_from_options(includespec,
-    #                                                     prebmpls_df=tables.lsmanure.ManureTonsProduced)
-    #
-    #     print('********NATURAL********')
-    #     print(self.lsnat.head())
-    #     print('********DEVELOPED********')
-    #     print(self.lsdev.head())
-    #     print('********AGRICULTURE********')
-    #     print(self.lsagr.head())
-    #     print('********SEPTIC********')
-    #     print(self.lssep.head())
-    #     print('********ANIMAL********')
-    #     print(self.lsani.head())
-    #     print('********MANURE********')
-    #     print(self.lsman.head())
-
-    def __filter_animals_from_options(self, includespec, prebmpls_df):
+    def _filter_animals_from_options(self, includespec, prebmpls_df):
         """Find the load sources in the specified SATs within a prebmpls_df
 
             option headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
@@ -96,7 +43,7 @@ class SegmentAgencyTypeFilter:
 
         return filtered_lsdf
 
-    def __filter_from_options(self, includespec, tables, prebmpls_df):
+    def _filter_from_options(self, includespec, tables, prebmpls_df):
         """Find the load sources in the specified SATs within a prebmpls_df
 
             option headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
@@ -129,95 +76,6 @@ class SegmentAgencyTypeFilter:
         filtered_lsdf = prebmpls_df.loc[lsdf_bool, :]
 
         return filtered_lsdf
-
-        """
-        # Land Use Acres
-        # Generate boolean mask for the prebmpls_df based on the option specifications
-        # i.e. loop through headers specified in the options file
-        oh = optionsobj.headers
-        booldf = pd.DataFrame()
-        for h in oh:
-            optionscolumn = optionsobj.options[h]
-
-            # Convert between similar header names
-            #if h == 'AgencyCode'
-            #prebmpls_df.columns
-
-            #if prebmpls_df.columns.str.contains(h).any():
-            headerindf, dfheadername = self.containssimilarcol(prebmpls_df, h)
-            print(h)
-            print(headerindf)
-            print(dfheadername)
-            #print(headerindf)
-            #print(dfheadername)
-            if (optionscolumn[0] == 'all') | optionscolumn.isnull().values.all():
-                # exclude this column from the boolean prebmpls_df mask if we're just going to get all of the values
-                print('yo')
-                pass
-            else:
-                print('hello')
-                if headerindf:
-                    # generate boolean mask for each basecondition row, if its value is in this options column
-                    #booldf[h] = prebmpls_df[h].isin(optionscolumn)
-                    print('hey')
-                    booldf[h] = self.getsimilarcol(prebmpls_df, h).isin(optionscolumn)
-        print(booldf.head())
-
-        """
-        """Note: For the geographic options (LandRiverSegment, CountyName, StateAbbreviation, StateBasin),
-              we want to include rows that are logical ORs of these column values
-
-              For example, if options include {County: Anne Arundel, State: DE, StateBasin: WV James River Basin},
-              then we want to include load sources from all of those places, not just the intersection of them.
-
-              Then, we want the logical AND of those geooptions with the other options
-                                                                        (BaseCondition, OutOfCBWS, AgencyCode, Sector)
-
-              Then, we want logical AND of those options with the load sources that have non-zero values
-        """
-        """
-
-        # A logical OR amongst the geographic options is computed.
-        countyheaderindf, countyheadername = self.containssimilarcol(prebmpls_df, 'CountyName')
-        geo_options_list = ('LandRiverSegment', 'CountyName', 'StateAbbreviation', 'StateBasin')
-        # TODO: deal with case when 'CountyName' is not present
-        geooptionsbooldf = booldf[booldf.columns[booldf.columns.isin(geo_options_list)]]
-        print(booldf)
-        geooptionsbool = geooptionsbooldf.any(axis=1)
-        print(geooptionsbool)
-
-        # A logical AND between the geo-options result and the non-geo-options is computed.
-        nongeooptionsbooldf = booldf[booldf.columns.difference(geooptionsbooldf.columns)]
-        optionsbool = geooptionsbool & nongeooptionsbooldf.all(axis=1)
-
-        agencyheaderindf, agencyheadername = self.containssimilarcol(prebmpls_df, 'AgencyCode')
-        if agencyheaderindf:
-            # self.all_sat
-            print(optionsbool.shape)
-            print(prebmpls_df.shape)
-            filtered_df = prebmpls_df.loc[optionsbool, ['LandRiverSegment', agencyheadername, 'LoadSource']].copy()
-            filtered_df = filtered_df.set_index(['LandRiverSegment', agencyheadername])
-            #self.all_sat.to_csv('testwrite_allsegsources.csv')
-            print('All seg+agency specific load sources: %d' % np.sum(optionsbool))
-
-            # self.sat_indices
-            filtered_df_indices = prebmpls_df.loc[optionsbool, ['LandRiverSegment', agencyheadername, 'LoadSource']].copy()
-            filtered_df_indices = filtered_df_indices.set_index(['LandRiverSegment', agencyheadername, 'LoadSource'])
-            #self.sat_indices.to_csv('testwrite_sat_indices.csv')
-        else:
-            # self.all_sat
-            filtered_df = prebmpls_df.loc[optionsbool, ['LandRiverSegment', 'LoadSource']].copy()
-            filtered_df = filtered_df.set_index(['LandRiverSegment'])
-            #self.all_sat.to_csv('testwrite_allsegsources.csv')
-            print('All seg+agency specific load sources: %d' % np.sum(optionsbool))
-
-            # self.sat_indices
-            filtered_df_indices = prebmpls_df.loc[optionsbool, ['LandRiverSegment', 'LoadSource']].copy()
-            filtered_df_indices = filtered_df_indices.set_index(['LandRiverSegment', 'LoadSource'])
-            #self.sat_indices.to_csv('testwrite_sat_indices.csv')
-
-        return filtered_df
-        """
 
     @staticmethod
     def containssimilarcol(dataframe, name):

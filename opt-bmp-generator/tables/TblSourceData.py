@@ -63,19 +63,19 @@ class SourceData(ExcelDataTable):
 
     def findbmptype(self, bmpshortname_orlist=''):
         if isinstance(bmpshortname_orlist, str):
-            thesebmptypes = self.__singlebmptype(bmpshortname_orlist)
+            thesebmptypes = self._singlebmptype(bmpshortname_orlist)
         elif isinstance(bmpshortname_orlist, list):
             if all(isinstance(item, str) for item in bmpshortname_orlist):  # check iterable for stringness of all items.
                 thesebmptypes = []
                 for item in bmpshortname_orlist:
-                    thesebmptypes.append(self.__singlebmptype(item))
+                    thesebmptypes.append(self._singlebmptype(item))
             else:
                 raise ValueError('unexpected type found in list')
         else:
             raise ValueError('unexpected type')
         return thesebmptypes
 
-    def __singlebmptype(self, bmpshortname=''):
+    def _singlebmptype(self, bmpshortname=''):
         bmptype = ''
         numtypes = 0
         if bmpshortname in self.efficiencyBMPs['BMPShortName'].values:
