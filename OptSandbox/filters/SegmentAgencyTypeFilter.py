@@ -10,20 +10,20 @@ class SegmentAgencyTypeFilter:
                                      OutOfCBWS, AgencyCode, Sector
         """
         # Loop through tables (lsnatural, lsdeveloped, lsagriculture, lsmanure, lsanimal (basecond for now), lsmanure)
-        self.lsnat = self._filter_from_options(includespec, tables,
-                                               prebmpls_df=tables.lsnatural.PreBmpLoadSourceNatural)
-        self.lsdev = self._filter_from_options(includespec, tables,
-                                               prebmpls_df=tables.lsdeveloped.PreBmpLoadSourceDeveloped)
-        self.lsagr = self._filter_from_options(includespec, tables,
-                                               prebmpls_df=tables.lsagriculture.PreBmpLoadSourceAgriculture)
-        self.lssep = self._filter_from_options(includespec, tables,
-                                               prebmpls_df=tables.lsseptic.SepticSystems)
+        self._lsnat = self._filter_from_options(includespec, tables,
+                                                prebmpls_df=tables.lsnatural.PreBmpLoadSourceNatural)
+        self._lsdev = self._filter_from_options(includespec, tables,
+                                                prebmpls_df=tables.lsdeveloped.PreBmpLoadSourceDeveloped)
+        self._lsagr = self._filter_from_options(includespec, tables,
+                                                prebmpls_df=tables.lsagriculture.PreBmpLoadSourceAgriculture)
+        self._lssep = self._filter_from_options(includespec, tables,
+                                                prebmpls_df=tables.lsseptic.SepticSystems)
         self.lsani = self._filter_animals_from_options(includespec,
                                                        prebmpls_df=tables.basecond.animalcounts)
         self.lsman = self._filter_animals_from_options(includespec,
                                                        prebmpls_df=tables.lsmanure.ManureTonsProduced)
 
-        self.lsndas = pd.concat([self.lsnat, self.lsdev, self.lsagr, self.lssep], ignore_index=True)
+        self.lsndas = pd.concat([self._lsnat, self._lsdev, self._lsagr, self._lssep], ignore_index=True)
 
     def _filter_animals_from_options(self, includespec, prebmpls_df):
         """Find the load sources in the specified SATs within a prebmpls_df
