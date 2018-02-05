@@ -22,24 +22,26 @@ class PossibilitiesMatrix:
         # Options are used to query the BaseCondition data and get the Load Sources for each segment-agency pair
         sat = SegmentAgencyTypeFilter(tables=tables, includespec=includespec)
 
+        # A sparse matrix is created for each Segment-Agency-Type table.
+        # For the Land table,   the specs are rows=seg-agency-sources X columns=BMPs.
+        # For the Animal table, the specs are rows=FIPS-animal-sources X columns=BMPs.
+        # For the Manure table, the specs are rows=FIPSto-FIPSfrom-animal-sources X columns=BMPs.
+        self.ndas = None
+        self.anim = None
+        self.manu = None
+        self._create_emptymatrices(sat, tables)
+
         #upper_bounds = self.__identifyhardupperbounds(sat)
 
-        # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
-        lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
-        self.ndas = _create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-        lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
-        self.anim = _create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-        lsman_indexed = sat.lsman.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
-        self.manu = _create_emptydf(row_indices=lsman_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-
-        # Get BMPs by LoadSource
+        # Get a series of all the LoadSources in this scenario
         allloadsources = pd.concat([self.ndas.index.get_level_values('LoadSource').to_series(),
                                     self.anim.index.get_level_values('LoadSource').to_series(),
                                     self.manu.index.get_level_values('LoadSource').to_series()],
                                    ignore_index=True).unique()
+        # A dictionary is generated with <keys:loadsource>, <values:eligible BMPs>.
         self.bmpdict = self._dict_of_bmps_by_loadsource(tables.srcdata, allloadsources)
 
-        # Get the list of BMPs available on the chosen load sources
+        # Nonempty markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
         self.geo_seg_source_bmps = None
         self.filter_from_sat(dataframe=self.ndas, srcdataobj=tables.srcdata)
         self.filter_from_sat(dataframe=self.anim, srcdataobj=tables.srcdata)
@@ -48,6 +50,15 @@ class PossibilitiesMatrix:
         self.ndas.to_csv('./output/testwrite_PossibilitiesMatrix_ndas.csv')
         self.anim.to_csv('./output/testwrite_PossibilitiesMatrix_anim.csv')
         self.manu.to_csv('./output/testwrite_PossibilitiesMatrix_manu.csv')
+
+    def _create_emptymatrices(self, sat, tables):
+        # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
+        lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
+        self.ndas = _create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
+        self.anim = _create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        lsman_indexed = sat.lsman.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
+        self.manu = _create_emptydf(row_indices=lsman_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
 
     def _dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
         """ Generate a dictionary of BMPs that are eligible for every load source """
@@ -109,18 +120,6 @@ class PossibilitiesMatrix:
 
         self.geo_seg_source_bmps['eligible_bmps'] = bmplistoflists
         print('total no. of eligible BMPs: <%d>' % totalnumbmps)
-
-        # Load Reduction BMPs
-        # TODO: Get data from
-
-        # Animal BMPs
-        # TODO: Get data from BaseCondition 'Animal Counts' spreadsheet
-
-        # Manure BMPs
-        # TODO: Get data from ManureTonsProduced spreadsheet
-
-        # Septic Systems
-        # TODO: Get data from BaseCondition 'Septic Systems' spreadsheet
 
         #print(self.geo_seg_source_bmps.head())
         #print(bmplist[0])
