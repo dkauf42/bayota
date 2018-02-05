@@ -14,7 +14,9 @@ class IncludeSpec:
         Attributes
         ----------
         geo : `pandas dataframe`
-            lrsegs, counties, states, etc. to be included in this Scenario (Pandas.DataFrame).
+            geographic elements to be included in this Scenario. The following columns are included:
+            LRSeg, FIPS, CountyName, StateAbbreviation, OutOfCBWS,\
+            ChesapeakeBaySegment, MajorBasin, MinorBasin, StateBasin.
 
         agency : `pandas dataframe`
             agencies to be included in this Scenario (Pandas.DataFrame).
