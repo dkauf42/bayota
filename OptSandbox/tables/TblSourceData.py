@@ -30,16 +30,17 @@ class SourceData(ExcelDataTable):
 
     def get_list_of_all_bmps(self):
         """
-        Don't use the list generated from the "BMP Definitions" sheet, i.e.
-        >> bmplist1 = self.bmpDefinitions['BMPShortName']
-        ...because it is missing the following BMPs:
-        {'Biofilters', 'DairyPrecFeed', 'LitAmend', 'MTT19', 'AWMS', 'MTT18', 'ImperviousDisconnection', 'MTT5',
-         'MTT11', 'MTT16', 'MTT4', 'MortalityComp', 'MTT1', 'MTT10', 'ManureTransport', 'MTT9', 'MTT14', 'MTT6',
-         'CSOConnect', 'LagoonCovers', 'MTT7', 'MTT17', 'MTT13', 'MTT3', 'MTT12', 'MTT2', 'MTT15', 'MTT8'}
+        Note:
+            Don't use the list generated from the "BMP Definitions" sheet, i.e.
+            >> bmplist1 = self.bmpDefinitions['BMPShortName']
+            ...because it is missing the following BMPs:
+            {'Biofilters', 'DairyPrecFeed', 'LitAmend', 'MTT19', 'AWMS', 'MTT18', 'ImperviousDisconnection', 'MTT5',
+            'MTT11', 'MTT16', 'MTT4', 'MortalityComp', 'MTT1', 'MTT10', 'ManureTransport', 'MTT9', 'MTT14', 'MTT6',
+            'CSOConnect', 'LagoonCovers', 'MTT7', 'MTT17', 'MTT13', 'MTT3', 'MTT12', 'MTT2', 'MTT15', 'MTT8'}
 
-         ^ This was checked with the following code:
-         >> print(set(bmplist1).symmetric_difference(set(bmplist2)))
-         """
+            ^ This was checked with the following code:
+            >> print(set(bmplist1).symmetric_difference(set(bmplist2)))
+        """
         bmplist2 = self.sourcegrps['BmpShortName'].unique()
 
         return bmplist2
