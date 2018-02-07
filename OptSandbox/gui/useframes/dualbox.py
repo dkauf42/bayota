@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 class DualBox(tk.Frame):
     def __init__(self, parent, list_items):
+        """Two side-by-side listboxes are created with which items can be moved from one to the other"""
         tk.Frame.__init__(self, parent)
         self.parent = parent
 
