@@ -56,14 +56,14 @@ class MainWindow(tk.Frame):
 
     def close_and_submit(self):
         self.closedbyuser = True
-        print('MainWindow.close_and_submit: closing and submitting...')
+        #print('MainWindow.close_and_submit: closing and submitting...')
 
         self.parent.results = self.left_frame.results
         self.quit()
         
     def on_mainwindow_closing(self):
         self.closedbyuser = True
-        print('MainWindow.on_mainwindow_closing: closing...')
+        #print('MainWindow.on_mainwindow_closing: closing...')
 
         self.destroy()
         self.parent.destroy()
