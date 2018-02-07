@@ -14,12 +14,10 @@ class TblLoader:
     def __init__(self):
         """Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
 
-        Attributes
-        ----------
-        tempdir : `str`
-            location where table objects are written to file to speed up re-runs
-        """
+        Attributes:
+            tempdir (str): location where table objects are written to file to speed up re-runs
 
+        """
         self.tempdir = './temp/'
 
         self.srcdata = None
@@ -74,9 +72,11 @@ class TblLoader:
 
     def agencytranslate_fromcodes(self, codes):
         """Convert an AgencyCode to its Agency Name
+
         Example:
             >> .agencytranslate('FWS')
             returns 'US Fish and Wildlife Service'
+
         """
         df = self.srcdata.agencies
         dict_agencycodekeys = dict(zip(df.AgencyCode, df.Agency))
@@ -89,6 +89,7 @@ class TblLoader:
         Example:
             >> .agencytranslate('Department of Defense')
             returns 'DOD'
+
         """
         df = self.srcdata.agencies
         dict_agencykeys = dict(zip(df.Agency, df.AgencyCode))
