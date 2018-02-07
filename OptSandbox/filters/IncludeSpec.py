@@ -4,22 +4,18 @@ import pandas as pd
 class IncludeSpec:
     def __init__(self, optionloaderobj=None, tables=None):
         """Determine the complete list of geographic and non-geographic entities to be included in this Scenario
-        Parameters
-        ----------
-        optionloaderobj : `obj`
 
-        tables : `obj`
+        Parameters:
+            optionloaderobj (obj):
+            tables (obj):
 
+        Attributes:
+            geo (pandas dataframe): geographic elements to be included in this Scenario.
+                The following columns are included:
+                [LRSeg, FIPS, CountyName, StateAbbreviation, OutOfCBWS,
+                ChesapeakeBaySegment, MajorBasin, MinorBasin, StateBasin.]
+            agency (pandas dataframe): agencies to be included in this Scenario (Pandas.DataFrame).
 
-        Attributes
-        ----------
-        geo : `pandas dataframe`
-            geographic elements to be included in this Scenario. The following columns are included:
-            LRSeg, FIPS, CountyName, StateAbbreviation, OutOfCBWS,\
-            ChesapeakeBaySegment, MajorBasin, MinorBasin, StateBasin.
-
-        agency : `pandas dataframe`
-            agencies to be included in this Scenario (Pandas.DataFrame).
         """
 
         self.geo = None
@@ -35,8 +31,8 @@ class IncludeSpec:
         with inclusive Series that can be used as boolean masks on other Series.
 
         Args:
-            optionloaderobj: An open OptionLoader instance.
-            tables: A TblLoader instance.
+            optionloaderobj (obj): An open OptionLoader instance.
+            tables (obj): A TblLoader instance.
         """
         geodf = tables.srcdata.georefs
 
@@ -69,8 +65,8 @@ class IncludeSpec:
         with inclusive Series that can be used as boolean masks on other Series
 
         Args:
-            optionloaderobj: An open OptionLoader instance.
-            tables: A TblLoader instance.
+            optionloaderobj (obj): An open OptionLoader instance.
+            tables (obj): A TblLoader instance.
         """
         agencydf = tables.srcdata.agencies
         # Generate boolean mask for the dataframe based on the option specifications
