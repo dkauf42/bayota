@@ -31,8 +31,8 @@ class ExcelDataTable:
             (pandas dataframe): a subset of the original table
 
         Example:
-            sheetabbrev='georefs', getcolumn='LandRiverSegment', by='CountyName', equalto='Anne Arundel'
-            sheetabbrev='LSacres', getcolumn='PreBMPAcres', by='LoadSource', equalto='Ag Open Space'
+            | sheetabbrev='georefs', getcolumn='LandRiverSegment', by='CountyName', equalto='Anne Arundel'
+            | sheetabbrev='LSacres', getcolumn='PreBMPAcres', by='LoadSource', equalto='Ag Open Space'
 
         """
         df = self[sheetabbrev]
