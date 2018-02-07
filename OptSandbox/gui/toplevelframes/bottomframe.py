@@ -9,8 +9,6 @@ class BottomFrame(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.results = None
-
         self.create_bottomframes()
 
     def create_bottomframes(self):
