@@ -1,14 +1,9 @@
-import os
 from collections import namedtuple
-
 import tkinter as tk
 import tkinter.ttk as ttk
 
 from gui.useframes.text_box import TextBox
 from gui.useframes.dualbox import DualBox
-    
-# File Paths are specified.
-script_dir = os.path.dirname(__file__)  # <-- absolute dir of this script
 
 
 class LeftFrame(tk.Frame):
@@ -36,13 +31,13 @@ class LeftFrame(tk.Frame):
 
         self.columnconfigure(0, minsize=100)
         self.columnconfigure(1, minsize=100)
-        self.columnconfigure(2, minsize=300)
+        self.columnconfigure(2, minsize=100)
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
         # Text Label
         self.textbox = TextBox(self)
-        self.textbox.grid(row=0, column=0, sticky='we')
+        self.textbox.grid(row=0, column=1, sticky='we')
         self.textbox.displayinfo('Optimization Options')
 
         # Text Labels
