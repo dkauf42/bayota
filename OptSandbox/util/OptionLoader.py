@@ -1,34 +1,24 @@
 import pandas as pd
 
-# === Option Loading ===
-
 
 class OptionLoader:
     def __init__(self, optionsfile='', srcdataobj=None):
-        """Loads an 'options' file that represents the user choices for a particular scenario
+        """Load an 'options' file that represents the user choices for a particular scenario
 
-        Parameters
-        ----------
-        optionsfile : `str`
-            file path of the 'options' csv file for the user scenario
+        Parameters:
+            optionsfile (str): file path of the 'options' csv file for the user scenario
+            srcdataobj (obj): a SourceData object
 
-        srcdataobj : `obj`
-            a SourceData object
+        Attributes:
+            options (pandas dataframe): values specified in the options file
+            headers (list): names of each type of option (headers in the options file)
 
-        Attributes
-        ----------
-        options : `pandas dataframe`
-            values specified in the options file
+        Note:
+            The options file should have the following columns:
+            [BaseCondition,LandRiverSegment,CountyName,StateAbbreviation,
+            StateBasin,OutOfCBWS,AgencyCode]
 
-        headers : `list`
-            names of each type of option (headers in the options file)
-
-        Notes
-        -----
-        The options file should have the following columns:
-            - BaseCondition,LandRiverSegment,CountyName,StateAbbreviation,StateBasin,OutOfCBWS,AgencyCode
-
-        Any blank options should be left fully blank
+            Any blank options should be left fully blank
 
         """
         self.srcdataobj = srcdataobj
@@ -39,9 +29,11 @@ class OptionLoader:
         print('<Option Validation and Loading Complete>')
 
     def _validateoptions(self):
+        """Check that the options specified are valid"""
+        oh = self.headers
         # headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
         #           OutOfCBWS, AgencyCode, Sector
-        oh = self.headers
+
         for h in oh:
             optionscolumn = self.options[h]
             if (optionscolumn[0] == 'all') | optionscolumn.isnull().values.all():
