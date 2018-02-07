@@ -2,7 +2,7 @@ from collections import namedtuple
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from gui.useframes.text_box import TextBox
+#from gui.useframes.text_box import TextBox
 from gui.useframes.dualbox import DualBox
 
 
@@ -14,7 +14,7 @@ class LeftFrame(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.textbox = None
+        #self.textbox = None
         self.entry_optname = None
         self.entry_optdesc = None
 
@@ -35,10 +35,10 @@ class LeftFrame(tk.Frame):
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # Text Label
-        self.textbox = TextBox(self)
-        self.textbox.grid(row=0, column=1, sticky='we')
-        self.textbox.displayinfo('Optimization Options')
+        # # Text Label
+        # self.textbox = TextBox(self)
+        # self.textbox.grid(row=0, column=1, sticky='we')
+        # self.textbox.displayinfo('Optimization Options')
 
         # Text Labels
         tk.Label(self, text="Optimization Name", anchor='e').grid(row=1, column=0, sticky=tk.E)

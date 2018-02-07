@@ -3,6 +3,7 @@ import sys
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from gui.toplevelframes.topframe import TopFrame
 from gui.toplevelframes.leftframe import LeftFrame
 from gui.toplevelframes.rightframe import RightFrame
 
@@ -25,11 +26,13 @@ class MainWindow(tk.Frame):
         self.closedbyuser = False
         
         # GUI frames
+        self.top_frame = TopFrame(self)
         self.left_frame = LeftFrame(self)
         self.right_frame = RightFrame(self)  #, width=200, height=120)
 
+        self.top_frame.pack(side='top', fill='x', expand=True)
         self.left_frame.pack(side='left', fill='both', expand=True)
-        self.right_frame.pack(side='left', expand=True)
+        self.right_frame.pack(side='left', fill='both', expand=True)
         
         # Set up keyboard control of the window
         self.parent.bind('<Escape>', self.on_mainwindow_closing)
