@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-
-"""
-Display a tkinter window to hold other frames
-"""
-import os
 import sys
 
 import tkinter as tk
@@ -11,12 +5,6 @@ import tkinter.ttk as ttk
 
 from gui.toplevelframes.leftframe import LeftFrame
 from gui.toplevelframes.rightframe import RightFrame
-
-import __main__
-
-# File Paths are specified.
-main_dir = os.path.dirname(__main__.__file__)  # <-- absolute dir of the main script
-script_dir = os.path.dirname(__file__)  # <-- absolute dir of this script
 
 
 class MainWindow(tk.Frame):
@@ -38,10 +26,10 @@ class MainWindow(tk.Frame):
         
         # GUI frames
         self.left_frame = LeftFrame(self)
-        self.right_frame = RightFrame(self, width=960, height=120)
-        
-        self.right_frame.pack(side='bottom', expand=True)
+        self.right_frame = RightFrame(self)  #, width=200, height=120)
+
         self.left_frame.pack(side='left', fill='both', expand=True)
+        self.right_frame.pack(side='left', expand=True)
         
         # Set up keyboard control of the window
         self.parent.bind('<Escape>', self.on_mainwindow_closing)
@@ -61,7 +49,7 @@ class MainWindow(tk.Frame):
         self.parent.results = self.left_frame.results
         self.quit()
         
-    def on_mainwindow_closing(self):
+    def on_mainwindow_closing(self, event=None):
         self.closedbyuser = True
         #print('MainWindow.on_mainwindow_closing: closing...')
 
