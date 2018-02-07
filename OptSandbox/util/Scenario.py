@@ -5,15 +5,38 @@ from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
 
+import tkinter as tk
+from gui.toplevelframes.mainwindow import MainWindow
+
 
 class Scenario:
     def __init__(self, optionsfile=''):
         """A wrapper to generate and hold the metadata for a scenario
 
-        :param optionsfile:
+        Parameters:
+            optionsfile (str)
+
+        Note:
+            This class manages the sequence of events from user-input to
+            initial scenario generation
+
         """
         # Load the Source Data and Base Condition tables
         self.tables = TblLoader()
+
+        """ TO RUN WITH A GUI """
+        """
+        # Create a tkinter window for the mainwindow
+        self.root = tk.Tk()
+        # Start the GUI
+        self.run_gui()
+        self.root.mainloop()
+        if not hasattr(self.root, 'results'):
+            raise ValueError('No options specified.')
+        else:
+            print(self.root.results)
+        raise ValueError('Scenario: temp halt')
+        """
 
         # The scenario options (particular geographic region(s), agencies, etc.) are loaded for this scenario.
         self.options = OptionLoader(optionsfile=optionsfile, srcdataobj=self.tables.srcdata)
@@ -34,8 +57,15 @@ class Scenario:
         self.possmatrix.anim.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
         self.possmatrix.manu.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file
 
-        inputobj = InputsToCast(self.possmatrix)
+        inputobj = InputsToCast(self.possmatrix, tables=self.tables)
         inputobj.matrix_to_table()
 
         print('<Scenario Loading Complete>')
 
+    def run_gui(self):
+        with MainWindow(self.root) as mainwindow:
+            mainwindow.pack(side="top", fill="both", expand=True)
+            self.root.title("Optimization Options")
+
+    def clean_up(self):
+        print('Sequencer.clean_up: first line')
