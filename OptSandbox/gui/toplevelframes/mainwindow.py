@@ -1,9 +1,10 @@
 import sys
-
+from collections import namedtuple
 import tkinter as tk
 import tkinter.ttk as ttk
 
 from gui.toplevelframes.topframe import TopFrame
+from gui.toplevelframes.bottomframe import BottomFrame
 from gui.toplevelframes.leftframe import LeftFrame
 from gui.toplevelframes.rightframe import RightFrame
 
@@ -24,13 +25,16 @@ class MainWindow(tk.Frame):
         style.configure("red.Horizontal.TProgressbar", foreground='blue', background='blue')
 
         self.closedbyuser = False
+        self.results = None
         
         # GUI frames
         self.top_frame = TopFrame(self)
+        self.bottom_frame = BottomFrame(self)
         self.left_frame = LeftFrame(self)
-        self.right_frame = RightFrame(self)  #, width=200, height=120)
+        self.right_frame = RightFrame(self)
 
         self.top_frame.pack(side='top', fill='x', expand=True)
+        self.bottom_frame.pack(side='bottom', fill='x', expand=True)
         self.left_frame.pack(side='left', fill='both', expand=True)
         self.right_frame.pack(side='left', fill='both', expand=True)
         
@@ -46,10 +50,23 @@ class MainWindow(tk.Frame):
         return False
 
     def close_and_submit(self):
+        Optmeta = namedtuple('metadata', 'name description baseyear basecond '
+                                         'wastewater costprofile agency sector scale area')
+        self.results = Optmeta(name=self.left_frame.entry_optname.get(),
+                               description=self.left_frame.entry_optdesc.get(),
+                               baseyear=self.right_frame.optionsbox_baseyr.get(),
+                               basecond=self.right_frame.optionsbox_basecond.get(),
+                               wastewater=self.right_frame.optionsbox_wastewtr.get(),
+                               costprofile=self.right_frame.optionsbox_costprofile.get(),
+                               agency=self.left_frame.optionsbox_agency.get(),
+                               sector=self.left_frame.optionsbox_sector.get(),
+                               scale=self.left_frame.optionsbox_geoscale.get(),
+                               area=self.left_frame.geodualbox.get_selection())
+
         self.closedbyuser = True
         #print('MainWindow.close_and_submit: closing and submitting...')
 
-        self.parent.results = self.left_frame.results
+        self.parent.results = self.results
         self.quit()
         
     def on_mainwindow_closing(self, event=None):
