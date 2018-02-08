@@ -1,4 +1,3 @@
-from scipy import sparse
 import pandas as pd
 import numpy as np
 from tqdm import tqdm  # Loop progress indicator module
@@ -44,10 +43,6 @@ class PossibilitiesMatrix:
         # get the LoadSources (along with their maxes) for each segment-agency pair
         sat = SegmentAgencyTypeFilter(tables=tables, includespec=includespec)
 
-        #  A series of possible FIPSFrom and FIPSTo combinations is generated
-        fips_pairs = self._create_possibleFIPSpairs(includespec=includespec)
-        # TODO: Delete this _create_possibleFIPSpairs method, since the next method does it?
-
         # A sparse matrix is created for each Segment-Agency-Type table.
         # For the Land table,   the specs are rows=seg-agency-sources X columns=BMPs.
         # For the Animal table, the specs are rows=FIPS-animal-sources X columns=BMPs.
@@ -55,7 +50,7 @@ class PossibilitiesMatrix:
         self.ndas = None
         self.anim = None
         self.manu = None
-        self._create_emptymatrices(sat, tables, fips_pairs)
+        self._create_emptymatrices(sat, tables)
 
         #  TODO: upper_bounds = self._identifyhardupperbounds(sat)
 
@@ -78,20 +73,7 @@ class PossibilitiesMatrix:
         self.anim.to_csv('./output/testwrite_PossibilitiesMatrix_anim.csv')
         self.manu.to_csv('./output/testwrite_PossibilitiesMatrix_manu.csv')
 
-    def _create_possibleFIPSpairs(self, includespec):
-        """ A series of possible FIPSFrom and FIPSTo combinations is generated """
-
-        fips_list = includespec.geo.FIPS.unique().tolist()
-        fips_list.append(98765)
-        #fips_list.append(12345)
-        fips_permutation_pairs = [p for p in product(fips_list, repeat=2)]
-
-        newdf = pd.DataFrame()
-        for n, col in enumerate(['FIPSFrom', 'FIPSTo']):
-            newdf[col] = [i[n] for i in fips_permutation_pairs]
-        return newdf
-
-    def _create_emptymatrices(self, sat, tables, fips_pairs):
+    def _create_emptymatrices(self, sat, tables):
         # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
         lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
         self.ndas = _create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
