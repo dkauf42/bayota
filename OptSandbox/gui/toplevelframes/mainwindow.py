@@ -51,13 +51,15 @@ class MainWindow(tk.Frame):
 
     def close_and_submit(self):
         Optmeta = namedtuple('metadata', 'name description baseyear basecond '
-                                         'wastewater costprofile agency sector scale area')
+                                         'wastewater costprofile annualbmps '
+                                         'agency sector scale area')
         self.results = Optmeta(name=self.left_frame.entry_optname.get(),
                                description=self.left_frame.entry_optdesc.get(),
                                baseyear=self.right_frame.optionsbox_baseyr.get(),
                                basecond=self.right_frame.optionsbox_basecond.get(),
                                wastewater=self.right_frame.optionsbox_wastewtr.get(),
                                costprofile=self.right_frame.optionsbox_costprofile.get(),
+                               annualbmps=self.right_frame.button_annualbmps.val.get(),
                                agency=self.left_frame.optionsbox_agency.get(),
                                sector=self.left_frame.optionsbox_sector.get(),
                                scale=self.left_frame.optionsbox_geoscale.get(),

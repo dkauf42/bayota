@@ -14,6 +14,7 @@ class RightFrame(tk.Frame):
         self.optionsbox_basecond = None
         self.optionsbox_wastewtr = None
         self.optionsbox_costprofile = None
+        self.button_annualbmps = None
         
         self.create_rightframes()
         
@@ -55,6 +56,13 @@ class RightFrame(tk.Frame):
         self.optionsbox_costprofile = self.my_dropdown(options_list)
         self.optionsbox_costprofile.grid(row=4, column=1, sticky='we')
         self.optionsbox_costprofile.current(0)
+
+        # Check Button (Annual BMPs yes/no, or only Structural BMPs)
+        var = tk.IntVar()
+        self.button_annualbmps = tk.Checkbutton(self, text='Tweak Annual BMPs or build from base',
+                                                variable=var, onvalue=1, offvalue=0)
+        self.button_annualbmps.grid(row=5, column=1, sticky='w')
+        self.button_annualbmps.val = var
 
     def my_dropdown(self, optionslist):
         variable = tk.StringVar(self)
