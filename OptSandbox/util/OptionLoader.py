@@ -2,11 +2,12 @@ import pandas as pd
 
 
 class OptionLoader:
-    def __init__(self, optionsfile='', srcdataobj=None):
+    def __init__(self, srcdataobj=None):
         """Load an 'options' file that represents the user choices for a particular scenario
 
+        Use the load_from_csv or [] method to populate the options for this optimization instance.
+
         Parameters:
-            optionsfile (str): file path of the 'options' csv file for the user scenario
             srcdataobj (obj): a SourceData object
 
         Attributes:
@@ -22,6 +23,17 @@ class OptionLoader:
 
         """
         self.srcdataobj = srcdataobj
+
+        self.options = None
+        self.headers = None
+
+    def load_from_csv(self, optionsfile):
+        """One of two load methods
+
+        Parameters:
+            optionsfile (str): file path of the 'options' csv file for the user scenario
+
+        """
         self.options = pd.read_table(optionsfile, sep=',', header=0)
         self.headers = list(self.options.columns.values)
 
