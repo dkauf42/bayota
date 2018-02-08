@@ -73,42 +73,6 @@ class PossibilitiesMatrix:
         self.anim.to_csv('./output/testwrite_PossibilitiesMatrix_anim.csv')
         self.manu.to_csv('./output/testwrite_PossibilitiesMatrix_manu.csv')
 
-    def _create_emptymatrices(self, sat, tables):
-        # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
-        lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
-        self.ndas = _create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-        lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
-        self.anim = _create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-
-        #  All the possible FIPSFrom and FIPSTo combinations are generated.
-        newdf = expand_grid({'FIPSFrom': sat.lsman.FIPS.unique(),
-                             'FIPSTo': sat.lsman.FIPS.unique(),
-                             'AnimalName': sat.lsman.AnimalName.unique(),
-                             'LoadSource': sat.lsman.LoadSource.unique()})
-        newdf_indexed = newdf.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource']).copy()
-        newdf_indexed['Amount'] = np.nan  # add Amount as a normal column
-
-        self.manu = _create_emptydf(row_indices=newdf_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-
-    def _dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
-        """ Generate a dictionary of BMPs that are eligible for every load source """
-        ls_to_bmp_dict = {}
-        for ls in load_sources:
-            # Get the Load Source groups that this Load source is in.
-            loadsourcegroups = srcdataobj.get(sheetabbrev='sourcegrpcomponents', getcolumn='LoadSourceGroup',
-                                              by='LoadSource', equalto=ls)  # pandas.core.series.Series
-            bmplist = []  # Create a list to store the data
-            for x in loadsourcegroups:  # iterate through the load source groups
-                # Get the BMPs that can be applied on this load source group
-                thesebmps = srcdataobj.get(sheetabbrev='sourcegrps', getcolumn='BmpShortName',
-                                           by='LoadSourceGroup', equalto=x).tolist()
-                bmplist += thesebmps
-
-            bmplist = self.removedups(bmplist)
-            ls_to_bmp_dict[ls] = bmplist
-
-        return ls_to_bmp_dict
-
     def filter_from_sat(self, dataframe, srcdataobj):
         """Generate nonNaN markers for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
         """
@@ -163,4 +127,40 @@ class PossibilitiesMatrix:
             if num not in final_list:
                 final_list.append(num)
         return final_list
+
+    def _create_emptymatrices(self, sat, tables):
+        # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
+        lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
+        self.ndas = _create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
+        self.anim = _create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+
+        #  All the possible FIPSFrom and FIPSTo combinations are generated.
+        newdf = expand_grid({'FIPSFrom': sat.lsman.FIPS.unique(),
+                             'FIPSTo': sat.lsman.FIPS.unique(),
+                             'AnimalName': sat.lsman.AnimalName.unique(),
+                             'LoadSource': sat.lsman.LoadSource.unique()})
+        newdf_indexed = newdf.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource']).copy()
+        newdf_indexed['Amount'] = np.nan  # add Amount as a normal column
+
+        self.manu = _create_emptydf(row_indices=newdf_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+
+    def _dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
+        """ Generate a dictionary of BMPs that are eligible for every load source """
+        ls_to_bmp_dict = {}
+        for ls in load_sources:
+            # Get the Load Source groups that this Load source is in.
+            loadsourcegroups = srcdataobj.get(sheetabbrev='sourcegrpcomponents', getcolumn='LoadSourceGroup',
+                                              by='LoadSource', equalto=ls)  # pandas.core.series.Series
+            bmplist = []  # Create a list to store the data
+            for x in loadsourcegroups:  # iterate through the load source groups
+                # Get the BMPs that can be applied on this load source group
+                thesebmps = srcdataobj.get(sheetabbrev='sourcegrps', getcolumn='BmpShortName',
+                                           by='LoadSourceGroup', equalto=x).tolist()
+                bmplist += thesebmps
+
+            bmplist = self.removedups(bmplist)
+            ls_to_bmp_dict[ls] = bmplist
+
+        return ls_to_bmp_dict
 
