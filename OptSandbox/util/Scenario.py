@@ -39,7 +39,8 @@ class Scenario:
         """
 
         # The scenario options (particular geographic region(s), agencies, etc.) are loaded for this scenario.
-        self.options = OptionLoader(optionsfile=optionsfile, srcdataobj=self.tables.srcdata)
+        self.options = OptionLoader(srcdataobj=self.tables.srcdata)
+        self.options.load_from_csv(optionsfile=optionsfile)
 
         # Geographic region is extracted from SourceData, so the list of lrsegs (etc.) can be used as a boolean mask
         self.includespec = IncludeSpec(optionloaderobj=self.options, tables=self.tables)
