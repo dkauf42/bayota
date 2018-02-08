@@ -40,6 +40,25 @@ class OptionLoader:
         self._validateoptions()  # check to make sure options are present in the Source Data or BaseCondition files
         print('<Option Validation and Loading Complete>')
 
+    def validoptions(self, argument):
+        """Get list of valid option names to be specified for a particular option type
+
+        Parameters:
+            argument (str): name of the option type (e.g. "StateBasin" or "AgencyCode")
+
+        """
+        switcher = {
+                    'BaseCondition': "zero",  # TODO: include checks for valid basecondition options?
+                    'LandRiverSegment': self.srcdataobj.getallnames('LandRiverSegment'),
+                    'CountyName': self.srcdataobj.getallnames('CountyName'),
+                    'StateAbbreviation': self.srcdataobj.getallnames('StateAbbreviation'),
+                    'StateBasin': self.srcdataobj.getallnames('StateBasin'),
+                    'OutOfCBWS': ('N', 'Y'),
+                    'AgencyCode': self.srcdataobj.getallnames('AgencyCode'),
+                    'Sector': self.srcdataobj.getallnames('Sector')
+                   }
+        return switcher[argument]
+
     def _validateoptions(self):
         """Check that the options specified are valid"""
         oh = self.headers
@@ -56,17 +75,3 @@ class OptionLoader:
                 vo = self.validoptions(h)
                 if ~optionscolumn.dropna().isin(vo).all():
                     raise LookupError('An option specified in the "%s" column of the options file is unrecognized' % h)
-
-    def validoptions(self, argument):
-        """Get list of valid option names to be specified for a particular option type"""
-        switcher = {
-                    'BaseCondition': "zero",  # TODO: include checks for valid basecondition options?
-                    'LandRiverSegment': self.srcdataobj.getallnames('LandRiverSegment'),
-                    'CountyName': self.srcdataobj.getallnames('CountyName'),
-                    'StateAbbreviation': self.srcdataobj.getallnames('StateAbbreviation'),
-                    'StateBasin': self.srcdataobj.getallnames('StateBasin'),
-                    'OutOfCBWS': ('N', 'Y'),
-                    'AgencyCode': self.srcdataobj.getallnames('AgencyCode'),
-                    'Sector': self.srcdataobj.getallnames('Sector')
-                   }
-        return switcher[argument]
