@@ -46,6 +46,7 @@ class PossibilitiesMatrix:
 
         #  A series of possible FIPSFrom and FIPSTo combinations is generated
         fips_pairs = self._create_possibleFIPSpairs(includespec=includespec)
+        # TODO: Delete this _create_possibleFIPSpairs method, since the next method does it?
 
         # A sparse matrix is created for each Segment-Agency-Type table.
         # For the Land table,   the specs are rows=seg-agency-sources X columns=BMPs.
@@ -97,12 +98,6 @@ class PossibilitiesMatrix:
         lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
         self.anim = _create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
 
-        #  lsman_indexed.rename(columns={"FIPS": "FIPSFrom"}, inplace=True)
-        lsman_indexed = sat.lsman.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
-        #print(fips_pairs['FIPSTo'])
-        #lsman_indexed['FIPSTo'] = np.nan  # First, add FIPSTo as a normal column
-        #lsman_indexed.set_index('FIPSTo', append=True, inplace=True)  # then append FIPSTo to the current index
-
         #  All the possible FIPSFrom and FIPSTo combinations are generated.
         newdf = expand_grid({'FIPSFrom': sat.lsman.FIPS.unique(),
                              'FIPSTo': sat.lsman.FIPS.unique(),
@@ -111,14 +106,7 @@ class PossibilitiesMatrix:
         newdf_indexed = newdf.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource']).copy()
         newdf_indexed['Amount'] = np.nan  # add Amount as a normal column
 
-        # print(newdf[['FIPSFrom', 'FIPSTo']])
-        #   newdf_indexed.to_csv('testwrite_expandgrid_FIPS.csv')
-        # print(lsman_indexed.index.levels)
-        #lsman_indexed.index.rename(['FIPSFrom', 'AnimalName', 'LoadSource', 'FIPSTo'])
-        #print(newdf_indexed.head())
-        #print(newdf_indexed.index.levels)
         self.manu = _create_emptydf(row_indices=newdf_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-        # print(self.manu.head())
 
     def _dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
         """ Generate a dictionary of BMPs that are eligible for every load source """
@@ -184,11 +172,6 @@ class PossibilitiesMatrix:
         #print(self.geo_seg_source_bmps.head())
         #print(bmplist[0])
         self.geo_seg_source_bmps.to_csv('./output/testwrite_PossibilitiesMatrix_geosegsource_bmps.csv')
-
-    def return_sparse(self):  # TODO: unused method, remove.
-        sparsedf = sparse.coo_matrix(self.data.fillna(0))
-        print('Density of sparse matrix is %f' % (sparsedf.getnnz() / (sparsedf.shape[0] * sparsedf.shape[1])))
-        return sparsedf
 
     @staticmethod
     def removedups(listwithduplicates):
