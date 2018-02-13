@@ -26,8 +26,8 @@ class TopFrame(tk.Frame):
 
         # Text Label
         self.textbox = tk.Label(self,
-                                text='Optimization Options',
-                                bg="white",
+                                text='Optimization Instance Options',
+                                bg="bisque",
                                 fg="dark blue",
                                 font=('Helvetica Bold', 22),
                                 justify='center',
