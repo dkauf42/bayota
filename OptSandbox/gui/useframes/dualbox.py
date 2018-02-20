@@ -63,7 +63,6 @@ class DualBox(tk.Frame):
                 if item not in original_chosen_items:
                     selected_minus_duplicates.append(item)
             self.chosen.setlist(original_chosen_items + tuple(selected_minus_duplicates))
-
             # ..and remove from left-side box
             original_unselected_items = self.listBox.get()
             unselected_minus_selected = []
@@ -84,7 +83,6 @@ class DualBox(tk.Frame):
                 else:
                     selected_to_remove.append(item)
             self.chosen.setlist(original_minus_selected)
-
             # ..and add to left-side box
             original_unselected_items = self.listBox.get()
             list_items = sorted(original_unselected_items + tuple(selected_to_remove), key=str.lower)
@@ -94,7 +92,6 @@ class DualBox(tk.Frame):
         original_unselected_items = self.listBox.get()
         original_chosen_items = self.chosen.get(0, tk.END)
         self.chosen.clear()
-
         # ..and add to left-side box
         list_items = sorted(original_unselected_items + original_chosen_items, key=str.lower)
         self.listBox.setlist(list_items)
