@@ -31,11 +31,17 @@ class FreeParamFrame(tk.Frame):
         options_list = ['All Agencies', 'NONFED', 'FWS', '...']
         self.agencydualbox = DualBox(self, options_list)
         self.agencydualbox.grid(row=2, column=1, sticky='we')
-
-        # Dual Listbox (Sectors)
+        # (Sectors)
         options_list = ['All Sectors', 'Developed', 'Natural', '...']
         self.sectordualbox = DualBox(self, options_list)
         self.sectordualbox.grid(row=3, column=1, sticky='we')
+
+    def update_box_options(self, tablequeryobj=None):
+        mylist = tablequeryobj.get_agency_names()
+        self.agencydualbox.set_new_left_side_items(mylist)
+
+        mylist = tablequeryobj.get_sector_names()
+        self.sectordualbox.set_new_left_side_items(mylist)
 
     def my_dropdown(self, optionslist):
         variable = tk.StringVar(self)
