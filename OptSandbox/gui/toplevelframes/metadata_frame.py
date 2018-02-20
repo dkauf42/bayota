@@ -17,9 +17,11 @@ class MetadataFrame(tk.Frame):
         self.optionsbox_wastewtr = None
         self.optionsbox_costprofile = None
         self.optionsbox_geoscale = None
-        self.geodualbox = None
+        self.geoareabox = None
 
         self.create_subframes()
+
+        self.tablequeryobj = None
 
     def create_subframes(self):
         self.columnconfigure(0, minsize=50)
@@ -44,40 +46,59 @@ class MetadataFrame(tk.Frame):
         self.entry_optdesc = self.my_textentry(defaultvalue='TestOneDescription')
         self.entry_optdesc.grid(row=2, column=1, sticky=tk.W)
 
-        # Drop Down Menu (Base Year)
+        # Drop Down Menus (Base Year)
         options_list = ["N/A", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002"]
         self.optionsbox_baseyr = self.my_dropdown(options_list)
         self.optionsbox_baseyr.grid(row=3, column=1, sticky='we')
         self.optionsbox_baseyr.current(0)
-
-        # Drop Down Menu (Base Condition)
+        # (Base Condition)
         options_list = ["Base Progress 0000", "Base Progress 0001", "Base Progress 0002", "Base Progress 0003"]
         self.optionsbox_basecond = self.my_dropdown(options_list)
         self.optionsbox_basecond.grid(row=4, column=1, sticky='we')
         self.optionsbox_basecond.current(0)
-
-        # Drop Down Menu (Wastewater Data)
+        # (Wastewater Data)
         options_list = ["N/A", "Wastewater A", "Wastewater B", "Wastewater C", "Wastewater D"]
         self.optionsbox_wastewtr = self.my_dropdown(options_list)
         self.optionsbox_wastewtr.grid(row=5, column=1, sticky='we')
         self.optionsbox_wastewtr.current(0)
-
-        # Drop Down Menu (Cost Profile)
+        # (Cost Profile)
         options_list = ["N/A", "Profile AAAA", "Profile BBBB", "Profile CCCC", "Profile DDDD", "Profile EEEE"]
         self.optionsbox_costprofile = self.my_dropdown(options_list)
         self.optionsbox_costprofile.grid(row=6, column=1, sticky='we')
         self.optionsbox_costprofile.current(0)
-
-        # Drop Down Menu (Geographic Scale)
+        # (Geographic Scale)
         options_list = ["County", "Large Scale", "Medium Scale", "Small Scale"]
         self.optionsbox_geoscale = self.my_dropdown(options_list)
         self.optionsbox_geoscale.grid(row=7, column=1, sticky='we')
         self.optionsbox_geoscale.current(0)
+        self.optionsbox_geoscale.bind("<<ComboboxSelected>>", self.update_geoareabox_options)
 
         # Dual Listbox
         options_list = ['Anne Arundel', 'Talbot', 'Caroline', 'Lancaster']
-        self.geodualbox = DualBox(self, options_list)
-        self.geodualbox.grid(row=8, column=1, sticky='we')
+        self.geoareabox = DualBox(self, options_list)
+        self.geoareabox.grid(row=8, column=1, sticky='we')
+
+    def load_options(self, tablequeryobj=None):
+        self.tablequeryobj = tablequeryobj
+
+        self.optionsbox_baseyr['values'] = ['Select Base Year'] + tablequeryobj.get_base_year_names()
+        self.optionsbox_baseyr.current(0)
+        self.optionsbox_basecond['values'] = ['Select Base Condition'] + tablequeryobj.get_base_condition_names()
+        self.optionsbox_basecond.current(0)
+        self.optionsbox_wastewtr['values'] = ['Select Wastewater Data Set'] + tablequeryobj.get_wastewaterdata_names()
+        self.optionsbox_wastewtr.current(0)
+        self.optionsbox_costprofile['values'] = ['Select Cost Profile'] + tablequeryobj.get_costprofile_names()
+        self.optionsbox_costprofile.current(0)
+        self.optionsbox_geoscale['values'] = ['Select Geographic Scale'] + tablequeryobj.get_geoscale_names()
+        self.optionsbox_geoscale.current(0)
+
+        self.update_geoareabox_options()
+
+    def update_geoareabox_options(self, event=None):
+        mygeoscale = self.optionsbox_geoscale.get()
+        mylist = self.tablequeryobj.get_geoarea_names(scale=mygeoscale)
+
+        self.geoareabox.set_new_left_side_items(mylist)
 
     def my_dropdown(self, optionslist):
         variable = tk.StringVar(self)
