@@ -3,7 +3,7 @@ import pandas as pd
 
 class QrySource:
     def __init__(self, tables=None):
-        """Wrapper for TblLoader instances. Provides methods for querying tables
+        """Wrapper for Source Data table. Provides methods for querying different information
 
         Attributes:
             tables (obj): location where table objects are written to file to speed up re-runs
