@@ -1,5 +1,5 @@
-from tables.ExcelDataTable import ExcelDataTable
 import pandas as pd
+
 
 class QrySource:
     def __init__(self, tables=None):
