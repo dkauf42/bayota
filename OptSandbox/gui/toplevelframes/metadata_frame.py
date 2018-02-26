@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from gui.useframes.dualbox import DualBox
+from collections import namedtuple
 
 
 class MetadataFrame(tk.Frame):
@@ -47,36 +48,40 @@ class MetadataFrame(tk.Frame):
         self.entry_optdesc.grid(row=2, column=1, sticky=tk.W)
 
         # Drop Down Menus (Base Year)
-        options_list = ["N/A", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002"]
+        options_list = ["N/A"]
         self.optionsbox_baseyr = self.my_dropdown(options_list)
         self.optionsbox_baseyr.grid(row=3, column=1, sticky='we')
         self.optionsbox_baseyr.current(0)
         # (Base Condition)
-        options_list = ["Base Progress 0000", "Base Progress 0001", "Base Progress 0002", "Base Progress 0003"]
+        options_list = ["N/A"]
         self.optionsbox_basecond = self.my_dropdown(options_list)
         self.optionsbox_basecond.grid(row=4, column=1, sticky='we')
         self.optionsbox_basecond.current(0)
         # (Wastewater Data)
-        options_list = ["N/A", "Wastewater A", "Wastewater B", "Wastewater C", "Wastewater D"]
+        options_list = ["N/A"]
         self.optionsbox_wastewtr = self.my_dropdown(options_list)
         self.optionsbox_wastewtr.grid(row=5, column=1, sticky='we')
         self.optionsbox_wastewtr.current(0)
         # (Cost Profile)
-        options_list = ["N/A", "Profile AAAA", "Profile BBBB", "Profile CCCC", "Profile DDDD", "Profile EEEE"]
+        options_list = ["N/A"]
         self.optionsbox_costprofile = self.my_dropdown(options_list)
         self.optionsbox_costprofile.grid(row=6, column=1, sticky='we')
         self.optionsbox_costprofile.current(0)
         # (Geographic Scale)
-        options_list = ["County", "Large Scale", "Medium Scale", "Small Scale"]
+        options_list = ["N/A"]
         self.optionsbox_geoscale = self.my_dropdown(options_list)
         self.optionsbox_geoscale.grid(row=7, column=1, sticky='we')
         self.optionsbox_geoscale.current(0)
         self.optionsbox_geoscale.bind("<<ComboboxSelected>>", self.update_geoareabox_options)
 
         # Dual Listbox
-        options_list = ['Anne Arundel', 'Talbot', 'Caroline', 'Lancaster']
+        options_list = ['N/A']
         self.geoareabox = DualBox(self, options_list)
         self.geoareabox.grid(row=8, column=1, sticky='we')
+
+        # Save Button
+        #self.SaveButton = tk.Button(self, text='Save')
+        #self.SaveButton.grid(row=9, column=1, sticky='we')
 
     def load_options(self, tablequeryobj=None):
         self.tablequeryobj = tablequeryobj
@@ -93,6 +98,22 @@ class MetadataFrame(tk.Frame):
         self.optionsbox_geoscale.current(0)
 
         self.update_geoareabox_options()
+
+    def get_results(self):
+        Optmeta = namedtuple('metadata', 'name description baseyear basecond '
+                                             'wastewater costprofile '
+                                             'scale area')
+        self.results = Optmeta(name=self.entry_optname.get(),
+                               description=self.entry_optdesc.get(),
+                               baseyear=self.optionsbox_baseyr.get(),
+                               basecond=self.optionsbox_basecond.get(),
+                               wastewater=self.optionsbox_wastewtr.get(),
+                               costprofile=self.optionsbox_costprofile.get(),
+                               scale=self.optionsbox_geoscale.get(),
+                               area=self.geoareabox.get_selection())
+        print('Metadataframe.get_results: getting results...')
+        self.closedbyuser = True
+        return self.results
 
     def update_geoareabox_options(self, event=None):
         mygeoscale = self.optionsbox_geoscale.get()
