@@ -11,12 +11,12 @@ from gui.useframes.toggleframe import ToggledFrame
 
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, tblqueryobj, optinstance, *args, **kwargs):
+    def __init__(self, parent, qrysource, optinstance, *args, **kwargs):
         """The optimization configuration window"""
         my_bgcolor = "bisque"
         tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
         self.parent = parent
-        self.tablequeryobj = tblqueryobj
+        self.qrysource = qrysource
         self.optinstance = optinstance
         
         # We need to get ttk.Label colors to work properly on OS X
@@ -69,7 +69,7 @@ class MainWindow(tk.Frame):
         
         self.parent.protocol("WM_DELETE_WINDOW", self.on_mainwindow_closing)
 
-        self.load_metadata(tablequeryobj=self.tablequeryobj)
+        self.load_metadata(qrysource=self.qrysource)
 
     def __enter__(self):
         return self
@@ -87,22 +87,22 @@ class MainWindow(tk.Frame):
                     # if the frame was opened before the toggle, then save the form data
                     self.save_metadata()
                     self.t2.ungrey()
-                    self.load_freeparamgroups(tablequeryobj=self.tablequeryobj, optinstance=self.optinstance)
+                    self.load_freeparamgroups(qrysource=self.qrysource, optinstance=self.optinstance)
 
         if source is self.t2:
             if self.t2.saved is True:
                 self.t3.ungrey()
 
-    def load_metadata(self, tablequeryobj=None):
-        self.metadataframe.load_options(tablequeryobj)
+    def load_metadata(self, qrysource=None):
+        self.metadataframe.load_options(qrysource)
 
     def save_metadata(self):
         self.optinstance.save_metadata(self.metadataframe.get_results())
-        lrseg_table = self.tablequeryobj.get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
+        lrseg_table = self.qrysource.get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
         self.optinstance.set_geography(geotable=lrseg_table)
 
-    def load_freeparamgroups(self, tablequeryobj=None, optinstance=None):
-        self.freeparamframe.update_box_options(tablequeryobj, optinstance)
+    def load_freeparamgroups(self, qrysource=None, optinstance=None):
+        self.freeparamframe.update_box_options(qrysource, optinstance)
 
     def close_and_submit(self):
         pass

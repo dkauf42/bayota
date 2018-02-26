@@ -36,11 +36,11 @@ class FreeParamFrame(tk.Frame):
         self.sectordualbox = DualBox(self, options_list)
         self.sectordualbox.grid(row=3, column=1, sticky='we')
 
-    def update_box_options(self, tablequeryobj=None, optinstance=None):  # TODO: restrict agency and sectors to instance
-        mylist = tablequeryobj.get_all_agency_names()
+    def update_box_options(self, qrysource=None, optinstance=None):  # TODO: restrict agency and sectors to instance
+        mylist = qrysource.get_all_agency_names()
         self.agencydualbox.set_new_left_side_items(mylist)
 
-        mylist = tablequeryobj.get_all_sector_names()
+        mylist = qrysource.get_all_sector_names()
         self.sectordualbox.set_new_left_side_items(mylist)
 
     def my_dropdown(self, optionslist):

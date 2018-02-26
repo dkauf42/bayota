@@ -5,7 +5,7 @@ from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
 from util.OptInstance import OptInstance
-from tables.TblQueries import TblQuery
+from tables.QrySource import QrySource
 
 import tkinter as tk
 from gui.toplevelframes.mainwindow import MainWindow
@@ -25,7 +25,7 @@ class Scenario:
         """
         # Load the Source Data and Base Condition tables
         tablesobj = TblLoader()
-        tblqueryobj = TblQuery(tablesobj)
+        qrysource = QrySource(tablesobj)
         oinstance = OptInstance()
 
         """ TO RUN WITH A GUI """
@@ -33,7 +33,7 @@ class Scenario:
         # Create a tkinter window for the mainwindow
         self.root = tk.Tk()
         # Start the GUI
-        self.run_gui(tblquery=tblqueryobj, optinstance=oinstance)
+        self.run_gui(qrysource=qrysource, optinstance=oinstance)
         self.root.mainloop()
         if not hasattr(self.root, 'results'):
             raise ValueError('No options specified.')
@@ -67,8 +67,8 @@ class Scenario:
 
         print('<Scenario Loading Complete>')
 
-    def run_gui(self, tblquery=None, optinstance=None):
-        with MainWindow(self.root, tblquery, optinstance) as mainwindow:
+    def run_gui(self, qrysource=None, optinstance=None):
+        with MainWindow(self.root, qrysource, optinstance) as mainwindow:
             mainwindow.pack(side="top", fill="both", expand=True)
             self.root.title("Optimization Options")
 

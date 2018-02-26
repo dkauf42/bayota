@@ -1,7 +1,7 @@
 from tables.ExcelDataTable import ExcelDataTable
 import pandas as pd
 
-class TblQuery:
+class QrySource:
     def __init__(self, tables=None):
         """Wrapper for TblLoader instances. Provides methods for querying tables
 
@@ -88,9 +88,32 @@ class TblQuery:
         print(my_geo_table.head())
         print('Number of lrseg records included: %d' % booldf.sum())
 
-    def get_agency_names_bygeoarea(self):  # TODO: make this get subset by area, instead of just all agencies.
-        mylist = list(self.tables.srcdata.agencies['Agency'].unique())
-        return mylist
+    def get_agencies_in_lrsegs(self, lrsegs=None):  # TODO: make this get subset by area, instead of just all agencies.
+        """Determines the complete list of agencies to be included in this Scenario.
+
+        Using the options/headers, query the SourceData table to set the 'self.agency' variable to be a table
+        with inclusive Series that can be used as boolean masks on other Series
+
+        Args:
+            optionloaderobj (obj): An open OptionLoader instance.
+            tables (obj): A TblLoader instance.
+        """
+        agencydf = self.tables.srcdata.agencies
+        # Generate boolean mask for the dataframe based on the option specifications
+        optionscolumn = optionloaderobj.options['AgencyCode']
+        if (optionscolumn[0] == 'all') | optionscolumn.isnull().values.all():
+            # just get all of the values
+            self.agency = agencydf.loc[:, 'AgencyCode'].copy()
+        else:
+            boolSeries = pd.Series()
+            # generate boolean mask for each basecondition row, if its value is in this options column
+            boolSeries['AgencyCode'] = agencydf['AgencyCode'].isin(optionscolumn)
+            self.agency = agencydf.loc[boolSeries, 'AgencyCode'].copy()
+        self.agency.to_csv('./output/testwrite_IncludeSpec_agency_include_table.csv')
+        print('Number of agencies included: %d' % len(self.agency))
+
+        #mylist = list(self.tables.srcdata.agencies['Agency'].unique())
+        #return mylist
 
     def get_all_agency_names(self):
         mylist = list(self.tables.srcdata.agencies['Agency'].unique())

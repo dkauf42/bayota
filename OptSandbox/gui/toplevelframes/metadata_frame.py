@@ -22,7 +22,7 @@ class MetadataFrame(tk.Frame):
 
         self.create_subframes()
 
-        self.tablequeryobj = None
+        self.qrysource = None
 
     def create_subframes(self):
         self.columnconfigure(0, minsize=50)
@@ -83,18 +83,18 @@ class MetadataFrame(tk.Frame):
         #self.SaveButton = tk.Button(self, text='Save')
         #self.SaveButton.grid(row=9, column=1, sticky='we')
 
-    def load_options(self, tablequeryobj=None):
-        self.tablequeryobj = tablequeryobj
+    def load_options(self, qrysource=None):
+        self.qrysource = qrysource
 
-        self.optionsbox_baseyr['values'] = ['Select Base Year'] + tablequeryobj.get_base_year_names()
+        self.optionsbox_baseyr['values'] = ['Select Base Year'] + qrysource.get_base_year_names()
         self.optionsbox_baseyr.current(0)
-        self.optionsbox_basecond['values'] = ['Select Base Condition'] + tablequeryobj.get_base_condition_names()
+        self.optionsbox_basecond['values'] = ['Select Base Condition'] + qrysource.get_base_condition_names()
         self.optionsbox_basecond.current(0)
-        self.optionsbox_wastewtr['values'] = ['Select Wastewater Data Set'] + tablequeryobj.get_wastewaterdata_names()
+        self.optionsbox_wastewtr['values'] = ['Select Wastewater Data Set'] + qrysource.get_wastewaterdata_names()
         self.optionsbox_wastewtr.current(0)
-        self.optionsbox_costprofile['values'] = ['Select Cost Profile'] + tablequeryobj.get_costprofile_names()
+        self.optionsbox_costprofile['values'] = ['Select Cost Profile'] + qrysource.get_costprofile_names()
         self.optionsbox_costprofile.current(0)
-        self.optionsbox_geoscale['values'] = ['Select Geographic Scale'] + tablequeryobj.get_geoscale_names()
+        self.optionsbox_geoscale['values'] = ['Select Geographic Scale'] + qrysource.get_geoscale_names()
         self.optionsbox_geoscale.current(0)
 
         self.update_geoareabox_options()
@@ -117,7 +117,7 @@ class MetadataFrame(tk.Frame):
 
     def update_geoareabox_options(self, event=None):
         mygeoscale = self.optionsbox_geoscale.get()
-        mylist = self.tablequeryobj.get_geoarea_names(scale=mygeoscale)
+        mylist = self.qrysource.get_geoarea_names(scale=mygeoscale)
 
         self.geoareabox.set_new_left_side_items(mylist)
 
