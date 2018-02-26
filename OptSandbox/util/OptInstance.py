@@ -41,4 +41,7 @@ class OptInstance:
         self.geoscalename = metadata_results.scale
         self.geoareanames = metadata_results.area
 
+        #self.get_geographies_included(areanames=self.geoareanames)
 
+    def set_geography(self, geotable=None):
+        self.geographies_included = geotable

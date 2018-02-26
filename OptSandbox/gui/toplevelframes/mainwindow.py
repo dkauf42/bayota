@@ -98,8 +98,8 @@ class MainWindow(tk.Frame):
 
     def save_metadata(self):
         self.optinstance.save_metadata(self.metadataframe.get_results())
-        self.tablequeryobj.get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
-        pass
+        lrseg_table = self.tablequeryobj.get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
+        self.optinstance.set_geography(geotable=lrseg_table)
 
     def load_freeparamgroups(self, tablequeryobj=None, optinstance=None):
         self.freeparamframe.update_box_options(tablequeryobj, optinstance)
