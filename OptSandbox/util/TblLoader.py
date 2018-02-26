@@ -18,7 +18,8 @@ class TblLoader:
             tempdir (str): location where table objects are written to file to speed up re-runs
 
         """
-        self.tempdir = './temp/'
+        my_path = os.path.abspath(os.path.dirname(__file__))
+        self.tempdir = os.path.join(my_path, "../temp/")
 
         self.srcdata = None
         self.basecond = None
