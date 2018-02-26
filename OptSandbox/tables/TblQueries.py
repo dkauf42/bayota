@@ -1,5 +1,5 @@
 from tables.ExcelDataTable import ExcelDataTable
-
+import pandas as pd
 
 class TblQuery:
     def __init__(self, tables=None):
@@ -52,6 +52,41 @@ class TblQuery:
             Warning('Specified scale "%s" is unrecognized' % scale)
             mylist = []
         return list(mylist)
+
+    def get_lrseg_table(self, scale=None, areanames=None):
+        """Determine the lrsegs (w/ names of counties, states, etc.) included in the specified geographic scale/areas
+
+        Queries the SourceData table with a pd.Series that can be used as boolean mask
+
+        Args:
+            scale (str): Name of the geographic scale specified (e.g. 'County')
+            areanames (list of str): Names of the geographic areas specified (e.g. ['Anne Arundel', 'York'])
+        """
+        geodf = self.tables.srcdata.georefs
+
+        if not scale:
+            raise ValueError('Geo Scale must be specified to get area names')
+        if scale == 'Chesapeake Bay Watershed':
+            booldf = pd.Series(True for _ in range(geodf.shape[0]))
+        elif scale == 'County':
+            booldf = geodf['CountyName'].isin(areanames)
+        elif scale == 'State':
+            booldf = geodf['StateAbbreviation'].isin(areanames)
+        elif scale == 'StateAbbreviation':
+            booldf = geodf['StateAbbreviation'].isin(areanames)
+        elif scale == 'StateBasin':
+            booldf = geodf['StateBasin'].isin(areanames)
+        elif scale == 'MajorBasin':
+            booldf = geodf['MajorBasin'].isin(areanames)
+        elif scale == 'LandRiverSegment':
+            booldf = geodf['LandRiverSegment'].isin(areanames)
+        else:
+            raise ValueError('Specified scale "%s" is unrecognized' % scale)
+
+        my_geo_table = geodf.loc[booldf, :].copy()
+        my_geo_table.to_csv('./output/testwrite_IncludeSpec_geo_include_table2.csv')
+        print(my_geo_table.head())
+        print('Number of lrseg records included: %d' % booldf.sum())
 
     def get_agency_names_bygeoarea(self):  # TODO: make this get subset by area, instead of just all agencies.
         mylist = list(self.tables.srcdata.agencies['Agency'].unique())

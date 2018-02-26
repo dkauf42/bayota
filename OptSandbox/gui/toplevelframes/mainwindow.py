@@ -85,7 +85,7 @@ class MainWindow(tk.Frame):
                     pass
                 else:
                     # if the frame was opened before the toggle, then save the form data
-                    self.save_metadata(optinstance=self.optinstance)
+                    self.save_metadata()
                     self.t2.ungrey()
                     self.load_freeparamgroups(tablequeryobj=self.tablequeryobj, optinstance=self.optinstance)
 
@@ -96,8 +96,9 @@ class MainWindow(tk.Frame):
     def load_metadata(self, tablequeryobj=None):
         self.metadataframe.load_options(tablequeryobj)
 
-    def save_metadata(self, optinstance):
-        optinstance.save_metadata(self.metadataframe.get_results())
+    def save_metadata(self):
+        self.optinstance.save_metadata(self.metadataframe.get_results())
+        self.tablequeryobj.get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
         pass
 
     def load_freeparamgroups(self, tablequeryobj=None, optinstance=None):
