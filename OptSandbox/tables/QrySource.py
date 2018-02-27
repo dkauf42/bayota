@@ -88,6 +88,8 @@ class QrySource:
         print(my_geo_table.head())
         print('Number of lrseg records included: %d' % booldf.sum())
 
+        return my_geo_table
+
     def get_agencies_in_lrsegs(self, lrsegs=None):  # TODO: make this get subset by area, instead of just all agencies.
         """Determines the complete list of agencies to be included in this Scenario.
 
