@@ -29,8 +29,8 @@ class OptInstance:
         pass
 
     def save_metadata(self, metadata_results):
-        print('metadata in optinstance saving:')
-        print(metadata_results)
+        #print('metadata in optinstance saving:')
+        #print(metadata_results)
 
         self.name = metadata_results.name
         self.description = metadata_results.description
@@ -41,7 +41,13 @@ class OptInstance:
         self.geoscalename = metadata_results.scale
         self.geoareanames = metadata_results.area
 
+        self.geographies_included = None
+
         #self.get_geographies_included(areanames=self.geoareanames)
+
+    def save_freeparamgrps(self, freeparamgrp_results):
+        self.agencies_included = freeparamgrp_results.agencies
+        self.sectors_included = freeparamgrp_results.sectors
 
     def set_geography(self, geotable=None):
         self.geographies_included = geotable
