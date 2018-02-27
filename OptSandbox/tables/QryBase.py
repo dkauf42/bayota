@@ -28,4 +28,6 @@ class QryBase:
         summed = grouped.sum()
         summed = summed.iloc[summed.PreBMPAcres.nonzero()[0]]
 
-        return list(summed.index.get_level_values('AgencyCode').unique().values)
+        uniqueagencies = list(summed.index.get_level_values('AgencyCode').unique().values)
+
+        return self.tables.agencytranslate_fromcodes(uniqueagencies)
