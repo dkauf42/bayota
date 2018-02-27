@@ -11,6 +11,7 @@ class AdditionalConstraintsFrame(tk.Frame):
         self.optionsbox_bmp1 = None
         self.optionsbox_bmp2 = None
         self.optionsbox_bmp3 = None
+        self.noconstraints_button = None
 
         self.create_subframes()
 
@@ -26,6 +27,12 @@ class AdditionalConstraintsFrame(tk.Frame):
         tk.Label(self, text="BMP #1", anchor='e').grid(row=1, column=0, sticky=tk.E)
         tk.Label(self, text="BMP #2", anchor="e").grid(row=2, column=0, sticky=tk.E)
         tk.Label(self, text="BMP #3", anchor='e').grid(row=3, column=0, sticky=tk.E)
+
+        # No Constraints Button
+        self.checkvar = tk.IntVar(value=1)
+        self.noconstraints_button = tk.Checkbutton(self, width=1, text='No Constraints',
+                                                   state='normal', variable=self.checkvar)
+        self.noconstraints_button.grid(row=0, column=1, sticky='we')
 
         # Drop Down Menu (Base Year)
         options_list = ["0%", "20%", "40%", "60%", "80%", "100%"]
