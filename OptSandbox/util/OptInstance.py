@@ -1,4 +1,3 @@
-import pandas as pd
 
 
 class OptInstance:
@@ -24,6 +23,36 @@ class OptInstance:
 
         self.sectors_included = None
         # list of sectors selected to specify free parameter groups
+
+    def __repr__(self):
+        d = self.__dict__
+
+        formattedstr = "\n*** OptInstance Object Details ***\n" \
+                       "name:              %s\n" \
+                       "description:       %s\n" \
+                       "base year:         %s\n" \
+                       "base condition:    %s\n" \
+                       "wastewater:        %s\n" \
+                       "cost profile:      %s\n" \
+                       "geographic scale:  %s\n" \
+                       "geographic areas:  %s\n" \
+                       "# of lrsegs:       %s\n" \
+                       "agencies included: %s\n" \
+                       "sectors included:  %s\n" \
+                       "************************************\n" %\
+                       tuple([str(i) for i in [d['name'],
+                                               d['description'],
+                                               d['baseyear'],
+                                               d['basecondname'],
+                                               d['wastewatername'],
+                                               d['costprofilename'],
+                                               d['geoscalename'],
+                                               d['geoareanames'],
+                                               d['geographies_included'].shape[0],
+                                               d['agencies_included'],
+                                               d['sectors_included']]])
+
+        return formattedstr
 
     def load_from_csv(self, optionsfile):
         pass
