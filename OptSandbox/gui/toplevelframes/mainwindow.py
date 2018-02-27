@@ -11,21 +11,21 @@ from gui.useframes.toggleframe import ToggledFrame
 
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, qrysource, optinstance, *args, **kwargs):
+    def __init__(self, parent, qrysource, qrybase, optinstance, *args, **kwargs):
         """The optimization configuration window"""
         my_bgcolor = "bisque"
         tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
         self.parent = parent
         self.qrysource = qrysource
+        self.qrybase = qrybase
         self.optinstance = optinstance
         
         # We need to get ttk.Label colors to work properly on OS X
-        style = ttk.Style()
-        style.theme_use('classic')
-        
-        style.configure('big.TLabel', relief='flat',
-                        background='dark gray', font=('Helvetica', 16))
-        style.configure("red.Horizontal.TProgressbar", foreground='blue', background='blue')
+        self.style = ttk.Style()
+        self.style.theme_use('classic')
+
+        self.style.configure("Grey.TButton", foreground="grey")
+        self.style.configure("Black.TButton", foreground="black")
 
         self.closedbyuser = False
         self.results = None
@@ -42,7 +42,6 @@ class MainWindow(tk.Frame):
                               relief="raised", borderwidth=1, secondcommand=self.toggleframe_closed)
         self.t.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
         self.t.config(width=800, height=100)
-        #self.t.update()
         self.metadataframe = MetadataFrame(self.t.sub_frame)
         self.metadataframe.pack(side="left")
         # Toggle Frame #2 (FREE PARAMETER GROUPS)
@@ -61,15 +60,17 @@ class MainWindow(tk.Frame):
         self.t3.greyout()
 
         # Done Button
-        self.done_button = tk.Button(self, text='Submit', command=self.close_and_submit)
-        self.done_button.pack(side='top', fill='x', expand=True)
+        self.done_button = ttk.Button(self, text='Submit', command=self.close_and_submit)
+        self.done_button.pack(side='top', fill='x', expand=False)
+        self.done_button.config(style="Grey.TButton")
+        self.done_button.config(state=tk.DISABLED)
         
         # Set up keyboard control of the window
         self.parent.bind('<Escape>', self.on_mainwindow_closing)
         
         self.parent.protocol("WM_DELETE_WINDOW", self.on_mainwindow_closing)
 
-        self.load_metadata(qrysource=self.qrysource)
+        self.load_metadata()
 
     def __enter__(self):
         return self
@@ -87,22 +88,52 @@ class MainWindow(tk.Frame):
                     # if the frame was opened before the toggle, then save the form data
                     self.save_metadata()
                     self.t2.ungrey()
-                    self.load_freeparamgroups(qrysource=self.qrysource, optinstance=self.optinstance)
+                    self.load_freeparamgroups()
 
         if source is self.t2:
             if self.t2.saved is True:
-                self.t3.ungrey()
+                if bool(self.t2.show.get()):
+                    # if the frame was closed before the toggle, then do nothing
+                    pass
+                else:
+                    # if the frame was opened before the toggle, then save the form data
+                    self.save_freeparamgroups()
+                    self.t3.ungrey()
+                    self.load_constraint_options()
 
-    def load_metadata(self, qrysource=None):
-        self.metadataframe.load_options(qrysource)
+        if source is self.t3:
+            if self.t3.saved is True:
+                if bool(self.t3.show.get()):
+                    # if the frame was closed before the toggle, then do nothing
+                    pass
+                else:
+                    # if the frame was opened before the toggle, then save the form data
+                    self.save_constraint_options()
+                    self.done_button.config(style="Black.TButton")
+                    self.done_button.config(state='normal')
+
+    def load_metadata(self):
+        self.metadataframe.load_options(self.qrysource)
 
     def save_metadata(self):
         self.optinstance.save_metadata(self.metadataframe.get_results())
-        lrseg_table = self.qrysource.get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
+        lrseg_table = self.qrysource.get_lrseg_table(scale=self.optinstance.geoscalename,
+                                                     areanames=self.optinstance.geoareanames)
         self.optinstance.set_geography(geotable=lrseg_table)
 
-    def load_freeparamgroups(self, qrysource=None, optinstance=None):
-        self.freeparamframe.update_box_options(qrysource, optinstance)
+    def load_freeparamgroups(self):
+        self.freeparamframe.update_box_options(qrybase=self.qrybase,
+                                               qrysource=self.qrysource,
+                                               optinstance=self.optinstance)
+
+    def save_freeparamgroups(self):  # TODO:have free parameter group info saved to the optinstance.
+        pass
+
+    def load_constraint_options(self):  # TODO:add constraint widgets
+        pass
+
+    def save_constraint_options(self):  # TODO:add constraint widgets
+        pass
 
     def close_and_submit(self):
         pass
