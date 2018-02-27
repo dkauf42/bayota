@@ -34,6 +34,10 @@ class MainWindow(tk.Frame):
         self.top_frame = TopFrame(self, background=my_bgcolor)
         self.top_frame.pack(side='top', fill='x', expand=True)
 
+        # Skip Button for doing default test
+        self.skipbutton = tk.Button(self, text='defaulttest', command=self.skipgui_and_use_default_test)
+        self.skipbutton.pack(side="top", fill=None, expand=False)
+
         # Collapsible/Toggled Frames
         collapsible_frame = tk.Frame(self)
         collapsible_frame.pack(fill=None, expand=False)
@@ -79,6 +83,26 @@ class MainWindow(tk.Frame):
         
     def __exit__(self, exception_type, exception_value, exception_traceback):
         return False
+
+    def skipgui_and_use_default_test(self):
+        """For Testing Purposes"""
+        self.optinstance.name = 'TestOne'
+        self.optinstance.description = 'TestOneDescription'
+        self.optinstance.baseyear = '1995'
+        self.optinstance.basecondname = 'Example_BaseCond2'
+        self.optinstance.wastewatername = 'Example_WW1'
+        self.optinstance.costprofilename = 'Example_CostProfile1'
+        self.optinstance.geoscalename = 'County'
+        self.optinstance.geoareanames = ['Anne Arundel']
+
+        self.optinstance.geographies_included = self.qrysource.get_lrseg_table(scale=self.optinstance.geoscalename,
+                                                                               areanames=self.optinstance.geoareanames)
+
+        self.optinstance.agencies_included = self.qrybase.\
+            get_agencies_in_lrsegs(lrsegs=self.optinstance.geographies_included.LandRiverSegment)
+        self.optinstance.sectors_included = self.qrysource.get_all_sector_names()
+
+        self.close_and_submit()
 
     def toggleframe_togglefromanotherbutton(self, event=None, source=None):
         source.toggle_fromotherbutton(event=event, source=source)
