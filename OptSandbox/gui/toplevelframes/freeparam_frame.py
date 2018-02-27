@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from gui.useframes.dualbox import DualBox
+from collections import namedtuple
 
 
 class FreeParamFrame(tk.Frame):
@@ -11,6 +12,10 @@ class FreeParamFrame(tk.Frame):
 
         self.agencydualbox = None
         self.sectordualbox = None
+
+        self.SaveButton = None
+
+        self.results = None
 
         self.create_subframes()
 
@@ -36,9 +41,14 @@ class FreeParamFrame(tk.Frame):
         self.sectordualbox = DualBox(self, options_list)
         self.sectordualbox.grid(row=3, column=1, sticky='we')
 
+        # Save Button
+        self.SaveButton = ttk.Button(self, text='Submit')
+        self.SaveButton.grid(row=9, column=1, sticky='we')
+
     def update_box_options(self, qrybase=None, qrysource=None, optinstance=None):  # TODO: restrict agency and sectors to instance
-        print('FreeParam_Frame: LRSEGS...')
-        print(optinstance.geographies_included['LandRiverSegment'].head())
+        #print('FreeParam_Frame: LRSEGS...')
+        #print(optinstance.geographies_included['LandRiverSegment'].head())
+
         mylist = qrybase.get_agencies_in_lrsegs(lrsegs=optinstance.geographies_included['LandRiverSegment'])
         #mylist = qrybase.get_all_agency_names()
 
@@ -46,6 +56,14 @@ class FreeParamFrame(tk.Frame):
 
         mylist = qrysource.get_all_sector_names()
         self.sectordualbox.set_new_left_side_items(mylist)
+
+    def get_results(self):
+        Optmeta = namedtuple('freeparamgrps', 'agencies sectors')
+        self.results = Optmeta(agencies=self.agencydualbox.get_selection(),
+                               sectors=self.sectordualbox.get_selection())
+        print('freeparamgrps results:')
+        print(self.results)
+        return self.results
 
     def my_dropdown(self, optionslist):
         variable = tk.StringVar(self)

@@ -20,6 +20,11 @@ class MetadataFrame(tk.Frame):
         self.optionsbox_geoscale = None
         self.geoareabox = None
 
+        self.SaveButton = None
+
+        self.results = None
+        self.closedbyuser = False
+
         self.create_subframes()
 
         self.qrysource = None
@@ -80,8 +85,8 @@ class MetadataFrame(tk.Frame):
         self.geoareabox.grid(row=8, column=1, sticky='we')
 
         # Save Button
-        #self.SaveButton = tk.Button(self, text='Save')
-        #self.SaveButton.grid(row=9, column=1, sticky='we')
+        self.SaveButton = ttk.Button(self, text='Submit')
+        self.SaveButton.grid(row=9, column=1, sticky='we')
 
     def load_options(self, qrysource=None):
         self.qrysource = qrysource
@@ -99,10 +104,16 @@ class MetadataFrame(tk.Frame):
 
         self.update_geoareabox_options()
 
+    def update_geoareabox_options(self, event=None):
+        mygeoscale = self.optionsbox_geoscale.get()
+        mylist = self.qrysource.get_geoarea_names(scale=mygeoscale)
+
+        self.geoareabox.set_new_left_side_items(mylist)
+
     def get_results(self):
         Optmeta = namedtuple('metadata', 'name description baseyear basecond '
-                                             'wastewater costprofile '
-                                             'scale area')
+                                         'wastewater costprofile '
+                                         'scale area')
         self.results = Optmeta(name=self.entry_optname.get(),
                                description=self.entry_optdesc.get(),
                                baseyear=self.optionsbox_baseyr.get(),
@@ -111,15 +122,7 @@ class MetadataFrame(tk.Frame):
                                costprofile=self.optionsbox_costprofile.get(),
                                scale=self.optionsbox_geoscale.get(),
                                area=self.geoareabox.get_selection())
-        print('Metadataframe.get_results: getting results...')
-        self.closedbyuser = True
         return self.results
-
-    def update_geoareabox_options(self, event=None):
-        mygeoscale = self.optionsbox_geoscale.get()
-        mylist = self.qrysource.get_geoarea_names(scale=mygeoscale)
-
-        self.geoareabox.set_new_left_side_items(mylist)
 
     def my_dropdown(self, optionslist):
         variable = tk.StringVar(self)
