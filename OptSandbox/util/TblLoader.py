@@ -1,5 +1,6 @@
 import os
 import pickle
+from pandas import Series
 
 from tables.TblSourceData import SourceData
 from tables.TblBaseCondition import BaseCondition
@@ -74,6 +75,9 @@ class TblLoader:
     def agencytranslate_fromcodes(self, codes):
         """Convert an AgencyCode to its Agency Name
 
+        Args:
+            codes (pandas.Series or list): agency code strings
+
         Example:
             >> .agencytranslate('FWS')
             returns 'US Fish and Wildlife Service'
@@ -82,10 +86,20 @@ class TblLoader:
         df = self.srcdata.agencies
         dict_agencycodekeys = dict(zip(df.AgencyCode, df.Agency))
 
-        return codes.replace(dict_agencycodekeys, inplace=False)
+        if isinstance(codes, Series):
+            retval = codes.replace(dict_agencycodekeys, inplace=False)
+        elif isinstance(codes, list):
+            retval = list(dict_agencycodekeys.get(word, word) for word in codes)
+        else:
+            raise TypeError('Unexpected input type for "codes" input argument')
+
+        return retval
 
     def agencytranslate_fromnames(self, names):
         """Convert an Agency Name to its AgencyCode
+
+        Args:
+            names (pandas.Series or list): agency names
 
         Example:
             >> .agencytranslate('Department of Defense')
@@ -95,4 +109,11 @@ class TblLoader:
         df = self.srcdata.agencies
         dict_agencykeys = dict(zip(df.Agency, df.AgencyCode))
 
-        return names.replace(dict_agencykeys, inplace=False)
+        if isinstance(names, Series):
+            retval = names.replace(dict_agencykeys, inplace=False)
+        elif isinstance(names, list):
+            retval = list(dict_agencykeys.get(word, word) for word in names)
+        else:
+            raise TypeError('Unexpected input type for "names" input argument')
+
+        return retval
