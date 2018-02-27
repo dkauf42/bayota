@@ -35,24 +35,26 @@ class MainWindow(tk.Frame):
         self.top_frame.pack(side='top', fill='x', expand=True)
 
         # Collapsible/Toggled Frames
-        collapsibleFrame = tk.Frame(self)
-        collapsibleFrame.pack(fill=None, expand=False)
+        collapsible_frame = tk.Frame(self)
+        collapsible_frame.pack(fill=None, expand=False)
         # Toggle Frame #1 (METADATA)
-        self.t = ToggledFrame(collapsibleFrame, text='1. Instance Metadata',
+        self.t = ToggledFrame(collapsible_frame, text='1. Instance Metadata',
                               relief="raised", borderwidth=1, secondcommand=self.toggleframe_closed)
         self.t.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
         self.t.config(width=800, height=100)
         self.metadataframe = MetadataFrame(self.t.sub_frame)
         self.metadataframe.pack(side="left")
+        self.metadataframe.SaveButton.config(command=lambda: self.toggleframe_togglefromanotherbutton(source=self.t))
         # Toggle Frame #2 (FREE PARAMETER GROUPS)
-        self.t2 = ToggledFrame(collapsibleFrame, text='2. Free Parameter Groups',
+        self.t2 = ToggledFrame(collapsible_frame, text='2. Free Parameter Groups',
                                relief="raised", borderwidth=1, secondcommand=self.toggleframe_closed)
         self.t2.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
         self.freeparamframe = FreeParamFrame(self.t2.sub_frame)
         self.freeparamframe.pack(side="left")
         self.t2.greyout()
+        self.freeparamframe.SaveButton.config(command=lambda: self.toggleframe_togglefromanotherbutton(source=self.t2))
         # Toggle Frame #3 (ADDITIONAL CONSTRAINTS)
-        self.t3 = ToggledFrame(collapsibleFrame, text='3. Additional Constraints/Bounds',
+        self.t3 = ToggledFrame(collapsible_frame, text='3. Additional Constraints/Bounds',
                                relief="raised", borderwidth=1, secondcommand=self.toggleframe_closed)
         self.t3.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
         self.additionalconstraintsframe = AdditionalConstraintsFrame(self.t3.sub_frame)
@@ -78,10 +80,14 @@ class MainWindow(tk.Frame):
     def __exit__(self, exception_type, exception_value, exception_traceback):
         return False
 
-    def toggleframe_closed(self, source=None):
+    def toggleframe_togglefromanotherbutton(self, event=None, source=None):
+        source.toggle_fromotherbutton(event=event, source=source)
+        self.toggleframe_closed(source=source)
+
+    def toggleframe_closed(self, event=None, source=None):
         if source is self.t:
-            if self.t.saved is True:
-                if bool(self.t.show.get()):
+            if source.saved is True:
+                if bool(source.show.get()):
                     # if the frame was closed before the toggle, then do nothing
                     pass
                 else:
@@ -91,8 +97,8 @@ class MainWindow(tk.Frame):
                     self.load_freeparamgroups()
 
         if source is self.t2:
-            if self.t2.saved is True:
-                if bool(self.t2.show.get()):
+            if source.saved is True:
+                if bool(source.show.get()):
                     # if the frame was closed before the toggle, then do nothing
                     pass
                 else:
@@ -102,6 +108,10 @@ class MainWindow(tk.Frame):
                     self.load_constraint_options()
 
         if source is self.t3:
+            if self.t2.saved is True & self.t.saved is True:
+                self.done_button.config(style="Black.TButton")
+                self.done_button.config(state='normal')
+
             if self.t3.saved is True:
                 if bool(self.t3.show.get()):
                     # if the frame was closed before the toggle, then do nothing
@@ -109,13 +119,12 @@ class MainWindow(tk.Frame):
                 else:
                     # if the frame was opened before the toggle, then save the form data
                     self.save_constraint_options()
-                    self.done_button.config(style="Black.TButton")
-                    self.done_button.config(state='normal')
 
     def load_metadata(self):
         self.metadataframe.load_options(self.qrysource)
 
     def save_metadata(self):
+        print('mainwindow:save_metadata: saving metadata...')
         self.optinstance.save_metadata(self.metadataframe.get_results())
         lrseg_table = self.qrysource.get_lrseg_table(scale=self.optinstance.geoscalename,
                                                      areanames=self.optinstance.geoareanames)
@@ -127,6 +136,8 @@ class MainWindow(tk.Frame):
                                                optinstance=self.optinstance)
 
     def save_freeparamgroups(self):  # TODO:have free parameter group info saved to the optinstance.
+        print('mainwindow:save_freeparamgroups: saving free parameter groups...')
+        self.optinstance.save_freeparamgrps(self.freeparamframe.get_results())
         pass
 
     def load_constraint_options(self):  # TODO:add constraint widgets
@@ -136,6 +147,10 @@ class MainWindow(tk.Frame):
         pass
 
     def close_and_submit(self):
+        print('MainWindow.close_and_submit')
+        self.parent.results = self.results
+        self.closedbyuser = True
+        self.quit()
         pass
     #     Optmeta = namedtuple('metadata', 'name description baseyear basecond '
     #                                      'wastewater costprofile annualbmps '

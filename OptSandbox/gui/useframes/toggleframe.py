@@ -17,9 +17,11 @@ class ToggledFrame(tk.Frame):
         self.frame_label = ttk.Label(self.title_frame, text=text)
         self.frame_label.pack(side="left", fill="x", expand=1)
 
+        self.frame_label.bind("<Double-1>", self.sequence(self.toggle_fromotherbutton, secondcommand))
+
         self.toggle_button = ttk.Checkbutton(self.title_frame, width=2, text='+',
-                                             command=self.sequence(self.toggle, secondcommand),
                                              variable=self.show, style='Toolbutton')
+        self.toggle_button.config(command=self.sequence(self.toggle, secondcommand))
         self.toggle_button.pack(side="left")
 
         self.sub_frame = tk.Frame(self, relief="sunken", borderwidth=1)
@@ -27,7 +29,14 @@ class ToggledFrame(tk.Frame):
         self.style = ttk.Style()
         self.saved = False
 
-    def toggle(self, source=None):
+    def toggle_fromotherbutton(self, event=None, source=None):
+        if bool(self.show.get()):
+            self.show.set(0)
+        else:
+            self.show.set(1)
+        self.toggle(event=event, source=source)
+
+    def toggle(self, event=None, source=None):
         if bool(self.show.get()):
             # if the frame was closed, then open it
             self.sub_frame.pack(fill="x", expand=1)
