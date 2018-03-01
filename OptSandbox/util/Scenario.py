@@ -1,11 +1,9 @@
 from util.TblLoader import TblLoader
-from util.OptionLoader import OptionLoader
-from filters.IncludeSpec import IncludeSpec
 from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
 from util.OptInstance import OptInstance
-from tables.QrySource import QrySource
+from tables.TblQuery import TblQuery
 
 import tkinter as tk
 from gui.toplevelframes.mainwindow import MainWindow
@@ -25,32 +23,27 @@ class Scenario:
         """
         # Load the Source Data and Base Condition tables
         tablesobj = TblLoader()
-        qrysource = QrySource(tablesobj)
-        oinstance = OptInstance()
+        tblqry = TblQuery(tables=tablesobj)
+        oinstance = OptInstance(queries=tblqry)
 
         """ TO RUN WITH A GUI """
         #"""
         # Create a tkinter window for the mainwindow
         self.root = tk.Tk()
         # Start the GUI
-        self.run_gui(qrysource=qrysource, optinstance=oinstance)
+        self.run_gui(optinstance=oinstance)
         self.root.mainloop()
         if not hasattr(self.root, 'results'):
             raise ValueError('No options specified.')
         else:
             print(self.root.results)
-        raise ValueError('Scenario: temp halt')
+        #raise ValueError('Scenario: temp halt')
         #"""
 
-        # The scenario options (particular geographic region(s), agencies, etc.) are loaded for this scenario.
-        self.options = OptionLoader(srcdataobj=tablesobj.srcdata)
-        self.options.load_from_csv(optionsfile=optionsfile)
-
-        # Geographic region is extracted from SourceData, so the list of lrsegs (etc.) can be used as a boolean mask
-        self.includespec = IncludeSpec(optionloaderobj=self.options, tables=tablesobj)
+        print(oinstance)
 
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        self.possmatrix = PossibilitiesMatrix(tables=tablesobj, includespec=self.includespec)
+        self.possmatrix = PossibilitiesMatrix(tables=tablesobj, optinstance=oinstance)
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         print('>> Generating random integers for each (Geo, Agency, Source, BMP) coordinate')
@@ -67,8 +60,8 @@ class Scenario:
 
         print('<Scenario Loading Complete>')
 
-    def run_gui(self, qrysource=None, optinstance=None):
-        with MainWindow(self.root, qrysource, optinstance) as mainwindow:
+    def run_gui(self, optinstance=None):
+        with MainWindow(self.root, optinstance=optinstance) as mainwindow:
             mainwindow.pack(side="top", fill="both", expand=True)
             self.root.title("Optimization Options")
 
