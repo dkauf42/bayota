@@ -11,13 +11,14 @@ from gui.useframes.toggleframe import ToggledFrame
 
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, queries, optinstance, *args, **kwargs):
+    def __init__(self, parent, optinstance, *args, **kwargs):
         """The optimization configuration window"""
         my_bgcolor = "bisque"
         tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
         self.parent = parent
-        self.queries = queries
+
         self.optinstance = optinstance
+        self.queries = optinstance.queries
         
         # We need to get ttk.Label colors to work properly on OS X
         self.style = ttk.Style()
