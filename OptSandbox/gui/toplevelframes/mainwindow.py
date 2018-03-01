@@ -11,13 +11,12 @@ from gui.useframes.toggleframe import ToggledFrame
 
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, qrysource, qrybase, optinstance, *args, **kwargs):
+    def __init__(self, parent, queries, optinstance, *args, **kwargs):
         """The optimization configuration window"""
         my_bgcolor = "bisque"
         tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
         self.parent = parent
-        self.qrysource = qrysource
-        self.qrybase = qrybase
+        self.queries = queries
         self.optinstance = optinstance
         
         # We need to get ttk.Label colors to work properly on OS X
@@ -95,12 +94,12 @@ class MainWindow(tk.Frame):
         self.optinstance.geoscalename = 'County'
         self.optinstance.geoareanames = ['Anne Arundel']
 
-        self.optinstance.geographies_included = self.qrysource.get_lrseg_table(scale=self.optinstance.geoscalename,
+        self.optinstance.geographies_included = self.queries.source.get_lrseg_table(scale=self.optinstance.geoscalename,
                                                                                areanames=self.optinstance.geoareanames)
 
-        self.optinstance.agencies_included = self.qrybase.\
+        self.optinstance.agencies_included = self.queries.base.\
             get_agencies_in_lrsegs(lrsegs=self.optinstance.geographies_included.LandRiverSegment)
-        self.optinstance.sectors_included = self.qrysource.get_all_sector_names()
+        self.optinstance.sectors_included = self.queries.source.get_all_sector_names()
 
         self.close_and_submit()
 
@@ -145,19 +144,17 @@ class MainWindow(tk.Frame):
                     self.save_constraint_options()
 
     def load_metadata(self):
-        self.metadataframe.load_options(self.qrysource)
+        self.metadataframe.load_options(self.queries.source)
 
     def save_metadata(self):
         print('mainwindow:save_metadata: saving metadata...')
         self.optinstance.save_metadata(self.metadataframe.get_results())
-        lrseg_table = self.qrysource.get_lrseg_table(scale=self.optinstance.geoscalename,
-                                                     areanames=self.optinstance.geoareanames)
+        lrseg_table = self.queries.source.get_lrseg_table(scale=self.optinstance.geoscalename,
+                                                          areanames=self.optinstance.geoareanames)
         self.optinstance.set_geography(geotable=lrseg_table)
 
     def load_freeparamgroups(self):
-        self.freeparamframe.update_box_options(qrybase=self.qrybase,
-                                               qrysource=self.qrysource,
-                                               optinstance=self.optinstance)
+        self.freeparamframe.update_box_options(queries=self.queries, optinstance=self.optinstance)
 
     def save_freeparamgroups(self):  # TODO:have free parameter group info saved to the optinstance.
         print('mainwindow:save_freeparamgroups: saving free parameter groups...')
