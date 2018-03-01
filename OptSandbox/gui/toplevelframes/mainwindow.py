@@ -75,7 +75,7 @@ class MainWindow(tk.Frame):
         
         self.parent.protocol("WM_DELETE_WINDOW", self.on_mainwindow_closing)
 
-        self.load_metadata()
+        self.load_metadata_options()
 
     def __enter__(self):
         return self
@@ -117,7 +117,7 @@ class MainWindow(tk.Frame):
                     # if the frame was opened before the toggle, then save the form data
                     self.save_metadata()
                     self.t2.ungrey()
-                    self.load_freeparamgroups()
+                    self.load_freeparamgroup_options()
 
         if source is self.t2:
             if source.saved is True:
@@ -141,9 +141,9 @@ class MainWindow(tk.Frame):
                     pass
                 else:
                     # if the frame was opened before the toggle, then save the form data
-                    self.save_constraint_options()
+                    self.save_constraints()
 
-    def load_metadata(self):
+    def load_metadata_options(self):
         self.metadataframe.load_options(self.queries.source)
 
     def save_metadata(self):
@@ -153,10 +153,10 @@ class MainWindow(tk.Frame):
                                                           areanames=self.optinstance.geoareanames)
         self.optinstance.set_geography(geotable=lrseg_table)
 
-    def load_freeparamgroups(self):
+    def load_freeparamgroup_options(self):
         self.freeparamframe.update_box_options(queries=self.queries, optinstance=self.optinstance)
 
-    def save_freeparamgroups(self):  # TODO:have free parameter group info saved to the optinstance.
+    def save_freeparamgroups(self):
         print('mainwindow:save_freeparamgroups: saving free parameter groups...')
         self.optinstance.save_freeparamgrps(self.freeparamframe.get_results())
         pass
@@ -164,7 +164,7 @@ class MainWindow(tk.Frame):
     def load_constraint_options(self):  # TODO:add constraint widgets
         pass
 
-    def save_constraint_options(self):  # TODO:add constraint widgets
+    def save_constraints(self):  # TODO:add constraint widgets
         pass
 
     def close_and_submit(self):
