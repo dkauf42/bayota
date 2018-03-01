@@ -45,16 +45,16 @@ class FreeParamFrame(tk.Frame):
         self.SaveButton = ttk.Button(self, text='Submit')
         self.SaveButton.grid(row=9, column=1, sticky='we')
 
-    def update_box_options(self, qrybase=None, qrysource=None, optinstance=None):  # TODO: restrict agency and sectors to instance
+    def update_box_options(self, queries=None, optinstance=None):  # TODO: restrict agency and sectors to instance
         #print('FreeParam_Frame: LRSEGS...')
         #print(optinstance.geographies_included['LandRiverSegment'].head())
 
-        mylist = qrybase.get_agencies_in_lrsegs(lrsegs=optinstance.geographies_included['LandRiverSegment'])
-        #mylist = qrybase.get_all_agency_names()
+        mylist = queries.base.get_agencies_in_lrsegs(lrsegs=optinstance.geographies_included['LandRiverSegment'])
+        #mylist = queries.base.get_all_agency_names()
 
         self.agencydualbox.set_new_left_side_items(mylist)
 
-        mylist = qrysource.get_all_sector_names()
+        mylist = queries.source.get_all_sector_names()
         self.sectordualbox.set_new_left_side_items(mylist)
 
     def get_results(self):
