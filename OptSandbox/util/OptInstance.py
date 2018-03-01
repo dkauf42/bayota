@@ -1,9 +1,10 @@
 
 
 class OptInstance:
-    def __init__(self):
+    def __init__(self, queries=None):
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
+        self.queries = queries
 
         self.name = None
         self.description = None
