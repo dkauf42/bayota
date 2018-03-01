@@ -1,10 +1,9 @@
 
 
 class OptInstance:
-    def __init__(self, queries=None):
+    def __init__(self):
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
-        self.queries = queries
 
         self.name = None
         self.description = None
@@ -81,6 +80,3 @@ class OptInstance:
 
     def set_geography(self, geotable=None):
         self.geographies_included = geotable
-
-    def get_agencycodes_included(self):
-        self.agencies_included
