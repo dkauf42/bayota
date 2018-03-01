@@ -28,7 +28,7 @@ class OptInstance:
     def __repr__(self):
         d = self.__dict__
 
-        formattedstr = "\n*** OptInstance Object Details ***\n" \
+        formattedstr = "\n***** OptInstance Details *****\n" \
                        "name:              %s\n" \
                        "description:       %s\n" \
                        "base year:         %s\n" \
