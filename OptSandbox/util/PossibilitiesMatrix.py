@@ -22,13 +22,12 @@ def expand_grid(data_dict):
 
 
 class PossibilitiesMatrix:
-    def __init__(self, tables=None, includespec=None):
+    def __init__(self, tables=None, optinstance=None):
         """Filter by Segment-agency_types
 
-        Parameters:
+        Args:
             tables (obj)
-            includespec (obj)
-
+            optinstance (obj)
 
         Attributes:
             ndas (pandas dataframe)
@@ -41,15 +40,15 @@ class PossibilitiesMatrix:
 
         # Options are used to query BaseCondition data and
         # get the LoadSources (along with their maxes) for each segment-agency pair
-        sat = SegmentAgencyTypeFilter(tables=tables, includespec=includespec)
+        sat = SegmentAgencyTypeFilter(tables=tables, optinstance=optinstance)
 
         # A sparse matrix is created for each Segment-Agency-Type table.
         # For the Land table,   the specs are rows=seg-agency-sources X columns=BMPs.
         # For the Animal table, the specs are rows=FIPS-animal-sources X columns=BMPs.
         # For the Manure table, the specs are rows=FIPSto-FIPSfrom-animal-sources X columns=BMPs.
-        self.ndas = None
-        self.anim = None
-        self.manu = None
+        self.ndas = pd.DataFrame()
+        self.anim = pd.DataFrame()
+        self.manu = pd.DataFrame()
         self._create_emptymatrices(sat, tables)
 
         #  TODO: upper_bounds = self._identifyhardupperbounds(sat)
@@ -73,8 +72,12 @@ class PossibilitiesMatrix:
         self.anim.to_csv('./output/testwrite_PossibilitiesMatrix_anim.csv')
         self.manu.to_csv('./output/testwrite_PossibilitiesMatrix_manu.csv')
 
-    def filter_from_sat(self, dataframe, srcdataobj):
+    def filter_from_sat(self, dataframe=None, srcdataobj=None):
         """Generate nonNaN markers for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
+
+        Args:
+            dataframe (pandas.DataFrame):
+            srcdataobj (pandas.DataFrame):
         """
         # Get all the BMPs that are possible on the set of Load sources
         self.geo_seg_source_bmps = dataframe.copy()
