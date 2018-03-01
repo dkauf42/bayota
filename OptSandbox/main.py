@@ -7,7 +7,6 @@ import sys
 import os
 import timeit
 from util.Scenario import Scenario
-import util.conf
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
@@ -22,7 +21,4 @@ def main():
 
 
 if __name__ == '__main__':
-    util.conf.init(sys.argv[1:])
-    if util.conf.DEBUG:
-        print('debug is on')
     main()
