@@ -1,6 +1,6 @@
 from util.TblLoader import TblLoader
 from tables.TblQuery import TblQuery
-from util.PossibilitiesMatrix import PossibilitiesMatrix
+from util.PossibilitiesMatrices import PossibilitiesMatrices
 from util.ScenarioRandomizer import ScenarioRandomizer
 import pandas as pd
 
@@ -90,7 +90,7 @@ class OptInstance:
         self.geographies_included = geotable
 
     def generate_possibilitymatrix(self):
-        self.possibility_matrix = PossibilitiesMatrix(optinstance=self)
+        self.possibility_matrix = PossibilitiesMatrices(optinstance=self)
 
     def scenario_randomizer(self):
         print('OptInstance:scenario_randomizer: random integers for each (Geo, Agency, Source, BMP) coordinate')
