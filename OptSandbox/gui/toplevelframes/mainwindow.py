@@ -1,7 +1,5 @@
-import sys
 import tkinter as tk
 import tkinter.ttk as ttk
-from collections import namedtuple
 
 from gui.toplevelframes.topframe import TopFrame
 from gui.toplevelframes.metadata_frame import MetadataFrame
@@ -173,34 +171,7 @@ class MainWindow(tk.Frame):
         self.parent.results = self.results
         self.closedbyuser = True
         self.quit()
-        pass
-    #     Optmeta = namedtuple('metadata', 'name description baseyear basecond '
-    #                                      'wastewater costprofile annualbmps '
-    #                                      'agency sector scale area')
-    #     self.results = Optmeta(name=self.left_frame.entry_optname.get(),
-    #                            description=self.left_frame.entry_optdesc.get(),
-    #                            baseyear=self.right_frame.optionsbox_baseyr.get(),
-    #                            basecond=self.right_frame.optionsbox_basecond.get(),
-    #                            wastewater=self.right_frame.optionsbox_wastewtr.get(),
-    #                            costprofile=self.right_frame.optionsbox_costprofile.get(),
-    #                            annualbmps=self.right_frame.button_annualbmps.val.get(),
-    #                            agency=self.left_frame.optionsbox_agency.get(),
-    #                            sector=self.left_frame.optionsbox_sector.get(),
-    #                            scale=self.left_frame.optionsbox_geoscale.get(),
-    #                            area=self.left_frame.geoareabox.get_selection())
-    #
-    #     self.closedbyuser = True
-    #     #print('MainWindow.close_and_submit: closing and submitting...')
-    #
-    #     self.parent.results = self.results
-    #     self.quit()
         
     def on_mainwindow_closing(self, event=None):
         self.closedbyuser = True
-        #print('MainWindow.on_mainwindow_closing: closing...')
-
-        self.destroy()
-        self.parent.destroy()
-
-        exception_type, exception_value, exception_traceback = sys.exc_info()
-        self.__exit__(exception_type, exception_value, exception_traceback)
+        raise SystemExit('MainWindow.on_mainwindow_closing: window closed')

@@ -35,21 +35,17 @@ def runner(numinstances=1):
         oinstance = OptInstance()
         oinstance.load_tables()
 
-        # """ Start the GUI """
-        root = tk.Tk()  # Create a tkinter window for the mainwindow
-        with MainWindow(root, optinstance=oinstance) as mainwindow:
-            mainwindow.pack(side="top", fill="both", expand=True)
-            root.title("Optimization Options")
+        # Run the GUI
+        root = tk.Tk()  # Create a tkinter window
+        mainwindow = MainWindow(root, optinstance=oinstance)
+        mainwindow.pack(side="top", fill="both", expand=True)
+        root.title("Optimization Options")
         root.mainloop()
-        if not hasattr(root, 'results'):
-            raise ValueError('No options specified.')
-        else:
-            print(root.results)
-        # raise ValueError('Runner: temp halt')
-        # """""""""""""""""""""
         print(oinstance)
+
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
         oinstance.generate_possibilitymatrix()
+
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         print('>> Generating random integers for each (Geo, Agency, Source, BMP) coordinate')
         ScenarioRandomizer(oinstance.possibility_matrix.ndas)
