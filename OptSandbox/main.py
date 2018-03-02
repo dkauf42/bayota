@@ -9,7 +9,6 @@ import timeit
 import tkinter as tk
 
 from gui.toplevelframes.mainwindow import MainWindow
-from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
 from util.OptInstance import OptInstance
 
@@ -47,13 +46,8 @@ def runner(numinstances=1):
         oinstance.generate_possibilitymatrix()
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
-        print('>> Generating random integers for each (Geo, Agency, Source, BMP) coordinate')
-        ScenarioRandomizer(oinstance.possibility_matrix.ndas)
-        ScenarioRandomizer(oinstance.possibility_matrix.anim)
-        ScenarioRandomizer(oinstance.possibility_matrix.manu)
-        oinstance.possibility_matrix.ndas.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')  # write possibilities matrix to file
-        oinstance.possibility_matrix.anim.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
-        oinstance.possibility_matrix.manu.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file
+        oinstance.scenario_randomizer()
+
         inputobj = InputsToCast(oinstance.possibility_matrix, optinstance=oinstance)
         inputobj.matrix_to_table()
         print('<Runner Loading Complete>')
