@@ -1,5 +1,6 @@
 from util.TblLoader import TblLoader
 from tables.TblQuery import TblQuery
+from util.PossibilitiesMatrix import PossibilitiesMatrix
 
 
 class OptInstance:
@@ -27,6 +28,8 @@ class OptInstance:
 
         self.sectors_included = None
         # list of sectors selected to specify free parameter groups
+
+        self.possibility_matrix = None
 
     def __repr__(self):
         d = self.__dict__
@@ -63,9 +66,6 @@ class OptInstance:
         self.queries = TblQuery(tables=self.tables)
 
     def save_metadata(self, metadata_results):
-        #print('metadata in optinstance saving:')
-        #print(metadata_results)
-
         self.name = metadata_results.name
         self.description = metadata_results.description
         self.baseyear = metadata_results.baseyear
@@ -76,7 +76,6 @@ class OptInstance:
         self.geoareanames = metadata_results.area
 
         self.geographies_included = None
-
         #self.get_geographies_included(areanames=self.geoareanames)
 
     def save_freeparamgrps(self, freeparamgrp_results):
@@ -85,3 +84,6 @@ class OptInstance:
 
     def set_geography(self, geotable=None):
         self.geographies_included = geotable
+
+    def generate_possibilitymatrix(self):
+        self.possibility_matrix = PossibilitiesMatrix(optinstance=self)

@@ -1,4 +1,3 @@
-from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
 from util.OptInstance import OptInstance
@@ -40,19 +39,19 @@ class Runner:
         print(oinstance)
 
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        self.possmatrix = PossibilitiesMatrix(optinstance=oinstance)
+        oinstance.generate_possibilitymatrix()
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         print('>> Generating random integers for each (Geo, Agency, Source, BMP) coordinate')
-        ScenarioRandomizer(self.possmatrix.ndas)
-        ScenarioRandomizer(self.possmatrix.anim)
-        ScenarioRandomizer(self.possmatrix.manu)
+        ScenarioRandomizer(oinstance.possibility_matrix.ndas)
+        ScenarioRandomizer(oinstance.possibility_matrix.anim)
+        ScenarioRandomizer(oinstance.possibility_matrix.manu)
 
-        self.possmatrix.ndas.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')  # write possibilities matrix to file
-        self.possmatrix.anim.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
-        self.possmatrix.manu.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file
+        oinstance.possibility_matrix.ndas.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')  # write possibilities matrix to file
+        oinstance.possibility_matrix.anim.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
+        oinstance.possibility_matrix.manu.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file
 
-        inputobj = InputsToCast(self.possmatrix, optinstance=oinstance)
+        inputobj = InputsToCast(oinstance.possibility_matrix, optinstance=oinstance)
         inputobj.matrix_to_table()
 
         print('<Runner Loading Complete>')
@@ -61,6 +60,3 @@ class Runner:
         with MainWindow(self.root, optinstance=optinstance) as mainwindow:
             mainwindow.pack(side="top", fill="both", expand=True)
             self.root.title("Optimization Options")
-
-    def clean_up(self):
-        print('Sequencer.clean_up: first line')
