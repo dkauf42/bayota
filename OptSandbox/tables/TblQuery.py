@@ -1,5 +1,6 @@
 from tables.QrySource import QrySource
 from tables.QryBase import QryBase
+from tables.QryLoadSources import QryLoadSources
 
 
 class TblQuery:
@@ -13,5 +14,6 @@ class TblQuery:
         self.tables = tables
         self.source = QrySource(tables=self.tables)
         self.base = QryBase(tables=self.tables)
+        self.loadsources = QryLoadSources(tables=self.tables)
 
 
