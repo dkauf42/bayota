@@ -2,9 +2,9 @@ import pandas as pd
 from itertools import product
 
 
-class MatrixBase():
+class MatrixBase:
     def __init__(self, name='', row_indices=None, column_names=None):
-        """A wrapper class for the possibility matrices needed in an optinstance"""
+        """A wrapper class for a possibility matrix needed for an optinstance"""
         self.name = name
 
         if (row_indices is None) | (column_names is None):
