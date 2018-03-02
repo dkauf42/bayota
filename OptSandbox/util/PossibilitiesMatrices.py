@@ -18,7 +18,7 @@ class PossibilitiesMatrices:
             manu (obj):
 
         """
-        # Determine what will comprise the rows (indices of load source names) of the possibility matrix
+        """ The index names of load sources will comprise the rows of each possibility matrix"""
         loadsources = optinstance.queries.loadsources.\
             get_load_sources_in_geoagencies(geographies=optinstance.geographies_included,
                                             agencies=optinstance.agencies_included)
