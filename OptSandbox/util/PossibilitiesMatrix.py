@@ -24,7 +24,6 @@ class PossibilitiesMatrix:
         """Filter by Segment-agency_types
 
         Args:
-            tables (obj)
             optinstance (obj)
 
         Attributes:
@@ -32,7 +31,6 @@ class PossibilitiesMatrix:
             anim (pandas dataframe)
             manu (pandas dataframe)
             bmpdict (dictionary)
-            geo_seg_source_bmps (pandas dataframe): agencies to be included in this Runner
 
         """
         tables = optinstance.tables
@@ -86,7 +84,6 @@ class PossibilitiesMatrix:
         self.bmpdict = self._dict_of_bmps_by_loadsource(tables.srcdata, allloadsources)
 
         # NonNaN markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
-        self.geo_seg_source_bmps = None
         self.mark_eligible_coordinates(dataframe=self.ndas, srcdataobj=tables.srcdata)
         self.mark_eligible_coordinates(dataframe=self.anim, srcdataobj=tables.srcdata)
         self.mark_eligible_coordinates(dataframe=self.manu, srcdataobj=tables.srcdata)
@@ -103,7 +100,7 @@ class PossibilitiesMatrix:
             srcdataobj (pandas.DataFrame):
         """
         # Get all the BMPs that are possible on the set of Load sources
-        self.geo_seg_source_bmps = dataframe.copy()
+        geo_seg_source_bmps = dataframe.copy()
         bmplistoflists = []  # Create a list to store the data
         overallbmplist = []
         totalnumbmps = 0
@@ -138,12 +135,12 @@ class PossibilitiesMatrix:
                                                               dataframe.isnull().sum().sum(),
                                                               dataframe.shape[0] * dataframe.shape[1]))
 
-        self.geo_seg_source_bmps['eligible_bmps'] = bmplistoflists
+        geo_seg_source_bmps['eligible_bmps'] = bmplistoflists
         print('total no. of eligible BMPs: <%d>' % totalnumbmps)
 
         #print(self.geo_seg_source_bmps.head())
         #print(bmplist[0])
-        self.geo_seg_source_bmps.to_csv('./output/testwrite_PossibilitiesMatrix_geosegsource_bmps.csv')
+        geo_seg_source_bmps.to_csv('./output/testwrite_PossibilitiesMatrix_geosegsource_bmps.csv')
 
     @staticmethod
     def removedups(listwithduplicates):
