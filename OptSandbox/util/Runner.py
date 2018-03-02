@@ -21,6 +21,7 @@ class Scenario:
         """
         # Load the Source Data and Base Condition tables
         oinstance = OptInstance()
+        oinstance.load_tables()
 
         """ TO RUN WITH A GUI """
         #"""

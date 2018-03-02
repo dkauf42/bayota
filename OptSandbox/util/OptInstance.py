@@ -6,8 +6,8 @@ class OptInstance:
     def __init__(self):
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
-        self.tables = TblLoader()
-        self.queries = TblQuery(tables=self.tables)
+        self.tables = None
+        self.queries = None
 
         self.name = None
         self.description = None
@@ -58,8 +58,9 @@ class OptInstance:
 
         return formattedstr
 
-    def load_from_csv(self, optionsfile):
-        pass
+    def load_tables(self):
+        self.tables = TblLoader()
+        self.queries = TblQuery(tables=self.tables)
 
     def save_metadata(self, metadata_results):
         #print('metadata in optinstance saving:')
