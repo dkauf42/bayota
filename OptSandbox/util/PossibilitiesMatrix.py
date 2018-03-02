@@ -35,34 +35,6 @@ class PossibilitiesMatrix:
         """
         tables = optinstance.tables
 
-        # Options are used to query BaseCondition data and
-        # get the LoadSources (along with their maxes) for each segment-agency pair
-        lsanifromqry = optinstance.queries.loadsources.\
-            get_sources_in_lrsegs(name='animal', counties=optinstance.geographies_included['CountyName'])
-
-        lsmanufromqry = optinstance.queries.loadsources.\
-            get_sources_in_lrsegs(name='manure', counties=optinstance.geographies_included['CountyName'])
-
-        lsdevfromqry = optinstance.queries.loadsources.\
-            get_sources_in_lrsegs(name='developed', lrsegs=optinstance.geographies_included['LandRiverSegment'],
-                                  agencies=optinstance.agencies_included)
-
-        lsnatfromqry = optinstance.queries.loadsources.\
-            get_sources_in_lrsegs(name='natural', lrsegs=optinstance.geographies_included['LandRiverSegment'],
-                                  agencies=optinstance.agencies_included)
-
-        lsagrfromqry = optinstance.queries.loadsources.\
-            get_sources_in_lrsegs(name='agriculture', lrsegs=optinstance.geographies_included['LandRiverSegment'],
-                                  agencies=optinstance.agencies_included)
-
-        lssepfromqry = optinstance.queries.loadsources.\
-            get_sources_in_lrsegs(name='septic', lrsegs=optinstance.geographies_included['LandRiverSegment'],
-                                  agencies=optinstance.agencies_included)
-
-        self.lsanifromqry = lsanifromqry
-        self.lsmanufromqry = lsmanufromqry
-        self.lsndasfromqry = pd.concat([lsnatfromqry, lsdevfromqry, lsagrfromqry, lssepfromqry], ignore_index=True)
-
         # A sparse matrix is created for each Segment-Agency-Type table.
         # For the Land table,   the specs are rows=seg-agency-sources X columns=BMPs.
         # For the Animal table, the specs are rows=FIPS-animal-sources X columns=BMPs.
@@ -152,19 +124,23 @@ class PossibilitiesMatrix:
         return final_list
 
     def _create_emptymatrices(self, optinstance=None):
+        loadsources = optinstance.queries.loadsources.\
+            get_load_sources_in_geoagencies(geographies=optinstance.geographies_included,
+                                            agencies=optinstance.agencies_included)
+
         # Create a sparse matrix for each load source table with rows=seg-agency-sources X columns=BMPs
-        lsndas_indexed = self.lsndasfromqry.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
+        lsndas_indexed = loadsources.ndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
         self.ndas = _create_emptydf(row_indices=lsndas_indexed.index,
                                     column_names=optinstance.tables.srcdata.allbmps_shortnames)
-        lsani_indexed = self.lsanifromqry.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
+        lsani_indexed = loadsources.animal.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
         self.anim = _create_emptydf(row_indices=lsani_indexed.index,
                                     column_names=optinstance.tables.srcdata.allbmps_shortnames)
 
         #  All the possible FIPSFrom and FIPSTo combinations are generated.
-        newdf = expand_grid({'FIPSFrom': self.lsmanufromqry.FIPS.unique(),
-                             'FIPSTo': self.lsmanufromqry.FIPS.unique(),
-                             'AnimalName': self.lsmanufromqry.AnimalName.unique(),
-                             'LoadSource': self.lsmanufromqry.LoadSource.unique()})
+        newdf = expand_grid({'FIPSFrom': loadsources.manure.FIPS.unique(),
+                             'FIPSTo': loadsources.manure.FIPS.unique(),
+                             'AnimalName': loadsources.manure.AnimalName.unique(),
+                             'LoadSource': loadsources.manure.LoadSource.unique()})
         newdf_indexed = newdf.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource']).copy()
         newdf_indexed['Amount'] = np.nan  # add Amount as a normal column
 

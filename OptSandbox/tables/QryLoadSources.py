@@ -1,4 +1,5 @@
 import pandas as pd
+from collections import namedtuple
 
 
 class QryLoadSources:
@@ -11,7 +12,21 @@ class QryLoadSources:
         """
         self.tables = tables
 
-    def get_sources_in_lrsegs(self, lrsegs=None, agencies=None, counties=None, name=''):
+    def get_load_sources_in_geoagencies(self, geographies=None, agencies=None):
+        # get the LoadSources (along with their maxes) for each segment-agency pair
+        lsani = self._get_sources_in_lrsegs(name='animal', counties=geographies['CountyName'])
+        lsman = self._get_sources_in_lrsegs(name='manure', counties=geographies['CountyName'])
+
+        lsdev = self._get_sources_in_lrsegs(name='developed', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
+        lsnat = self._get_sources_in_lrsegs(name='natural', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
+        lsagr = self._get_sources_in_lrsegs(name='agriculture', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
+        lssep = self._get_sources_in_lrsegs(name='septic', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
+        lsndas = pd.concat([lsnat, lsdev, lsagr, lssep], ignore_index=True)
+
+        retvals = namedtuple('load_source_tables', 'animal manure ndas')
+        return retvals(animal=lsani, manure=lsman, ndas=lsndas)
+
+    def _get_sources_in_lrsegs(self, lrsegs=None, agencies=None, counties=None, name=''):
         """Get the load sources present (whether zero acres or not) in the specified segment-agencies"""
         lsdf_geobool = pd.DataFrame()
         lsdf_nongeobool = pd.DataFrame()
