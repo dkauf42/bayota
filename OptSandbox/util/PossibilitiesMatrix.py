@@ -33,15 +33,14 @@ class PossibilitiesMatrix:
             bmpdict (dictionary)
 
         """
-        tables = optinstance.tables
+        self.ndas = pd.DataFrame()
+        self.anim = pd.DataFrame()
+        self.manu = pd.DataFrame()
 
         # A sparse matrix is created for each Segment-Agency-Type table.
         # For the Land table,   the specs are rows=seg-agency-sources X columns=BMPs.
         # For the Animal table, the specs are rows=FIPS-animal-sources X columns=BMPs.
         # For the Manure table, the specs are rows=FIPSto-FIPSfrom-animal-sources X columns=BMPs.
-        self.ndas = pd.DataFrame()
-        self.anim = pd.DataFrame()
-        self.manu = pd.DataFrame()
         self._create_emptymatrices(optinstance=optinstance)
 
         #  TODO: upper_bounds = self._identifyhardupperbounds(sat)
@@ -53,12 +52,12 @@ class PossibilitiesMatrix:
                                    ignore_index=True).unique()
 
         # A dictionary is generated with <keys:loadsource>, <values:eligible BMPs>.
-        self.bmpdict = self._dict_of_bmps_by_loadsource(tables.srcdata, allloadsources)
+        self.bmpdict = self._dict_of_bmps_by_loadsource(optinstance.tables.srcdata, allloadsources)
 
         # NonNaN markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
-        self.mark_eligible_coordinates(dataframe=self.ndas, srcdataobj=tables.srcdata)
-        self.mark_eligible_coordinates(dataframe=self.anim, srcdataobj=tables.srcdata)
-        self.mark_eligible_coordinates(dataframe=self.manu, srcdataobj=tables.srcdata)
+        self.mark_eligible_coordinates(dataframe=self.ndas, srcdataobj=optinstance.tables.srcdata)
+        self.mark_eligible_coordinates(dataframe=self.anim, srcdataobj=optinstance.tables.srcdata)
+        self.mark_eligible_coordinates(dataframe=self.manu, srcdataobj=optinstance.tables.srcdata)
 
         self.ndas.to_csv('./output/testwrite_PossibilitiesMatrix_ndas.csv')
         self.anim.to_csv('./output/testwrite_PossibilitiesMatrix_anim.csv')
