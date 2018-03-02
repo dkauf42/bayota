@@ -6,13 +6,12 @@ Test various BMP-load source combinations
 import sys
 import os
 import timeit
+import tkinter as tk
 
+from gui.toplevelframes.mainwindow import MainWindow
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
 from util.OptInstance import OptInstance
-
-import tkinter as tk
-from gui.toplevelframes.mainwindow import MainWindow
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
@@ -26,7 +25,7 @@ def main():
 
 
 def runner(numinstances=1):
-    """generate an OptInstance that populates with metadata, freeparamgroups, constraints, and a possibility matrix
+    """Generate an OptInstance that populates with metadata, freeparamgroups, constraints, and a possibility matrix
     Parameters:
     Note:
         This function manages the sequence of events from user-input to initial scenario generation
