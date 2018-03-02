@@ -1,9 +1,7 @@
-from util.TblLoader import TblLoader
 from util.PossibilitiesMatrix import PossibilitiesMatrix
 from util.ScenarioRandomizer import ScenarioRandomizer
 from util.InputsToCast import InputsToCast
 from util.OptInstance import OptInstance
-from tables.TblQuery import TblQuery
 
 import tkinter as tk
 from gui.toplevelframes.mainwindow import MainWindow
@@ -22,9 +20,7 @@ class Scenario:
 
         """
         # Load the Source Data and Base Condition tables
-        tablesobj = TblLoader()
-        tblqry = TblQuery(tables=tablesobj)
-        oinstance = OptInstance(queries=tblqry)
+        oinstance = OptInstance()
 
         """ TO RUN WITH A GUI """
         #"""
@@ -43,7 +39,7 @@ class Scenario:
         print(oinstance)
 
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        self.possmatrix = PossibilitiesMatrix(tables=tablesobj, optinstance=oinstance)
+        self.possmatrix = PossibilitiesMatrix(optinstance=oinstance)
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         print('>> Generating random integers for each (Geo, Agency, Source, BMP) coordinate')
@@ -55,7 +51,7 @@ class Scenario:
         self.possmatrix.anim.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
         self.possmatrix.manu.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file
 
-        inputobj = InputsToCast(self.possmatrix, tables=tablesobj)
+        inputobj = InputsToCast(self.possmatrix, optinstance=oinstance)
         inputobj.matrix_to_table()
 
         print('<Scenario Loading Complete>')

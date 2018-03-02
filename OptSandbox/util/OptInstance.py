@@ -1,10 +1,13 @@
+from util.TblLoader import TblLoader
+from tables.TblQuery import TblQuery
 
 
 class OptInstance:
-    def __init__(self, queries=None):
+    def __init__(self):
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
-        self.queries = queries
+        self.tables = TblLoader()
+        self.queries = TblQuery(tables=self.tables)
 
         self.name = None
         self.description = None
