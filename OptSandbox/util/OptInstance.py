@@ -94,10 +94,10 @@ class OptInstance:
 
     def scenario_randomizer(self):
         print('OptInstance:scenario_randomizer: random integers for each (Geo, Agency, Source, BMP) coordinate')
-        ScenarioRandomizer(self.possibility_matrix.ndas)
-        ScenarioRandomizer(self.possibility_matrix.anim)
-        ScenarioRandomizer(self.possibility_matrix.manu)
+        ScenarioRandomizer(self.possibility_matrix.ndas.matrix)
+        ScenarioRandomizer(self.possibility_matrix.anim.matrix)
+        ScenarioRandomizer(self.possibility_matrix.manu.matrix)
 
-        self.possibility_matrix.ndas.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')  # write possibilities matrix to file
-        self.possibility_matrix.anim.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
-        self.possibility_matrix.manu.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file
+        self.possibility_matrix.ndas.matrix.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')  # write possibilities matrix to file
+        self.possibility_matrix.anim.matrix.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
+        self.possibility_matrix.manu.matrix.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file

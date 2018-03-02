@@ -2,12 +2,15 @@ import pandas as pd
 from itertools import product
 
 
-class MatrixBase:
-    def __init__(self, name=''):
+class MatrixBase():
+    def __init__(self, name='', row_indices=None, column_names=None):
         """A wrapper class for the possibility matrices needed in an optinstance"""
         self.name = name
 
-        self.matrix = pd.DataFrame()
+        if (row_indices is None) | (column_names is None):
+            self.matrix = pd.DataFrame()
+        else:
+            self.matrix = self.create_emptydf(row_indices=row_indices, column_names=column_names)
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -18,14 +21,15 @@ class MatrixBase:
     def get_cols(self):
         pass
 
-    def create_emptydf(self, row_indices, column_names):
+    @staticmethod
+    def create_emptydf(row_indices, column_names):
         """ Short module-level function for generating the skeleton of a possibility-matrix"""
         df = pd.DataFrame(index=row_indices, columns=column_names)
 
         df.sort_index(axis=0, inplace=True, sort_remaining=True)
         df.sort_index(axis=1, inplace=True, sort_remaining=True)
 
-        self.matrix = df
+        return df
 
     @staticmethod
     def expand_grid(data_dict):
