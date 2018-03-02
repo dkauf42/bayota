@@ -1,6 +1,7 @@
 from util.TblLoader import TblLoader
 from tables.TblQuery import TblQuery
 from util.PossibilitiesMatrix import PossibilitiesMatrix
+import pandas as pd
 
 
 class OptInstance:
@@ -29,23 +30,24 @@ class OptInstance:
         self.sectors_included = None
         # list of sectors selected to specify free parameter groups
 
-        self.possibility_matrix = None
+        self.possibility_matrix = pd.DataFrame()
 
     def __repr__(self):
         d = self.__dict__
 
         formattedstr = "\n***** OptInstance Details *****\n" \
-                       "name:              %s\n" \
-                       "description:       %s\n" \
-                       "base year:         %s\n" \
-                       "base condition:    %s\n" \
-                       "wastewater:        %s\n" \
-                       "cost profile:      %s\n" \
-                       "geographic scale:  %s\n" \
-                       "geographic areas:  %s\n" \
-                       "# of lrsegs:       %s\n" \
-                       "agencies included: %s\n" \
-                       "sectors included:  %s\n" \
+                       "name:                     %s\n" \
+                       "description:              %s\n" \
+                       "base year:                %s\n" \
+                       "base condition:           %s\n" \
+                       "wastewater:               %s\n" \
+                       "cost profile:             %s\n" \
+                       "geographic scale:         %s\n" \
+                       "geographic areas:         %s\n" \
+                       "# of lrsegs:              %s\n" \
+                       "agencies included:        %s\n" \
+                       "sectors included:         %s\n" \
+                       "possibility matrix shape: %s\n" \
                        "************************************\n" %\
                        tuple([str(i) for i in [d['name'],
                                                d['description'],
@@ -57,7 +59,8 @@ class OptInstance:
                                                d['geoareanames'],
                                                d['geographies_included'].shape[0],
                                                d['agencies_included'],
-                                               d['sectors_included']]])
+                                               d['sectors_included'],
+                                               d['possibility_matrix'].shape]])
 
         return formattedstr
 
