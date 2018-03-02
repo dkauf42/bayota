@@ -7,7 +7,7 @@ import tkinter as tk
 from gui.toplevelframes.mainwindow import MainWindow
 
 
-class Scenario:
+class Runner:
     def __init__(self, optionsfile=''):
         """A wrapper to generate and hold the metadata for a scenario
 
@@ -34,7 +34,7 @@ class Scenario:
             raise ValueError('No options specified.')
         else:
             print(self.root.results)
-        #raise ValueError('Scenario: temp halt')
+        #raise ValueError('Runner: temp halt')
         #"""
 
         print(oinstance)
@@ -55,7 +55,7 @@ class Scenario:
         inputobj = InputsToCast(self.possmatrix, optinstance=oinstance)
         inputobj.matrix_to_table()
 
-        print('<Scenario Loading Complete>')
+        print('<Runner Loading Complete>')
 
     def run_gui(self, optinstance=None):
         with MainWindow(self.root, optinstance=optinstance) as mainwindow:
