@@ -3,8 +3,6 @@ import numpy as np
 from tqdm import tqdm  # Loop progress indicator module
 from itertools import product
 
-from filters.SegmentAgencyTypeFilter import SegmentAgencyTypeFilter
-
 
 def _create_emptydf(row_indices, column_names):
     """ Short module-level function for generating the skeleton of a possibility-matrix"""
@@ -22,7 +20,7 @@ def expand_grid(data_dict):
 
 
 class PossibilitiesMatrix:
-    def __init__(self, tables=None, optinstance=None):
+    def __init__(self, optinstance=None):
         """Filter by Segment-agency_types
 
         Args:
@@ -34,13 +32,38 @@ class PossibilitiesMatrix:
             anim (pandas dataframe)
             manu (pandas dataframe)
             bmpdict (dictionary)
-            geo_seg_source_bmps (pandas dataframe): agencies to be included in this Scenario
+            geo_seg_source_bmps (pandas dataframe): agencies to be included in this Runner
 
         """
+        tables = optinstance.tables
 
         # Options are used to query BaseCondition data and
         # get the LoadSources (along with their maxes) for each segment-agency pair
-        sat = SegmentAgencyTypeFilter(tables=tables, optinstance=optinstance)
+        lsanifromqry = optinstance.queries.loadsources.\
+            get_sources_in_lrsegs(name='animal', counties=optinstance.geographies_included['CountyName'])
+
+        lsmanufromqry = optinstance.queries.loadsources.\
+            get_sources_in_lrsegs(name='manure', counties=optinstance.geographies_included['CountyName'])
+
+        lsdevfromqry = optinstance.queries.loadsources.\
+            get_sources_in_lrsegs(name='developed', lrsegs=optinstance.geographies_included['LandRiverSegment'],
+                                  agencies=optinstance.agencies_included)
+
+        lsnatfromqry = optinstance.queries.loadsources.\
+            get_sources_in_lrsegs(name='natural', lrsegs=optinstance.geographies_included['LandRiverSegment'],
+                                  agencies=optinstance.agencies_included)
+
+        lsagrfromqry = optinstance.queries.loadsources.\
+            get_sources_in_lrsegs(name='agriculture', lrsegs=optinstance.geographies_included['LandRiverSegment'],
+                                  agencies=optinstance.agencies_included)
+
+        lssepfromqry = optinstance.queries.loadsources.\
+            get_sources_in_lrsegs(name='septic', lrsegs=optinstance.geographies_included['LandRiverSegment'],
+                                  agencies=optinstance.agencies_included)
+
+        self.lsanifromqry = lsanifromqry
+        self.lsmanufromqry = lsmanufromqry
+        self.lsndasfromqry = pd.concat([lsnatfromqry, lsdevfromqry, lsagrfromqry, lssepfromqry], ignore_index=True)
 
         # A sparse matrix is created for each Segment-Agency-Type table.
         # For the Land table,   the specs are rows=seg-agency-sources X columns=BMPs.
@@ -49,7 +72,7 @@ class PossibilitiesMatrix:
         self.ndas = pd.DataFrame()
         self.anim = pd.DataFrame()
         self.manu = pd.DataFrame()
-        self._create_emptymatrices(sat, tables)
+        self._create_emptymatrices(optinstance=optinstance)
 
         #  TODO: upper_bounds = self._identifyhardupperbounds(sat)
 
@@ -64,15 +87,15 @@ class PossibilitiesMatrix:
 
         # NonNaN markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
         self.geo_seg_source_bmps = None
-        self.filter_from_sat(dataframe=self.ndas, srcdataobj=tables.srcdata)
-        self.filter_from_sat(dataframe=self.anim, srcdataobj=tables.srcdata)
-        self.filter_from_sat(dataframe=self.manu, srcdataobj=tables.srcdata)
+        self.mark_eligible_coordinates(dataframe=self.ndas, srcdataobj=tables.srcdata)
+        self.mark_eligible_coordinates(dataframe=self.anim, srcdataobj=tables.srcdata)
+        self.mark_eligible_coordinates(dataframe=self.manu, srcdataobj=tables.srcdata)
 
         self.ndas.to_csv('./output/testwrite_PossibilitiesMatrix_ndas.csv')
         self.anim.to_csv('./output/testwrite_PossibilitiesMatrix_anim.csv')
         self.manu.to_csv('./output/testwrite_PossibilitiesMatrix_manu.csv')
 
-    def filter_from_sat(self, dataframe=None, srcdataobj=None):
+    def mark_eligible_coordinates(self, dataframe=None, srcdataobj=None):
         """Generate nonNaN markers for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
 
         Args:
@@ -131,22 +154,25 @@ class PossibilitiesMatrix:
                 final_list.append(num)
         return final_list
 
-    def _create_emptymatrices(self, sat, tables):
-        # Create a sparse matrix for each sat table with rows=seg-agency-sources X columns=BMPs
-        lsndas_indexed = sat.lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
-        self.ndas = _create_emptydf(row_indices=lsndas_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
-        lsani_indexed = sat.lsani.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
-        self.anim = _create_emptydf(row_indices=lsani_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+    def _create_emptymatrices(self, optinstance=None):
+        # Create a sparse matrix for each load source table with rows=seg-agency-sources X columns=BMPs
+        lsndas_indexed = self.lsndasfromqry.set_index(['LandRiverSegment', 'Agency', 'LoadSource']).copy()
+        self.ndas = _create_emptydf(row_indices=lsndas_indexed.index,
+                                    column_names=optinstance.tables.srcdata.allbmps_shortnames)
+        lsani_indexed = self.lsanifromqry.set_index(['FIPS', 'AnimalName', 'LoadSource']).copy()
+        self.anim = _create_emptydf(row_indices=lsani_indexed.index,
+                                    column_names=optinstance.tables.srcdata.allbmps_shortnames)
 
         #  All the possible FIPSFrom and FIPSTo combinations are generated.
-        newdf = expand_grid({'FIPSFrom': sat.lsman.FIPS.unique(),
-                             'FIPSTo': sat.lsman.FIPS.unique(),
-                             'AnimalName': sat.lsman.AnimalName.unique(),
-                             'LoadSource': sat.lsman.LoadSource.unique()})
+        newdf = expand_grid({'FIPSFrom': self.lsmanufromqry.FIPS.unique(),
+                             'FIPSTo': self.lsmanufromqry.FIPS.unique(),
+                             'AnimalName': self.lsmanufromqry.AnimalName.unique(),
+                             'LoadSource': self.lsmanufromqry.LoadSource.unique()})
         newdf_indexed = newdf.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource']).copy()
         newdf_indexed['Amount'] = np.nan  # add Amount as a normal column
 
-        self.manu = _create_emptydf(row_indices=newdf_indexed.index, column_names=tables.srcdata.allbmps_shortnames)
+        self.manu = _create_emptydf(row_indices=newdf_indexed.index,
+                                    column_names=optinstance.tables.srcdata.allbmps_shortnames)
 
     def _dict_of_bmps_by_loadsource(self, srcdataobj, load_sources):
         """ Generate a dictionary of BMPs that are eligible for every load source """
