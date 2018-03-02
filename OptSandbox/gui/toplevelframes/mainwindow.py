@@ -93,11 +93,12 @@ class MainWindow(tk.Frame):
         self.optinstance.geoscalename = 'County'
         self.optinstance.geoareanames = ['Anne Arundel']
 
-        self.optinstance.geographies_included = self.queries.source.get_lrseg_table(scale=self.optinstance.geoscalename,
-                                                                               areanames=self.optinstance.geoareanames)
+        self.optinstance.geographies_included = self.queries.source.\
+            get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
 
         self.optinstance.agencies_included = self.queries.base.\
             get_agencies_in_lrsegs(lrsegs=self.optinstance.geographies_included.LandRiverSegment)
+
         self.optinstance.sectors_included = self.queries.source.get_all_sector_names()
 
         self.close_and_submit()
