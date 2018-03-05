@@ -11,7 +11,11 @@ class MatrixBase:
         if (row_indices is None) | (column_names is None):
             self.matrix = pd.DataFrame()
         else:
-            self.matrix = self.create_emptydf(row_indices=row_indices, column_names=column_names)
+            # generate the skeleton of a matrix with sorted rows and columns
+            df = pd.DataFrame(index=row_indices, columns=column_names)
+            df.sort_index(axis=0, inplace=True, sort_remaining=True)
+            df.sort_index(axis=1, inplace=True, sort_remaining=True)
+            self.matrix = df
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -23,16 +27,6 @@ class MatrixBase:
         for index, row in tqdm(dataframe.iterrows(), total=len(dataframe.index)):  # iterate through the load sources
             bmplist_for_this_loadsource = bmpdict[row.name[loadsourceindex]]
             row.loc[bmplist_for_this_loadsource] = 1  # Mark eligible BMPs for each load source w/a '1' instead of NaN
-
-    @staticmethod
-    def create_emptydf(row_indices, column_names):
-        """ Short module-level function for generating the skeleton of a possibility-matrix"""
-        df = pd.DataFrame(index=row_indices, columns=column_names)
-
-        df.sort_index(axis=0, inplace=True, sort_remaining=True)
-        df.sort_index(axis=1, inplace=True, sort_remaining=True)
-
-        return df
 
     @staticmethod
     def expand_grid(data_dict):
