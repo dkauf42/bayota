@@ -36,15 +36,10 @@ class OptInstance:
         self.load_sources_included = None
         # list of load sources selected included in the geography-agencies
 
-        self.sand = None
-        self.animal = None
-        self.manure = None
-
         self.pmatrices = {'animal': None,
-                                   'manure': None,
-                                   'ndas': None}
-        # list of load sources selected included in the geography-agencies
-        # Three of sectors selected to specify free parameter groups
+                          'manure': None,
+                          'ndas': None}
+        # Parameter/possibility matrices for each large bmp type
 
         self.bounds_matrices = {'animal': pd.DataFrame(),
                                 'manure': pd.DataFrame(),
