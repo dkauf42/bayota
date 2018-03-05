@@ -51,7 +51,7 @@ def runner(numinstances=1):
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         oinstance.scenario_randomizer()
 
-        inputobj = InputsToCast(oinstance.parameter_matrices, optinstance=oinstance)
+        inputobj = InputsToCast(oinstance.pmatrices, optinstance=oinstance)
         inputobj.matrix_to_table()
         print('<Runner Loading Complete>')
 
