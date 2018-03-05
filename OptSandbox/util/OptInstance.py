@@ -65,7 +65,7 @@ class OptInstance:
                        "# of lrsegs:              %s\n" \
                        "agencies included:        %s\n" \
                        "sectors included:         %s\n" \
-                       "eligible bmp matrices: %s\n" \
+                       "parameter matrices: %s\n" \
                        "************************************\n" %\
                        tuple([str(i) for i in [d['name'],
                                                d['description'],
@@ -78,7 +78,7 @@ class OptInstance:
                                                d['geographies_included'].shape[0],
                                                d['agencies_included'],
                                                d['sectors_included'],
-                                               d['eligiblebmp_matrices']]])
+                                               d['parameter_matrices']]])
 
         return formattedstr
 
