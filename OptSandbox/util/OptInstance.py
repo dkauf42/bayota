@@ -115,32 +115,31 @@ class OptInstance:
             Manure: rows=FIPSto-FIPSfrom-animal-sources X columns=BMPs
 
         Note:
-            Ya'ad means target
+            Ya'ad means target (i.e. BMP application target)
         """
 
-        # Load source tables are generated.
-        yaadtables = self.queries.loadsources. \
-            get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies(geographies=self.geographies_included,
-                                                                                  agencies=self.agencies_included)
-        # A numpy array is saved to this optinstance that contains all load sources in this scenario.
-        self.load_sources_included = pd.concat([yaadtables.ndas.index.get_level_values('LoadSource').to_series(),
-                                                yaadtables.animal.index.get_level_values('LoadSource').to_series(),
-                                                yaadtables.manure.index.get_level_values('LoadSource').to_series()],
-                                               ignore_index=True).unique()
-
         # An empty emptyparametermatrix is created for each Segment-Agency-Type table.
-        self.parameter_matrices['ndas'] = MatrixSand(name='ndas', row_indices=yaadtables.ndas.index,
-                                                     column_names=self.tables.srcdata.allbmps_shortnames)
-        self.parameter_matrices['animal'] = MatrixAnimal(name='anim', row_indices=yaadtables.animal.index,
-                                                         column_names=self.tables.srcdata.allbmps_shortnames)
-        self.parameter_matrices['manure'] = MatrixManure(name='manu', row_indices=yaadtables.manure.index,
-                                                         column_names=self.tables.srcdata.allbmps_shortnames)
+        self.parameter_matrices['ndas'] = MatrixSand(name='ndas', geographies=self.geographies_included,
+                                                     agencies=self.agencies_included, queries=self.queries)
+        self.parameter_matrices['animal'] = MatrixAnimal(name='anim', geographies=self.geographies_included,
+                                                         queries=self.queries)
+        self.parameter_matrices['manure'] = MatrixManure(name='manu', geographies=self.geographies_included,
+                                                         queries=self.queries)
 
     def mark_eligibility(self):
+        # A numpy array is created that contains all load sources in this scenario.
+        self.load_sources_included = pd.concat([self.parameter_matrices['ndas'].
+                                               yaad_table.index.get_level_values('LoadSource').to_series(),
+                                                self.parameter_matrices['animal'].
+                                               yaad_table.index.get_level_values('LoadSource').to_series(),
+                                                self.parameter_matrices['manure'].
+                                               yaad_table.index.get_level_values('LoadSource').to_series()],
+                                               ignore_index=True).unique()
+
         # A dictionary is generated with <keys:loadsource>, <values:eligible BMPs>.
         bmpdict = self.queries.source.get_dict_of_bmps_by_loadsource_keys(load_sources=self.load_sources_included)
 
-        # NonNaN markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities emptyparametermatrix
+        # NonNaN markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the emptyparametermatrix
         self.parameter_matrices['ndas'].mark_eligible_coordinates(bmpdict=bmpdict)
         self.parameter_matrices['animal'].mark_eligible_coordinates(bmpdict=bmpdict)
         self.parameter_matrices['manure'].mark_eligible_coordinates(bmpdict=bmpdict)

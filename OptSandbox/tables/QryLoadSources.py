@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from collections import namedtuple
 
 from tables.MatrixBase import MatrixBase
 
@@ -15,24 +14,34 @@ class QryLoadSources:
         """
         self.tables = tables
 
-    def get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies(self, geographies=None, agencies=None):
+    def get_yaad_for_sand(self, geographies=None, agencies=None):
         """ get the LoadSources (along with their maxes) for each segment-agency pair
+        get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies
 
         Returns:
             namedtuple with three dataframes
         """
-        lsani = self._get_sources_in_lrsegs(name='animal', counties=geographies['CountyName'])
-        lsman = self._get_sources_in_lrsegs(name='manure', counties=geographies['CountyName'])
-
         lsdev = self._get_sources_in_lrsegs(name='developed', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
         lsnat = self._get_sources_in_lrsegs(name='natural', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
         lsagr = self._get_sources_in_lrsegs(name='agriculture', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
         lssep = self._get_sources_in_lrsegs(name='septic', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
         lsndas = pd.concat([lsnat, lsdev, lsagr, lssep], ignore_index=True)
-
         """ Hierarchical indices are specified for each dataframe. """
-        lsndas_indexed = lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource'], drop=False).copy()
-        lsanim_indexed = lsani.set_index(['FIPS', 'AnimalName', 'LoadSource'], drop=False).copy()
+        return lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource'], drop=False).copy()
+
+    def get_yaad_for_animal(self, geographies=None):
+        """ get the LoadSources (along with their maxes) for each segment-agency pair
+        get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies
+        """
+        lsani = self._get_sources_in_lrsegs(name='animal', counties=geographies['CountyName'])
+        """ Hierarchical indices are specified for each dataframe. """
+        return lsani.set_index(['FIPS', 'AnimalName', 'LoadSource'], drop=False).copy()
+
+    def get_yaad_for_manure(self, geographies=None):
+        """ get the LoadSources (along with their maxes) for each segment-agency pair
+        get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies
+        """
+        lsman = self._get_sources_in_lrsegs(name='manure', counties=geographies['CountyName'])
         #  For manure, all the possible FIPSFrom and FIPSTo combinations are generated.
         newdf_manure = MatrixBase.expand_grid({'FIPSFrom': lsman.FIPS.unique(),
                                                'FIPSTo': lsman.FIPS.unique(),
@@ -41,8 +50,7 @@ class QryLoadSources:
         lsmanu_indexed = newdf_manure.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource'], drop=False).copy()
         lsmanu_indexed['Amount'] = np.nan  # add Amount as a normal column
 
-        retvals = namedtuple('load_source_tables', 'animal manure ndas')
-        return retvals(animal=lsanim_indexed, manure=lsmanu_indexed, ndas=lsndas_indexed)
+        return lsmanu_indexed
 
     def _get_sources_in_lrsegs(self, lrsegs=None, agencies=None, counties=None, name=''):
         """Get the load sources present (whether zero acres or not) in the specified segment-agencies
