@@ -48,6 +48,8 @@ def runner(numinstances=1):
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
         oinstance.mark_eligibility()
 
+        oinstance.generate_boundsmatrices()
+
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         oinstance.scenario_randomizer()
 
