@@ -24,7 +24,7 @@ def main():
 
 
 def runner(numinstances=1):
-    """Generate an OptInstance that populates with metadata, freeparamgroups, constraints, and a possibility matrix
+    """Generate an OptInstance that populates with metadata, freeparamgroups, constraints, and a parametermatrix
     Parameters:
     Note:
         This function manages the sequence of events from user-input to initial scenario generation
@@ -42,16 +42,16 @@ def runner(numinstances=1):
         root.mainloop()
         print(oinstance)
 
-        # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        oinstance.generate_fullmatrices()
+        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
+        oinstance.generate_emptyparametermatrices()
 
-        # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
+        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
         oinstance.mark_eligibility()
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         oinstance.scenario_randomizer()
 
-        inputobj = InputsToCast(oinstance.eligiblebmp_matrices, optinstance=oinstance)
+        inputobj = InputsToCast(oinstance.parameter_matrices, optinstance=oinstance)
         inputobj.matrix_to_table()
         print('<Runner Loading Complete>')
 
