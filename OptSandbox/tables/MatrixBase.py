@@ -1,5 +1,6 @@
 import pandas as pd
 from itertools import product
+from tqdm import tqdm  # Loop progress indicator module
 
 
 class MatrixBase:
@@ -15,11 +16,13 @@ class MatrixBase:
     def __getitem__(self, item):
         return getattr(self, item)
 
-    def get_rows(self):
-        pass
-
-    def get_cols(self):
-        pass
+    @staticmethod
+    def mark_eligible_coordinates(dataframe=None, bmpdict=None):
+        """ Indicate the BMPs that are possible on each load source in the table with a '1' """
+        loadsourceindex = dataframe.index.names.index('LoadSource')
+        for index, row in tqdm(dataframe.iterrows(), total=len(dataframe.index)):  # iterate through the load sources
+            bmplist_for_this_loadsource = bmpdict[row.name[loadsourceindex]]
+            row.loc[bmplist_for_this_loadsource] = 1  # Mark eligible BMPs for each load source w/a '1' instead of NaN
 
     @staticmethod
     def create_emptydf(row_indices, column_names):

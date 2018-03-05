@@ -1,8 +1,8 @@
+import pandas as pd
 from util.TblLoader import TblLoader
 from tables.TblQuery import TblQuery
-from util.PossibilitiesMatrices import PossibilitiesMatrices
 from util.ScenarioRandomizer import ScenarioRandomizer
-import pandas as pd
+from tables.MatrixBase import MatrixBase
 
 
 class OptInstance:
@@ -31,7 +31,12 @@ class OptInstance:
         self.sectors_included = None
         # list of sectors selected to specify free parameter groups
 
-        self.possibility_matrix = pd.DataFrame()
+        self.eligiblebmp_matrices = {'animal': pd.DataFrame(),
+                                   'manure': pd.DataFrame(),
+                                   'ndas': pd.DataFrame()}
+        # Three of sectors selected to specify free parameter groups
+
+        self.bound_matrix = pd.DataFrame()
 
     def __repr__(self):
         d = self.__dict__
@@ -48,7 +53,7 @@ class OptInstance:
                        "# of lrsegs:              %s\n" \
                        "agencies included:        %s\n" \
                        "sectors included:         %s\n" \
-                       "possibility matrix shape: %s\n" \
+                       "eligible bmp matrices: %s\n" \
                        "************************************\n" %\
                        tuple([str(i) for i in [d['name'],
                                                d['description'],
@@ -61,7 +66,7 @@ class OptInstance:
                                                d['geographies_included'].shape[0],
                                                d['agencies_included'],
                                                d['sectors_included'],
-                                               d['possibility_matrix'].shape]])
+                                               d['eligiblebmp_matrices']]])
 
         return formattedstr
 
@@ -89,15 +94,51 @@ class OptInstance:
     def set_geography(self, geotable=None):
         self.geographies_included = geotable
 
-    def generate_possibilitymatrix(self):
-        self.possibility_matrix = PossibilitiesMatrices(optinstance=self)
+    def generate_eligibilitymatrices(self):
+        """ Load source tables are generated. """
+        loadsources = self.queries.loadsources. \
+            get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies(geographies=self.geographies_included, agencies=self.agencies_included)
+
+        """ A sparse matrix is created for each Segment-Agency-Type table.
+        The Specs:
+            Land: rows=seg-agency-sources X columns=BMPs.
+            Animal: rows=FIPS-animal-sources X columns=BMPs
+            Manure: rows=FIPSto-FIPSfrom-animal-sources X columns=BMPs
+        """
+        ndas = MatrixBase(name='ndas', row_indices=loadsources.ndas.index,
+                               column_names=self.tables.srcdata.allbmps_shortnames)
+        anim = MatrixBase(name='anim', row_indices=loadsources.animal.index,
+                               column_names=self.tables.srcdata.allbmps_shortnames)
+        manu = MatrixBase(name='manu', row_indices=loadsources.manure.index,
+                               column_names=self.tables.srcdata.allbmps_shortnames)
+
+        # A pandas.Series is generated that contains all load sources in this scenario.
+        all_load_sources = pd.concat([ndas.matrix.index.get_level_values('LoadSource').to_series(),
+                                      anim.matrix.index.get_level_values('LoadSource').to_series(),
+                                      manu.matrix.index.get_level_values('LoadSource').to_series()],
+                                     ignore_index=True).unique()
+
+        # A dictionary is generated with <keys:loadsource>, <values:eligible BMPs>.
+        bmpdict = self.queries.source.get_dict_of_bmps_by_loadsource_keys(load_sources=all_load_sources)
+
+        # NonNaN markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the possibilities matrix
+        MatrixBase.mark_eligible_coordinates(dataframe=ndas.matrix, bmpdict=bmpdict)
+        MatrixBase.mark_eligible_coordinates(dataframe=anim.matrix, bmpdict=bmpdict)
+        MatrixBase.mark_eligible_coordinates(dataframe=manu.matrix, bmpdict=bmpdict)
+
+        self.eligiblebmp_matrices['ndas'] = ndas
+        self.eligiblebmp_matrices['animal'] = anim
+        self.eligiblebmp_matrices['manure'] = manu
+
+        #  TODO: upper_bounds = self._identifyhardupperbounds(sat)
+        # Associate a hard lower and upper bound with each marker coordinate in the matrix
 
     def scenario_randomizer(self):
         print('OptInstance:scenario_randomizer: random integers for each (Geo, Agency, Source, BMP) coordinate')
-        ScenarioRandomizer(self.possibility_matrix.ndas.matrix)
-        ScenarioRandomizer(self.possibility_matrix.anim.matrix)
-        ScenarioRandomizer(self.possibility_matrix.manu.matrix)
+        ScenarioRandomizer(self.eligiblebmp_matrices['ndas'].matrix)
+        ScenarioRandomizer(self.eligiblebmp_matrices['animal'].matrix)
+        ScenarioRandomizer(self.eligiblebmp_matrices['manure'].matrix)
 
-        self.possibility_matrix.ndas.matrix.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')  # write possibilities matrix to file
-        self.possibility_matrix.anim.matrix.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
-        self.possibility_matrix.manu.matrix.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file
+        self.eligiblebmp_matrices['ndas'].matrix.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')  # write possibilities matrix to file
+        self.eligiblebmp_matrices['animal'].matrix.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')  # write possibilities matrix to file
+        self.eligiblebmp_matrices['manure'].matrix.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')  # write possibilities matrix to file

@@ -43,12 +43,12 @@ def runner(numinstances=1):
         print(oinstance)
 
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        oinstance.generate_possibilitymatrix()
+        oinstance.generate_eligibilitymatrices()
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         oinstance.scenario_randomizer()
 
-        inputobj = InputsToCast(oinstance.possibility_matrix, optinstance=oinstance)
+        inputobj = InputsToCast(oinstance.eligiblebmp_matrices, optinstance=oinstance)
         inputobj.matrix_to_table()
         print('<Runner Loading Complete>')
 

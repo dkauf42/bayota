@@ -98,3 +98,30 @@ class QrySource:
     def get_all_sector_names(self):
         mylist = list(self.tables.srcdata.lsdefinitions['Sector'].unique())
         return mylist
+
+    def get_dict_of_bmps_by_loadsource_keys(self, load_sources):
+        """ Generate a dictionary of BMPs that are eligible for every load source
+
+        Args:
+            load_sources (pandas.Series):
+
+        """
+        mydict = {}
+        for ls in load_sources:
+            # Get Load Source Groups that this load source is in.
+            loadsourcegroups = self.tables.srcdata.get(sheetabbrev='sourcegrpcomponents', getcolumn='LoadSourceGroup',
+                                                       by='LoadSource', equalto=ls)  # pandas.core.series.Series
+
+            bmplist = []
+            for x in loadsourcegroups:
+                # Get the BMPs that can be applied on this load source group
+                bmplist += self.tables.srcdata.get(sheetabbrev='sourcegrps', getcolumn='BmpShortName',
+                                                   by='LoadSourceGroup', equalto=x).tolist()
+            mydict[ls] = self.removedups(bmplist)
+        return mydict
+
+    @staticmethod
+    def removedups(listwithduplicates):
+        seen = set()
+        seen_add = seen.add
+        return [x for x in listwithduplicates if not (x in seen or seen_add(x))]

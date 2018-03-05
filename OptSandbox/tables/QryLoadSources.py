@@ -1,5 +1,8 @@
 import pandas as pd
+import numpy as np
 from collections import namedtuple
+
+from tables.MatrixBase import MatrixBase
 
 
 class QryLoadSources:
@@ -12,8 +15,12 @@ class QryLoadSources:
         """
         self.tables = tables
 
-    def get_load_sources_in_geoagencies(self, geographies=None, agencies=None):
-        # get the LoadSources (along with their maxes) for each segment-agency pair
+    def get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies(self, geographies=None, agencies=None):
+        """ get the LoadSources (along with their maxes) for each segment-agency pair
+
+        Returns:
+            namedtuple with three dataframes
+        """
         lsani = self._get_sources_in_lrsegs(name='animal', counties=geographies['CountyName'])
         lsman = self._get_sources_in_lrsegs(name='manure', counties=geographies['CountyName'])
 
@@ -23,11 +30,34 @@ class QryLoadSources:
         lssep = self._get_sources_in_lrsegs(name='septic', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
         lsndas = pd.concat([lsnat, lsdev, lsagr, lssep], ignore_index=True)
 
+        """ Hierarchical indices are specified for each dataframe. """
+        lsndas_indexed = lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource'], drop=False).copy()
+        lsanim_indexed = lsani.set_index(['FIPS', 'AnimalName', 'LoadSource'], drop=False).copy()
+        #  For manure, all the possible FIPSFrom and FIPSTo combinations are generated.
+        newdf_manure = MatrixBase.expand_grid({'FIPSFrom': lsman.FIPS.unique(),
+                                               'FIPSTo': lsman.FIPS.unique(),
+                                               'AnimalName': lsman.AnimalName.unique(),
+                                               'LoadSource': lsman.LoadSource.unique()})
+        lsmanu_indexed = newdf_manure.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource'], drop=False).copy()
+        lsmanu_indexed['Amount'] = np.nan  # add Amount as a normal column
+
         retvals = namedtuple('load_source_tables', 'animal manure ndas')
-        return retvals(animal=lsani, manure=lsman, ndas=lsndas)
+        return retvals(animal=lsanim_indexed, manure=lsmanu_indexed, ndas=lsndas_indexed)
 
     def _get_sources_in_lrsegs(self, lrsegs=None, agencies=None, counties=None, name=''):
-        """Get the load sources present (whether zero acres or not) in the specified segment-agencies"""
+        """Get the load sources present (whether zero acres or not) in the specified segment-agencies
+
+        Returns:
+            pandas.DataFrame
+
+        Note:
+            for ndas, the return DataFrame has columns: [LandRiverSegment, Agency, LoadSource, Amount, Unit]
+            for animal, the return DataFrame has columns: [ScenarioName, BaseCondition, FIPS, CountyName,
+                                                           StateAbbreviation, AnimalName, LoadSource, AnimalCount,
+                                                           AnimalUnits]
+            for manure, the return DataFrame has columns: [County, StateAbbreviation, FIPS,
+                                                    LoadSource, Dry_Tons_of_Stored_Manure]
+        """
         lsdf_geobool = pd.DataFrame()
         lsdf_nongeobool = pd.DataFrame()
 
