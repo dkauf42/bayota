@@ -43,7 +43,10 @@ def runner(numinstances=1):
         print(oinstance)
 
         # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        oinstance.generate_eligibilitymatrices()
+        oinstance.generate_fullmatrices()
+
+        # Generate a matrix with rows(i)=seg-agency-sources X columns(j)=BMPs
+        oinstance.mark_eligibility()
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         oinstance.scenario_randomizer()

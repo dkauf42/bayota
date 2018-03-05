@@ -34,7 +34,7 @@ class InputsToCast:
     def matrix_to_table(self):
         """Convert an M x N matrix to a stacked (MxN) x 1 Series, and then to a DataFrame"""
 
-        stacked_ndas = self.possmatrixobj['ndas'].matrix.stack()
+        stacked_ndas = self.possmatrixobj['ndas'].stack()
         print(stacked_ndas.index.names)  # 'LandRiverSegment', 'Agency', 'LoadSource', 'BmpShortname'
         newindexnames = ['GeographyName', 'AgencyCode', 'LoadSourceGroup', 'BmpShortname']
         print(newindexnames)
@@ -49,7 +49,7 @@ class InputsToCast:
         stacked_ndas['AgencyCode'] = self.tables.agencytranslate_fromnames(stacked_ndas['AgencyCode'])
         print(stacked_ndas.head())
 
-        stacked_anim = self.possmatrixobj['animal'].matrix.stack()
+        stacked_anim = self.possmatrixobj['animal'].stack()
         print(stacked_anim.index.names)  # 'FIPS', 'AnimalName', 'LoadSource', 'BmpShortname'
         newindexnames = ['GeographyName', 'AnimalGroup', 'LoadSourceGroup', 'BmpShortname']
         print(newindexnames)
@@ -66,7 +66,7 @@ class InputsToCast:
         stacked_anim = stacked_anim[self.headers_animal]
         print(stacked_anim.head())
 
-        stacked_manu = self.possmatrixobj['manure'].matrix.stack()
+        stacked_manu = self.possmatrixobj['manure'].stack()
         print(stacked_manu.index.names)  # 'FIPSFrom', 'FIPSTo', 'AnimalName', 'Loadsource', 'BmpShortname'
         newindexnames = ['FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'BmpShortname']
         print(newindexnames)
