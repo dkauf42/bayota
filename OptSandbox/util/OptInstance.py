@@ -142,10 +142,10 @@ class OptInstance:
     def generate_boundsmatrices(self):
         # TODO: upper_bounds = self._identifyhardupperbounds(sat)
         # Associate a hard lower and upper bound with each marker coordinate in the emptyparametermatrix
+        self.pmatrices['animal'].identifyhardupperbounds()
         pass
 
     def scenario_randomizer(self):
-        print('OptInstance:scenario_randomizer: random integers for each (Geo, Agency, Source, BMP) coordinate')
         ScenarioRandomizer(self.pmatrices['ndas'].eligibleparametermatrix)
         ScenarioRandomizer(self.pmatrices['animal'].eligibleparametermatrix)
         ScenarioRandomizer(self.pmatrices['manure'].eligibleparametermatrix)

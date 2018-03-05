@@ -35,9 +35,9 @@ class InputsToCast:
         """Convert an M x N parametermatrix to a stacked (MxN) x 1 Series, and then to a DataFrame"""
 
         stacked_ndas = self.possmatrixobj['ndas'].eligibleparametermatrix.stack()
-        print(stacked_ndas.index.names)  # 'LandRiverSegment', 'Agency', 'LoadSource', 'BmpShortname'
+        #print(stacked_ndas.index.names)  # 'LandRiverSegment', 'Agency', 'LoadSource', 'BmpShortname'
         newindexnames = ['GeographyName', 'AgencyCode', 'LoadSourceGroup', 'BmpShortname']
-        print(newindexnames)
+        #print(newindexnames)
         stacked_ndas.index.rename(newindexnames, inplace=True)
         stacked_ndas.name = 'Amount'
         stacked_ndas = pd.DataFrame(stacked_ndas)
@@ -47,12 +47,12 @@ class InputsToCast:
         stacked_ndas.reset_index(inplace=True)
         stacked_ndas = stacked_ndas[self.headers_land]
         stacked_ndas['AgencyCode'] = self.tables.agencytranslate_fromnames(stacked_ndas['AgencyCode'])
-        print(stacked_ndas.head())
+        #print(stacked_ndas.head())
 
         stacked_anim = self.possmatrixobj['animal'].eligibleparametermatrix.stack()
-        print(stacked_anim.index.names)  # 'FIPS', 'AnimalName', 'LoadSource', 'BmpShortname'
+        #print(stacked_anim.index.names)  # 'FIPS', 'AnimalName', 'LoadSource', 'BmpShortname'
         newindexnames = ['GeographyName', 'AnimalGroup', 'LoadSourceGroup', 'BmpShortname']
-        print(newindexnames)
+        #print(newindexnames)
         stacked_anim.index.rename(newindexnames, inplace=True)
         stacked_anim.name = 'Amount'
         stacked_anim = pd.DataFrame(stacked_anim)
@@ -64,12 +64,12 @@ class InputsToCast:
         stacked_anim['PReductionFraction'] = [''] * len(stacked_anim['Amount'])
         stacked_anim.reset_index(inplace=True)
         stacked_anim = stacked_anim[self.headers_animal]
-        print(stacked_anim.head())
+        #print(stacked_anim.head())
 
         stacked_manu = self.possmatrixobj['manure'].eligibleparametermatrix.stack()
-        print(stacked_manu.index.names)  # 'FIPSFrom', 'FIPSTo', 'AnimalName', 'Loadsource', 'BmpShortname'
+        #print(stacked_manu.index.names)  # 'FIPSFrom', 'FIPSTo', 'AnimalName', 'Loadsource', 'BmpShortname'
         newindexnames = ['FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'BmpShortname']
-        print(newindexnames)
+        #print(newindexnames)
         stacked_manu.index.rename(newindexnames, inplace=True)
         stacked_manu.name = 'Amount'
         stacked_manu = pd.DataFrame(stacked_manu)
@@ -79,7 +79,7 @@ class InputsToCast:
         stacked_manu['StateUniqueIdentifier'] = ['beebop'] * len(stacked_manu['Amount'])
         stacked_manu.reset_index(inplace=True)
         stacked_manu = stacked_manu[self.headers_manure]
-        print(stacked_manu.head())
+        #print(stacked_manu.head())
 
         #print(stacked_ndas.head())
 
