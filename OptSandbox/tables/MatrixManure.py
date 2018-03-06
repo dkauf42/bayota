@@ -1,3 +1,4 @@
+import sys
 from tables.MatrixBase import MatrixBase
 from tqdm import tqdm  # Loop progress indicator module
 
@@ -23,7 +24,8 @@ class MatrixManure(MatrixBase):
 
         index_animal = self.eligibleparametermatrix.index.names.index('AnimalName')
         index_fips = self.eligibleparametermatrix.index.names.index('FIPSFrom')
-        for index, row in tqdm(self.eligibleparametermatrix.iterrows(), total=len(self.eligibleparametermatrix.index)):
+        for index, row in tqdm(self.eligibleparametermatrix.iterrows(),
+                               total=len(self.eligibleparametermatrix.index), file=sys.stdout):
             # iterate through the load sources
             animalname = row.name[index_animal]
             fipscode = row.name[index_fips]
