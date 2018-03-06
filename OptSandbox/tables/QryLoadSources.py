@@ -27,7 +27,7 @@ class QryLoadSources:
         lssep = self._get_sources_in_lrsegs(name='septic', lrsegs=geographies['LandRiverSegment'], agencies=agencies)
         lsndas = pd.concat([lsnat, lsdev, lsagr, lssep], ignore_index=True)
         """ Hierarchical indices are specified for each dataframe. """
-        return lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource'], drop=False).copy()
+        return lsndas.set_index(['LandRiverSegment', 'Agency', 'LoadSource'], drop=True).copy()
 
     def get_yaad_for_animal(self, geographies=None):
         """ get the LoadSources (along with their maxes) for each segment-agency pair
@@ -35,7 +35,7 @@ class QryLoadSources:
         """
         lsani = self._get_sources_in_lrsegs(name='animal', counties=geographies['CountyName'])
         """ Hierarchical indices are specified for each dataframe. """
-        return lsani.set_index(['FIPS', 'AnimalName', 'LoadSource'], drop=False).copy()
+        return lsani.set_index(['FIPS', 'AnimalName', 'LoadSource'], drop=True).copy()
 
     def get_yaad_for_manure(self, geographies=None):
         """ get the LoadSources (along with their maxes) for each segment-agency pair
@@ -52,7 +52,7 @@ class QryLoadSources:
         new_df_merged = pd.merge(lsman.loc[:, ('FIPSFrom', 'AnimalName', 'LoadSource', 'Dry_Tons_of_Stored_Manure')],
                                  newdf_manure, how='left', on=['FIPSFrom', 'AnimalName', 'LoadSource'])
 
-        new_df_merged.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource'], drop=False, inplace=True)
+        new_df_merged.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource'], drop=True, inplace=True)
         new_df_merged['Amount'] = np.nan  # add Amount as a normal column
 
         return new_df_merged

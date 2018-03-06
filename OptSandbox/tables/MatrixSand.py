@@ -14,15 +14,19 @@ class MatrixSand(MatrixBase):
                             column_names=queries.tables.srcdata.allbmps_shortnames)
 
     def identifyhardupperbounds(self):
-        old_key_lrseg = [x for x in self.yaad_table['LandRiverSegment']]
-        old_key_agency = [x for x in self.yaad_table['Agency']]
-        old_key_loadsrc = [x for x in self.yaad_table['LoadSource']]
+        old_key_lrseg = [x for x in self.yaad_table.index.get_level_values('LandRiverSegment')]
+        old_key_agency = [x for x in self.yaad_table.index.get_level_values('Agency')]
+        old_key_loadsrc = [x for x in self.yaad_table.index.get_level_values('LoadSource')]
         new_vals = [x for x in self.yaad_table['Amount']]
         replace_vals = dict(zip(zip(old_key_lrseg, old_key_agency, old_key_loadsrc), new_vals))
 
         index_lrseg = self.eligibleparametermatrix.index.names.index('LandRiverSegment')
         index_agency = self.eligibleparametermatrix.index.names.index('Agency')
         index_loadsrc = self.eligibleparametermatrix.index.names.index('LoadSource')
+
+        self.yaad_table.to_csv('./output/testcompare_sand_yaadtable.csv')
+        self.eligibleparametermatrix.to_csv('./output/testcompare_sand_eligibilitymatrix.csv')
+
         for index, row in tqdm(self.eligibleparametermatrix.iterrows(),
                                total=len(self.eligibleparametermatrix.index), file=sys.stdout):
             # iterate through the load sources

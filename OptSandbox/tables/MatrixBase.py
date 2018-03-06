@@ -13,8 +13,11 @@ class MatrixBase:
         else:
             # generate the skeleton of a emptyparametermatrix with sorted rows and columns
             df = pd.DataFrame(index=row_indices, columns=column_names)
-            df.sort_index(axis=0, inplace=True, sort_remaining=True)
-            df.sort_index(axis=1, inplace=True, sort_remaining=True)
+
+            #  Don't sort ya'ads because they need to match the ya'ad table
+            # Sorting the BMPs(columns) should be fine, but I don't think there's any reason to do so.
+            #df.sort_index(axis=1, inplace=True, sort_remaining=True)
+
             self.emptyparametermatrix = df
 
         self.eligibleparametermatrix = pd.DataFrame()
