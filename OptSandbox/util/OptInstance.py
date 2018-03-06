@@ -143,6 +143,7 @@ class OptInstance:
         # TODO: upper_bounds = self._identifyhardupperbounds(sat)
         # Associate a hard lower and upper bound with each marker coordinate in the emptyparametermatrix
         self.pmatrices['animal'].identifyhardupperbounds()
+        self.pmatrices['manure'].identifyhardupperbounds()
         pass
 
     def scenario_randomizer(self):

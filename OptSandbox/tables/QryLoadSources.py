@@ -47,10 +47,15 @@ class QryLoadSources:
                                                'FIPSTo': lsman.FIPS.unique(),
                                                'AnimalName': lsman.AnimalName.unique(),
                                                'LoadSource': lsman.LoadSource.unique()})
-        lsmanu_indexed = newdf_manure.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource'], drop=False).copy()
-        lsmanu_indexed['Amount'] = np.nan  # add Amount as a normal column
+        # Put 'Dry_Tons_of_Stored_Manure' column back in the dataframe, aligning with FIPS, AnimalName, & LoadSource
+        lsman.rename(columns={'FIPS': 'FIPSFrom'}, inplace=True)
+        new_df_merged = pd.merge(lsman.loc[:, ('FIPSFrom', 'AnimalName', 'LoadSource', 'Dry_Tons_of_Stored_Manure')],
+                                 newdf_manure, how='left', on=['FIPSFrom', 'AnimalName', 'LoadSource'])
 
-        return lsmanu_indexed
+        new_df_merged.set_index(['FIPSFrom', 'FIPSTo', 'AnimalName', 'LoadSource'], drop=False, inplace=True)
+        new_df_merged['Amount'] = np.nan  # add Amount as a normal column
+
+        return new_df_merged
 
     def _get_sources_in_lrsegs(self, lrsegs=None, agencies=None, counties=None, name=''):
         """Get the load sources present (whether zero acres or not) in the specified segment-agencies
@@ -119,7 +124,7 @@ class QryLoadSources:
             raise ValueError('unrecognized source type name: "%s"' % name)
 
         print('lsdf_geobool is %d entries long with %d nonzeros' % (len(lsdf_geobool), lsdf_geobool.sum()))
-        return filtered_lsdf
+        return filtered_lsdf.copy()
 
     @staticmethod
     def containssimilarcol(dataframe, name):
