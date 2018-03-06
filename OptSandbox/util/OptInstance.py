@@ -140,16 +140,16 @@ class OptInstance:
         self.pmatrices['manure'].mark_eligible_coordinates(bmpdict=bmpdict)
 
     def generate_boundsmatrices(self):
-        # TODO: upper_bounds = self._identifyhardupperbounds(sat)
         # Associate a hard lower and upper bound with each marker coordinate in the emptyparametermatrix
         self.pmatrices['animal'].identifyhardupperbounds()
         self.pmatrices['manure'].identifyhardupperbounds()
+        self.pmatrices['ndas'].identifyhardupperbounds()
         pass
 
     def scenario_randomizer(self):
-        ScenarioRandomizer(self.pmatrices['ndas'].eligibleparametermatrix)
-        ScenarioRandomizer(self.pmatrices['animal'].eligibleparametermatrix)
-        ScenarioRandomizer(self.pmatrices['manure'].eligibleparametermatrix)
+        #ScenarioRandomizer(self.pmatrices['ndas'].eligibleparametermatrix)
+        #ScenarioRandomizer(self.pmatrices['animal'].eligibleparametermatrix)
+        #ScenarioRandomizer(self.pmatrices['manure'].eligibleparametermatrix)
 
         # write possibility/parameter matrices to file
         self.pmatrices['ndas'].eligibleparametermatrix.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')
