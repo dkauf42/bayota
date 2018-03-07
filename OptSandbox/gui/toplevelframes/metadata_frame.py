@@ -126,7 +126,7 @@ class MetadataFrame(tk.Frame):
 
     def my_dropdown(self, optionslist):
         variable = tk.StringVar(self)
-        return ttk.Combobox(self, textvariable=variable, values=optionslist)
+        return ttk.Combobox(self, textvariable=variable, values=optionslist, state="readonly")
 
     def my_textentry(self, defaultvalue):
         entry_box = tk.Entry(self, foreground='light gray')
