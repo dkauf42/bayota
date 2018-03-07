@@ -95,11 +95,14 @@ class MainWindow(tk.Frame):
 
         self.optinstance.geographies_included = self.queries.source.\
             get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
-
         self.optinstance.agencies_included = self.queries.base.\
             get_agencies_in_lrsegs(lrsegs=self.optinstance.geographies_included.LandRiverSegment)
-
         self.optinstance.sectors_included = self.queries.source.get_all_sector_names()
+
+        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
+        self.optinstance.generate_emptyparametermatrices()
+        self.optinstance.mark_eligibility()
+        self.optinstance.generate_boundsmatrices()
 
         self.close_and_submit()
 
@@ -118,6 +121,7 @@ class MainWindow(tk.Frame):
                     self.save_metadata()
                     self.t2.ungrey()
                     self.load_freeparamgroup_options()
+                    self.t2.toggle_fromotherbutton()
 
         if source is self.t2:
             if source.saved is True:
@@ -129,6 +133,7 @@ class MainWindow(tk.Frame):
                     self.save_freeparamgroups()
                     self.t3.ungrey()
                     self.load_constraint_options()
+                    self.t3.toggle_fromotherbutton()
 
         if source is self.t3:
             if self.t2.saved is True & self.t.saved is True:
@@ -161,7 +166,7 @@ class MainWindow(tk.Frame):
         self.optinstance.save_freeparamgrps(self.freeparamframe.get_results())
 
     def load_constraint_options(self):  # TODO:add constraint widgets
-        pass
+        self.additionalconstraintsframe.update_box_options(optinstance=self.optinstance)
 
     def save_constraints(self):  # TODO:add constraint widgets
         pass

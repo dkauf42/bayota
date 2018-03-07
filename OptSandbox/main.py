@@ -43,10 +43,10 @@ def runner(numinstances=1):
         print(oinstance)
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        oinstance.generate_emptyparametermatrices()
+        #oinstance.generate_emptyparametermatrices()
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        oinstance.mark_eligibility()
+        #oinstance.mark_eligibility()
 
         oinstance.generate_boundsmatrices()
 

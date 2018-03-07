@@ -102,9 +102,9 @@ class RangeSlider(Canvas):
     __inFocus = False
     __highlightedId = 0
 
-    def __init__(self, master, **cnf):
+    def __init__(self, master, canvasHeight=None, **cnf):
         """ Constructor """
-        Canvas.__init__(self, master, highlightthickness=0)
+        Canvas.__init__(self, master, highlightthickness=0, height=canvasHeight)
 
         self.__model = RangeSliderModel()
         self.__controller = RangeSliderController(self.__model, self)
@@ -366,6 +366,7 @@ class RangeSlider(Canvas):
             - captures the new canvas dimensions
             - causes a redraw
         """
+
         log.debug("Resize, New Size -- " +
                   str(e.width) + " : " + str(e.height))
 
@@ -412,6 +413,14 @@ class RangeSlider(Canvas):
                                              self.__barY + self.__barHeight,
                                              outline=self.__barNoFocusOutlineColor,
                                              fill=self.__barNoFocusColor)
+        # print('my_rangeslider:__createBar: barX %f' % self.__barX)
+        # print('my_rangeslider:__createBar: barY %f' % self.__barY)
+        # print('my_rangeslider:__createBar: barHeight %f' % self.__barHeight)
+        # print('my_rangeslider:__createBar: barWidth %f' % self.__barWidth)
+        # print('my_rangeslider:__createBar: canvasWidth %f' % self.__canvasWidth)
+        # print('my_rangeslider:__createBar: canvasHeight %f' % self.__canvasHeight)
+        # print('my_rangeslider:__createBar: canvasCenterX %f' % self.__canvasCenterX)
+        # print('my_rangeslider:__createBar: canvasCenterY %f' % self.__canvasCenterY)
 
     def __createLeftCaret(self):
         """ Draw left caret """
@@ -654,12 +663,14 @@ class RangeSlider(Canvas):
         if e.widget == self and not self.__inFocus:
             self.setFocus()
         elif e.widget != self and self.__inFocus:
-            self.clearFocus()
+            # self.clearFocus()
+            pass
 
     def clearFocus(self):
         """ Helper - Clear Focus
             - sets the items to be in their non focus state
         """
+        print('my_rangeslider:clearFocus: clearing focus...')
         self.__inFocus = False
         self.itemconfig(self.__barId, fill=self.__barNoFocusColor, outline=self.__barNoFocusOutlineColor)
         self.itemconfig(self.__sliderId, fill=self.__sliderNoFocusColor, outline=self.__sliderNoFocusOutlineColor)
@@ -1032,7 +1043,7 @@ class RangeSliderController:
         if self.__model.getBoundsRange() < 0:
             sliderX = 0
             sliderWidth = 0
-            sliderHeiht = 0
+            sliderHeight = 0
             sliderY = 0
         else:
             if sliderWidth <= 0:

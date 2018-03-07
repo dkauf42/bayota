@@ -34,8 +34,9 @@ class MyRangeSliderFrame3(Frame):
                                 sliderColor="yellow", sliderHighlightedColor="green",
                                 barColor="lightblue",
                                 caretColor="red", caretHighlightedColor="green",
-                                barWidthPercent=0.85)
-                                #, barHeightPercent=0.05)
+                                barWidthPercent=0.85,
+                                barHeightPercent=0.55,
+                                canvasHeight=40)
         self.__rs.setUpperBound(upperbound)
         self.__rs.setLowerBound(lowerbound)
         self.__rs.setLower(lower)
@@ -59,7 +60,7 @@ class MyRangeSliderFrame3(Frame):
         self.__snapToTicksCheckVar.set(int(self.__rs.getSnapToTicks()))
         self.__snapToTicks = Checkbutton(self,
                                          text="Snap To Ticks",
-                                         command=self.__snapToTicksCheck_onClick,
+                                         command=self.snapToTicksCheck_onClick,
                                          variable=self.__snapToTicksCheckVar,
                                          onvalue="1",
                                          offvalue="0")
@@ -70,20 +71,21 @@ class MyRangeSliderFrame3(Frame):
 
         # THE GRID
         # this positions all the GUI components into their grid
-        self.__minValueLabel.grid(column=1, row=0, sticky=(W, E))
-        self.__minValueEntry.grid(column=2, row=0, sticky=(W, E))
-        self.__maxValueLabel.grid(column=1, row=1, sticky=(W, E))
-        self.__maxValueEntry.grid(column=2, row=1, sticky=(W, E))
+        self.__minValueLabel.grid(column=1, row=0)  # , sticky=(W, E))
+        self.__minValueEntry.grid(column=2, row=0)  # , sticky=(W, E))
+        self.__maxValueLabel.grid(column=1, row=1)  # , sticky=(W, E))
+        self.__maxValueEntry.grid(column=2, row=1)  # , sticky=(W, E))
 
-        self.__snapToTicks.grid(column=1, row=2, columnspan=2, stick=(W, E))
-        reset_button.grid(column=1, row=3, columnspan=2, sticky=(W, E))
-        self.__rs.grid(column=0, row=0, rowspan=3, sticky=(N, S, E, W))
+        reset_button.grid(column=3, row=0, columnspan=1, sticky=(W, E))
+        self.__snapToTicks.grid(column=3, row=1, columnspan=1, stick=(W, E))
+        self.__snapToTicks.grid_remove()
+        self.__rs.grid(column=0, row=0, rowspan=2, sticky=(N, S, E, W))
 
         # setup the grid weights
         self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=1)
-        self.rowconfigure(2, weight=1)
-        self.rowconfigure(3, weight=1)
+        self.rowconfigure(1, weight=0)
+        self.rowconfigure(2, weight=0)
+        self.rowconfigure(3, weight=0)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=0)
         self.columnconfigure(2, weight=0)
@@ -120,12 +122,22 @@ class MyRangeSliderFrame3(Frame):
             self.__maxValueEntry.delete(0, END)
             self.__maxValueEntry.insert(0, self.__rs.getUpper())
 
-    def __snapToTicksCheck_onClick(self):
+    def snapToTicksCheck_onClick(self, var=None):
         """ Event - Snap to ticks click
             - Reset the slider to its starting values
         """
-        b = self.__snapToTicksCheckVar.get()
-        self.__rs.setSnapToTicks(b)
+        if var is None:
+            b = self.__snapToTicksCheckVar.get()
+            self.__rs.setSnapToTicks(b)
+        else:
+            b = var
+            self.__rs.setSnapToTicks(b)
+            if self.__snapToTicksCheckVar.get() is 1:
+                self.__snapToTicksCheckVar.set(int(0))
+                self.__rs.setSnapToTicks(0)
+            elif self.__snapToTicksCheckVar.get() is 0:
+                self.__snapToTicksCheckVar.set(int(1))
+                self.__rs.setSnapToTicks(1)
 
     def __lowerEntry_onChange(self, e, a, mode):
         """ Event - on entry change events
@@ -182,7 +194,7 @@ class MyRangeSliderFrame3(Frame):
         """ Event - Rest button on click
             - Reset the slider to its starting or other values
         """
-        self.__rs.setLower(25)
-        self.__rs.setUpper(75)
-        #self.__rs.setLower(self.__rs.getLowerBound() + (self.__rs.getBoundsRange() * 0.25))
-        #self.__rs.setUpper(self.__rs.getLowerBound() + (self.__rs.getBoundsRange() * 0.75))
+        #self.__rs.setLower(25)
+        #self.__rs.setUpper(75)
+        self.__rs.setLower(self.__rs.getLowerBound() + (self.__rs.getBoundsRange() * 0.25))
+        self.__rs.setUpper(self.__rs.getLowerBound() + (self.__rs.getBoundsRange() * 0.75))
