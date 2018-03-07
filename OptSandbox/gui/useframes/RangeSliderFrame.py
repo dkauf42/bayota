@@ -3,10 +3,10 @@ RangeSlider Demo class
 - Creates the window and grid bags the widgets
 """
 from tkinter import *
-from gui.useframes.my_rangeslider import RangeSlider
+from gui.useframes.rangeslider import RangeSlider
 
 
-class MyRangeSliderFrame3(Frame):
+class RangeSliderFrame(Frame):
     __minValueLabel = None
     __maxValueLabel = None
     __rs = None
