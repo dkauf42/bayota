@@ -144,7 +144,6 @@ class OptInstance:
         self.pmatrices['animal'].identifyhardupperbounds()
         self.pmatrices['manure'].identifyhardupperbounds()
         self.pmatrices['ndas'].identifyhardupperbounds()
-        pass
 
     def scenario_randomizer(self):
         #ScenarioRandomizer(self.pmatrices['ndas'].eligibleparametermatrix)

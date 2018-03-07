@@ -159,7 +159,6 @@ class MainWindow(tk.Frame):
     def save_freeparamgroups(self):
         print('mainwindow:save_freeparamgroups: saving free parameter groups...')
         self.optinstance.save_freeparamgrps(self.freeparamframe.get_results())
-        pass
 
     def load_constraint_options(self):  # TODO:add constraint widgets
         pass
