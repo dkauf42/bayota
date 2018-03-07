@@ -21,6 +21,7 @@ class MatrixBase:
             self.emptyparametermatrix = df
 
         self.eligibleparametermatrix = pd.DataFrame()
+        self.hardupperboundmatrix = pd.DataFrame()
 
     def __getitem__(self, item):
         return getattr(self, item)

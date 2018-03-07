@@ -17,9 +17,9 @@ class MatrixAnimal(MatrixBase):
         # use numpy representation of eligibleparametermatrix
         hub_table = self.eligibleparametermatrix.values *\
                     self.yaad_table['AnimalUnits'].values[:, np.newaxis]
-        pd.DataFrame(hub_table,
-                     index=self.eligibleparametermatrix.index,
-                     columns=self.eligibleparametermatrix.columns).to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
+        self.hardupperboundmatrix = pd.DataFrame(hub_table, index=self.eligibleparametermatrix.index,
+                                                            columns=self.eligibleparametermatrix.columns)
+        self.hardupperboundmatri.to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
 
         # old_key_animal = [x for x in self.yaad_table.index.get_level_values('AnimalName')]
         # old_key_fips = [x for x in self.yaad_table.index.get_level_values('FIPS')]

@@ -17,9 +17,9 @@ class MatrixManure(MatrixBase):
         # use numpy representation of eligibleparametermatrix
         hub_table = self.eligibleparametermatrix.values *\
                     self.yaad_table['Dry_Tons_of_Stored_Manure'].values[:, np.newaxis]
-        pd.DataFrame(hub_table,
-                     index=self.eligibleparametermatrix.index,
-                     columns=self.eligibleparametermatrix.columns).to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
+        self.hardupperboundmatrix = pd.DataFrame(hub_table, index=self.eligibleparametermatrix.index,
+                                                            columns=self.eligibleparametermatrix.columns)
+        self.hardupperboundmatrix.to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
 
 
         # #print("\nMatrixManure:identifyhardupperbounds: ya'ad table...")
