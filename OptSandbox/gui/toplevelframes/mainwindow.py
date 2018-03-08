@@ -46,7 +46,7 @@ class MainWindow(tk.Frame):
         self.t.config(width=800, height=100)
         self.metadataframe = MetadataFrame(self.t.sub_frame)
         self.metadataframe.pack(side="left")
-        self.metadataframe.SaveButton.config(command=lambda: self.toggleframe_togglefromanotherbutton(source=self.t))
+        self.metadataframe.save_button.config(command=lambda: self.toggleframe_togglefromanotherbutton(source=self.t))
         # Toggle Frame #2 (FREE PARAMETER GROUPS)
         self.t2 = ToggledFrame(collapsible_frame, text='2. Free Parameter Groups',
                                relief="raised", borderwidth=1, secondcommand=self.toggleframe_closed)

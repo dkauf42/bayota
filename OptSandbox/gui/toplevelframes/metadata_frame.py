@@ -20,7 +20,7 @@ class MetadataFrame(tk.Frame):
         self.optionsbox_geoscale = None
         self.geoareabox = None
 
-        self.SaveButton = None
+        self.save_button = None
 
         self.results = None
         self.closedbyuser = False
@@ -85,8 +85,8 @@ class MetadataFrame(tk.Frame):
         self.geoareabox.grid(row=8, column=1, sticky='we')
 
         # Save Button
-        self.SaveButton = ttk.Button(self, text='Submit')
-        self.SaveButton.grid(row=9, column=1, sticky='we')
+        self.save_button = ttk.Button(self, text='Submit')
+        self.save_button.grid(row=9, column=1, sticky='we')
 
     def load_options(self, qrysource=None):
         self.qrysource = qrysource
