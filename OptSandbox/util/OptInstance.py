@@ -10,7 +10,6 @@ class OptInstance:
     def __init__(self):
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
-        self.tables = None
         self.queries = None
 
         self.name = None
