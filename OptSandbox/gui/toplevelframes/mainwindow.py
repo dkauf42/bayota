@@ -54,7 +54,7 @@ class MainWindow(tk.Frame):
         self.freeparamframe = FreeParamFrame(self.t2.sub_frame)
         self.freeparamframe.pack(side="left")
         self.t2.greyout()
-        self.freeparamframe.SaveButton.config(command=lambda: self.toggleframe_togglefromanotherbutton(source=self.t2))
+        self.freeparamframe.save_button.config(command=lambda: self.toggleframe_togglefromanotherbutton(source=self.t2))
         # Toggle Frame #3 (ADDITIONAL CONSTRAINTS)
         self.t3 = ToggledFrame(collapsible_frame, text='3. Additional Constraints/Bounds',
                                relief="raised", borderwidth=1, secondcommand=self.toggleframe_closed)

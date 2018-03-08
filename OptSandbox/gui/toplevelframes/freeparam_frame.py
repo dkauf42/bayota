@@ -13,7 +13,7 @@ class FreeParamFrame(tk.Frame):
         self.agencydualbox = None
         self.sectordualbox = None
 
-        self.SaveButton = None
+        self.save_button = None
 
         self.results = None
 
@@ -42,8 +42,8 @@ class FreeParamFrame(tk.Frame):
         self.sectordualbox.grid(row=3, column=1, sticky='we')
 
         # Save Button
-        self.SaveButton = ttk.Button(self, text='Submit')
-        self.SaveButton.grid(row=9, column=1, sticky='we')
+        self.save_button = ttk.Button(self, text='Submit')
+        self.save_button.grid(row=9, column=1, sticky='we')
 
     def update_box_options(self, queries=None, optinstance=None):
         """Populate first dualbox with agencies included in OptInstance and second dualbox with all sectors
