@@ -1,5 +1,4 @@
 import pandas as pd
-from util.TblLoader import TblLoader
 from tables.TblQuery import TblQuery
 from util.ScenarioRandomizer import ScenarioRandomizer
 from tables.MatrixSand import MatrixSand
@@ -78,8 +77,7 @@ class OptInstance:
         return formattedstr
 
     def load_tables(self):
-        self.tables = TblLoader()
-        self.queries = TblQuery(tables=self.tables)
+        self.queries = TblQuery()
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name

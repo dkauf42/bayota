@@ -20,7 +20,7 @@ class InputsToCast:
         self.template = None
         self.df = None
         self.possmatrixobj = possmatrixobj
-        self.tables = optinstance.tables
+        self.tables = optinstance.queries.tables
 
         self.headers_land = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
                              'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']
