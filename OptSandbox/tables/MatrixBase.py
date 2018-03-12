@@ -45,6 +45,10 @@ class MatrixBase:
     def get_list_of_max_hubs_for_bmps(self):
         return self.hardupperboundmatrix.max(axis=0)
 
+    def get_list_of_min_hlbs_for_bmps(self):
+        # TODO: check the lower bound functions for correctness
+        return self.hardupperboundmatrix.min(axis=0)
+
     def randomize_belowhub(self):
         """Generate random integers for each non-empty (Geo, Agency, Source, BMP) coordinate
 

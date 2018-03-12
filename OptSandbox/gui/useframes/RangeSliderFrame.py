@@ -115,6 +115,12 @@ class RangeSliderFrame(Frame):
     def setMinorTickSpacing(self, minortickspacing):
         self.__rs.setMinorTickSpacing(minortickspacing)
 
+    def getUpper(self):
+        return self.__rs.getUpper()
+
+    def getLower(self):
+        return self.__rs.getLower()
+
     def shutdown(self):
         """ Utility - Shutdown
             Perform any last minute shutdown/cleanup tasks
