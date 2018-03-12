@@ -1,8 +1,5 @@
 import tkinter as tk
-import tkinter.ttk as ttk
-import numpy as np
-from copy import deepcopy
-from gui.useframes.RangeSliderFrame import RangeSliderFrame
+from gui.useframes.BmpComboSlider import BmpComboSlider
 
 
 class AdditionalConstraintsFrame(tk.Frame):
@@ -22,6 +19,10 @@ class AdditionalConstraintsFrame(tk.Frame):
 
         self.last_bmp = ''
         self.checkvar = tk.IntVar(value=1)
+
+        self.bmpcomboslider_land = None
+        self.bmpcomboslider_animal = None
+        self.bmpcomboslider_manure = None
 
         self.max_for_each_bmp = None
         self.min_for_each_bmp = None
@@ -54,71 +55,9 @@ class AdditionalConstraintsFrame(tk.Frame):
         self.__snapToTicks.grid(row=0, column=2, sticky='we')
 
         # Text Labels
-        tk.Label(self, text="BMP List", anchor='e').grid(row=1, column=0, sticky=tk.E)
-        # Drop Down Menu (BMP List)
-        options_list = ["N/A"]
-        self.dropdown_bmps = self.my_dropdown(options_list)
-        self.dropdown_bmps.grid(row=1, column=1, sticky='we')
-        self.dropdown_bmps.current(0)
-        self.dropdown_bmps.bind("<<ComboboxSelected>>", self.bmp_selection_update)
-
-    def bmp_selection_update(self, event=None):
-        new_bmpname = self.dropdown_bmps.get()
-        print("\n** Changed BMP from <%s> to <%s>: " % (self.last_bmp, new_bmpname))
-
-        # Save previous slider values here, before any updates
-        last_lower = self.bmpslider.getLower()
-        last_upper = self.bmpslider.getUpper()
-        self.user_max_for_each_bmp[self.last_bmp] = last_upper
-        self.user_min_for_each_bmp[self.last_bmp] = last_lower
-        self.bmp_bounds_set[self.last_bmp] = 1
-        print('- saving "%s" user bounds: lower=[%d] and upper=[%d]' %
-              (self.last_bmp, last_lower, last_upper))
-
-        # Update slider with new values
-        if new_bmpname == 'Select BMP':
-            # Don't update the slider if the prompt is selected
-            pass
-        else:
-            bmpmax = self.max_for_each_bmp[new_bmpname]
-            bmpmin = self.min_for_each_bmp[new_bmpname]
-            user_bmpmax = self.user_max_for_each_bmp[new_bmpname]
-            user_bmpmin = self.user_min_for_each_bmp[new_bmpname]
-            print('- bounds for "%s" are hlb=[%d], hub=[%d], usermin=[%d], usermax=[%d].' %
-                  (new_bmpname, bmpmin, bmpmax, user_bmpmin, user_bmpmax))
-            if np.isnan(bmpmax):
-                # Don't update
-                print('The max hard upper bound for the "%s" BMP is NaN, cannot draw a range slider!' % new_bmpname)
-                self.bmpslider.setLower(0)
-                self.bmpslider.setUpper(0)
-            elif bmpmax == 0:
-                # Don't update
-                print('The max hard upper bound for the "%s" BMP is zero, cannot draw a range slider!' % new_bmpname)
-                self.bmpslider.setLower(0)
-                self.bmpslider.setUpper(0)
-            else:
-                # Update!
-                print('Updating Slider!')
-                print('-- setting LowerBound=[%d], UpperBound=[%d]' % (0, bmpmax))
-                self.bmpslider.setLowerBound(0)
-                self.bmpslider.setUpperBound(bmpmax)
-                self.bmpslider.setMajorTickSpacing(bmpmax / 5)
-                self.bmpslider.setMinorTickSpacing(bmpmax / 20)
-
-                if self.bmp_bounds_set[new_bmpname] == 0:
-                    # Update slider with default values from max
-                    print('-- setting Carets to defaults: lowerCaret=[%d], upperCaret=[%d]' %
-                          (bmpmax * 0.25, bmpmax * 0.75))
-                    self.bmpslider.setLower(bmpmax * 0.25)
-                    self.bmpslider.setUpper(bmpmax * 0.75)
-                else:
-                    # Update slider with previously set user values
-                    print('-- setting the carets to previously user defined values: upperCaret=[%d], lowerCaret=[%d]' %
-                          (user_bmpmax, user_bmpmin))
-                    self.bmpslider.setLower(user_bmpmin)
-                    self.bmpslider.setUpper(user_bmpmax)
-
-                self.last_bmp = new_bmpname
+        tk.Label(self, text="Land BMPs", anchor='e').grid(row=1, column=0, sticky=tk.E)
+        tk.Label(self, text="Animal BMPs", anchor='e').grid(row=2, column=0, sticky=tk.E)
+        tk.Label(self, text="Manure BMPs", anchor='e').grid(row=2, column=0, sticky=tk.E)
 
     def update_box_options(self, optinstance):
         """Populate the constraint frame with list of eligible bmps included in the OptInstance
@@ -132,32 +71,32 @@ class AdditionalConstraintsFrame(tk.Frame):
         optinstance.mark_eligibility()
         optinstance.generate_boundsmatrices()
 
-        self.max_for_each_bmp = optinstance.pmatrices['ndas'].get_list_of_max_hubs_for_bmps()
-        self.min_for_each_bmp = optinstance.pmatrices['ndas'].get_list_of_min_hlbs_for_bmps()
-        # use deepcopy to create user dictionaries that are not referencing same max/min dictionary objects
-        self.user_max_for_each_bmp = deepcopy(self.max_for_each_bmp)
-        self.user_min_for_each_bmp = deepcopy(self.min_for_each_bmp)
-        self.bmp_bounds_set = dict((k, 0) for k in list(self.max_for_each_bmp.keys()))  # initialized with zeros
-
-        self.dropdown_bmps['values'] = ['Select BMP'] + optinstance.pmatrices['ndas'].get_list_of_bmps()
-        self.dropdown_bmps.current(0)
-        self.last_bmp = str(self.dropdown_bmps.get())
-
-        # Create a range slider for bmp
-        tempmax = 100
-        self.bmpslider = RangeSliderFrame(self,
-                                          upperbound=tempmax, lowerbound=0,
-                                          upper=tempmax * 0.75, lower=tempmax * 0.25,
-                                          majortickspacing=tempmax / 5, minortickspacing=tempmax / 20,
-                                          snaptoticks=False)
-        self.bmpslider.grid(row=1, column=2, columnspan=2, sticky='w')
+        # Create Dropdown and Range Sliders (Land)
+        land = optinstance.pmatrices['ndas']
+        self.bmpcomboslider_land = BmpComboSlider(self,
+                                                  dropdownlist=['Select BMP'] + land.get_list_of_eligible_bmps(),
+                                                  maxs_dict=land.get_list_of_max_hubs_for_bmps(),
+                                                  mins_dict=land.get_list_of_min_hlbs_for_bmps())
+        self.bmpcomboslider_land.grid(row=1, column=1, columnspan=3, sticky='we')
+        # (Animal)
+        anim = optinstance.pmatrices['animal']
+        self.bmpcomboslider_animal = BmpComboSlider(self,
+                                                    dropdownlist=['Select BMP'] + anim.get_list_of_eligible_bmps(),
+                                                    maxs_dict=anim.get_list_of_max_hubs_for_bmps(),
+                                                    mins_dict=anim.get_list_of_min_hlbs_for_bmps())
+        self.bmpcomboslider_animal.grid(row=2, column=1, columnspan=3, sticky='we')
+        # (Manure)
+        manu = optinstance.pmatrices['manure']
+        self.bmpcomboslider_manure = BmpComboSlider(self,
+                                                    dropdownlist=['Select BMP'] + manu.get_list_of_eligible_bmps(),
+                                                    maxs_dict=manu.get_list_of_max_hubs_for_bmps(),
+                                                    mins_dict=manu.get_list_of_min_hlbs_for_bmps())
+        self.bmpcomboslider_manure.grid(row=3, column=1, columnspan=3, sticky='we')
 
     def clickallsnaptoticks(self, event=None):
-        self.bmpslider.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
-
-    def my_dropdown(self, optionslist):
-        variable = tk.StringVar(self)
-        return ttk.Combobox(self, textvariable=variable, values=optionslist, state="readonly")
+        self.bmpcomboslider_land.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
+        self.bmpcomboslider_animal.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
+        self.bmpcomboslider_manure.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
 
     def get_results(self):
         # Optmeta = namedtuple('freeparamgrps', 'agencies sectors')

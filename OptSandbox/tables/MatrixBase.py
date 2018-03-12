@@ -42,6 +42,10 @@ class MatrixBase:
     def get_list_of_bmps(self):
         return self.eligibleparametermatrix.columns.tolist()
 
+    def get_list_of_eligible_bmps(self):
+        booleanwhethercolsareallnans = self.eligibleparametermatrix.apply(lambda x: x.isnull().all(), axis=0)
+        return self.eligibleparametermatrix.columns[~booleanwhethercolsareallnans].tolist()
+
     def get_list_of_max_hubs_for_bmps(self):
         return self.hardupperboundmatrix.max(axis=0)
 
