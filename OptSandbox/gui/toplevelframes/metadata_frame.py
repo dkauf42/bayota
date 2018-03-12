@@ -13,11 +13,11 @@ class MetadataFrame(tk.Frame):
         self.entry_optname = None
         self.entry_optdesc = None
 
-        self.optionsbox_baseyr = None
-        self.optionsbox_basecond = None
-        self.optionsbox_wastewtr = None
-        self.optionsbox_costprofile = None
-        self.optionsbox_geoscale = None
+        self.dropdown_baseyr = None
+        self.dropdown_basecond = None
+        self.dropdown_wastewtr = None
+        self.dropdown_costprofile = None
+        self.dropdown_geoscale = None
         self.geoareabox = None
 
         self.save_button = None
@@ -54,30 +54,30 @@ class MetadataFrame(tk.Frame):
 
         # Drop Down Menus (Base Year)
         options_list = ["N/A"]
-        self.optionsbox_baseyr = self.my_dropdown(options_list)
-        self.optionsbox_baseyr.grid(row=3, column=1, sticky='we')
-        self.optionsbox_baseyr.current(0)
+        self.dropdown_baseyr = self.my_dropdown(options_list)
+        self.dropdown_baseyr.grid(row=3, column=1, sticky='we')
+        self.dropdown_baseyr.current(0)
         # (Base Condition)
         options_list = ["N/A"]
-        self.optionsbox_basecond = self.my_dropdown(options_list)
-        self.optionsbox_basecond.grid(row=4, column=1, sticky='we')
-        self.optionsbox_basecond.current(0)
+        self.dropdown_basecond = self.my_dropdown(options_list)
+        self.dropdown_basecond.grid(row=4, column=1, sticky='we')
+        self.dropdown_basecond.current(0)
         # (Wastewater Data)
         options_list = ["N/A"]
-        self.optionsbox_wastewtr = self.my_dropdown(options_list)
-        self.optionsbox_wastewtr.grid(row=5, column=1, sticky='we')
-        self.optionsbox_wastewtr.current(0)
+        self.dropdown_wastewtr = self.my_dropdown(options_list)
+        self.dropdown_wastewtr.grid(row=5, column=1, sticky='we')
+        self.dropdown_wastewtr.current(0)
         # (Cost Profile)
         options_list = ["N/A"]
-        self.optionsbox_costprofile = self.my_dropdown(options_list)
-        self.optionsbox_costprofile.grid(row=6, column=1, sticky='we')
-        self.optionsbox_costprofile.current(0)
+        self.dropdown_costprofile = self.my_dropdown(options_list)
+        self.dropdown_costprofile.grid(row=6, column=1, sticky='we')
+        self.dropdown_costprofile.current(0)
         # (Geographic Scale)
         options_list = ["N/A"]
-        self.optionsbox_geoscale = self.my_dropdown(options_list)
-        self.optionsbox_geoscale.grid(row=7, column=1, sticky='we')
-        self.optionsbox_geoscale.current(0)
-        self.optionsbox_geoscale.bind("<<ComboboxSelected>>", self.update_geoareabox_options)
+        self.dropdown_geoscale = self.my_dropdown(options_list)
+        self.dropdown_geoscale.grid(row=7, column=1, sticky='we')
+        self.dropdown_geoscale.current(0)
+        self.dropdown_geoscale.bind("<<ComboboxSelected>>", self.update_geoareabox_options)
 
         # Dual Listbox
         options_list = ['N/A']
@@ -91,21 +91,21 @@ class MetadataFrame(tk.Frame):
     def load_options(self, qrysource=None):
         self.qrysource = qrysource
 
-        self.optionsbox_baseyr['values'] = ['Select Base Year'] + qrysource.get_base_year_names()
-        self.optionsbox_baseyr.current(0)
-        self.optionsbox_basecond['values'] = ['Select Base Condition'] + qrysource.get_base_condition_names()
-        self.optionsbox_basecond.current(0)
-        self.optionsbox_wastewtr['values'] = ['Select Wastewater Data Set'] + qrysource.get_wastewaterdata_names()
-        self.optionsbox_wastewtr.current(0)
-        self.optionsbox_costprofile['values'] = ['Select Cost Profile'] + qrysource.get_costprofile_names()
-        self.optionsbox_costprofile.current(0)
-        self.optionsbox_geoscale['values'] = ['Select Geographic Scale'] + qrysource.get_geoscale_names()
-        self.optionsbox_geoscale.current(0)
+        self.dropdown_baseyr['values'] = ['Select Base Year'] + qrysource.get_base_year_names()
+        self.dropdown_baseyr.current(0)
+        self.dropdown_basecond['values'] = ['Select Base Condition'] + qrysource.get_base_condition_names()
+        self.dropdown_basecond.current(0)
+        self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + qrysource.get_wastewaterdata_names()
+        self.dropdown_wastewtr.current(0)
+        self.dropdown_costprofile['values'] = ['Select Cost Profile'] + qrysource.get_costprofile_names()
+        self.dropdown_costprofile.current(0)
+        self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + qrysource.get_geoscale_names()
+        self.dropdown_geoscale.current(0)
 
         self.update_geoareabox_options()
 
     def update_geoareabox_options(self, event=None):
-        mygeoscale = self.optionsbox_geoscale.get()
+        mygeoscale = self.dropdown_geoscale.get()
         mylist = self.qrysource.get_geoarea_names(scale=mygeoscale)
 
         self.geoareabox.set_new_left_side_items(mylist)
@@ -116,11 +116,11 @@ class MetadataFrame(tk.Frame):
                                          'scale area')
         self.results = Optmeta(name=self.entry_optname.get(),
                                description=self.entry_optdesc.get(),
-                               baseyear=self.optionsbox_baseyr.get(),
-                               basecond=self.optionsbox_basecond.get(),
-                               wastewater=self.optionsbox_wastewtr.get(),
-                               costprofile=self.optionsbox_costprofile.get(),
-                               scale=self.optionsbox_geoscale.get(),
+                               baseyear=self.dropdown_baseyr.get(),
+                               basecond=self.dropdown_basecond.get(),
+                               wastewater=self.dropdown_wastewtr.get(),
+                               costprofile=self.dropdown_costprofile.get(),
+                               scale=self.dropdown_geoscale.get(),
                                area=self.geoareabox.get_selection())
         return self.results
 
