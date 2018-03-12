@@ -58,24 +58,24 @@ class AdditionalConstraintsFrame(tk.Frame):
 
     def bmp_selection_update(self, event=None):
         bmpname = self.dropdown_bmps.get()
-        bmpmax = self.max_for_each_bmp[bmpname]
 
-        if np.isnan(bmpmax):
-            print('The max hard upper bound for the "%s" BMP is NaN, cannot draw a range slider!' % bmpname)
-        elif bmpmax == 0:
-            print('The max hard upper bound for the "%s" BMP is zero, cannot draw a range slider!' % bmpname)
-        else:
-            print('The max hard upper bound for the "%s" BMP is %s.' % (bmpname, str(bmpmax)))
-            self.bmpslider.setUpperBound(bmpmax)
-            self.bmpslider.setLowerBound(0)
-            self.bmpslider.setLower(bmpmax * 0.25)
-            self.bmpslider.setUpper(bmpmax * 0.75)
-            self.bmpslider.setMajorTickSpacing(bmpmax / 5)
-            self.bmpslider.setMinorTickSpacing(bmpmax / 20)
+        if bmpname != 'Select BMP':
+            bmpmax = self.max_for_each_bmp[bmpname]
+
+            if np.isnan(bmpmax):
+                print('The max hard upper bound for the "%s" BMP is NaN, cannot draw a range slider!' % bmpname)
+            elif bmpmax == 0:
+                print('The max hard upper bound for the "%s" BMP is zero, cannot draw a range slider!' % bmpname)
+            else:
+                print('The max hard upper bound for the "%s" BMP is %s.' % (bmpname, str(bmpmax)))
+                self.bmpslider.setUpperBound(bmpmax)
+                self.bmpslider.setLowerBound(0)
+                self.bmpslider.setLower(bmpmax * 0.25)
+                self.bmpslider.setUpper(bmpmax * 0.75)
+                self.bmpslider.setMajorTickSpacing(bmpmax / 5)
+                self.bmpslider.setMinorTickSpacing(bmpmax / 20)
 
     def clickallsnaptoticks(self, event=None):
-        #self.sliderframe1.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
-
         self.bmpslider.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
 
     def my_dropdown(self, optionslist):
