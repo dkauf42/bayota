@@ -57,7 +57,7 @@ class AdditionalConstraintsFrame(tk.Frame):
         # Text Labels
         tk.Label(self, text="Land BMPs", anchor='e').grid(row=1, column=0, sticky=tk.E)
         tk.Label(self, text="Animal BMPs", anchor='e').grid(row=2, column=0, sticky=tk.E)
-        tk.Label(self, text="Manure BMPs", anchor='e').grid(row=2, column=0, sticky=tk.E)
+        tk.Label(self, text="Manure BMPs", anchor='e').grid(row=3, column=0, sticky=tk.E)
 
     def update_box_options(self, optinstance):
         """Populate the constraint frame with list of eligible bmps included in the OptInstance
