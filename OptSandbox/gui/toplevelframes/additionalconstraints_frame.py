@@ -94,12 +94,9 @@ class AdditionalConstraintsFrame(tk.Frame):
         optinstance.mark_eligibility()
         optinstance.generate_boundsmatrices()
 
-        eligiblematrix = optinstance.pmatrices['ndas'].eligibleparametermatrix
-        hubmatrix = optinstance.pmatrices['ndas'].hardupperboundmatrix
-        bmplist = eligiblematrix.columns.tolist()
-        self.max_for_each_bmp = hubmatrix.max(axis=0)
+        self.max_for_each_bmp = optinstance.pmatrices['ndas'].get_list_of_max_hubs_for_bmps()
 
-        self.dropdown_bmps['values'] = ['Select BMP'] + bmplist
+        self.dropdown_bmps['values'] = ['Select BMP'] + optinstance.pmatrices['ndas'].get_list_of_bmps()
         self.dropdown_bmps.current(0)
 
         # Create a range slider for bmp

@@ -21,7 +21,11 @@ class MatrixBase:
             self.emptyparametermatrix = df
 
         self.eligibleparametermatrix = pd.DataFrame()
+
         self.hardupperboundmatrix = pd.DataFrame()
+        self.hardlowerboundmatrix = pd.DataFrame()
+
+        self.randommatrix = pd.DataFrame()
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -34,6 +38,24 @@ class MatrixBase:
             # iterate through the load sources
             bmplist_for_this_loadsource = bmpdict[row.name[loadsourceindex]]
             row.loc[bmplist_for_this_loadsource] = 1  # Mark eligible BMPs for each load source w/a '1' instead of NaN
+
+    def get_list_of_bmps(self):
+        return self.eligibleparametermatrix.columns.tolist()
+
+    def get_list_of_max_hubs_for_bmps(self):
+        return self.hardupperboundmatrix.max(axis=0)
+
+    def randomize_belowhub(self):
+        """Generate random integers for each non-empty (Geo, Agency, Source, BMP) coordinate
+
+        Parameters:
+            dataframe (pandas dataframe):
+        """
+        print(self.hardupperboundmatrix)
+
+
+        #howmanytoreplace = (dataframe == 1).sum().sum()
+        #dataframe[dataframe == 1] = random.sample(range(1, howmanytoreplace+1), howmanytoreplace)
 
     @staticmethod
     def expand_grid(data_dict):
