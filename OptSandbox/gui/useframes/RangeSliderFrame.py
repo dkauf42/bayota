@@ -97,6 +97,24 @@ class RangeSliderFrame(Frame):
         # bind some convenience keys
         self.bind("<Escape>", self.keyPress_Escape)
 
+    def setUpperBound(self, bound):
+        self.__rs.setUpperBound(bound)
+
+    def setLowerBound(self, bound):
+        self.__rs.setLowerBound(bound)
+
+    def setUpper(self, upper):
+        self.__rs.setUpper(upper)
+
+    def setLower(self, lower):
+        self.__rs.setLower(lower)
+
+    def setMajorTickSpacing(self, majortickspacing):
+        self.__rs.setMajorTickSpacing(majortickspacing)
+
+    def setMinorTickSpacing(self, minortickspacing):
+        self.__rs.setMinorTickSpacing(minortickspacing)
+
     def shutdown(self):
         """ Utility - Shutdown
             Perform any last minute shutdown/cleanup tasks

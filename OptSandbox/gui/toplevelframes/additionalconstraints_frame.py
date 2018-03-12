@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import numpy as np
 from gui.useframes.RangeSliderFrame import RangeSliderFrame
 
 
@@ -9,21 +10,18 @@ class AdditionalConstraintsFrame(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)  # Use superclass __init__ to create the actual frame
         self.parent = parent
 
-        self.optionsbox_bmp1 = None
-        self.optionsbox_bmp2 = None
-        self.optionsbox_bmp3 = None
         self.noconstraints_button = None
 
         self.__snapToTicksCheckVar = tk.IntVar()
         self.__snapToTicksCheckVar.set(int(0))
         self.__snapToTicks = None
-        self.sliderframe1 = None
-        self.sliderframe2 = None
+
+        self.dropdown_bmps = None
 
         self.checkvar = tk.IntVar(value=1)
+        self.bmpslider = None
 
-        self.bmpButtonList = []
-        self.bmpSliderList = []
+        self.max_for_each_bmp = None
 
         self.create_subframes()
 
@@ -34,11 +32,6 @@ class AdditionalConstraintsFrame(tk.Frame):
         self.rowconfigure(0, minsize=40)
 
         self.grid_columnconfigure(1, weight=1)
-
-        # # Text Labels
-        # tk.Label(self, text="BMP #1", anchor='e').grid(row=1, column=0, sticky=tk.E)
-        # tk.Label(self, text="BMP #2", anchor="e").grid(row=2, column=0, sticky=tk.E)
-        # tk.Label(self, text="BMP #3", anchor='e').grid(row=3, column=0, sticky=tk.E)
 
         # No Constraints Button
         self.noconstraints_button = tk.Checkbutton(self, width=1, text='No Constraints',
@@ -54,37 +47,36 @@ class AdditionalConstraintsFrame(tk.Frame):
                                             offvalue="0")
         self.__snapToTicks.grid(row=0, column=2, sticky='we')
 
-        # # Drop Down Menu
-        # options_list = ["0%", "20%", "40%", "60%", "80%", "100%"]
-        # self.optionsbox_bmp1 = self.my_dropdown(options_list)
-        # self.optionsbox_bmp1.grid(row=1, column=1, sticky='we')
-        # self.optionsbox_bmp1.current(0)
-        #
-        # # Drop Down Menu
-        # options_list = ["0%", "20%", "40%", "60%", "80%", "100%"]
-        # self.optionsbox_bmp2 = self.my_dropdown(options_list)
-        # self.optionsbox_bmp2.grid(row=2, column=1, sticky='we')
-        # self.optionsbox_bmp2.current(0)
-        #
-        # # Drop Down Menu
-        # options_list = ["0%", "20%", "40%", "60%", "80%", "100%"]
-        # self.optionsbox_bmp3 = self.my_dropdown(options_list)
-        # self.optionsbox_bmp3.grid(row=3, column=1, sticky='we')
-        # self.optionsbox_bmp3.current(0)
+        # Text Labels
+        tk.Label(self, text="BMP List", anchor='e').grid(row=1, column=0, sticky=tk.E)
+        # Drop Down Menu (BMP List)
+        options_list = ["N/A"]
+        self.dropdown_bmps = self.my_dropdown(options_list)
+        self.dropdown_bmps.grid(row=1, column=1, sticky='we')
+        self.dropdown_bmps.current(0)
+        self.dropdown_bmps.bind("<<ComboboxSelected>>", self.bmp_selection_update)
 
-        # # Range Slider for Constraints
-        # self.sliderframe1 = RangeSliderFrame(self)
-        # self.sliderframe1.grid(row=4, column=1, columnspan=2, sticky='w')
-        #
-        # # Range Slider for Constraints
-        # self.sliderframe2 = RangeSliderFrame(self)
-        # self.sliderframe2.grid(row=5, column=1, columnspan=2, sticky='e')
+    def bmp_selection_update(self, event=None):
+        bmpname = self.dropdown_bmps.get()
+        bmpmax = self.max_for_each_bmp[bmpname]
+
+        if np.isnan(bmpmax):
+            print('The max hard upper bound for the "%s" BMP is NaN, cannot draw a range slider!' % bmpname)
+        elif bmpmax == 0:
+            print('The max hard upper bound for the "%s" BMP is zero, cannot draw a range slider!' % bmpname)
+        else:
+            print('The max hard upper bound for the "%s" BMP is %s.' % (bmpname, str(bmpmax)))
+            self.bmpslider.setUpperBound(bmpmax)
+            self.bmpslider.setLowerBound(0)
+            self.bmpslider.setLower(bmpmax * 0.25)
+            self.bmpslider.setUpper(bmpmax * 0.75)
+            self.bmpslider.setMajorTickSpacing(bmpmax / 5)
+            self.bmpslider.setMinorTickSpacing(bmpmax / 20)
 
     def clickallsnaptoticks(self, event=None):
         #self.sliderframe1.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
-        #self.sliderframe2.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
-        for slider in self.bmpSliderList:
-            slider.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
+
+        self.bmpslider.snapToTicksCheck_onClick(var=self.__snapToTicksCheckVar)
 
     def my_dropdown(self, optionslist):
         variable = tk.StringVar(self)
@@ -105,46 +97,25 @@ class AdditionalConstraintsFrame(tk.Frame):
         eligiblematrix = optinstance.pmatrices['ndas'].eligibleparametermatrix
         hubmatrix = optinstance.pmatrices['ndas'].hardupperboundmatrix
         bmplist = eligiblematrix.columns.tolist()
+        self.max_for_each_bmp = hubmatrix.max(axis=0)
 
-        print('additionalconstraints_frame.update_box_options(): eligible matrix SUMs:')
-        print(eligiblematrix.sum(axis=0))
+        self.dropdown_bmps['values'] = ['Select BMP'] + bmplist
+        self.dropdown_bmps.current(0)
 
-        max_for_each_bmp = hubmatrix.max(axis=0)
-        print('additionalconstraints_frame.update_box_options(): eligible matrix MAXs:')
-        print(max_for_each_bmp)
+        # Create a range slider for bmp
+        tempmax = 100
+        self.bmpslider = RangeSliderFrame(self,
+                                          upperbound=tempmax, lowerbound=0,
+                                          upper=tempmax * 0.75, lower=tempmax * 0.25,
+                                          majortickspacing=tempmax / 5, minortickspacing=tempmax / 20,
+                                          snaptoticks=False)
+        self.bmpslider.grid(row=1, column=2, columnspan=2, sticky='w')
 
-        print('Additionconstraints_frame.update_box_options: bmplist...')
-        print(bmplist)
-
-        for i in range(5):
-            print(i)
-            bmpname = bmplist[i]
-            bmpmax = max_for_each_bmp[bmpname]
-
-            # Create button for each bmp
-            newbutton = tk.Button(self, text=bmpname,
-                                  command=lambda j=i + 1: self.bmpButtonCallback(j))
-            newbutton.grid(row=1+i, column=0, columnspan=1, sticky='w')
-            self.bmpButtonList.append(newbutton)
-
-            # Create a range slider for each bmp
-            newslider = RangeSliderFrame(self,
-                                         upperbound=bmpmax, lowerbound=0,
-                                         upper=bmpmax*0.75, lower=bmpmax*0.25,
-                                         majortickspacing=bmpmax/5, minortickspacing=bmpmax/20,
-                                         snaptoticks=False)
-            newslider.grid(row=1+i, column=1, columnspan=2, sticky='w')
-            self.bmpSliderList.append(newslider)
-
-        # def update_box_options(self, queries=None, optinstance=None):
-        #
-        #     mylist = queries.base.get_agencies_in_lrsegs(lrsegs=optinstance.geographies_included['LandRiverSegment'])
-        #
-        #     self.agencydualbox.set_new_left_side_items(mylist)
-        #
-        #     mylist = queries.source.get_all_sector_names()
-        #     self.sectordualbox.set_new_left_side_items(mylist)
-
-    def bmpButtonCallback(self, btnID):
-        print('Additional_constraints_frame.bmpButtonCallback: btnID is <%s>' % btnID)
+    def get_results(self):
+        # Optmeta = namedtuple('freeparamgrps', 'agencies sectors')
+        # self.results = Optmeta(agencies=self.agencydualbox.get_selection(),
+        #                        sectors=self.sectordualbox.get_selection())
+        # print('freeparamgrps results:')
+        # print(self.results)
+        # return self.results
         pass
