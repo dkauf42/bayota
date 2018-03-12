@@ -64,7 +64,7 @@ class AdditionalConstraintsFrame(tk.Frame):
 
     def bmp_selection_update(self, event=None):
         new_bmpname = self.dropdown_bmps.get()
-        print("\nchanged first combobox value from %s to %s: " % (self.last_bmp, new_bmpname))
+        print("\n** Changed BMP from <%s> to <%s>: " % (self.last_bmp, new_bmpname))
 
         # Save previous slider values here, before any updates
         last_lower = self.bmpslider.getLower()
@@ -72,7 +72,7 @@ class AdditionalConstraintsFrame(tk.Frame):
         self.user_max_for_each_bmp[self.last_bmp] = last_upper
         self.user_min_for_each_bmp[self.last_bmp] = last_lower
         self.bmp_bounds_set[self.last_bmp] = 1
-        print('saving "%s" user bounds: lower=[%d] and upper=[%d]' %
+        print('- saving "%s" user bounds: lower=[%d] and upper=[%d]' %
               (self.last_bmp, last_lower, last_upper))
 
         # Update slider with new values
@@ -84,36 +84,39 @@ class AdditionalConstraintsFrame(tk.Frame):
             bmpmin = self.min_for_each_bmp[new_bmpname]
             user_bmpmax = self.user_max_for_each_bmp[new_bmpname]
             user_bmpmin = self.user_min_for_each_bmp[new_bmpname]
-            print('The bounds for "%s" BMP are hub=[%d], hlb=[%d], usermax=[%d], usermin=[%d].' %
-                  (new_bmpname, bmpmax, bmpmin, user_bmpmax, user_bmpmin))
+            print('- bounds for "%s" are hlb=[%d], hub=[%d], usermin=[%d], usermax=[%d].' %
+                  (new_bmpname, bmpmin, bmpmax, user_bmpmin, user_bmpmax))
             if np.isnan(bmpmax):
                 # Don't update
                 print('The max hard upper bound for the "%s" BMP is NaN, cannot draw a range slider!' % new_bmpname)
+                self.bmpslider.setLower(0)
+                self.bmpslider.setUpper(0)
             elif bmpmax == 0:
                 # Don't update
                 print('The max hard upper bound for the "%s" BMP is zero, cannot draw a range slider!' % new_bmpname)
+                self.bmpslider.setLower(0)
+                self.bmpslider.setUpper(0)
             else:
                 # Update!
-                print('The max hard upper bound for the "%s" BMP is %s.' % (new_bmpname, str(bmpmax)))
+                print('Updating Slider!')
+                print('-- setting LowerBound=[%d], UpperBound=[%d]' % (0, bmpmax))
+                self.bmpslider.setLowerBound(0)
+                self.bmpslider.setUpperBound(bmpmax)
+                self.bmpslider.setMajorTickSpacing(bmpmax / 5)
+                self.bmpslider.setMinorTickSpacing(bmpmax / 20)
+
                 if self.bmp_bounds_set[new_bmpname] == 0:
                     # Update slider with default values from max
-                    self.bmpslider.setUpperBound(bmpmax)
-                    self.bmpslider.setLowerBound(0)
-                    self.bmpslider.setUpper(bmpmax * 0.75)
+                    print('-- setting Carets to defaults: lowerCaret=[%d], upperCaret=[%d]' %
+                          (bmpmax * 0.25, bmpmax * 0.75))
                     self.bmpslider.setLower(bmpmax * 0.25)
-                    self.bmpslider.setMajorTickSpacing(bmpmax / 5)
-                    self.bmpslider.setMinorTickSpacing(bmpmax / 20)
+                    self.bmpslider.setUpper(bmpmax * 0.75)
                 else:
-                    print("\nBounds for %s have previously been user defined. Reloading bounds..." % new_bmpname)
                     # Update slider with previously set user values
-                    print('setting the UpperBound=[%d], LowerBound=[%d], upperCaret=[%d], lowerCaret=[%d]' %
-                          (bmpmax, 0, user_bmpmax, user_bmpmax))
-                    self.bmpslider.setUpperBound(bmpmax)
-                    self.bmpslider.setLowerBound(0)
-                    self.bmpslider.setUpper(user_bmpmax)
+                    print('-- setting the carets to previously user defined values: upperCaret=[%d], lowerCaret=[%d]' %
+                          (user_bmpmax, user_bmpmin))
                     self.bmpslider.setLower(user_bmpmin)
-                    self.bmpslider.setMajorTickSpacing(bmpmax / 5)
-                    self.bmpslider.setMinorTickSpacing(bmpmax / 20)
+                    self.bmpslider.setUpper(user_bmpmax)
 
                 self.last_bmp = new_bmpname
 

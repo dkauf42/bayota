@@ -138,11 +138,14 @@ class OptInstance:
 
     def generate_boundsmatrices(self):
         # Associate a hard lower and upper bound with each marker coordinate in the emptyparametermatrix
+        self.pmatrices['ndas'].identifyhardupperbounds()
         self.pmatrices['animal'].identifyhardupperbounds()
         self.pmatrices['manure'].identifyhardupperbounds()
-        self.pmatrices['ndas'].identifyhardupperbounds()
 
     def scenario_randomizer(self):
+        self.pmatrices['ndas'].randomize_belowhub()
+        self.pmatrices['animal'].randomize_belowhub()
+        self.pmatrices['manure'].randomize_belowhub()
         #ScenarioRandomizer(self.pmatrices['ndas'].eligibleparametermatrix)
         #ScenarioRandomizer(self.pmatrices['animal'].eligibleparametermatrix)
         #ScenarioRandomizer(self.pmatrices['manure'].eligibleparametermatrix)

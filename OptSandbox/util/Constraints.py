@@ -3,7 +3,7 @@ from tqdm import tqdm  # Loop progress indicator module
 
 
 class Constraints:
-    def __init__(self, sourcedataobj=None, optionloaderobj=None, baseconditionobj=None):
+    def __init__(self):
         """Determine the mins and maxes for each BMP"""
 
         """ Get Pre-BMP acres for each agricultural lrseg-agency-type (from PreBmpLoadSourceAgriculture table
