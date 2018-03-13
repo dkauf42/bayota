@@ -77,7 +77,6 @@ class InputsToCast:
         df_m = self.possmatrixobj['manure'].scenariomatrix.stack()
         #print(df_m.index.names)  # 'FIPSFrom', 'FIPSTo', 'AnimalName', 'Loadsource', 'BmpShortname'
         newindexnames = ['FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'BmpShortname']
-        #print(newindexnames)
         df_m.index.rename(newindexnames, inplace=True)
         df_m.name = 'Amount'
         df_m = pd.DataFrame(df_m)
@@ -91,9 +90,6 @@ class InputsToCast:
         df_m['StateUniqueIdentifier'] = ['beebop'] * len(df_m['Amount'])
         df_m.reset_index(inplace=True)
         df_m = df_m[self.headers_manure]
-        #print(df_m.head())
-
-        #print(df_l.head())
 
         df_l.to_csv('./output/testwrite_InputsToCast_stacked_ndas_matrix.txt',
                             sep='\t', header=True, index=False, line_terminator='\r\n')
