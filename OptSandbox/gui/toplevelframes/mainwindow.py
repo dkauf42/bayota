@@ -129,11 +129,15 @@ class MainWindow(tk.Frame):
                     # if the frame was closed before the toggle, then do nothing
                     pass
                 else:
-                    # if the frame was opened before the toggle, then save the form data
-                    self.save_freeparamgroups()
-                    self.t3.ungrey()
-                    self.load_constraint_options()
-                    self.t3.toggle_fromotherbutton()
+                    fpgresults = self.freeparamframe.get_results()
+                    if (not fpgresults.agencies) & (not fpgresults.sectors):  # if they're both empty, then do nothing
+                        pass
+                    else:
+                        # if the frame was opened before the toggle, then save the form data
+                        self.save_freeparamgroups()
+                        self.t3.ungrey()
+                        self.load_constraint_options()
+                        self.t3.toggle_fromotherbutton()
 
         if source is self.t3:
             if self.t2.saved is True & self.t.saved is True:
