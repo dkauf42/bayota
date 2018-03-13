@@ -37,7 +37,14 @@ class QrySource:
         if scale == 'Chesapeake Bay Watershed':
             mylist = ['Chesapeake Bay Watershed']
         elif scale == 'County':
-            mylist = self.tables.srcdata.georefs['CountyName'].unique()
+            #mylist_counties = self.tables.srcdata.georefs['CountyName'].unique()
+            #mylist_states = self.tables.srcdata.georefs['StateAbbreviation'].unique()
+            df = self.tables.srcdata.georefs.loc[:, ['FIPS', 'CountyName', 'StateAbbreviation']].copy()
+            df.drop_duplicates('FIPS', inplace=True)
+            mylist_counties = df['CountyName']
+            mylist_states = df['StateAbbreviation']
+
+            mylist = ["{}, {}".format(a_, b_) for a_, b_ in zip(mylist_counties, mylist_states)]
         elif scale == 'State':
             mylist = self.tables.srcdata.georefs['StateAbbreviation'].unique()
         elif scale == 'StateAbbreviation':
@@ -69,7 +76,12 @@ class QrySource:
         if scale == 'Chesapeake Bay Watershed':
             booldf = pd.Series(True for _ in range(geodf.shape[0]))
         elif scale == 'County':
-            booldf = geodf['CountyName'].isin(areanames)
+
+            county_list, state_list = zip(*(s.split(", ") for s in areanames))
+
+            booldf1 = geodf['CountyName'].isin(county_list)
+            booldf2 = geodf['StateAbbreviation'].isin(state_list)
+            booldf = booldf1 & booldf2
         elif scale == 'State':
             booldf = geodf['StateAbbreviation'].isin(areanames)
         elif scale == 'StateAbbreviation':

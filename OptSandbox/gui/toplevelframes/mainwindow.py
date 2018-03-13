@@ -91,7 +91,7 @@ class MainWindow(tk.Frame):
         self.optinstance.wastewatername = 'Example_WW1'
         self.optinstance.costprofilename = 'Example_CostProfile1'
         self.optinstance.geoscalename = 'County'
-        self.optinstance.geoareanames = ['Anne Arundel']
+        self.optinstance.geoareanames = ['Adams, PA']
 
         self.optinstance.geographies_included = self.queries.source.\
             get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)

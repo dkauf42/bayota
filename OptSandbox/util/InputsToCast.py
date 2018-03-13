@@ -34,60 +34,72 @@ class InputsToCast:
     def matrix_to_table(self):
         """Convert an M x N parametermatrix to a stacked (MxN) x 1 Series, and then to a DataFrame"""
 
-        stacked_ndas = self.possmatrixobj['ndas'].scenariomatrix.stack()
-        #print(stacked_ndas.index.names)  # 'LandRiverSegment', 'Agency', 'LoadSource', 'BmpShortname'
+        # **** LAND ****
+        df_l = self.possmatrixobj['ndas'].scenariomatrix.stack()
+        #print(df_l.index.names)  # 'LandRiverSegment', 'Agency', 'LoadSource', 'BmpShortname'
         newindexnames = ['GeographyName', 'AgencyCode', 'LoadSourceGroup', 'BmpShortname']
-        #print(newindexnames)
-        stacked_ndas.index.rename(newindexnames, inplace=True)
-        stacked_ndas.name = 'Amount'
-        stacked_ndas = pd.DataFrame(stacked_ndas)
-        stacked_ndas['Unit'] = ['Acres'] * len(stacked_ndas['Amount'])
-        stacked_ndas['StateAbbreviation'] = ['MD'] * len(stacked_ndas['Amount'])
-        stacked_ndas['StateUniqueIdentifier'] = ['beebop'] * len(stacked_ndas['Amount'])
-        stacked_ndas.reset_index(inplace=True)
-        stacked_ndas = stacked_ndas[self.headers_land]
-        stacked_ndas['AgencyCode'] = self.tables.agencytranslate_fromnames(stacked_ndas['AgencyCode'])
-        #print(stacked_ndas.head())
+        df_l.index.rename(newindexnames, inplace=True)
+        df_l.name = 'Amount'
+        df_l = pd.DataFrame(df_l)
+        # Make a new column with the State Abbreviation associated with that row's LRSeg ID
+        df_l.reset_index(inplace=True)  # convert multiindexes into regular columns
+        geodf = self.tables.srcdata.georefs.loc[:, ['StateAbbreviation', 'LandRiverSegment']]
+        df_l = pd.merge(left=df_l, right=geodf, left_on='GeographyName', right_on='LandRiverSegment')
+        # Add additional necessary columns
+        df_l['Unit'] = ['Acres'] * len(df_l['Amount'])
+        df_l['StateUniqueIdentifier'] = ['beebop'] * len(df_l['Amount'])
+        df_l.reset_index(inplace=True)
+        df_l = df_l[self.headers_land]
+        df_l['AgencyCode'] = self.tables.agencytranslate_fromnames(df_l['AgencyCode'])
 
-        stacked_anim = self.possmatrixobj['animal'].scenariomatrix.stack()
-        #print(stacked_anim.index.names)  # 'FIPS', 'AnimalName', 'LoadSource', 'BmpShortname'
+        # **** ANIMAL ****
+        df_a = self.possmatrixobj['animal'].scenariomatrix.stack()
+        #print(df_a.index.names)  # 'FIPS', 'AnimalName', 'LoadSource', 'BmpShortname'
         newindexnames = ['GeographyName', 'AnimalGroup', 'LoadSourceGroup', 'BmpShortname']
-        #print(newindexnames)
-        stacked_anim.index.rename(newindexnames, inplace=True)
-        stacked_anim.name = 'Amount'
-        stacked_anim = pd.DataFrame(stacked_anim)
-        stacked_anim['Unit'] = 'Animal Count'
-        stacked_anim['AgencyCode'] = ['NONFED'] * len(stacked_anim['Amount'])
-        stacked_anim['StateAbbreviation'] = ['MD'] * len(stacked_anim['Amount'])
-        stacked_anim['StateUniqueIdentifier'] = ['beebop'] * len(stacked_anim['Amount'])
-        stacked_anim['NReductionFraction'] = [''] * len(stacked_anim['Amount'])
-        stacked_anim['PReductionFraction'] = [''] * len(stacked_anim['Amount'])
-        stacked_anim.reset_index(inplace=True)
-        stacked_anim = stacked_anim[self.headers_animal]
-        #print(stacked_anim.head())
+        df_a.index.rename(newindexnames, inplace=True)
+        df_a.name = 'Amount'
+        df_a = pd.DataFrame(df_a)
+        # Make a new column with the State Abbreviation associated with that row's LRSeg ID
+        df_a.reset_index(inplace=True)  # convert multiindexes into regular columns
+        geodf = self.tables.srcdata.georefs.loc[:, ['StateAbbreviation', 'FIPS']]
+        df_a = pd.merge(left=df_a, right=geodf, left_on='GeographyName', right_on='FIPS')
+        # Add additional necessary columns
+        df_a['Unit'] = 'Animal Count'
+        df_a['AgencyCode'] = ['NONFED'] * len(df_a['Amount'])
+        df_a['StateUniqueIdentifier'] = ['beebop'] * len(df_a['Amount'])
+        df_a['NReductionFraction'] = [''] * len(df_a['Amount'])
+        df_a['PReductionFraction'] = [''] * len(df_a['Amount'])
+        df_a.reset_index(inplace=True)
+        df_a = df_a[self.headers_animal]
+        #print(df_a.head())
 
-        stacked_manu = self.possmatrixobj['manure'].scenariomatrix.stack()
-        #print(stacked_manu.index.names)  # 'FIPSFrom', 'FIPSTo', 'AnimalName', 'Loadsource', 'BmpShortname'
+        # **** MANURE ****
+        df_m = self.possmatrixobj['manure'].scenariomatrix.stack()
+        #print(df_m.index.names)  # 'FIPSFrom', 'FIPSTo', 'AnimalName', 'Loadsource', 'BmpShortname'
         newindexnames = ['FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'BmpShortname']
         #print(newindexnames)
-        stacked_manu.index.rename(newindexnames, inplace=True)
-        stacked_manu.name = 'Amount'
-        stacked_manu = pd.DataFrame(stacked_manu)
-        stacked_manu['Unit'] = 'WET TONS'
-        stacked_manu['AgencyCode'] = ['NONFED'] * len(stacked_manu['Amount'])
-        stacked_manu['StateAbbreviation'] = ['MD'] * len(stacked_manu['Amount'])
-        stacked_manu['StateUniqueIdentifier'] = ['beebop'] * len(stacked_manu['Amount'])
-        stacked_manu.reset_index(inplace=True)
-        stacked_manu = stacked_manu[self.headers_manure]
-        #print(stacked_manu.head())
+        df_m.index.rename(newindexnames, inplace=True)
+        df_m.name = 'Amount'
+        df_m = pd.DataFrame(df_m)
+        # Make a new column with the State Abbreviation associated with that row's LRSeg ID
+        df_m.reset_index(inplace=True)  # convert multiindexes into regular columns
+        geodf = self.tables.srcdata.georefs.loc[:, ['StateAbbreviation', 'FIPS']]
+        df_m = pd.merge(left=df_m, right=geodf, left_on='FIPSFrom', right_on='FIPS')
+        # Add additional necessary columns
+        df_m['Unit'] = 'WET TONS'
+        df_m['AgencyCode'] = ['NONFED'] * len(df_m['Amount'])
+        df_m['StateUniqueIdentifier'] = ['beebop'] * len(df_m['Amount'])
+        df_m.reset_index(inplace=True)
+        df_m = df_m[self.headers_manure]
+        #print(df_m.head())
 
-        #print(stacked_ndas.head())
+        #print(df_l.head())
 
-        stacked_ndas.to_csv('./output/testwrite_InputsToCast_stacked_ndas_matrix.txt',
+        df_l.to_csv('./output/testwrite_InputsToCast_stacked_ndas_matrix.txt',
                             sep='\t', header=True, index=False, line_terminator='\r\n')
-        stacked_anim.to_csv('./output/testwrite_InputsToCast_stacked_anim_matrix.txt',
+        df_a.to_csv('./output/testwrite_InputsToCast_stacked_anim_matrix.txt',
                             sep='\t', header=True, index=False, line_terminator='\r\n')
-        stacked_manu.to_csv('./output/testwrite_InputsToCast_stacked_manu_matrix.txt',
+        df_m.to_csv('./output/testwrite_InputsToCast_stacked_manu_matrix.txt',
                             sep='\t', header=True, index=False, line_terminator='\r\n')
 
     def create_landbmp_file(self, datatowrite):
