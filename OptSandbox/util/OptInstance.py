@@ -1,6 +1,5 @@
 import pandas as pd
 from tables.TblQuery import TblQuery
-from util.ScenarioRandomizer import ScenarioRandomizer
 from tables.MatrixSand import MatrixSand
 from tables.MatrixAnimal import MatrixAnimal
 from tables.MatrixManure import MatrixManure
