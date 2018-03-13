@@ -15,14 +15,19 @@ class MatrixSand(MatrixBase):
                             column_names=queries.tables.srcdata.allbmps_shortnames)
 
     def identifyhardupperbounds(self):
+        #numpy_start_time = timeit.default_timer()
         # use numpy representation of eligibleparametermatrix
-        numpy_start_time = timeit.default_timer()
-        hub_table = self.eligibleparametermatrix.values *\
-                    self.yaad_table['Amount'].values[:, np.newaxis]
+        hub_table = self.eligibleparametermatrix.values * self.yaad_table['Amount'].values[:, np.newaxis]
         self.hardupperboundmatrix = pd.DataFrame(hub_table, index=self.eligibleparametermatrix.index,
                                                             columns=self.eligibleparametermatrix.columns)
         self.hardupperboundmatrix.to_csv('./output/testcompare_sand_hubtable_fromnumpy.csv')
-        print("MatrixSand:identifyhardupperbounds: Numpy calc time", timeit.default_timer() - numpy_start_time)
+        #print("MatrixSand:identifyhardupperbounds: Numpy calc time", timeit.default_timer() - numpy_start_time)
+
+    def identifyhardlowerbounds(self):
+        hlb_table = self.eligibleparametermatrix.values * 0
+        self.hardlowerboundmatrix = pd.DataFrame(hlb_table, index=self.eligibleparametermatrix.index,
+                                                            columns=self.eligibleparametermatrix.columns)
+
 
         # loop_start_time = timeit.default_timer()
         # old_key_lrseg = [x for x in self.yaad_table.index.get_level_values('LandRiverSegment')]

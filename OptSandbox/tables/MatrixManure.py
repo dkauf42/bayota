@@ -21,6 +21,11 @@ class MatrixManure(MatrixBase):
                                                             columns=self.eligibleparametermatrix.columns)
         self.hardupperboundmatrix.to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
 
+    def identifyhardlowerbounds(self):
+        hlb_table = self.eligibleparametermatrix.values * 0
+        self.hardlowerboundmatrix = pd.DataFrame(hlb_table, index=self.eligibleparametermatrix.index,
+                                                            columns=self.eligibleparametermatrix.columns)
+
 
         # #print("\nMatrixManure:identifyhardupperbounds: ya'ad table...")
         # #print(self.yaad_table.head())

@@ -1,4 +1,6 @@
+import random
 import pandas as pd
+import numpy as np
 from itertools import product
 from tqdm import tqdm  # Loop progress indicator module
 
@@ -25,7 +27,7 @@ class MatrixBase:
         self.hardupperboundmatrix = pd.DataFrame()
         self.hardlowerboundmatrix = pd.DataFrame()
 
-        self.randommatrix = pd.DataFrame()
+        self.scenariomatrix = pd.DataFrame()
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -59,8 +61,16 @@ class MatrixBase:
         Parameters:
             dataframe (pandas dataframe):
         """
+        print('MatrixBase.randomize_belowhub: H.U.B. matrix...')
         print(self.hardupperboundmatrix)
 
+        print('MatrixBase.randomize_belowhub: randomize between returns...')
+        retval = self._randomvaluesbetween(lowermatrix=self.hardlowerboundmatrix.values,
+                                           uppermatrix=self.hardupperboundmatrix.values)
+        retval = pd.DataFrame(retval, index=self.hardupperboundmatrix.index,
+                                      columns=self.hardupperboundmatrix.columns)
+        print(retval)
+        self.scenariomatrix = retval
 
         #howmanytoreplace = (dataframe == 1).sum().sum()
         #dataframe[dataframe == 1] = random.sample(range(1, howmanytoreplace+1), howmanytoreplace)
@@ -70,3 +80,20 @@ class MatrixBase:
         """ Short method for generating all the combinations of values from a dictionary input"""
         rows = product(*data_dict.values())
         return pd.DataFrame.from_records(rows, columns=data_dict.keys())
+
+    @staticmethod
+    def _rand_integers(dataframe):
+        howmanytoreplace = (dataframe == 1).sum().sum()
+        dataframe[dataframe == 1] = random.sample(range(1, howmanytoreplace+1), howmanytoreplace)
+
+    @staticmethod
+    def _rand_matrix(dataframe):
+        np.random.random(dataframe.shape)
+
+    @staticmethod
+    def _randomvaluesbetween(lowermatrix, uppermatrix):
+        m, n = uppermatrix.shape
+        print('MatrixBase._randomvaluesbetween(): m=%d, n=%d' % (m, n))
+        print(np.random.random((m, n)))
+        print((uppermatrix - lowermatrix))
+        return (uppermatrix - lowermatrix) * np.random.random((m, n)) + lowermatrix

@@ -21,6 +21,11 @@ class MatrixAnimal(MatrixBase):
                                                             columns=self.eligibleparametermatrix.columns)
         self.hardupperboundmatrix.to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
 
+    def identifyhardlowerbounds(self):
+        hlb_table = self.eligibleparametermatrix.values * 0
+        self.hardlowerboundmatrix = pd.DataFrame(hlb_table, index=self.eligibleparametermatrix.index,
+                                                            columns=self.eligibleparametermatrix.columns)
+
         # old_key_animal = [x for x in self.yaad_table.index.get_level_values('AnimalName')]
         # old_key_fips = [x for x in self.yaad_table.index.get_level_values('FIPS')]
         # new_vals = [x for x in self.yaad_table['AnimalUnits']]
