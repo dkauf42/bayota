@@ -61,15 +61,15 @@ class MatrixBase:
         Parameters:
             dataframe (pandas dataframe):
         """
-        print('MatrixBase.randomize_belowhub: H.U.B. matrix...')
-        print(self.hardupperboundmatrix)
+        #print('MatrixBase.randomize_belowhub: H.U.B. matrix...')
+        #print(self.hardupperboundmatrix)
 
-        print('MatrixBase.randomize_belowhub: randomize between returns...')
+        #print('MatrixBase.randomize_belowhub: randomize between returns...')
         retval = self._randomvaluesbetween(lowermatrix=self.hardlowerboundmatrix.values,
                                            uppermatrix=self.hardupperboundmatrix.values)
         retval = pd.DataFrame(retval, index=self.hardupperboundmatrix.index,
                                       columns=self.hardupperboundmatrix.columns)
-        print(retval)
+        #print(retval)
         self.scenariomatrix = retval
 
         #howmanytoreplace = (dataframe == 1).sum().sum()
