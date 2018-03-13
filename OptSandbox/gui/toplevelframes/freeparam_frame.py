@@ -54,7 +54,6 @@ class FreeParamFrame(tk.Frame):
         """
 
         mylist = queries.base.get_agencies_in_lrsegs(lrsegs=optinstance.geographies_included['LandRiverSegment'])
-
         self.agencydualbox.set_new_left_side_items(mylist)
 
         mylist = queries.source.get_all_sector_names()

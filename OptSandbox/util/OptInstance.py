@@ -85,7 +85,7 @@ class OptInstance:
         self.wastewatername = metadata_results.wastewater
         self.costprofilename = metadata_results.costprofile
         self.geoscalename = metadata_results.scale
-        self.geoareanames = metadata_results.area
+        self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
         self.geographies_included = None
         #self.get_geographies_included(areanames=self.geoareanames)
