@@ -105,10 +105,10 @@ class MetadataFrame(tk.Frame):
         self.update_geoareabox_options()
 
     def update_geoareabox_options(self, event=None):
-        mygeoscale = self.dropdown_geoscale.get()
-        mylist = self.qrysource.get_geoarea_names(scale=mygeoscale)
+        geoscale = self.dropdown_geoscale.get()
+        areas = self.qrysource.get_geoarea_names(scale=geoscale)
 
-        self.geoareabox.set_new_left_side_items(mylist)
+        self.geoareabox.set_new_left_side_items(areas)
 
     def get_results(self):
         Optmeta = namedtuple('metadata', 'name description baseyear basecond '
