@@ -15,6 +15,12 @@ class ExcelDataTable:
     def __getitem__(self, item):
         return getattr(self, item)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        return self
+
     def _loadsheets(self):
         self.data = pd.read_excel(self.fullpath, sheet_name=self.sheet_names)
 
