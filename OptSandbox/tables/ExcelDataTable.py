@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 
 class ExcelDataTable:
@@ -6,7 +7,7 @@ class ExcelDataTable:
         """A parent class for various data tables that are excel formatted"""
 
         self.filename = filename
-        self.fullpath = dirpath + self.filename
+        self.fullpath = os.path.join(dirpath, self.filename)
         self.sheet_names = sheet_names
 
         self.data = None

@@ -1,11 +1,11 @@
 from tables.ExcelDataTable import ExcelDataTable
+from OptSandbox.__init__ import get_data
 
-reportsdir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/' \
-              'Optimization_Tool/2_ExperimentFolder/data_tables/source_and_base/2016progress/'
+reportsdir = get_data()
 
 
 class BaseCondition(ExcelDataTable):
-    def __init__(self, filename='2016ProgressV8-BaseConditions.xlsx', dirpath=reportsdir):
+    def __init__(self, filename='baseconditions2017progressV4.xlsx', dirpath=reportsdir):
 
         sheet_names = ['Animal Counts', 'Landuse Acres', 'Septic Systems']
 
