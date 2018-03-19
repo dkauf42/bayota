@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import timeit
 from tables.MatrixBase import MatrixBase
 
 
