@@ -1,5 +1,5 @@
 from tables.ExcelDataTable import ExcelDataTable
-from OptSandbox.__init__ import get_data
+from __init__ import get_data
 
 reportsdir = get_data()
 

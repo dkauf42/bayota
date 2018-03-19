@@ -1,7 +1,7 @@
 import unittest
 
-from TblQuery import TblQuery
-from tables import QrySource
+from tables.TblQuery import TblQuery
+from tables.QrySource import QrySource
 
 
 class TddForQueries(unittest.TestCase):
