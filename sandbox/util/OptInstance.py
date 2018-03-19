@@ -1,9 +1,9 @@
 import pandas as pd
 import os
 from sandbox.tables.TblQuery import TblQuery
-from sandbox.tables.MatrixSand import MatrixSand
-from sandbox.tables.MatrixAnimal import MatrixAnimal
-from sandbox.tables.MatrixManure import MatrixManure
+from sandbox.matrices.MatrixSand import MatrixSand
+from sandbox.matrices.MatrixAnimal import MatrixAnimal
+from sandbox.matrices.MatrixManure import MatrixManure
 from sandbox.__init__ import get_outputdir
 
 writedir = get_outputdir()

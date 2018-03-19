@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-from sandbox.tables.MatrixBase import MatrixBase
+from sandbox.matrices.MatrixBase import MatrixBase
 
 
 class QryLoadSources:

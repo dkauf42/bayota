@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sandbox.tables.MatrixBase import MatrixBase
+from sandbox.matrices.MatrixBase import MatrixBase
 
 
 class MatrixSand(MatrixBase):
