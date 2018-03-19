@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from util.OptInstance import OptInstance
+from util import OptInstance
 
 
 class TddForOptInstance(unittest.TestCase):
@@ -22,6 +22,7 @@ class TddForOptInstance(unittest.TestCase):
 
         self.oi.geographies_included = self.oi.queries.source. \
             get_lrseg_table(scale=self.oi.geoscalename, areanames=self.oi.geoareanames)
+        print(self.oi.geographies_included.LandRiverSegment)
         self.oi.agencies_included = self.oi.queries.base. \
             get_agencies_in_lrsegs(lrsegs=self.oi.geographies_included.LandRiverSegment)
         self.oi.sectors_included = self.oi.queries.source.get_all_sector_names()
