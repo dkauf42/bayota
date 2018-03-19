@@ -33,7 +33,7 @@ class QryLoadSources:
         """ get the LoadSources (along with their maxes) for each segment-agency pair
         get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies
         """
-        lsani = self._get_sources_in_lrsegs(name='animal', counties=geographies['CountyName'])
+        lsani = self._get_sources_in_lrsegs(name='animal', fips=geographies['FIPS'])
         """ Hierarchical indices are specified for each dataframe. """
         return lsani.set_index(['FIPS', 'AnimalName', 'LoadSource'], drop=True).copy()
 
@@ -41,7 +41,7 @@ class QryLoadSources:
         """ get the LoadSources (along with their maxes) for each segment-agency pair
         get_tables_of_load_sources_and_their_units_and_amounts_by_geoagencies
         """
-        lsman = self._get_sources_in_lrsegs(name='manure', counties=geographies['CountyName'])
+        lsman = self._get_sources_in_lrsegs(name='manure', fips=geographies['FIPS'])
         #  For manure, all the possible FIPSFrom and FIPSTo combinations are generated.
         newdf_manure = MatrixBase.expand_grid({'FIPSFrom': lsman.FIPS.unique(),
                                                'FIPSTo': lsman.FIPS.unique(),
@@ -57,7 +57,7 @@ class QryLoadSources:
 
         return new_df_merged
 
-    def _get_sources_in_lrsegs(self, lrsegs=None, agencies=None, counties=None, name=''):
+    def _get_sources_in_lrsegs(self, lrsegs=None, agencies=None, fips=None, name=''):
         """Get the load sources present (whether zero acres or not) in the specified segment-agencies
 
         Returns:
@@ -104,19 +104,19 @@ class QryLoadSources:
 
         elif (name == 'animal') | (name == 'manure'):
             print('\nFinding load sources for <%s> in specified County' % name)
-            if counties is None:
+            if fips is None:
                 raise ValueError('"county" is None, but must be specified for "%s" load sources' % name)
 
             if name == 'animal':
                 prebmpls_df = self.tables.basecond.animalcounts
-                countyheader = 'CountyName'
+                countyheader = 'FIPS'
             elif name == 'manure':
                 prebmpls_df = self.tables.lsmanure.ManureTonsProduced
-                countyheader = 'County'
+                countyheader = 'FIPS'
             else:
                 raise ValueError('unrecognized source type name: "%s"' % name)
 
-            lsdf_geobool['CountyName'] = prebmpls_df[countyheader].isin(counties.unique())
+            lsdf_geobool['FIPS'] = prebmpls_df[countyheader].isin(fips.unique())
             lsdf_geobool = lsdf_geobool.any(axis=1)
             filtered_lsdf = prebmpls_df.loc[lsdf_geobool, :]
 

@@ -23,11 +23,11 @@ class QryBase:
         boolseries = lsacres['LandRiverSegment'].isin(lrsegs)
         lsacres = lsacres.loc[boolseries, :].copy()
 
-        grouped = lsacres.groupby(['LandRiverSegment', 'AgencyCode'])
+        grouped = lsacres.groupby(['LandRiverSegment', 'Agency'])
 
         summed = grouped.sum()
         summed = summed.iloc[summed.PreBMPAcres.nonzero()[0]]
 
-        uniqueagencies = list(summed.index.get_level_values('AgencyCode').unique().values)
+        uniqueagencies = list(summed.index.get_level_values('Agency').unique().values)
 
-        return self.tables.agencytranslate_fromcodes(uniqueagencies)
+        return uniqueagencies
