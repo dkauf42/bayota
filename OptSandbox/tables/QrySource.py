@@ -1,4 +1,5 @@
 import pandas as pd
+import warnings
 
 
 class QrySource:
@@ -56,8 +57,8 @@ class QrySource:
         elif scale == 'LandRiverSegment':
             mylist = self.tables.srcdata.georefs['LandRiverSegment'].unique()
         else:
-            raise ValueError('Specified scale "%s" is unrecognized' % scale)
-            #mylist = []
+            warnings.warn('Specified scale "%s" is unrecognized' % scale, RuntimeWarning)
+            mylist = []
         return list(mylist)
 
     def get_lrseg_table(self, scale=None, areanames=None):
