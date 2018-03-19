@@ -1,4 +1,4 @@
-from util.TblLoader import TblLoader
+from tables.TblLoader import TblLoader
 from tables.QrySource import QrySource
 from tables.QryBase import QryBase
 from tables.QryLoadSources import QryLoadSources

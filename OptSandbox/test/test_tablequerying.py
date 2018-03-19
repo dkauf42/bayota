@@ -1,8 +1,7 @@
 import unittest
 
-from util.TblLoader import TblLoader
-from tables.TblQueries import TblQuery
-import pandas as pd
+from tables.TblLoader import TblLoader
+from tables.TblQuery import TblQuery
 
 
 class TddForQueries(unittest.TestCase):

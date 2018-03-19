@@ -1,6 +1,6 @@
 import unittest
 
-from util.TblLoader import TblLoader
+from tables.TblLoader import TblLoader
 from tables.ExcelDataTable import ExcelDataTable
 from collections import OrderedDict
 
