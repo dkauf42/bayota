@@ -19,7 +19,7 @@ class MatrixAnimal(MatrixBase):
                     self.yaad_table['AnimalUnits'].values[:, np.newaxis]
         self.hardupperboundmatrix = pd.DataFrame(hub_table, index=self.eligibleparametermatrix.index,
                                                             columns=self.eligibleparametermatrix.columns)
-        self.hardupperboundmatrix.to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
+        #self.hardupperboundmatrix.to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')
 
     def identifyhardlowerbounds(self):
         hlb_table = self.eligibleparametermatrix.values * 0

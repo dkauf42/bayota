@@ -96,7 +96,7 @@ class QrySource:
             raise ValueError('Specified scale "%s" is unrecognized' % scale)
 
         my_geo_table = geodf.loc[booldf, :].copy()
-        my_geo_table.to_csv('./output/testwrite_IncludeSpec_geo_include_table2.csv')
+        #my_geo_table.to_csv('./output/testwrite_IncludeSpec_geo_include_table2.csv')
 
         #print(my_geo_table.head())
         #print('Number of lrseg records included: %d' % booldf.sum())

@@ -20,7 +20,7 @@ class MatrixSand(MatrixBase):
         hub_table = self.eligibleparametermatrix.values * self.yaad_table['Amount'].values[:, np.newaxis]
         self.hardupperboundmatrix = pd.DataFrame(hub_table, index=self.eligibleparametermatrix.index,
                                                             columns=self.eligibleparametermatrix.columns)
-        self.hardupperboundmatrix.to_csv('./output/testcompare_sand_hubtable_fromnumpy.csv')
+        #self.hardupperboundmatrix.to_csv('./output/testcompare_sand_hubtable_fromnumpy.csv')
         #print("MatrixSand:identifyhardupperbounds: Numpy calc time", timeit.default_timer() - numpy_start_time)
 
     def identifyhardlowerbounds(self):
