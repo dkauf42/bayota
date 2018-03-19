@@ -1,7 +1,7 @@
 from tables.ExcelDataTable import ExcelDataTable
+from OptSandbox.__init__ import get_data
 
-srcdatadir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/' \
-              'Optimization_Tool/2_ExperimentFolder/data_tables/source_and_base/2016progress/'
+srcdatadir = get_data()
 
 
 class SourceData(ExcelDataTable):

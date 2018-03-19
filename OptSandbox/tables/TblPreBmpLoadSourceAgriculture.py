@@ -1,7 +1,7 @@
 from tables.ExcelDataTable import ExcelDataTable
+from OptSandbox.__init__ import get_data
 
-reportsdir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/' \
-              'Optimization_Tool/2_ExperimentFolder/data_tables/source_and_base/2016progress/'
+reportsdir = get_data()
 
 
 class TblPreBmpLoadSourceAgriculture(ExcelDataTable):

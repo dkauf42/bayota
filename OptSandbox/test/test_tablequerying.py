@@ -15,7 +15,7 @@ class TddForQueries(unittest.TestCase):
         self.assertRaises(ValueError, self.qrysrc.get_geoarea_names)
 
     def test_table_query_raises_error_when_specified_scale_does_not_exist(self):
-        self.assertRaises(ValueError, self.qrysrc.get_geoarea_names, 'MinorState')
+        self.assertWarns(RuntimeWarning, self.qrysrc.get_geoarea_names, 'MinorState')
 
     def test_table_query_returns_geo_scale_list_containing_COUNTY(self):
         self.assertIn('County', self.qrysrc.get_geoscale_names())
