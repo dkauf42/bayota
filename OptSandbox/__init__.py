@@ -14,5 +14,6 @@ def get_data(path=''):
         retval = os.path.join(_ROOT, 'data/', path)
     return retval
 
+
 def get_tempdir():
     return os.path.join(_ROOT, 'temp')
