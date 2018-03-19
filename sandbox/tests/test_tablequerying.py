@@ -1,6 +1,6 @@
 import unittest
 
-from sandbox.tables import TblQuery
+from sandbox.tables.TblQuery import TblQuery
 from sandbox.tables.QrySource import QrySource
 
 

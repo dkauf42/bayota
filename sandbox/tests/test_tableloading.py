@@ -1,6 +1,6 @@
 import unittest
 
-from sandbox.tables import TblLoader
+from sandbox.tables.TblLoader import TblLoader
 from sandbox.tables.ExcelDataTable import ExcelDataTable
 from collections import OrderedDict
 
