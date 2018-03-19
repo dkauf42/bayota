@@ -1,7 +1,7 @@
-from tables.ExcelDataTable import ExcelDataTable
-from __init__ import get_data
+from sandbox.tables.ExcelDataTable import ExcelDataTable
+from sandbox.__init__ import get_datadir
 
-srcdatadir = get_data()
+srcdatadir = get_datadir()
 
 
 class SourceData(ExcelDataTable):

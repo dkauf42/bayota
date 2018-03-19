@@ -1,8 +1,8 @@
 import pandas as pd
-from tables.TblQuery import TblQuery
-from tables.MatrixSand import MatrixSand
-from tables.MatrixAnimal import MatrixAnimal
-from tables.MatrixManure import MatrixManure
+from sandbox.tables.TblQuery import TblQuery
+from sandbox.tables.MatrixSand import MatrixSand
+from sandbox.tables.MatrixAnimal import MatrixAnimal
+from sandbox.tables.MatrixManure import MatrixManure
 
 
 class OptInstance:

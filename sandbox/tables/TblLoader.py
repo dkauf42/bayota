@@ -2,13 +2,14 @@ import os
 import pickle
 from pandas import Series
 
-from tables.TblSourceData import SourceData
-from tables.TblBaseCondition import BaseCondition
-from tables.TblPreBmpLoadSourceNatural import TblPreBmpLoadSourceNatural
-from tables.TblPreBmpLoadSourceDeveloped import TblPreBmpLoadSourceDeveloped
-from tables.TblPreBmpLoadSourceAgriculture import TblPreBmpLoadSourceAgriculture
-from tables.TblManureTonsProduced import ManureTonsProduced
-from tables.TblSepticSystems import TblSepticSystems
+from sandbox.tables.TblSourceData import SourceData
+from sandbox.tables.TblBaseCondition import BaseCondition
+from sandbox.tables.TblPreBmpLoadSourceNatural import TblPreBmpLoadSourceNatural
+from sandbox.tables.TblPreBmpLoadSourceDeveloped import TblPreBmpLoadSourceDeveloped
+from sandbox.tables.TblPreBmpLoadSourceAgriculture import TblPreBmpLoadSourceAgriculture
+from sandbox.tables.TblManureTonsProduced import ManureTonsProduced
+from sandbox.tables.TblSepticSystems import TblSepticSystems
+from sandbox.__init__ import get_tempdir
 
 
 class TblLoader:
@@ -19,8 +20,7 @@ class TblLoader:
             tempdir (str): location where table objects are written to file to speed up re-runs
 
         """
-        my_path = os.path.abspath(os.path.dirname(__file__))
-        self.tempdir = os.path.join(my_path, "../temp/")
+        self.tempdir = get_tempdir()
 
         self.srcdata = None
         self.basecond = None

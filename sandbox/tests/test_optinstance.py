@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from util.OptInstance import OptInstance
+from sandbox.util import OptInstance
 
 
 class TddForOptInstance(unittest.TestCase):

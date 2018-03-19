@@ -1,14 +1,14 @@
 import numpy as np
 import pandas as pd
-from tables.MatrixBase import MatrixBase
+from sandbox.tables.MatrixBase import MatrixBase
 
 
-class MatrixAnimal(MatrixBase):
+class MatrixManure(MatrixBase):
     def __init__(self, name='', geographies=None, queries=None):
-        """Sub-class for Animal BMPs"""
+        """Sub-class for Manure BMPs"""
 
         # "Ya'ad" (load sources, agencies, geo, units, amounts, etc.) table is generated.
-        self.yaad_table = queries.loadsources.get_yaad_for_animal(geographies=geographies)
+        self.yaad_table = queries.loadsources.get_yaad_for_manure(geographies=geographies)
 
         MatrixBase.__init__(self, name=name, row_indices=self.yaad_table.index,
                             column_names=queries.tables.srcdata.allbmps_shortnames)
@@ -16,7 +16,7 @@ class MatrixAnimal(MatrixBase):
     def identifyhardupperbounds(self):
         # use numpy representation of eligibleparametermatrix
         hub_table = self.eligibleparametermatrix.values *\
-                    self.yaad_table['AnimalUnits'].values[:, np.newaxis]
+                    self.yaad_table['Dry_Tons_of_Stored_Manure'].values[:, np.newaxis]
         self.hardupperboundmatrix = pd.DataFrame(hub_table, index=self.eligibleparametermatrix.index,
                                                             columns=self.eligibleparametermatrix.columns)
         #self.hardupperboundmatrix.to_csv('./output/testcompare_animal_hubtable_fromnumpy.csv')

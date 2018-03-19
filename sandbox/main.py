@@ -8,9 +8,9 @@ import os
 import timeit
 import tkinter as tk
 
-from gui.toplevelframes.mainwindow import MainWindow
-from util.InputsToCast import InputsToCast
-from util.OptInstance import OptInstance
+from sandbox.gui.toplevelframes.mainwindow import MainWindow
+from sandbox.util.InputsToCast import InputsToCast
+from sandbox.util.OptInstance import OptInstance
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)

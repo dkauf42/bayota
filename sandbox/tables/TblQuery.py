@@ -1,7 +1,7 @@
-from tables.TblLoader import TblLoader
-from tables.QrySource import QrySource
-from tables.QryBase import QryBase
-from tables.QryLoadSources import QryLoadSources
+from sandbox.tables.TblLoader import TblLoader
+from sandbox.tables.QrySource import QrySource
+from sandbox.tables.QryBase import QryBase
+from sandbox.tables.QryLoadSources import QryLoadSources
 
 
 class TblQuery:

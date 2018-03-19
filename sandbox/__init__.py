@@ -4,10 +4,10 @@ Module for cast_opt_tests
 
 import os
 
-_ROOT = os.path.abspath(os.path.dirname(__file__))
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 
-def get_data(path=''):
+def get_datadir(path=''):
     if not path:
         retval = os.path.join(_ROOT, 'data')
     else:
@@ -16,4 +16,4 @@ def get_data(path=''):
 
 
 def get_tempdir():
-    return os.path.join(_ROOT, 'temp')
+    return os.path.join(_ROOT, 'temp/')

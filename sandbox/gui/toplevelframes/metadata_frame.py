@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from gui.useframes.dualbox import DualBox
+from sandbox.gui.useframes.dualbox import DualBox
 from collections import namedtuple
 
 
