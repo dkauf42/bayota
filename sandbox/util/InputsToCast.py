@@ -1,9 +1,9 @@
 import csv
 import time
 import pandas as pd
+from sandbox.__init__ import get_outputdir
 
-writedir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/' \
-              'Optimization_Tool/2_ExperimentFolder/data_tables/inputs_generated_by_cast_opt_tests/'
+writedir = get_outputdir()
 
 
 def writecsv(filename, headers, datatowrite):
