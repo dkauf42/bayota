@@ -91,11 +91,11 @@ class InputsToCast:
         df_m.reset_index(inplace=True)
         df_m = df_m[self.headers_manure]
 
-        df_l.to_csv('./output/testwrite_InputsToCast_stacked_ndas_matrix.txt',
+        df_l.to_csv(writedir + 'testwrite_InputsToCast_stacked_ndas_matrix.txt',
                             sep='\t', header=True, index=False, line_terminator='\r\n')
-        df_a.to_csv('./output/testwrite_InputsToCast_stacked_anim_matrix.txt',
+        df_a.to_csv(writedir + 'testwrite_InputsToCast_stacked_anim_matrix.txt',
                             sep='\t', header=True, index=False, line_terminator='\r\n')
-        df_m.to_csv('./output/testwrite_InputsToCast_stacked_manu_matrix.txt',
+        df_m.to_csv(writedir + 'testwrite_InputsToCast_stacked_manu_matrix.txt',
                             sep='\t', header=True, index=False, line_terminator='\r\n')
 
     def create_landbmp_file(self, datatowrite):

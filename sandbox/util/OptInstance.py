@@ -1,8 +1,12 @@
 import pandas as pd
+import os
 from sandbox.tables.TblQuery import TblQuery
 from sandbox.tables.MatrixSand import MatrixSand
 from sandbox.tables.MatrixAnimal import MatrixAnimal
 from sandbox.tables.MatrixManure import MatrixManure
+from sandbox.__init__ import get_outputdir
+
+writedir = get_outputdir()
 
 
 class OptInstance:
@@ -154,6 +158,9 @@ class OptInstance:
         #ScenarioRandomizer(self.pmatrices['manure'].eligibleparametermatrix)
 
         # write possibility/parameter matrices to file
-        self.pmatrices['ndas'].eligibleparametermatrix.to_csv('./output/testwrite_Scenario_possmatrix_ndas.csv')
-        self.pmatrices['animal'].eligibleparametermatrix.to_csv('./output/testwrite_Scenario_possmatrix_anim.csv')
-        self.pmatrices['manure'].eligibleparametermatrix.to_csv('./output/testwrite_Scenario_possmatrix_manu.csv')
+        self.pmatrices['ndas'].eligibleparametermatrix.\
+            to_csv(os.path.join(writedir, 'testwrite_Scenario_possmatrix_ndas.csv'))
+        self.pmatrices['animal'].eligibleparametermatrix.\
+            to_csv(os.path.join(writedir, 'testwrite_Scenario_possmatrix_anim.csv'))
+        self.pmatrices['manure'].eligibleparametermatrix.\
+            to_csv(os.path.join(writedir, 'testwrite_Scenario_possmatrix_manu.csv'))
