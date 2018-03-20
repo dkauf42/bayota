@@ -31,7 +31,7 @@ setup(
     packages=['sandbox', 'data', 'temp', 'output'],
     include_package_data=True,
     install_requires=install_requires,
-    test_suite="tests"
+    test_suite="sandbox.tests"
 )
 
 #packages = find_packages(exclude=['docs', 'documentation_ppts',
