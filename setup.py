@@ -18,6 +18,7 @@ setup(
     author_email='dkaufman@chesapeakebay.net',
     url='https://gitlab.com/daka42',
     license=license,
-    packages=find_packages(exclude=('docs', 'documentation_ppts',
-                                    'sphinx_doc', 'sphinx_guides', 'test'))
+    packages=find_packages(['data', 'sandbox'],
+                           exclude=['docs', 'documentation_ppts',
+                                    'sphinx_doc', 'sphinx_guides', 'test'])
 )
