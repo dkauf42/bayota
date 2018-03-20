@@ -7,7 +7,7 @@ This README documents the steps necessary to get this application up and running
 * OptSandbox by Daniel Kaufman
 * Version 0.1.0 (first version)
 
-### Usage
+## Usage
 
 A simple example:
 
@@ -15,7 +15,7 @@ A simple example:
 python main.py
 ```
 
-### How do I get set up? ###
+## How do I get set up? ###
 
 * Summary of set up
 * Configuration
@@ -23,7 +23,7 @@ python main.py
 * Database configuration
 * Deployment instructions
 
-### Running the tests
+## Running the tests
 
     > make test
 
@@ -32,13 +32,7 @@ python main.py
        * QrySource
        * TblLoader
 
-### Contribution guidelines ###
+## Who do I talk to? ###
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* The U.S. EPA Chesapeake Bay Program
+* Daniel Kaufman: dkaufman@chesapeakebay.net
