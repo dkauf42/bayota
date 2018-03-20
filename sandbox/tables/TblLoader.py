@@ -66,6 +66,7 @@ class TblLoader:
             with open(savename, 'rb') as f:
                 tableobj = pickle.load(f)
         else:
+            print('<%s object does not exist yet. Generating...>' % cls.__name__)
             tableobj = cls()  # generate data table object if none exists
             with open(savename, 'wb') as f:
                 pickle.dump(tableobj, f)
