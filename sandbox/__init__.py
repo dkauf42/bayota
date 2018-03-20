@@ -9,7 +9,7 @@ _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 def get_datadir(path=''):
     if not path:
-        retval = os.path.join(_ROOT, 'data')
+        retval = os.path.join(_ROOT, 'data/')
     else:
         retval = os.path.join(_ROOT, 'data/', path)
     return retval
