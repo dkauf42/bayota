@@ -1,1 +1,4 @@
 include data/*.xlsx
+include temp/empty.obj
+include output/empty.txt
+recursive-include sandbox *.*
