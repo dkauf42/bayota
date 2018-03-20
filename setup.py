@@ -19,7 +19,5 @@ setup(
     url='https://gitlab.com/daka42',
     license=license,
     packages=find_packages(exclude=('docs', 'documentation_ppts',
-                                    'sphinx_doc', 'sphinx_guides', 'test')),
-    install_requires=['numpy', 'pandas', 'Pmw', 'python-dateutil', 'pytz',
-                      'six', 'tqdm', 'xlrd']
+                                    'sphinx_doc', 'sphinx_guides', 'test'))
 )
