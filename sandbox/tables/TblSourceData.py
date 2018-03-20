@@ -14,9 +14,6 @@ class SourceData(ExcelDataTable):
 
         ExcelDataTable.__init__(self, filename=filename, dirpath=dirpath, sheet_names=sheet_names)
 
-        print(self.filename)
-        print(self.sheet_names)
-        print(self.data)
         # Data from excel sheets are saved to class attributes.
         self.georefs = self.data[sheet_names[0]]
         self.bmpDefinitions = self.data[sheet_names[1]]
