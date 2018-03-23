@@ -1,20 +1,21 @@
 import importlib
 from ..TableLoader import TableLoader
 
-tblList = \
-       ["ImpBmpSubmittedAnimal",
-        "ImpBmpSubmittedCropAppRateReduction",
-        "ImpBmpSubmittedLand",
-        "ImpBmpSubmittedManureTransport",
-        "ImpBmpSubmittedRelatedMeasure",
-        "InvalidBmpSubmittedAnimal",
-        "InvalidBmpSubmittedCropAppRateReduction",
-        "InvalidBmpSubmittedLand",
-        "InvalidBmpSubmittedManureTransport",
-        "TblPointSourceDataSets",
-        "TblScenario",
-        "TblScenarioGeography"]
-        
+tblList = ["ImpBmpSubmittedAnimal",
+           "ImpBmpSubmittedCropAppRateReduction",
+           "ImpBmpSubmittedLand",
+           "ImpBmpSubmittedManureTransport",
+           "ImpBmpSubmittedRelatedMeasure",
+           "InvalidBmpSubmittedAnimal",
+           "InvalidBmpSubmittedCropAppRateReduction",
+           "InvalidBmpSubmittedLand",
+           "InvalidBmpSubmittedManureTransport",
+           "TblPointSourceDataSets",
+           "TblScenario",
+           "TblScenarioGeography"
+           ]
+
+
 class Metadata(TableLoader):
     def __init__(self, dfDict = None):
         super().__init__(tblList)
@@ -34,4 +35,3 @@ class Metadata(TableLoader):
                 df = df.ix[df.scenarioid == scenarioId].reset_index()
             obj.addTable(tbl, df)
         return obj
-        

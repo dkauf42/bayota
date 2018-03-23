@@ -13,7 +13,7 @@ class TableLoader(object):
             try:
                 item = object.__getattribute__(self, attr)
                 if attr in tableSet:
-                    return item # pd.DataFrame.copy(item)
+                    return item  # pd.DataFrame.copy(item)
                 else:
                     return item
             except AttributeError:
