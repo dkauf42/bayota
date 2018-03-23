@@ -12,7 +12,6 @@ with open('README.md') as f:
 install_requires = ['numpy==1.14.2',
                     'pandas==0.22.0',
                     'Pmw==2.0.1',
-                    'python-dateutil==2.7.0',
                     'pytz==2018.3',
                     'six==1.11.0',
                     'tqdm==4.19.8',
