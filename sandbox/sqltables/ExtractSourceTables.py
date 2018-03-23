@@ -2,7 +2,7 @@
 
 Example:
     `python ExtractSourceTables.py <server> <databasename> <source dir>`
-    `python ExtractSourceTables.py SQL2D ScenarioBuilderV3Source ../../data_sql/`
+    `python ExtractSourceTables.py SQL2D ScenarioBuilderV3Source ../../data_sql/test_source`
 
 """
 import sys
