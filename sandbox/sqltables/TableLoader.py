@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class TableLoader(object):
     def __init__(self, tableSet):
         object.__setattr__(self, "tableSet", set(tableSet))
@@ -44,4 +45,3 @@ class TableLoader(object):
             self.__setattr__(tblName, tbl)
         except AttributeError as err:
             raise err
-        
