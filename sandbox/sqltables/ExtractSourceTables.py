@@ -12,7 +12,7 @@ import time
 from sandbox.sqltables.source_data import SourceData
 
 if len(sys.argv) < 4:
-    raise RuntimeError("We need server, database name, and output directory value!")
+    raise ValueError("We need server, database name, and output directory value!")
 
 # else, let's extract
 server = sys.argv[1]  # 'localhost'

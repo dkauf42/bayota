@@ -11,8 +11,7 @@ import pandas as pd
 from sandbox.sqltables.metadata import Metadata
 
 if len(sys.argv) < 5:
-    print("We need server, database name, username, password, output directory, and scenarioId value!")
-    sys.exit()
+    raise ValueError("We need server, database name, username, password, output directory, and scenarioId value!")
 
 # else, let's extract
 server = sys.argv[1]  # 'localhost'
