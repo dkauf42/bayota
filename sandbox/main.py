@@ -16,14 +16,14 @@ script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of 
 sys.path.append(script_dir)
 
 
-def main(no_gui=False):
+def main():
     start_time = timeit.default_timer()
-    runner(no_gui=no_gui)  # An optimization instance runner is called, and possibility matrices are generated.
+    runner()  # An optimization instance runner is called, and possibility matrices are generated.
     print("Loading time", timeit.default_timer() - start_time)
     print('<DONE>')
 
 
-def runner(numinstances=1, no_gui=False):
+def runner(numinstances=1):
     """Generate an OptInstance that populates with metadata, freeparamgroups, constraints, and a parametermatrix
     Parameters:
     Note:
@@ -36,7 +36,7 @@ def runner(numinstances=1, no_gui=False):
 
         # Run the GUI
         root = tk.Tk()  # Create a tkinter window
-        mainwindow = MainWindow(root, optinstance=oinstance, no_gui=no_gui)
+        mainwindow = MainWindow(root, optinstance=oinstance)
         mainwindow.pack(side="top", fill="both", expand=True)
         root.title("Optimization Options")
         root.mainloop()
@@ -51,15 +51,4 @@ def runner(numinstances=1, no_gui=False):
 
 
 if __name__ == '__main__':
-    print('Number of arguments:', len(sys.argv), 'arguments.')
-    print('Argument List:', str(sys.argv))
-
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Create an Optimization Instance')
-    parser.add_argument('--nogui', action='store_true')
-    args = parser.parse_args()
-
-    main(no_gui=args.nogui)
-
     main()

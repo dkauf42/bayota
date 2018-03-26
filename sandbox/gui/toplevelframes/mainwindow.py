@@ -9,7 +9,7 @@ from sandbox.gui.useframes.toggleframe import ToggledFrame
 
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, optinstance, no_gui=False, *args, **kwargs):
+    def __init__(self, parent, optinstance, *args, **kwargs):
         """The optimization configuration window"""
         my_bgcolor = "bisque"
         tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
@@ -17,7 +17,6 @@ class MainWindow(tk.Frame):
 
         self.optinstance = optinstance
         self.queries = optinstance.queries
-        self.no_gui = no_gui
         
         # We need to get ttk.Label colors to work properly on OS X
         self.style = ttk.Style()
@@ -76,9 +75,6 @@ class MainWindow(tk.Frame):
         self.parent.protocol("WM_DELETE_WINDOW", self.on_mainwindow_closing)
 
         self.load_metadata_options()
-
-        if no_gui:
-            self.skipgui_and_use_default_test()
 
     def __enter__(self):
         return self
