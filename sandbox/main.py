@@ -35,7 +35,11 @@ def runner(numinstances=1, no_gui=False):
         oinstance.load_tables()
 
         # Run the GUI
-        root = tk.Tk()  # Create a tkinter window
+        if os.environ.get('DISPLAY') is None:
+            print('We know there is no Display, trying without...')
+            root = tk.Tcl()
+        else:
+            root = tk.Tk()  # Create a tkinter window
         mainwindow = MainWindow(root, optinstance=oinstance, no_gui=no_gui)
         mainwindow.pack(side="top", fill="both", expand=True)
         root.title("Optimization Options")
