@@ -35,7 +35,7 @@ def runner(numinstances=1, no_gui=False):
         oinstance.load_tables()
 
         # Run the GUI
-        if os.environ.get('DISPLAY') is None:
+        if no_gui is True:
             print('We know there is no Display, trying without...')
             root = tk.Tcl()
         else:
