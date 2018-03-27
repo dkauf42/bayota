@@ -26,7 +26,7 @@ python main.py
     > python setup.py test
 
 ###### unittests are located in the subdirectory 'test' and test the following classes:
-* OptInstance
+* OptCase
 * QrySource
 * TblLoader
 

@@ -7,7 +7,7 @@ from tqdm import tqdm  # Loop progress indicator module
 
 class MatrixBase:
     def __init__(self, name='', row_indices=None, column_names=None):
-        """A wrapper class for a possibility parametermatrix needed for an optinstance"""
+        """A wrapper class for a possibility parametermatrix needed for an optcase"""
         self.name = name
 
         if (row_indices is None) | (column_names is None):

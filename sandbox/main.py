@@ -10,7 +10,7 @@ import tkinter as tk
 
 from sandbox.gui.toplevelframes.mainwindow import MainWindow
 from sandbox.util.InputsToCast import InputsToCast
-from sandbox.util.OptInstance import OptInstance
+from sandbox.util.OptCase import OptCase
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
@@ -24,28 +24,32 @@ def main():
 
 
 def runner(numinstances=1):
-    """Generate an OptInstance that populates with metadata, freeparamgroups, constraints, and a parametermatrix
+    """Generate an OptCase that populates with metadata, freeparamgroups, constraints, and a parametermatrix
     Parameters:
     Note:
         This function manages the sequence of events from user-input to initial scenario generation
     """
     for i in range(numinstances):
         # Load the Source Data and Base Condition tables
-        oinstance = OptInstance()
-        oinstance.load_tables()
+        optcase = OptCase()
+        optcase.load_tables()
 
-        # Run the GUI
-        root = tk.Tk()  # Create a tkinter window
-        mainwindow = MainWindow(root, optinstance=oinstance)
-        mainwindow.pack(side="top", fill="both", expand=True)
-        root.title("Optimization Options")
-        root.mainloop()
-        print(oinstance)
+        no_gui = False
+        if no_gui is True:
+            pass
+        else:
+            # Run the GUI
+            root = tk.Tk()  # Create a tkinter window
+            mainwindow = MainWindow(root, optcase=optcase)
+            mainwindow.pack(side="top", fill="both", expand=True)
+            root.title("Optimization Options")
+            root.mainloop()
+            print(optcase)
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
-        oinstance.scenario_randomizer()
+        optcase.scenario_randomizer()
 
-        inputobj = InputsToCast(oinstance.pmatrices, optinstance=oinstance)
+        inputobj = InputsToCast(optcase.pmatrices, optcase=optcase)
         inputobj.matrix_to_table()
         print('<Runner Loading Complete>')
 

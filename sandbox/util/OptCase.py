@@ -9,7 +9,7 @@ from sandbox.__init__ import get_outputdir
 writedir = get_outputdir()
 
 
-class OptInstance:
+class OptCase:
     def __init__(self):
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
@@ -49,7 +49,7 @@ class OptInstance:
     def __repr__(self):
         d = self.__dict__
 
-        formattedstr = "\n***** OptInstance Details *****\n" \
+        formattedstr = "\n***** OptCase Details *****\n" \
                        "name:                     %s\n" \
                        "description:              %s\n" \
                        "base year:                %s\n" \

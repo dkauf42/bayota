@@ -1,14 +1,14 @@
 import unittest
 import numpy as np
 
-from sandbox.util.OptInstance import OptInstance
+from sandbox.util.OptCase import OptCase
 
 
 class TddForOptInstance(unittest.TestCase):
 
     def setUp(self):
         # Load the Source Data and Base Condition tables
-        self.oi = OptInstance()
+        self.oi = OptCase()
         self.oi.load_tables()
 
         self.oi.name = 'TestOne'
