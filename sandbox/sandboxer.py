@@ -53,7 +53,7 @@ def main(numinstances=1, testcase=None):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='MAIN',
+    parser = argparse.ArgumentParser(prog='SANDBOXER',
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description=textwrap.dedent('''\
                                                  Please do not mess up this text!
