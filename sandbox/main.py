@@ -18,19 +18,13 @@ script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of 
 sys.path.append(script_dir)
 
 
-def main(testcase=None):
-    start_time = timeit.default_timer()
-    runner(testcase=testcase)  # An optimization instance runner is called, and possibility matrices are generated.
-    print("Loading time", timeit.default_timer() - start_time)
-    print('<DONE>')
-
-
-def runner(numinstances=1, testcase=None):
+def main(numinstances=1, testcase=None):
     """Generate an OptCase that populates with metadata, freeparamgroups, constraints, and a parametermatrix
     Parameters:
     Note:
         This function manages the sequence of events from user-input to initial scenario generation
     """
+    start_time = timeit.default_timer()
     for i in range(numinstances):
         # Load the Source Data and Base Condition tables
         optcase = OptCase()
@@ -54,6 +48,8 @@ def runner(numinstances=1, testcase=None):
         inputobj = InputsToCast(optcase.pmatrices, optcase=optcase)
         inputobj.matrix_to_table()
         print('<Runner Loading Complete>')
+        print("Loading time", timeit.default_timer() - start_time)
+        print('<DONE>')
 
 
 if __name__ == '__main__':
