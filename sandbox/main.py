@@ -3,9 +3,11 @@
 """
 Test various BMP-load source combinations
 """
-import sys
 import os
+import sys
 import timeit
+import argparse
+import textwrap
 import tkinter as tk
 
 from sandbox.gui.toplevelframes.mainwindow import MainWindow
@@ -16,14 +18,14 @@ script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of 
 sys.path.append(script_dir)
 
 
-def main():
+def main(testcase=None):
     start_time = timeit.default_timer()
-    runner()  # An optimization instance runner is called, and possibility matrices are generated.
+    runner(testcase=testcase)  # An optimization instance runner is called, and possibility matrices are generated.
     print("Loading time", timeit.default_timer() - start_time)
     print('<DONE>')
 
 
-def runner(numinstances=1):
+def runner(numinstances=1, testcase=None):
     """Generate an OptCase that populates with metadata, freeparamgroups, constraints, and a parametermatrix
     Parameters:
     Note:
@@ -34,8 +36,8 @@ def runner(numinstances=1):
         optcase = OptCase()
         optcase.load_tables()
 
-        no_gui = False
-        if no_gui is True:
+        if testcase == 1:
+            # No gui, and just Anne Arundel county.
             pass
         else:
             # Run the GUI
@@ -55,4 +57,17 @@ def runner(numinstances=1):
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(prog='MAIN',
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     description=textwrap.dedent('''\
+                                                 Please do not mess up this text!
+                                                 Create and run an optimization case
+                                                 --------------------------------
+                                                     I have indented it
+                                                     exactly the way
+                                                     I want it
+                                                 '''))
+    parser.add_argument('-t', choices=[1, 2, 3], type=int, help='test case #')
+    args = parser.parse_args()
+
+    main(testcase=args.t)
