@@ -47,7 +47,7 @@ def main(numinstances=1, testcase=None):
 
             optcase.populate_geography_from_scale_and_areas()
             optcase.populate_agencies_from_geography()
-            optcase.sectors_included = optcase.queries.source.get_all_sector_names()
+            optcase.sectors_included = optcase.queries.get_all_sector_names()
 
             # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
             optcase.generate_emptyparametermatrices()
