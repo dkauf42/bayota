@@ -24,7 +24,7 @@ class OptCase:
         self.geoscalename = None
         self.geoareanames = None
 
-        self.geographies_included = None
+        self.geography = None
         # an LRSeg list for this instance (w/accompanying county, stateabbrev, in/out CBWS,
         #                                  major/minor/state basin, river
 
@@ -71,7 +71,7 @@ class OptCase:
                                                d['costprofilename'],
                                                d['geoscalename'],
                                                d['geoareanames'],
-                                               d['geographies_included'].shape[0],
+                                               d['geography'].shape[0],
                                                d['agencies_included'],
                                                d['sectors_included'],
                                                d['pmatrices']]])
@@ -80,6 +80,13 @@ class OptCase:
 
     def load_tables(self):
         self.queries = TblQuery()
+
+    def set_geography(self, geotable=None):
+        self.geography = geotable
+
+    def populate_geography_from_scale_and_areas(self):
+        self.geography = self.queries.get_lrsegs_in_geography(scale=self.geoscalename,
+                                                              areanames=self.geoareanames)
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name
@@ -91,15 +98,12 @@ class OptCase:
         self.geoscalename = metadata_results.scale
         self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
-        self.geographies_included = None
+        self.geography = None
         #self.get_geographies_included(areanames=self.geoareanames)
 
     def save_freeparamgrps(self, freeparamgrp_results):
         self.agencies_included = freeparamgrp_results.agencies
         self.sectors_included = freeparamgrp_results.sectors
-
-    def set_geography(self, geotable=None):
-        self.geographies_included = geotable
 
     def generate_emptyparametermatrices(self):
         """An empty emptyparametermatrix is created for each Segment-Agency-Type table.
@@ -114,11 +118,11 @@ class OptCase:
         """
 
         # An empty emptyparametermatrix is created for each Segment-Agency-Type table.
-        self.pmatrices['ndas'] = MatrixSand(name='ndas', geographies=self.geographies_included,
+        self.pmatrices['ndas'] = MatrixSand(name='ndas', geographies=self.geography,
                                             agencies=self.agencies_included, queries=self.queries)
-        self.pmatrices['animal'] = MatrixAnimal(name='anim', geographies=self.geographies_included,
+        self.pmatrices['animal'] = MatrixAnimal(name='anim', geographies=self.geography,
                                                 queries=self.queries)
-        self.pmatrices['manure'] = MatrixManure(name='manu', geographies=self.geographies_included,
+        self.pmatrices['manure'] = MatrixManure(name='manu', geographies=self.geography,
                                                 queries=self.queries)
 
     def mark_eligibility(self):

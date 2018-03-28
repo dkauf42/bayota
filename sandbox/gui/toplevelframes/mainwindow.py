@@ -93,10 +93,9 @@ class MainWindow(tk.Frame):
         self.optcase.geoscalename = 'County'
         self.optcase.geoareanames = ['Adams, PA']
 
-        self.optcase.geographies_included = self.queries.source.\
-            get_lrseg_table(scale=self.optcase.geoscalename, areanames=self.optcase.geoareanames)
+        self.optcase.populate_geography_from_scale_and_areas()
         self.optcase.agencies_included = self.queries.base.\
-            get_agencies_in_lrsegs(lrsegs=self.optcase.geographies_included.LandRiverSegment)
+            get_agencies_in_lrsegs(lrsegs=self.optcase.geography.LandRiverSegment)
         self.optcase.sectors_included = self.queries.source.get_all_sector_names()
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
@@ -158,9 +157,7 @@ class MainWindow(tk.Frame):
     def save_metadata(self):
         print('mainwindow:save_metadata: saving metadata...')
         self.optcase.save_metadata(self.metadataframe.get_results())
-        lrseg_table = self.queries.source.get_lrseg_table(scale=self.optcase.geoscalename,
-                                                          areanames=self.optcase.geoareanames)
-        self.optcase.set_geography(geotable=lrseg_table)
+        self.optcase.populate_geography_from_scale_and_areas()
 
     def load_freeparamgroup_options(self):
         self.freeparamframe.update_box_options(queries=self.queries, optcase=self.optcase)

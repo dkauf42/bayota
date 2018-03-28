@@ -32,6 +32,28 @@ def main(numinstances=1, testcase=None):
 
         if testcase == 1:
             # No gui, and just Anne Arundel county.
+            # TODO: make this work without a gui....
+            # TODO: Then make it work with the sqltables!
+            # TODO: fix the list of source data tables in the SourceData.py file
+            """For Testing Purposes"""
+            optcase.name = 'TestOne'
+            optcase.description = 'TestOneDescription'
+            optcase.baseyear = '1995'
+            optcase.basecondname = 'Example_BaseCond2'
+            optcase.wastewatername = 'Example_WW1'
+            optcase.costprofilename = 'Example_CostProfile1'
+            optcase.geoscalename = 'County'
+            optcase.geoareanames = ['Adams, PA']
+
+            optcase.populate_geography_from_scale_and_areas()
+            optcase.agencies_included = optcase.queries.base. \
+                get_agencies_in_lrsegs(lrsegs=optcase.geography.LandRiverSegment)
+            optcase.sectors_included = optcase.queries.source.get_all_sector_names()
+
+            # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
+            optcase.generate_emptyparametermatrices()
+            optcase.mark_eligibility()
+            optcase.generate_boundsmatrices()
             pass
         else:
             # Run the GUI
