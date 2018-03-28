@@ -2,7 +2,7 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
-from pandas import Series
+from tqdm import tqdm
 
 from sandbox.tables.TblSourceData import SourceData
 from sandbox.tables.TblBaseCondition import BaseCondition
@@ -37,7 +37,7 @@ def loadDataframe(tblName, loc):
     return df
 
 
-class TblLoader:
+class TblLoaderFromSQL:
     def __init__(self):
         """Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.
 
@@ -57,10 +57,15 @@ class TblLoader:
 
         # Loading Source tables
         sourcedata = SourceData()
-        for tblName in sourcedata.getTblList():
+        tbllist = sourcedata.getTblList()
+        #N = len(tbllist)
+        #for tblName in tqdm(tbllist, total=N):
+        for tblName in tbllist:
             print("loading source:", tblName)
             df = loadDataframe(tblName, get_sqlsourcetabledir())
             sourcedata.addTable(tblName, df)
+
+        self.sourceDataFromSql = sourcedata
 
         self._load_source_and_base_files()
 
@@ -119,7 +124,7 @@ class TblLoader:
         df = self.srcdata.agencies
         dict_agencycodekeys = dict(zip(df.AgencyCode, df.Agency))
 
-        if isinstance(codes, Series):
+        if isinstance(codes, pd.Series):
             retval = codes.replace(dict_agencycodekeys, inplace=False)
         elif isinstance(codes, list):
             retval = list(dict_agencycodekeys.get(word, word) for word in codes)
@@ -142,7 +147,7 @@ class TblLoader:
         df = self.srcdata.agencies
         dict_agencykeys = dict(zip(df.Agency, df.AgencyCode))
 
-        if isinstance(names, Series):
+        if isinstance(names, pd.Series):
             retval = names.replace(dict_agencykeys, inplace=False)
         elif isinstance(names, list):
             retval = list(dict_agencykeys.get(word, word) for word in names)

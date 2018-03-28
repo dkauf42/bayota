@@ -6,10 +6,11 @@ from sandbox.tables.QrySource import QrySource
 
 class TddForQueries(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         # Load the Source Data and Base Condition tables
-        self.tblqry = TblQuery()
-        self.qrysrc = QrySource(self.tblqry.tables)
+        cls.tblqry = TblQuery()
+        cls.qrysrc = QrySource(cls.tblqry.tables)
 
     def test_table_query_raises_error_when_no_scale_specified(self):
         self.assertRaises(ValueError, self.qrysrc.get_geoarea_names)
