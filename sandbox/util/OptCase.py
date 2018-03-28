@@ -91,6 +91,9 @@ class OptCase:
     def populate_agencies_from_geography(self):
         self.agencies_included = self.queries.agencies_from_lrsegs(lrsegs=self.geography.LandRiverSegment)
 
+    def populate_sectors(self):
+        self.sectors_included = self.queries.get_all_sector_names()
+
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name
         self.description = metadata_results.description

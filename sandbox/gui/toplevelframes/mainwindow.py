@@ -95,6 +95,7 @@ class MainWindow(tk.Frame):
 
         self.optcase.populate_geography_from_scale_and_areas()
         self.optcase.populate_agencies_from_geography()
+        self.optcase.populate_sectors()
         self.optcase.sectors_included = self.queries.source.get_all_sector_names()
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs

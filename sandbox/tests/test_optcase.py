@@ -20,12 +20,10 @@ class TddForOptCase(unittest.TestCase):
         self.oc.geoscalename = 'County'
         self.oc.geoareanames = ['Adams, PA']
 
-        self.oc.geographies_included = self.oc.queries.source. \
-            get_lrseg_table(scale=self.oc.geoscalename, areanames=self.oc.geoareanames)
-        print(self.oc.geographies_included.LandRiverSegment)
-        self.oc.agencies_included = self.oc.queries.base. \
-            get_agencies_in_lrsegs(lrsegs=self.oc.geographies_included.LandRiverSegment)
-        self.oc.sectors_included = self.oc.queries.source.get_all_sector_names()
+        self.oc.populate_geography_from_scale_and_areas()
+        self.oc.populate_agencies_from_geography()
+        self.oc.populate_sectors()
+        print(self.oc.geography.LandRiverSegment)
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
         self.oc.generate_emptyparametermatrices()
