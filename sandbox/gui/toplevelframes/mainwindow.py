@@ -94,8 +94,7 @@ class MainWindow(tk.Frame):
         self.optcase.geoareanames = ['Adams, PA']
 
         self.optcase.populate_geography_from_scale_and_areas()
-        self.optcase.agencies_included = self.queries.base.\
-            get_agencies_in_lrsegs(lrsegs=self.optcase.geography.LandRiverSegment)
+        self.optcase.populate_agencies_from_geography()
         self.optcase.sectors_included = self.queries.source.get_all_sector_names()
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs

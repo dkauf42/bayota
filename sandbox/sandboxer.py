@@ -46,8 +46,7 @@ def main(numinstances=1, testcase=None):
             optcase.geoareanames = ['Adams, PA']
 
             optcase.populate_geography_from_scale_and_areas()
-            optcase.agencies_included = optcase.queries.base. \
-                get_agencies_in_lrsegs(lrsegs=optcase.geography.LandRiverSegment)
+            optcase.populate_agencies_from_geography()
             optcase.sectors_included = optcase.queries.source.get_all_sector_names()
 
             # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs

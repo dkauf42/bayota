@@ -18,8 +18,11 @@ class TblQuery:
         self.base = QryBase(tables=self.tables)
         self.loadsources = QryLoadSources(tables=self.tables)
 
-    def get_lrsegs_in_geography(self, scale='', areanames=None):
+    def lrsegs_from_geography(self, scale='', areanames=None):
         return self.source.get_lrseg_table(scale=scale, areanames=areanames)
+
+    def agencies_from_lrsegs(self, lrsegs=None):
+        return self.base.get_agencies_in_lrsegs(lrsegs=lrsegs)
 
 
 

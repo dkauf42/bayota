@@ -53,7 +53,7 @@ class FreeParamFrame(tk.Frame):
             optcase (OptCase):
         """
 
-        mylist = queries.base.get_agencies_in_lrsegs(lrsegs=optcase.geographies_included['LandRiverSegment'])
+        mylist = queries.agencies_from_lrsegs(lrsegs=optcase.geography['LandRiverSegment'])
         self.agencydualbox.set_new_left_side_items(mylist)
 
         mylist = queries.source.get_all_sector_names()

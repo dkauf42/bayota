@@ -85,8 +85,11 @@ class OptCase:
         self.geography = geotable
 
     def populate_geography_from_scale_and_areas(self):
-        self.geography = self.queries.get_lrsegs_in_geography(scale=self.geoscalename,
-                                                              areanames=self.geoareanames)
+        self.geography = self.queries.lrsegs_from_geography(scale=self.geoscalename,
+                                                            areanames=self.geoareanames)
+
+    def populate_agencies_from_geography(self):
+        self.agencies_included = self.queries.agencies_from_lrsegs(lrsegs=self.geography.LandRiverSegment)
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name
