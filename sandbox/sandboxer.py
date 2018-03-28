@@ -31,9 +31,8 @@ def main(numinstances=1, testcase=None):
         optcase.load_tables()
 
         if testcase == 1:
-            # No gui, and just Anne Arundel county.
-            # TODO: make this work without a gui....
-            # TODO: Then make it work with the sqltables!
+            print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
+            # TODO: make this work with the sqltables!
             # TODO: fix the list of source data tables in the SourceData.py file
             """For Testing Purposes"""
             optcase.name = 'TestOne'
