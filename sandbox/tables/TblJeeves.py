@@ -5,7 +5,6 @@ import pandas as pd
 from tqdm import tqdm
 
 from sandbox.sqltables.source_data import SourceData
-from sandbox.tables.TblLoader_fromSql import TblLoaderFromSQL
 from sandbox.__init__ import get_tempdir
 from sandbox.__init__ import get_sqlsourcetabledir
 
@@ -39,7 +38,6 @@ class TblJeeves:
 
         """
         self.source = self.loadSourceFromSQL()
-        #self.source = QrySourceFromSQL(tables=self.tables)
 
     def loadSourceFromSQL(self):
         savename = get_tempdir() + 'SourceData.obj'
