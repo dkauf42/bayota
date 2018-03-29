@@ -9,7 +9,17 @@ class TableLoader(object):
         if attr == "tableSet":
             raise AttributeError("instance <attr>:tableSet is not directly accessible, use <method>:getTblList instead")
         else:
-            tableSet = object.__getattribute__(self, "tableSet")
+
+            # This was: tableSet = object.__getattribute__(self, "tableSet")
+            # But D.E.Kaufman added this if, then block...
+            if attr == '__dict__':
+                try:
+                    tableSet = object.__getattribute__(self, "tableSet")
+                except AttributeError:
+                    tableSet = ['', '']
+            else:
+                tableSet = object.__getattribute__(self, "tableSet")
+
             try:
                 item = object.__getattribute__(self, attr)
                 if attr in tableSet:

@@ -79,7 +79,7 @@ class OptCase:
         return formattedstr
 
     def load_tables(self):
-        self.queries = TblQuery()
+        self.queries = TblJeeves()
 
     def set_geography(self, geotable=None):
         self.geography = geotable
