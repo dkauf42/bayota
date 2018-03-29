@@ -4,14 +4,6 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from sandbox.tables.TblSourceData import SourceData
-from sandbox.tables.TblBaseCondition import BaseCondition
-from sandbox.tables.TblPreBmpLoadSourceNatural import TblPreBmpLoadSourceNatural
-from sandbox.tables.TblPreBmpLoadSourceDeveloped import TblPreBmpLoadSourceDeveloped
-from sandbox.tables.TblPreBmpLoadSourceAgriculture import TblPreBmpLoadSourceAgriculture
-from sandbox.tables.TblManureTonsProduced import ManureTonsProduced
-from sandbox.tables.TblSepticSystems import TblSepticSystems
-
 from sandbox.sqltables.source_data import SourceData
 from sandbox.__init__ import get_tempdir
 from sandbox.__init__ import get_sqlsourcetabledir
@@ -47,68 +39,32 @@ class TblLoaderFromSQL:
         """
         self.tempdir = get_tempdir()
 
-        self.srcdata = None
-        self.basecond = None
-        self.lsnatural = None
-        self.lsdeveloped = None
-        self.lsagriculture = None
-        self.lsmanure = None
-        self.lsseptic = None
+        self.load_or_generate_source(savename=self.tempdir + 'SourceData.obj')
 
-        # Loading Source tables
+    def loadSourceData(self):
+        # Source tables are loaded.
         sourcedata = SourceData()
         tbllist = sourcedata.getTblList()
-        #N = len(tbllist)
-        #for tblName in tqdm(tbllist, total=N):
-        for tblName in tbllist:
-            print("loading source:", tblName)
+        for tblName in tqdm(tbllist, total=len(tbllist)):
+            # for tblName in tbllist:
+            # print("loading source:", tblName)
             df = loadDataframe(tblName, get_sqlsourcetabledir())
             sourcedata.addTable(tblName, df)
 
-        self.sourceDataFromSql = sourcedata
+        return sourcedata
 
-        self._load_source_and_base_files()
-
-    def _load_source_and_base_files(self):
-        # BMP Source Data from the Excel Spreadsheet
-        self.srcdata = self.load_or_generate(savename=self.tempdir + 'cast_opt_src.obj', cls=SourceData)
-
-        # Base Condition Data from the Excel Spreadsheet (which has Load Source acreage per LRS)
-        self.basecond = self.load_or_generate(savename=self.tempdir + 'cast_opt_base.obj',
-                                              cls=BaseCondition)
-
-        # PreBmpLoadSourceNatural from the Excel Spreadsheet
-        self.lsnatural = self.load_or_generate(savename=self.tempdir + 'cast_opt_loadsourcenatural.obj',
-                                               cls=TblPreBmpLoadSourceNatural)
-
-        # PreBmpLoadSourceDeveloped from the Excel Spreadsheet
-        self.lsdeveloped = self.load_or_generate(savename=self.tempdir + 'cast_opt_loadsourcedeveloped.obj',
-                                                 cls=TblPreBmpLoadSourceDeveloped)
-
-        # PreBmpLoadSourceAgriculture from the Excel Spreadsheet
-        self.lsagriculture = self.load_or_generate(savename=self.tempdir + 'cast_opt_loadsourceagriculture.obj',
-                                                   cls=TblPreBmpLoadSourceAgriculture)
-
-        # ManureTonsProduced from the Excel Spreadsheet
-        self.lsmanure = self.load_or_generate(savename=self.tempdir + 'cast_opt_manuretonsproduced.obj',
-                                              cls=ManureTonsProduced)
-
-        # SepticSystems from the Excel Spreadsheet
-        self.lsseptic = self.load_or_generate(savename=self.tempdir + 'cast_opt_septicsystems.obj',
-                                              cls=TblSepticSystems)
-
-    @staticmethod
-    def load_or_generate(savename='', cls=None):
+    def load_or_generate_source(self, savename=''):
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
-                tableobj = pickle.load(f)
+                sourceobj = pickle.load(f)
         else:
-            print('<%s object does not exist yet. Generating...>' % cls.__name__)
-            tableobj = cls()  # generate data table object if none exists
+            print('<%s object does not exist yet. Generating...>' % SourceData.__name__)
+            sourceobj = self.loadSourceData()
+            #tableobj = cls()  # generate data table object if none exists
             with open(savename, 'wb') as f:
-                pickle.dump(tableobj, f)
+                pickle.dump(sourceobj, f)
 
-        return tableobj
+        return sourceobj
 
     def agencytranslate_fromcodes(self, codes):
         """Convert an AgencyCode to its Agency Name

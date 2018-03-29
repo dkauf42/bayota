@@ -6,7 +6,6 @@ from tqdm import tqdm
 
 from sandbox.sqltables.source_data import SourceData
 from sandbox.tables.TblLoader_fromSql import TblLoaderFromSQL
-from sandbox.tables.QrySource_fromSql import QrySourceFromSQL
 from sandbox.__init__ import get_tempdir
 from sandbox.__init__ import get_sqlsourcetabledir
 
@@ -68,13 +67,26 @@ class TblJeeves:
         TblCounty = self.source.TblCounty  # get relevant source data
 
         areas = pd.Series([x.split(', ') for x in areanames])  # split ('County, StateAbbrev')
-        mask = pd.DataFrame(areas.values.tolist(), index=areas.index,
-                            columns=['countyname', 'stateabbreviation'])
+        rowmask = pd.DataFrame(areas.values.tolist(), index=areas.index,
+                               columns=['countyname', 'stateabbreviation'])
 
-        countytblsubset = TblCounty.loc[:, ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']]\
-                                   .merge(mask, how='inner')
+        columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
+        tblsubset = TblCounty.loc[:, columnmask].merge(rowmask, how='inner')
 
-        return countytblsubset.countyid
+        return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
+
+    def lrsegids_from_areanames(self, areanames=None):
+        countyids = self.countyid_from_areanames(areanames=areanames)
+        print(type(countyids))
+        return self.lrsegids_from_countyid(tblwithcountyid=countyids)
+
+    def lrsegids_from_countyid(self, tblwithcountyid=None):
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+
+        columnmask = ['lrsegid', 'landriversegment', 'stateid', 'countyid', 'outofcbws']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tblwithcountyid, how='inner')
+
+        return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
 
     def lrsegs_from_geography(self, scale='', areanames=None):
         pass

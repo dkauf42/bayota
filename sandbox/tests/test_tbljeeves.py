@@ -17,7 +17,12 @@ class TddForTables(unittest.TestCase):
     def test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation(self):
         self.assertIn(11,
                       self.jeeves.countyid_from_areanames(areanames=['Adams, PA',
-                                                                     'Anne Arundel, MD']).tolist())
+                                                                     'Anne Arundel, MD']).countyid.tolist())
+
+    def test_correct_lrsegid_queried_from_AnneArundel_countyid(self):
+        self.assertIn(100,
+                      self.jeeves.lrsegids_from_areanames(areanames=['Adams, PA',
+                                                                     'Anne Arundel, MD']).lrsegid.tolist())
 
     # def test_query_for_lrsegs_from_geography(self):
     #     self.assertIn('N42001PU2_2790_3290',
