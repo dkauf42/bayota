@@ -53,7 +53,7 @@ def main(numinstances=1, testcase=None):
             optcase.mark_eligibility()
             optcase.generate_boundsmatrices()
             pass
-        else:
+        elif not testcase:
             # Run the GUI
             root = tk.Tk()  # Create a tkinter window
             mainwindow = MainWindow(root, optcase=optcase)
@@ -61,6 +61,8 @@ def main(numinstances=1, testcase=None):
             root.title("Optimization Options")
             root.mainloop()
             print(optcase)
+        else:
+            raise ValueError('Unexpected test case argument')
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         optcase.scenario_randomizer()
@@ -70,6 +72,8 @@ def main(numinstances=1, testcase=None):
         print('<Runner Loading Complete>')
         print("Loading time", timeit.default_timer() - start_time)
         print('<DONE>')
+
+        return 1
 
 
 if __name__ == '__main__':
