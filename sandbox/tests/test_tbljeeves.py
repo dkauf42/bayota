@@ -16,13 +16,32 @@ class TddForTables(unittest.TestCase):
 
     def test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation(self):
         self.assertIn(11,
-                      self.jeeves.countyid_from_areanames(areanames=['Adams, PA',
-                                                                     'Anne Arundel, MD']).countyid.tolist())
+                      self.jeeves.countyid_from_countystatestrs(getfrom=['Adams, PA',
+                                                                         'Anne Arundel, MD']).countyid.tolist())
 
-    def test_correct_lrsegid_queried_from_AnneArundel_countyid(self):
+    # def test_correct_lrsegid_queried_from_AnneArundel_countyid(self):
+    #     self.assertIn(100,
+    #                   self.jeeves.__lrsegids_from_countystatestrs(countystatestrs=['Adams, PA',
+    #                                                             'Anne Arundel, MD']).lrsegid.tolist())
+
+    def test_generic_lrsegid_query_returns_correct_from_countystatestrs(self):
         self.assertIn(100,
-                      self.jeeves.lrsegids_from_areanames(areanames=['Adams, PA',
-                                                                     'Anne Arundel, MD']).lrsegid.tolist())
+                      self.jeeves.lrsegids_from(countystatestrs=['Adams, PA',
+                                                                 'Anne Arundel, MD']).lrsegid.tolist())
+
+    def test_generic_lrsegid_query_returns_correct_from_lrsegnames(self):
+        self.assertIn(741,
+                      self.jeeves.lrsegids_from(lrsegnames=['N42001PU2_2790_3290']).lrsegid.tolist())
+
+    def test_generic_lrsegid_query_returns_correct_from_countyids(self):
+        self.assertIn(100,
+                      self.jeeves.lrsegids_from(countyid=[11]).lrsegid.tolist())
+
+    def test_generic_lrsegid_query_raises_error_for_more_than_one_keyword_argument(self):
+        self.assertRaises(ValueError,
+                          self.jeeves.lrsegids_from,
+                          countystatestrs=['Adams, PA', 'Anne Arundel, MD'],
+                          lrsegnames=['N42001PU2_2790_3290'])
 
     # def test_query_for_lrsegs_from_geography(self):
     #     self.assertIn('N42001PU2_2790_3290',
@@ -30,7 +49,7 @@ class TddForTables(unittest.TestCase):
 
     def test_query_for_agencies_from_lrsegs(self):
         self.assertIn('NONFED',
-                      self.jeeves.agencies_from_lrsegs(lrsegs=['N42001PU2_2790_3290']))
+                      self.jeeves.agencies_from_lrsegs(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())
 
     def test_query_all_sector_names(self):
         self.assertIn('Agriculture',

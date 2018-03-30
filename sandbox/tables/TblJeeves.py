@@ -28,6 +28,10 @@ def loadDataframe(tblName, loc):
         df["ruleset"] = df["ruleset"].astype(str).str.lower()
     return df
 
+def checkOnlyOne(iterable):
+    i = iter(iterable)
+    return any(i) and not any(i)
+
 
 class TblJeeves:
     def __init__(self):
@@ -61,29 +65,47 @@ class TblJeeves:
 
         return sourcedata
 
-    def lrsegids_from_lrsegnames(self, tblwithlrsegnames=None):
+    def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
+        kwargs = (lrsegnames, countystatestrs, countyid)
+        if checkOnlyOne(kwargs) is False:
+            raise ValueError('One and only one keyword argument must be specified')
+
+        if lrsegnames is not None:
+            return self.__lrsegids_from_lrsegnames(getfrom=lrsegnames)
+        elif countystatestrs is not None:
+            return self.__lrsegids_from_countystatestrs(getfrom=countystatestrs)
+        elif countyid is not None:
+            return self.__lrsegids_from_countyid(getfrom=countyid)
+
+    def __lrsegids_from_lrsegnames(self, getfrom=None):
+        if isinstance(getfrom, list):
+            getfrom = pd.DataFrame(getfrom, columns=['landriversegment'])
+
         TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
         columnmask = ['lrsegid', 'landriversegment']
-        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tblwithlrsegnames, how='inner')
-
-        return tblsubset.loc[:, ['landriversegment']]  # pass column name as list so return type is pandas.DataFrame
-
-    def lrsegids_from_areanames(self, areanames=None):
-        countyids = self.countyid_from_areanames(areanames=areanames)
-        return self.lrsegids_from_countyid(tblwithcountyid=countyids)
-
-    def lrsegids_from_countyid(self, tblwithcountyid=None):
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
-
-        columnmask = ['lrsegid', 'landriversegment', 'stateid', 'countyid', 'outofcbws']
-        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tblwithcountyid, how='inner')
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(getfrom, how='inner')
 
         return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
 
-    def countyid_from_areanames(self, areanames=None):
+    def __lrsegids_from_countystatestrs(self, getfrom=None):
+        countyids = self.countyid_from_countystatestrs(getfrom=getfrom)
+        return self.__lrsegids_from_countyid(getfrom=countyids)
+
+    def __lrsegids_from_countyid(self, getfrom=None):
+        if isinstance(getfrom, list):
+            getfrom = pd.DataFrame(getfrom, columns=['countyid'])
+
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+
+        columnmask = ['lrsegid', 'landriversegment', 'stateid', 'countyid', 'outofcbws']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(getfrom, how='inner')
+
+        return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
+
+    def countyid_from_countystatestrs(self, getfrom=None):
         TblCounty = self.source.TblCounty  # get relevant source data
 
-        areas = [x.split(', ') for x in areanames]  # split ('County, StateAbbrev')
+        areas = [x.split(', ') for x in getfrom]  # split ('County, StateAbbrev')
         rowmask = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
 
         columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
@@ -95,10 +117,19 @@ class TblJeeves:
         pass
         # return self.source.get_lrseg_table(scale=scale, areanames=areanames)
 
-    def agencies_from_lrsegs(self, lrsegs=None):
+    def agencies_from_lrsegs(self, lrsegnames=None):
         TblAgency = self.source.TblAgency  # get relevant source data
-        pass
-        # return self.source.get_agencies_in_lrsegs(lrsegs=lrsegs)
+        TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency
+
+        tblwithlrsegids = self.lrsegids_from(lrsegnames=lrsegnames)
+
+        columnmask = ['lrsegid', 'agencyid', 'acres']
+        tblwithagencyids = TblLandRiverSegmentAgency.loc[:, columnmask].merge(tblwithlrsegids, how='inner')
+
+        columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
+        tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
+
+        return tblsubset.loc[:, ['agencycode']]
 
     def get_all_sector_names(self):
         TblSector = self.source.TblSector  # get relevant source data
