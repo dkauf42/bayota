@@ -114,8 +114,12 @@ class TblJeeves:
         return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
 
     def lrsegs_from_geography(self, scale='', areanames=None):
-        pass
-        # return self.source.get_lrseg_table(scale=scale, areanames=areanames)
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+        if scale == 'County':
+            getfrom = self.lrsegids_from(countystatestrs=areanames)
+            columnmask = ['lrsegid', 'landriversegment']
+            tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(getfrom, how='inner')
+            return tblsubset.loc[:, ['landriversegment']]
 
     def agencies_from_lrsegs(self, lrsegnames=None):
         TblAgency = self.source.TblAgency  # get relevant source data
