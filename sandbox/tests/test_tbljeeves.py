@@ -27,10 +27,10 @@ class TddForTables(unittest.TestCase):
     # def test_query_for_lrsegs_from_geography(self):
     #     self.assertIn('N42001PU2_2790_3290',
     #                   self.jeeves.lrsegs_from_geography(scale='County', areanames='Adams, PA'))
-    #
-    # def test_query_for_agencies_from_lrsegs(self):
-    #     self.assertIn('NONFED',
-    #                   self.jeeves.agencies_from_lrsegs(lrsegs=lrsegs))
+
+    def test_query_for_agencies_from_lrsegs(self):
+        self.assertIn('NONFED',
+                      self.jeeves.agencies_from_lrsegs(lrsegs=['N42001PU2_2790_3290']))
 
     def test_query_all_sector_names(self):
         self.assertIn('Agriculture',

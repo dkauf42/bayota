@@ -61,6 +61,13 @@ class TblJeeves:
 
         return sourcedata
 
+    def lrsegids_from_lrsegnames(self, tblwithlrsegnames=None):
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+        columnmask = ['lrsegid', 'landriversegment']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tblwithlrsegnames, how='inner')
+
+        return tblsubset.loc[:, ['landriversegment']]  # pass column name as list so return type is pandas.DataFrame
+
     def lrsegids_from_areanames(self, areanames=None):
         countyids = self.countyid_from_areanames(areanames=areanames)
         return self.lrsegids_from_countyid(tblwithcountyid=countyids)
@@ -76,9 +83,8 @@ class TblJeeves:
     def countyid_from_areanames(self, areanames=None):
         TblCounty = self.source.TblCounty  # get relevant source data
 
-        areas = pd.Series([x.split(', ') for x in areanames])  # split ('County, StateAbbrev')
-        rowmask = pd.DataFrame(areas.values.tolist(), index=areas.index,
-                               columns=['countyname', 'stateabbreviation'])
+        areas = [x.split(', ') for x in areanames]  # split ('County, StateAbbrev')
+        rowmask = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
 
         columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
         tblsubset = TblCounty.loc[:, columnmask].merge(rowmask, how='inner')
@@ -90,6 +96,7 @@ class TblJeeves:
         # return self.source.get_lrseg_table(scale=scale, areanames=areanames)
 
     def agencies_from_lrsegs(self, lrsegs=None):
+        TblAgency = self.source.TblAgency  # get relevant source data
         pass
         # return self.source.get_agencies_in_lrsegs(lrsegs=lrsegs)
 
