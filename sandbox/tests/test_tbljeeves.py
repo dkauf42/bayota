@@ -31,10 +31,10 @@ class TddForTables(unittest.TestCase):
     # def test_query_for_agencies_from_lrsegs(self):
     #     self.assertIn('NONFED',
     #                   self.jeeves.agencies_from_lrsegs(lrsegs=lrsegs))
-    #
-    # def test_query_all_sector_names(self):
-    #     self.assertIn('Agriculture',
-    #                   self.jeeves.get_all_sector_names())
+
+    def test_query_all_sector_names(self):
+        self.assertIn('Agriculture',
+                      self.jeeves.get_all_sector_names().tolist())
 
     # def test_table_query_raises_error_when_no_scale_specified(self):
     #     self.assertRaises(ValueError, self.qrysrc.get_geoarea_names)

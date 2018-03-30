@@ -61,6 +61,18 @@ class TblJeeves:
 
         return sourcedata
 
+    def lrsegids_from_areanames(self, areanames=None):
+        countyids = self.countyid_from_areanames(areanames=areanames)
+        return self.lrsegids_from_countyid(tblwithcountyid=countyids)
+
+    def lrsegids_from_countyid(self, tblwithcountyid=None):
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+
+        columnmask = ['lrsegid', 'landriversegment', 'stateid', 'countyid', 'outofcbws']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tblwithcountyid, how='inner')
+
+        return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
+
     def countyid_from_areanames(self, areanames=None):
         TblCounty = self.source.TblCounty  # get relevant source data
 
@@ -73,19 +85,6 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
 
-    def lrsegids_from_areanames(self, areanames=None):
-        countyids = self.countyid_from_areanames(areanames=areanames)
-        print(type(countyids))
-        return self.lrsegids_from_countyid(tblwithcountyid=countyids)
-
-    def lrsegids_from_countyid(self, tblwithcountyid=None):
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
-
-        columnmask = ['lrsegid', 'landriversegment', 'stateid', 'countyid', 'outofcbws']
-        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tblwithcountyid, how='inner')
-
-        return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
-
     def lrsegs_from_geography(self, scale='', areanames=None):
         pass
         # return self.source.get_lrseg_table(scale=scale, areanames=areanames)
@@ -95,5 +94,5 @@ class TblJeeves:
         # return self.source.get_agencies_in_lrsegs(lrsegs=lrsegs)
 
     def get_all_sector_names(self):
-        pass
-        # return self.source.get_all_sector_names()
+        TblSector = self.source.TblSector  # get relevant source data
+        return TblSector.loc[:, 'sector']
