@@ -28,6 +28,7 @@ def loadDataframe(tblName, loc):
         df["ruleset"] = df["ruleset"].astype(str).str.lower()
     return df
 
+
 def checkOnlyOne(iterable):
     i = iter(iterable)
     return any(i) and not any(i)
