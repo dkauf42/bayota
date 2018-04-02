@@ -123,6 +123,9 @@ class TblJeeves:
             return tblsubset.loc[:, ['landriversegment']]
 
     def agencies_from_lrsegs(self, lrsegnames=None):
+        if not isinstance(lrsegnames, list):
+            lrsegnames = lrsegnames.tolist()
+
         TblAgency = self.source.TblAgency  # get relevant source data
         TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency
 
@@ -136,6 +139,42 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['agencycode']]
 
+    def get_all_agency_names(self):
+        TblAgency = self.source.TblAgency  # get relevant source data
+        return TblAgency.loc[:, 'agencycode']
+
     def get_all_sector_names(self):
         TblSector = self.source.TblSector  # get relevant source data
         return TblSector.loc[:, 'sector']
+
+    def get_all_geoscales(self):
+        TblGeoType = self.source.TblGeographyType  # get relevant source data
+        TblGeoType = TblGeoType.loc[TblGeoType['castscenariogeographytype'] == True]
+        return TblGeoType.loc[:, ['geographytypeid', 'geographytype']]
+
+    def get_geonames_of_geotype(self, geotype=None):
+        TblGeography = self.source.TblGeography  # get relevant source data
+        if not geotype:
+            raise ValueError('Geography Type must be specified to get area names')
+
+        if isinstance(geotype, list):
+            if isinstance(geotype[0], str):
+                # Assume that if string, then we have been passed a geographytypename instead of a geographytypeid
+                TblGeoType = self.source.TblGeographyType  # get relevant source data
+                typenames = pd.DataFrame(geotype, columns=['geographytype'])
+                columnmask = ['geographytypeid', 'geographytype']
+                typeids = TblGeoType.loc[:, columnmask].merge(typenames, how='inner')
+            else:
+                typeids = pd.DataFrame(geotype, columns=['geographytypeid'])
+        elif isinstance(geotype, pd.DataFrame):
+            typeids = geotype
+            pass
+        else:
+            raise ValueError('Geography Type must be specified as a list of str, list of ids, or pandas.DataFrame')
+
+        if len(typeids) == 0:
+            raise ValueError('Geography Type %s was unrecognized' % geotype)
+
+        columnmask = ['geographyid', 'geographytypeid', 'geographyfullname']
+        tblsubset = TblGeography.loc[:, columnmask].merge(typeids, how='inner')
+        return tblsubset.loc[:, 'geographyfullname']

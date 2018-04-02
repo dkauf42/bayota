@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from sandbox.tables.TblQuery import TblQuery
+from sandbox.tables.TblJeeves import TblJeeves
 from sandbox.matrices.MatrixSand import MatrixSand
 from sandbox.matrices.MatrixAnimal import MatrixAnimal
 from sandbox.matrices.MatrixManure import MatrixManure
@@ -89,7 +90,7 @@ class OptCase:
                                                             areanames=self.geoareanames)
 
     def populate_agencies_from_geography(self):
-        self.agencies_included = self.queries.agencies_from_lrsegs(lrsegs=self.geography.LandRiverSegment)
+        self.agencies_included = self.queries.agencies_from_lrsegs(lrsegnames=self.geography.landriversegment)
 
     def populate_sectors(self):
         self.sectors_included = self.queries.get_all_sector_names()

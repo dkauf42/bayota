@@ -24,7 +24,6 @@ class TddForOptCase(unittest.TestCase):
         cls.oc.populate_geography_from_scale_and_areas()
         cls.oc.populate_agencies_from_geography()
         cls.oc.populate_sectors()
-        print(cls.oc.geography.LandRiverSegment)
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
         cls.oc.generate_emptyparametermatrices()
@@ -34,6 +33,12 @@ class TddForOptCase(unittest.TestCase):
     def test_sectors_list_is_correct(self):
         self.assertSequenceEqual(self.oc.sectors_included,
                                  ['Agriculture', 'Developed', 'Natural', 'Septic', 'Wastewater'])
+
+    def test_geography_populated_correctly(self):
+        self.assertIn('N42001PU2_2790_3290', self.oc.geography)
+
+    def test_agencies_populated_correctly(self):
+        pass
 
     def test_empty_matrix_is_empty(self):
         ematrix = self.oc.pmatrices['ndas'].eligibleparametermatrix

@@ -1,10 +1,6 @@
 import unittest
 
-# from sandbox.tables.TblLoader_fromSql import TblLoaderFromSQL
-# from sandbox.sqltables.TableLoader import TableLoader
-# from sandbox.tables.ExcelDataTable import ExcelDataTable
 from sandbox.tables.TblJeeves import TblJeeves
-# from collections import OrderedDict
 
 
 class TddForTables(unittest.TestCase):
@@ -51,29 +47,26 @@ class TddForTables(unittest.TestCase):
         self.assertIn('Agriculture',
                       self.jeeves.get_all_sector_names().tolist())
 
-    # def test_table_query_raises_error_when_no_scale_specified(self):
-    #     self.assertRaises(ValueError, self.qrysrc.get_geoarea_names)
-    #
-    # def test_table_query_raises_error_when_specified_scale_does_not_exist(self):
-    #     self.assertWarns(RuntimeWarning, self.qrysrc.get_geoarea_names, 'MinorState')
-    #
-    # def test_table_query_returns_geo_scale_list_containing_COUNTY(self):
-    #     self.assertIn('County', self.qrysrc.get_geoscale_names())
-    #
-    # def test_table_query_returns_geo_area_list_for_COUNTY_containing_ANNEARUNDEL(self):
-    #     self.assertIn('Anne Arundel, MD', self.qrysrc.get_geoarea_names(scale='County'))
-    #
-    # def test_table_query_returns_agency_list_of_correct_type(self):
-    #     self.assertIsInstance(self.qrysrc.get_all_agency_names(), list)
-    #
-    # def test_table_query_returns_sector_list_of_correct_type(self):
-    #     self.assertIsInstance(self.qrysrc.get_all_sector_names(), list)
-    #
-    # def test_tables_loaded_are_correct_type(self):
-    #     self.assertIsInstance(self.tables.basecond, ExcelDataTable)
-    #
-    # def test_table_data_are_correct_type(self):
-    #     self.assertIsInstance(self.tables.basecond.data, OrderedDict)
-    #
-    # def test_sql_table_data_are_correct_type(self):
-    #     self.assertIsInstance(self.tables.sourceDataFromSql, TableLoader)
+    def test_query_all_agency_names(self):
+        self.assertIn('NONFED',
+                      self.jeeves.get_all_agency_names().tolist())
+
+    def test_query_returns_geo_scale_list_containing_COUNTY(self):
+        self.assertIn('County',
+                      self.jeeves.get_all_geoscales().geographytype.tolist())
+
+    def test_table_query_returns_geo_area_list_for_COUNTYNAME_containing_ANNEARUNDEL(self):
+        self.assertIn('Anne Arundel, MD',
+                      self.jeeves.get_geonames_of_geotype(geotype=['County']).tolist())
+
+    def test_table_query_returns_geo_area_list_for_COUNTYID_containing_ANNEARUNDEL(self):
+        self.assertIn('Anne Arundel, MD',
+                      self.jeeves.get_geonames_of_geotype(geotype=[2]).tolist())
+
+    def test_table_query_raises_error_when_specified_scale_does_not_exist(self):
+        self.assertRaises(ValueError,
+                          self.jeeves.get_geonames_of_geotype, ['MinorState'])
+
+    def test_table_query_raises_error_when_no_scale_specified(self):
+        self.assertRaises(ValueError,
+                          self.jeeves.get_geonames_of_geotype)
