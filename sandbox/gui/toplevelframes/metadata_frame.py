@@ -99,14 +99,14 @@ class MetadataFrame(tk.Frame):
         self.dropdown_wastewtr.current(0)
         self.dropdown_costprofile['values'] = ['Select Cost Profile'] + qrysource.get_costprofile_names()
         self.dropdown_costprofile.current(0)
-        self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + qrysource.get_all_geoscales()
+        self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + qrysource.all_geotypes()
         self.dropdown_geoscale.current(0)
 
         self.update_geoareabox_options()
 
     def update_geoareabox_options(self, event=None):
         geoscale = self.dropdown_geoscale.get()
-        areas = self.qrysource.get_geonames_of_geotype(geotype=geoscale)
+        areas = self.qrysource.all_geonames_of_geotype(geotype=geoscale)
 
         self.geoareabox.set_new_left_side_items(areas)
 

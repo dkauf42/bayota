@@ -56,7 +56,7 @@ class FreeParamFrame(tk.Frame):
         mylist = queries.agencies_from_lrsegs(lrsegs=optcase.geography['LandRiverSegment'])
         self.agencydualbox.set_new_left_side_items(mylist)
 
-        mylist = queries.get_all_sector_names()
+        mylist = queries.all_sector_names()
         self.sectordualbox.set_new_left_side_items(mylist)
 
     def get_results(self):

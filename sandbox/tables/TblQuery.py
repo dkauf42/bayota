@@ -24,7 +24,7 @@ class TblQuery:
     def agencies_from_lrsegs(self, lrsegs=None):
         return self.base.get_agencies_in_lrsegs(lrsegs=lrsegs)
 
-    def get_all_sector_names(self):
+    def all_sector_names(self):
         return self.source.get_all_sector_names()
 
 

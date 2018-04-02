@@ -45,28 +45,34 @@ class TddForTables(unittest.TestCase):
 
     def test_query_all_sector_names(self):
         self.assertIn('Agriculture',
-                      self.jeeves.get_all_sector_names().tolist())
+                      self.jeeves.all_sector_names().tolist())
 
     def test_query_all_agency_names(self):
         self.assertIn('NONFED',
-                      self.jeeves.get_all_agency_names().tolist())
+                      self.jeeves.all_agency_names().tolist())
 
     def test_query_returns_geo_scale_list_containing_COUNTY(self):
         self.assertIn('County',
-                      self.jeeves.get_all_geoscales().geographytype.tolist())
+                      self.jeeves.all_geotypes().geographytype.tolist())
 
     def test_table_query_returns_geo_area_list_for_COUNTYNAME_containing_ANNEARUNDEL(self):
         self.assertIn('Anne Arundel, MD',
-                      self.jeeves.get_geonames_of_geotype(geotype=['County']).tolist())
+                      self.jeeves.all_geonames_of_geotype(geotype=['County']).tolist())
 
     def test_table_query_returns_geo_area_list_for_COUNTYID_containing_ANNEARUNDEL(self):
         self.assertIn('Anne Arundel, MD',
-                      self.jeeves.get_geonames_of_geotype(geotype=[2]).tolist())
+                      self.jeeves.all_geonames_of_geotype(geotype=[2]).tolist())
 
     def test_table_query_raises_error_when_specified_scale_does_not_exist(self):
         self.assertRaises(ValueError,
-                          self.jeeves.get_geonames_of_geotype, ['MinorState'])
+                          self.jeeves.all_geonames_of_geotype, ['MinorState'])
 
     def test_table_query_raises_error_when_no_scale_specified(self):
         self.assertRaises(ValueError,
-                          self.jeeves.get_geonames_of_geotype)
+                          self.jeeves.all_geonames_of_geotype)
+
+    def test_query_for_loadsources_from_lrseg(self):
+        self.assertIn('Legume Hay',
+                      self.jeeves.loadsources_from_lrseg_agency_sector(lrsegs=['N42001PU2_2790_3290'],
+                                                                       agencies=['NONFED'],
+                                                                       sector=[2]))

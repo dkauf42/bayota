@@ -139,20 +139,20 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['agencycode']]
 
-    def get_all_agency_names(self):
+    def all_agency_names(self):
         TblAgency = self.source.TblAgency  # get relevant source data
         return TblAgency.loc[:, 'agencycode']
 
-    def get_all_sector_names(self):
+    def all_sector_names(self):
         TblSector = self.source.TblSector  # get relevant source data
         return TblSector.loc[:, 'sector']
 
-    def get_all_geoscales(self):
+    def all_geotypes(self):
         TblGeoType = self.source.TblGeographyType  # get relevant source data
         TblGeoType = TblGeoType.loc[TblGeoType['castscenariogeographytype'] == True]
         return TblGeoType.loc[:, ['geographytypeid', 'geographytype']]
 
-    def get_geonames_of_geotype(self, geotype=None):
+    def all_geonames_of_geotype(self, geotype=None):
         TblGeography = self.source.TblGeography  # get relevant source data
         if not geotype:
             raise ValueError('Geography Type must be specified to get area names')
@@ -178,3 +178,7 @@ class TblJeeves:
         columnmask = ['geographyid', 'geographytypeid', 'geographyfullname']
         tblsubset = TblGeography.loc[:, columnmask].merge(typeids, how='inner')
         return tblsubset.loc[:, 'geographyfullname']
+
+    def loadsources_from_lrseg_agency_sector(self, lrsegs=None, agencies=None, sector=None):
+
+        pass
