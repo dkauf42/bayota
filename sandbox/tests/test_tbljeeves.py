@@ -71,8 +71,9 @@ class TddForTables(unittest.TestCase):
         self.assertRaises(ValueError,
                           self.jeeves.all_geonames_of_geotype)
 
-    def test_loadsources_query_from_lrseg(self):
+    def test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY(self):
         self.assertIn('Legume Hay',
                       self.jeeves.loadsources_from_lrseg_agency_sector(lrsegs=['N42001PU2_2790_3290'],
-                                                                       agencies=['NONFED'],
-                                                                       sector=[2]))
+                                                                       agencies=['NONFED', 'FWS'],
+                                                                       sectors=['Agriculture']).loadsource.tolist()
+                      )
