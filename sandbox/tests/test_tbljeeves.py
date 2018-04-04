@@ -34,44 +34,44 @@ class TddForTables(unittest.TestCase):
                           countystatestrs=['Adams, PA', 'Anne Arundel, MD'],
                           lrsegnames=['N42001PU2_2790_3290'])
 
-    def test_query_for_lrsegs_from_geography(self):
+    def test_lrsegs_query_from_geography(self):
         self.assertIn('N42001PU2_2790_3290',
                       self.jeeves.lrsegs_from_geography(scale='County',
                                                         areanames=['Adams, PA']).landriversegment.tolist())
 
-    def test_query_for_agencies_from_lrsegs(self):
+    def test_agencies_query_from_lrsegs(self):
         self.assertIn('NONFED',
                       self.jeeves.agencies_from_lrsegs(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())
 
-    def test_query_all_sector_names(self):
+    def test_sector_names_query(self):
         self.assertIn('Agriculture',
                       self.jeeves.all_sector_names().tolist())
 
-    def test_query_all_agency_names(self):
+    def test_agency_names_query(self):
         self.assertIn('NONFED',
                       self.jeeves.all_agency_names().tolist())
 
-    def test_query_returns_geo_scale_list_containing_COUNTY(self):
+    def test_geo_scale_query_contains_COUNTY(self):
         self.assertIn('County',
                       self.jeeves.all_geotypes().geographytype.tolist())
 
-    def test_table_query_returns_geo_area_list_for_COUNTYNAME_containing_ANNEARUNDEL(self):
+    def test_geo_names_query_for_COUNTY_contains_ANNEARUNDEL(self):
         self.assertIn('Anne Arundel, MD',
                       self.jeeves.all_geonames_of_geotype(geotype=['County']).tolist())
 
-    def test_table_query_returns_geo_area_list_for_COUNTYID_containing_ANNEARUNDEL(self):
+    def test_geo_names_query_for_COUNTYID_contains_ANNEARUNDEL(self):
         self.assertIn('Anne Arundel, MD',
                       self.jeeves.all_geonames_of_geotype(geotype=[2]).tolist())
 
-    def test_table_query_raises_error_when_specified_scale_does_not_exist(self):
+    def test_geo_names_query_raises_error_when_specified_scale_does_not_exist(self):
         self.assertRaises(ValueError,
                           self.jeeves.all_geonames_of_geotype, ['MinorState'])
 
-    def test_table_query_raises_error_when_no_scale_specified(self):
+    def test_geo_names_query_raises_error_when_no_scale_specified(self):
         self.assertRaises(ValueError,
                           self.jeeves.all_geonames_of_geotype)
 
-    def test_query_for_loadsources_from_lrseg(self):
+    def test_loadsources_query_from_lrseg(self):
         self.assertIn('Legume Hay',
                       self.jeeves.loadsources_from_lrseg_agency_sector(lrsegs=['N42001PU2_2790_3290'],
                                                                        agencies=['NONFED'],
