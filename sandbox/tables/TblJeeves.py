@@ -210,6 +210,16 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['loadsourcegroupid']]
 
+    def loadsourceids_from(self, sectorids=None):
+        if isinstance(sectorids, list):
+            sectorids = pd.DataFrame(sectorids, columns=['sectorid'])
+
+        TblLoadSource = self.source.TblLoadSource  # get relevant source data
+        columnmask = ['loadsourceid', 'sectorid']
+        tblsubset = TblLoadSource.loc[:, columnmask].merge(sectorids, how='inner')
+
+        return tblsubset.loc[:, ['loadsourceid']]
+
     def loadsources_from_lrseg_agency_sector(self, lrsegs=None, agencies=None, sectors=None):
         """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
         """
@@ -232,9 +242,7 @@ class TblJeeves:
         tblloadsourceids1 = TblLandRiverSegmentAgencyLoadSource.loc[:, columnmask].merge(combos, how='inner')
 
         # use sectors/loadsourcegroups to get loadsourceids
-        loadsourcegroupids = self.loadsourcegroupids_from(sectorids=sectorids)
-        columnmask = ['loadsourcegroupid', 'loadsourceid']
-        tblloadsourceids2 = TblLoadSourceGroupLoadSource.loc[:, columnmask].merge(loadsourcegroupids, how='inner')
+        tblloadsourceids2 = self.loadsourceids_from(sectorids=sectorids)
 
         # get the intersection of these two loadsourceid tables
         tblloadsourceids = tblloadsourceids1.merge(tblloadsourceids2, how='inner')
