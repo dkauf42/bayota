@@ -229,6 +229,7 @@ class TblJeeves:
         TblLoadSource = self.source.TblLoadSource
         TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
 
+        # Convert names to IDs
         lrsegids = self.lrsegids_from(lrsegnames=lrsegs)
         agencyids = self.agencyids_from(agencycodes=agencies)
         sectorids = self.sectorids_from(sectornames=sectors)
