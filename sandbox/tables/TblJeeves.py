@@ -213,10 +213,11 @@ class TblJeeves:
     def loadsources_from_lrseg_agency_sector(self, lrsegs=None, agencies=None, sectors=None):
         """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
         """
-        TblLandUsePreBmp = self.source.TblLandUsePreBmp  # get relevant source data
+        # get relevant source data
+        TblLandUsePreBmp = self.source.TblLandUsePreBmp  # use this to find load sources with >0 acres
         TblLandRiverSegmentAgencyLoadSource = self.source.TblLandRiverSegmentAgencyLoadSource
-        TblLoadSource = self.source.TblLoadSource  # get relevant source data
-        TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource  # get relevant source data
+        TblLoadSource = self.source.TblLoadSource
+        TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
 
         lrsegids = self.lrsegids_from(lrsegnames=lrsegs)
         agencyids = self.agencyids_from(agencycodes=agencies)
