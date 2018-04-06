@@ -67,6 +67,28 @@ class TblJeeves:
 
         return sourcedata
 
+    # Geography Methods
+    def countyid_from_countystatestrs(self, getfrom=None):
+        TblCounty = self.source.TblCounty  # get relevant source data
+
+        areas = [x.split(', ') for x in getfrom]  # split ('County, StateAbbrev')
+        rowmask = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
+
+        columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
+        tblsubset = TblCounty.loc[:, columnmask].merge(rowmask, how='inner')
+
+        return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
+
+    def lrsegnames_from(self, lrsegids=None):
+        if not isinstance(lrsegids, pd.DataFrame):
+            lrsegids = pd.DataFrame(lrsegids, columns=['landriversegment'])
+
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+        columnmask = ['lrsegid', 'landriversegment']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(lrsegids, how='inner')
+
+        return tblsubset.loc[:, ['landriversegment']]  # pass column name as list so return type is pandas.DataFrame
+
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
         kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
@@ -105,25 +127,13 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
 
-    def countyid_from_countystatestrs(self, getfrom=None):
-        TblCounty = self.source.TblCounty  # get relevant source data
-
-        areas = [x.split(', ') for x in getfrom]  # split ('County, StateAbbrev')
-        rowmask = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
-
-        columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
-        tblsubset = TblCounty.loc[:, columnmask].merge(rowmask, how='inner')
-
-        return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
-
-    def lrsegs_from_geography(self, scale='', areanames=None):
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+    def lrsegids_from_geoscale_with_names(self, scale='', areanames=None):
+        # TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
         if scale == 'County':
-            getfrom = self.lrsegids_from(countystatestrs=areanames)
-            columnmask = ['lrsegid', 'landriversegment']
-            tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(getfrom, how='inner')
-            return tblsubset.loc[:, ['landriversegment']]
+            tblsubset = self.lrsegids_from(countystatestrs=areanames)
+            return tblsubset.loc[:, ['lrsegid']]
 
+    # Agency Methods
     def agencyids_from(self, agencycodes=None):
         if not isinstance(agencycodes, pd.DataFrame):
             agencycodes = pd.DataFrame(agencycodes, columns=['agencycode'])
@@ -134,17 +144,22 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['agencyid']]
 
+    def agencyids_from_lrsegids(self, lrsegids=None):
+        TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
+
+        columnmask = ['lrsegid', 'agencyid', 'acres']
+        tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
+
+        return tblsubset.loc[:, ['agencyid']]
+
     def agencies_from_lrsegs(self, lrsegnames=None):
         if not isinstance(lrsegnames, list):
             lrsegnames = lrsegnames.tolist()
 
         TblAgency = self.source.TblAgency  # get relevant source data
-        TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency
 
         tblwithlrsegids = self.lrsegids_from(lrsegnames=lrsegnames)
-
-        columnmask = ['lrsegid', 'agencyid', 'acres']
-        tblwithagencyids = TblLandRiverSegmentAgency.loc[:, columnmask].merge(tblwithlrsegids, how='inner')
+        tblwithagencyids = self.agencyids_from_lrsegids(lrsegids=tblwithlrsegids)
 
         columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
         tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
@@ -155,6 +170,7 @@ class TblJeeves:
         TblAgency = self.source.TblAgency  # get relevant source data
         return TblAgency.loc[:, 'agencycode']
 
+    # Sector Methods
     def sectorids_from(self, sectornames=None):
         if not isinstance(sectornames, pd.DataFrame):
             sectornames = pd.DataFrame(sectornames, columns=['sector'])
@@ -168,6 +184,10 @@ class TblJeeves:
     def all_sector_names(self):
         TblSector = self.source.TblSector  # get relevant source data
         return TblSector.loc[:, 'sector']
+
+    def all_sectorids(self):
+        TblSector = self.source.TblSector  # get relevant source data
+        return TblSector.loc[:, 'sectorid']
 
     def all_geotypes(self):
         TblGeoType = self.source.TblGeographyType  # get relevant source data
@@ -201,6 +221,7 @@ class TblJeeves:
         tblsubset = TblGeography.loc[:, columnmask].merge(typeids, how='inner')
         return tblsubset.loc[:, 'geographyfullname']
 
+    # Load Source Methods
     def loadsourcegroupids_from(self, sectorids=None):
         if not isinstance(sectorids, pd.DataFrame):
             sectorids = pd.DataFrame(sectorids, columns=['sectorid'])
@@ -255,6 +276,7 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['loadsource']]
 
+    # BMP Methods
     def all_bmpnames(self):
         TblBmp = self.source.TblBmp  # get relevant source data
         return TblBmp.loc[:, 'bmpshortname']

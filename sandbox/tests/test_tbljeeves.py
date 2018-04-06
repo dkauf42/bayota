@@ -34,10 +34,14 @@ class TddForTables(unittest.TestCase):
                           countystatestrs=['Adams, PA', 'Anne Arundel, MD'],
                           lrsegnames=['N42001PU2_2790_3290'])
 
-    def test_lrsegs_query_from_geography(self):
+    def test_lrsegs_query_from_geoscale_with_names(self):
         self.assertIn('N42001PU2_2790_3290',
-                      self.jeeves.lrsegs_from_geography(scale='County',
-                                                        areanames=['Adams, PA']).landriversegment.tolist())
+                      self.jeeves.lrsegnames_from(lrsegids=
+                                                  self.jeeves.lrsegids_from_geoscale_with_names(scale='County',
+                                                                                                areanames=['Adams, PA']
+                                                                                                )
+                                                  ).landriversegment.tolist()
+                      )
 
     def test_agencies_query_from_lrsegs(self):
         self.assertIn('NONFED',

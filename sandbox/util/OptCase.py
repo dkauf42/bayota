@@ -25,20 +25,20 @@ class OptCase:
         self.geoscalename = None
         self.geoareanames = None
 
-        self.geography = None
+        self.lrsegids = None
         # an LRSeg list for this instance (w/accompanying county, stateabbrev, in/out CBWS,
         #                                  major/minor/state basin, river
 
-        self.agencies_included = None
+        self.agencyids = None
         # list of agencies selected to specify free parameter groups
 
-        self.sectors_included = None
+        self.sectorids = None
         # list of sectors selected to specify free parameter groups
 
-        self.load_sources_included = None
-        # list of load sources selected included in the geography-agencies
+        self.loadsourceids = None
+        # list of load sources selected included in the lrsegids-agencies
 
-        # TODO: Make the storage of geography, agency, sector, load sources in OptCast... all by IDs!
+        # TODO: Make the storage of lrsegids, agency, sector, load sources in OptCast... all by IDs!
 
         self.pmatrices = dict.fromkeys(['animal', 'manure', 'ndas'])
         # self.pmatrices = {'animal': None,
@@ -76,9 +76,9 @@ class OptCase:
                                                d['costprofilename'],
                                                d['geoscalename'],
                                                d['geoareanames'],
-                                               d['geography'].shape[0],
-                                               d['agencies_included'],
-                                               d['sectors_included'],
+                                               d['lrsegids'].shape[0],
+                                               d['agencyids'],
+                                               d['sectorids'],
                                                d['pmatrices']]])
 
         return formattedstr
@@ -87,17 +87,17 @@ class OptCase:
         self.queries = TblJeeves()
 
     def set_geography(self, geotable=None):
-        self.geography = geotable
+        self.lrsegids = geotable
 
     def populate_geography_from_scale_and_areas(self):
-        self.geography = self.queries.lrsegs_from_geography(scale=self.geoscalename,
-                                                            areanames=self.geoareanames)
+        self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
+                                                                       areanames=self.geoareanames)
 
     def populate_agencies_from_geography(self):
-        self.agencies_included = self.queries.agencies_from_lrsegs(lrsegnames=self.geography.landriversegment)
+        self.agencyids = self.queries.agencyids_from_lrsegids(lrsegids=self.lrsegids)
 
     def populate_sectors(self):
-        self.sectors_included = self.queries.all_sector_names()
+        self.sectorids = self.queries.all_sectorids()
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name
@@ -109,12 +109,12 @@ class OptCase:
         self.geoscalename = metadata_results.scale
         self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
-        self.geography = None
+        self.lrsegids = None
         #self.get_geographies_included(areanames=self.geoareanames)
 
     def save_freeparamgrps(self, freeparamgrp_results):
-        self.agencies_included = freeparamgrp_results.agencies
-        self.sectors_included = freeparamgrp_results.sectors
+        self.agencyids = freeparamgrp_results.agencies
+        self.sectorids = freeparamgrp_results.sectors
 
     def generate_emptyparametermatrices(self):
         """An empty emptyparametermatrix is created for each Segment-Agency-Type table.
@@ -130,29 +130,29 @@ class OptCase:
 
         # An empty emptyparametermatrix is created for each Segment-Agency-Type table.
         self.pmatrices['ndas'] = MatrixSand(name='ndas',
-                                            geographies=self.geography,
-                                            agencies=self.agencies_included,
-                                            sectors=self.sectors_included,
+                                            geographies=self.lrsegids,
+                                            agencies=self.agencyids,
+                                            sectors=self.sectorids,
                                             queries=self.queries)
         self.pmatrices['animal'] = MatrixAnimal(name='anim',
-                                                geographies=self.geography,
+                                                geographies=self.lrsegids,
                                                 queries=self.queries)
         self.pmatrices['manure'] = MatrixManure(name='manu',
-                                                geographies=self.geography,
+                                                geographies=self.lrsegids,
                                                 queries=self.queries)
 
     def mark_eligibility(self):
         # A numpy array is created that contains all load sources in this scenario.
-        self.load_sources_included = pd.concat([self.pmatrices['ndas'].
-                                               yaad_table.index.get_level_values('LoadSource').to_series(),
-                                                self.pmatrices['animal'].
-                                               yaad_table.index.get_level_values('LoadSource').to_series(),
-                                                self.pmatrices['manure'].
-                                               yaad_table.index.get_level_values('LoadSource').to_series()],
-                                               ignore_index=True).unique()
+        self.loadsourceids = pd.concat([self.pmatrices['ndas'].
+                                       yaad_table.index.get_level_values('LoadSource').to_series(),
+                                        self.pmatrices['animal'].
+                                       yaad_table.index.get_level_values('LoadSource').to_series(),
+                                        self.pmatrices['manure'].
+                                       yaad_table.index.get_level_values('LoadSource').to_series()],
+                                       ignore_index=True).unique()
 
         # A dictionary is generated with <keys:loadsource>, <values:eligible BMPs>.
-        bmpdict = self.queries.source.get_dict_of_bmps_by_loadsource_keys(load_sources=self.load_sources_included)
+        bmpdict = self.queries.source.get_dict_of_bmps_by_loadsource_keys(load_sources=self.loadsourceids)
 
         # NonNaN markers are generated for eligible (Geo, Agency, Source, BMP) coordinates in the emptyparametermatrix
         self.pmatrices['ndas'].mark_eligible_coordinates(bmpdict=bmpdict)

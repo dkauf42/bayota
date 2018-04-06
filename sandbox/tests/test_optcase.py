@@ -31,11 +31,11 @@ class TddForOptCase(unittest.TestCase):
         cls.oc.generate_boundsmatrices()
 
     def test_sectors_list_is_correct(self):
-        self.assertSequenceEqual(self.oc.sectors_included,
+        self.assertSequenceEqual(self.oc.sectorids,
                                  ['Agriculture', 'Developed', 'Natural', 'Septic', 'Wastewater'])
 
     def test_geography_populated_correctly(self):
-        self.assertIn('N42001PU2_2790_3290', self.oc.geography)
+        self.assertIn('N42001PU2_2790_3290', self.oc.lrsegids)
 
     def test_agencies_populated_correctly(self):
         pass
