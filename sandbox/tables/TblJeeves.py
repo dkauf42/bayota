@@ -69,7 +69,8 @@ class TblJeeves:
 
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
-        if checkOnlyOne(kwargs) is False:
+        kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
+        if checkOnlyOne(kwargsNoDataFrames) is False:
             raise ValueError('One and only one keyword argument must be specified')
 
         if lrsegnames is not None:
@@ -80,7 +81,7 @@ class TblJeeves:
             return self.__lrsegids_from_countyid(getfrom=countyid)
 
     def __lrsegids_from_lrsegnames(self, getfrom=None):
-        if isinstance(getfrom, list):
+        if not isinstance(getfrom, pd.DataFrame):
             getfrom = pd.DataFrame(getfrom, columns=['landriversegment'])
 
         TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
@@ -94,7 +95,7 @@ class TblJeeves:
         return self.__lrsegids_from_countyid(getfrom=countyids)
 
     def __lrsegids_from_countyid(self, getfrom=None):
-        if isinstance(getfrom, list):
+        if not isinstance(getfrom, pd.DataFrame):
             getfrom = pd.DataFrame(getfrom, columns=['countyid'])
 
         TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
@@ -124,7 +125,7 @@ class TblJeeves:
             return tblsubset.loc[:, ['landriversegment']]
 
     def agencyids_from(self, agencycodes=None):
-        if isinstance(agencycodes, list):
+        if not isinstance(agencycodes, pd.DataFrame):
             agencycodes = pd.DataFrame(agencycodes, columns=['agencycode'])
 
         TblAgency = self.source.TblAgency  # get relevant source data
@@ -155,7 +156,7 @@ class TblJeeves:
         return TblAgency.loc[:, 'agencycode']
 
     def sectorids_from(self, sectornames=None):
-        if isinstance(sectornames, list):
+        if not isinstance(sectornames, pd.DataFrame):
             sectornames = pd.DataFrame(sectornames, columns=['sector'])
 
         TblSector = self.source.TblSector  # get relevant source data
@@ -201,7 +202,7 @@ class TblJeeves:
         return tblsubset.loc[:, 'geographyfullname']
 
     def loadsourcegroupids_from(self, sectorids=None):
-        if isinstance(sectorids, list):
+        if not isinstance(sectorids, pd.DataFrame):
             sectorids = pd.DataFrame(sectorids, columns=['sectorid'])
 
         TblLoadSourceGroupSector = self.source.TblLoadSourceGroupSector  # get relevant source data
@@ -211,7 +212,7 @@ class TblJeeves:
         return tblsubset.loc[:, ['loadsourcegroupid']]
 
     def loadsourceids_from(self, sectorids=None):
-        if isinstance(sectorids, list):
+        if not isinstance(sectorids, pd.DataFrame):
             sectorids = pd.DataFrame(sectorids, columns=['sectorid'])
 
         TblLoadSource = self.source.TblLoadSource  # get relevant source data
@@ -253,3 +254,7 @@ class TblJeeves:
         tblsubset = TblLoadSource.loc[:, columnmask].merge(tblloadsourceids, how='inner')
 
         return tblsubset.loc[:, ['loadsource']]
+
+    def all_bmpnames(self):
+        TblBmp = self.source.TblBmp  # get relevant source data
+        return TblBmp.loc[:, 'bmpshortname']
