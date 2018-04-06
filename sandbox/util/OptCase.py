@@ -38,9 +38,13 @@ class OptCase:
         self.load_sources_included = None
         # list of load sources selected included in the geography-agencies
 
-        self.pmatrices = {'animal': None,
-                          'manure': None,
-                          'ndas': None}
+        # TODO: Make the storage of geography, agency, sector, load sources in OptCast... all by IDs!
+
+        self.pmatrices = dict.fromkeys(['animal', 'manure', 'ndas'])
+        # self.pmatrices = {'animal': None,
+        #                  'manure': None,
+        #                  'ndas': None}
+
         # Parameter/possibility matrices for each large bmp type
 
         self.bounds_matrices = {'animal': pd.DataFrame(),
@@ -125,11 +129,16 @@ class OptCase:
         """
 
         # An empty emptyparametermatrix is created for each Segment-Agency-Type table.
-        self.pmatrices['ndas'] = MatrixSand(name='ndas', geographies=self.geography,
-                                            agencies=self.agencies_included, queries=self.queries)
-        self.pmatrices['animal'] = MatrixAnimal(name='anim', geographies=self.geography,
+        self.pmatrices['ndas'] = MatrixSand(name='ndas',
+                                            geographies=self.geography,
+                                            agencies=self.agencies_included,
+                                            sectors=self.sectors_included,
+                                            queries=self.queries)
+        self.pmatrices['animal'] = MatrixAnimal(name='anim',
+                                                geographies=self.geography,
                                                 queries=self.queries)
-        self.pmatrices['manure'] = MatrixManure(name='manu', geographies=self.geography,
+        self.pmatrices['manure'] = MatrixManure(name='manu',
+                                                geographies=self.geography,
                                                 queries=self.queries)
 
     def mark_eligibility(self):
