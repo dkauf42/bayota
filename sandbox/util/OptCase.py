@@ -25,16 +25,17 @@ class OptCase:
         self.geoscalename = None
         self.geoareanames = None
 
+        self.lrseg_agency_table = None
+        self.lrseg_agency_loadsource_table = None
+        self.lrseg_agency_loadsource_bmp_table = None
+
         self.lrsegids = None
         # an LRSeg list for this instance (w/accompanying county, stateabbrev, in/out CBWS,
         #                                  major/minor/state basin, river
-
         self.agencyids = None
         # list of agencies selected to specify free parameter groups
-
         self.sectorids = None
         # list of sectors selected to specify free parameter groups
-
         self.loadsourceids = None
         # list of load sources selected included in the lrsegids-agencies
 
@@ -95,9 +96,19 @@ class OptCase:
 
     def populate_agencies_from_geography(self):
         self.agencyids = self.queries.agencyids_from_lrsegids(lrsegids=self.lrsegids)
+        self.lrseg_agency_table = self.queries.agencyidPlusLRsegs_from_lrsegids(lrsegids=self.lrsegids)
 
     def populate_sectors(self):
         self.sectorids = self.queries.all_sectorids()
+
+    def populate_loadsources(self):
+        self.lrseg_agency_loadsource_table = self.\
+            queries.loadsourceAgencyLRsegidTable_from_lrsegAgencySectorids(lrsegagencyidtable=self.lrseg_agency_table,
+                                                                           sectorids=self.sectorids)
+
+    def populate_bmps(self):
+        self.lrseg_agency_loadsource_bmp_table = self.\
+            queries.bmpids_from_loadsourceids(loadsourceids=self.lrseg_agency_loadsource_table)
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name

@@ -24,6 +24,8 @@ class TddForOptCase(unittest.TestCase):
         cls.oc.populate_geography_from_scale_and_areas()
         cls.oc.populate_agencies_from_geography()
         cls.oc.populate_sectors()
+        cls.oc.populate_loadsources()
+        cls.oc.populate_bmps()
 
         # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
         cls.oc.generate_emptyparametermatrices()

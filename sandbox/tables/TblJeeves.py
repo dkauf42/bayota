@@ -144,10 +144,18 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['agencyid']]
 
+    def agencyidPlusLRsegs_from_lrsegids(self, lrsegids=None):
+        TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
+
+        columnmask = ['lrsegid', 'agencyid']
+        tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
+
+        return tblsubset.loc[:, ['lrsegid', 'agencyid']]
+
     def agencyids_from_lrsegids(self, lrsegids=None):
         TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
 
-        columnmask = ['lrsegid', 'agencyid', 'acres']
+        columnmask = ['lrsegid', 'agencyid']
         tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
 
         return tblsubset.loc[:, ['agencyid']]
@@ -187,7 +195,7 @@ class TblJeeves:
 
     def all_sectorids(self):
         TblSector = self.source.TblSector  # get relevant source data
-        return TblSector.loc[:, 'sectorid']
+        return TblSector.loc[:, ['sectorid']]
 
     def all_geotypes(self):
         TblGeoType = self.source.TblGeographyType  # get relevant source data
@@ -242,6 +250,47 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['loadsourceid']]
 
+    def loadsourceAgencyLRsegidTable_from_lrsegAgencySectorids(self, lrsegagencyidtable=None, sectorids=None):
+        """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
+        """
+        # get relevant source data
+        TblLandRiverSegmentAgencyLoadSource = self.source.TblLandRiverSegmentAgencyLoadSource
+
+        # use [lrseg, agency] to get loadsourceids
+        columnmask = ['lrsegid', 'agencyid', 'loadsourceid', 'unitid']
+        tblloadsourceids1 = TblLandRiverSegmentAgencyLoadSource.loc[:, columnmask].merge(lrsegagencyidtable,
+                                                                                         how='inner')
+
+        # use sectors/loadsourcegroups to get loadsourceids
+        tblloadsourceids2 = self.loadsourceids_from(sectorids=sectorids)
+
+        # get the intersection of these two loadsourceid tables
+        tblsubset = tblloadsourceids1.merge(tblloadsourceids2, how='inner')
+
+        return tblsubset
+
+    def loadsourceids_from_lrsegid_agencyid_sectorid(self, lrsegids=None, agencyids=None, sectorids=None):
+        """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
+        """
+        # get relevant source data
+        TblLandRiverSegmentAgencyLoadSource = self.source.TblLandRiverSegmentAgencyLoadSource
+
+        # Generate all combinations of the lrseg, agency, sectors
+        combos = list(product(lrsegids['lrsegid'], agencyids['agencyid']))
+        combos = pd.DataFrame(combos, columns=['lrsegid', 'agencyid'])
+
+        # use [lrseg, agency] to get loadsourceids
+        columnmask = ['lrsegid', 'agencyid', 'loadsourceid', 'unitid']
+        tblloadsourceids1 = TblLandRiverSegmentAgencyLoadSource.loc[:, columnmask].merge(combos, how='inner')
+
+        # use sectors/loadsourcegroups to get loadsourceids
+        tblloadsourceids2 = self.loadsourceids_from(sectorids=sectorids)
+
+        # get the intersection of these two loadsourceid tables
+        tblloadsourceids = tblloadsourceids1.merge(tblloadsourceids2, how='inner')
+
+        return tblloadsourceids.loc[:, ['loadsourceid']]
+
     def loadsources_from_lrseg_agency_sector(self, lrsegs=None, agencies=None, sectors=None):
         """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
         """
@@ -280,3 +329,15 @@ class TblJeeves:
     def all_bmpnames(self):
         TblBmp = self.source.TblBmp  # get relevant source data
         return TblBmp.loc[:, 'bmpshortname']
+
+    def bmpids_from_loadsourceids(self, loadsourceids):
+        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
+
+        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
+        columnmask = ['bmpid', 'loadsourceid']
+        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(loadsourceids, how='inner')
+
+        print('TblJeeves.bmpids_from_loadsourceids():')
+        print(tblsubset)
+
+        return tblsubset
