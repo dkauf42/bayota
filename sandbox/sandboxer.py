@@ -33,7 +33,6 @@ def main(numinstances=1, testcase=None):
         if testcase == 1:
             print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
             # TODO: make this work with the sqltables!
-            # TODO: fix the list of source data tables in the SourceData.py file
             """For Testing Purposes"""
             optcase.name = 'TestOne'
             optcase.description = 'TestOneDescription'

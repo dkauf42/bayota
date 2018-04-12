@@ -13,7 +13,15 @@ class MatrixSand(MatrixBase):
 
         lrsegids = queries.lrsegids_from(lrsegnames=geographies)
         agencyids = queries.agencyids_from(agencycodes=agencies)
-        lrsegids = queries.sectorids_from(sectornames=agencies)
+        sectorids = queries.sectorids_from(sectornames=sectors)
+
+        loadsourceids = queries.loadsourceids_from_lrsegid_agencyid_sectorid(lrsegids=lrsegids,
+                                                                             agencyids=agencyids,
+                                                                             sectorids=sectorids)
+
+        #np.full((len(), 20, 10, 20), 0)
+
+        raise ValueError('MatrixSand.__init__()... end')
 
         self.yaad_table = queries.loadsources_from_lrseg_agency_sector(lrsegs=geographies,
                                                                        agencies=agencies,
