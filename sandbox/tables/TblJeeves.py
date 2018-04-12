@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from itertools import product
 from tqdm import tqdm
+import warnings
 
 from sandbox.sqltables.source_data import SourceData
 from sandbox.__init__ import get_tempdir
@@ -128,10 +129,12 @@ class TblJeeves:
         return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
 
     def lrsegids_from_geoscale_with_names(self, scale='', areanames=None):
-        # TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
         if scale == 'County':
             tblsubset = self.lrsegids_from(countystatestrs=areanames)
             return tblsubset.loc[:, ['lrsegid']]
+        else:
+            warnings.warn('Specified scale "%s" is unrecognized' % scale, RuntimeWarning)
+            return None
 
     # Agency Methods
     def agencyids_from(self, agencycodes=None):
@@ -341,3 +344,85 @@ class TblJeeves:
         print(tblsubset)
 
         return tblsubset
+
+    def animalbmpids_from_loadsourceids(self, loadsourceids):
+        # TODO: make animalbmp table, or at least start w/a table of animal types present in the county
+        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
+
+        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
+        columnmask = ['bmpid', 'loadsourceid']
+        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(loadsourceids, how='inner')
+
+        print('TblJeeves.bmpids_from_loadsourceids():')
+        print(tblsubset)
+
+        return tblsubset
+
+    def manurebmpids_from_loadsourceids(self, loadsourceids):
+        # TODO: make manurebmp table, or at least start w/a table of counties present in geography
+        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
+
+        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
+        columnmask = ['bmpid', 'loadsourceid']
+        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(loadsourceids, how='inner')
+
+        print('TblJeeves.bmpids_from_loadsourceids():')
+        print(tblsubset)
+
+        return tblsubset
+
+    def translate_slabidtable_to_slabnametable(self, lalbidtable=None):
+        newtable = lalbidtable.copy()
+
+        TblLandRiverSegment = self.source.TblLandRiverSegment
+        TblGeographyLrSeg = self.source.TblGeographyLrSeg
+        TblGeography = self.source.TblGeography
+        TblState = self.source.TblState
+
+        TblAgency = self.source.TblAgency
+        TblLoadSource = self.source.TblLoadSource
+        TblBmp = self.source.TblBmp
+        print(newtable.shape)
+
+        # Translate lrsegid to GeographyName
+        columnmask = ['landriversegment', 'stateid', 'lrsegid']
+        newtable = TblLandRiverSegment.loc[:, columnmask].merge(newtable, how='inner')
+        #columnmask = ['geographyid', 'stateid', 'lrsegid']
+        #newtable = TblGeographyLrSeg.loc[:, columnmask].merge(newtable, how='inner')
+        #columnmask = ['geographyname', 'geographyid']
+        #newtable = TblGeography.loc[:, columnmask].merge(newtable, how='inner')
+        columnmask = ['stateabbreviation', 'stateid']
+        newtable = TblState.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to Agency codes
+        columnmask = ['agencycode', 'agencyid']
+        newtable = TblAgency.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to LoadSource names
+        columnmask = ['loadsource', 'loadsourceid']
+        newtable = TblLoadSource.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to BMP names
+        columnmask = ['bmpshortname', 'bmpid']
+        newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
+
+        print(newtable.shape)
+        newtable.drop(['lrsegid', 'stateid', 'agencyid', 'loadsourceid', 'bmpid'], axis=1, inplace=True)
+        newtable.rename({'landriversegment': 'GeographyName',
+                         'stateabbreviation': 'StateAbbreviation',
+                         'agencycode': 'AgencyCode',
+                         'loadsource': 'LoadSourceGroup',
+                         'bmpshortname': 'BmpShortName'}, inplace=True)
+        print(newtable.shape)
+
+        newtable["StateUniqueIdentifier"] = np.nan
+        newtable["Amount"] = 100
+        newtable["Unit"] = 'Percent'
+
+        return newtable
+
+    def make_scenario_from_slabidtable(self, slabidtable=None):
+        newtable = slabidtable
+
+        newtable["stateuniqueidentifier"] = np.nan
+        newtable["amount"] = 100
+        newtable["unitid"] = 1
+
+        return newtable

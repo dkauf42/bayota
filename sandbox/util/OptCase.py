@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from sandbox.tables.TblQuery import TblQuery
+#from sandbox.tables.TblQuery import TblQuery
 from sandbox.tables.TblJeeves import TblJeeves
 from sandbox.matrices.MatrixSand import MatrixSand
 from sandbox.matrices.MatrixAnimal import MatrixAnimal
@@ -25,32 +25,35 @@ class OptCase:
         self.geoscalename = None
         self.geoareanames = None
 
+        # Individual Components
+        self.lrsegids = None  # an LRSeg list for this instance
+        self.agencyids = None  # list of agencies selected to specify free parameter groups
+        self.sectorids = None  # list of sectors selected to specify free parameter groups
+        self.loadsourceids = None  # list of load sources selected included in the lrsegids-agencies
+
+        # Tables for Decision Variable Space
         self.lrseg_agency_table = None
         self.lrseg_agency_loadsource_table = None
-        self.lrseg_agency_loadsource_bmp_table = None
+        # Decision Vector - Land
+        self.land_slabidtable = None
+        self.land_slabnametable = None
+        # Decision Vector - Animal
+        self.animal_slabidtable = None
+        self.animal_slabnametable = None
+        # Decision Vector - Manure
+        self.manure_slabidtable = None
+        self.manure_slabnametable = None
 
-        self.lrsegids = None
-        # an LRSeg list for this instance (w/accompanying county, stateabbrev, in/out CBWS,
-        #                                  major/minor/state basin, river
-        self.agencyids = None
-        # list of agencies selected to specify free parameter groups
-        self.sectorids = None
-        # list of sectors selected to specify free parameter groups
-        self.loadsourceids = None
-        # list of load sources selected included in the lrsegids-agencies
-
-        # TODO: Make the storage of lrsegids, agency, sector, load sources in OptCast... all by IDs!
-
-        self.pmatrices = dict.fromkeys(['animal', 'manure', 'ndas'])
-        # self.pmatrices = {'animal': None,
-        #                  'manure': None,
-        #                  'ndas': None}
-
-        # Parameter/possibility matrices for each large bmp type
-
-        self.bounds_matrices = {'animal': pd.DataFrame(),
-                                'manure': pd.DataFrame(),
-                                'ndas': pd.DataFrame()}
+        # self.pmatrices = dict.fromkeys(['animal', 'manure', 'ndas'])
+        # # self.pmatrices = {'animal': None,
+        # #                  'manure': None,
+        # #                  'ndas': None}
+        #
+        # # Parameter/possibility matrices for each large bmp type
+        #
+        # self.bounds_matrices = {'animal': pd.DataFrame(),
+        #                         'manure': pd.DataFrame(),
+        #                         'ndas': pd.DataFrame()}
 
     def __repr__(self):
         d = self.__dict__
@@ -106,9 +109,14 @@ class OptCase:
             queries.loadsourceAgencyLRsegidTable_from_lrsegAgencySectorids(lrsegagencyidtable=self.lrseg_agency_table,
                                                                            sectorids=self.sectorids)
 
-    def populate_bmps(self):
-        self.lrseg_agency_loadsource_bmp_table = self.\
+    def populate_land_bmps(self):
+        self.land_slabidtable = self.\
             queries.bmpids_from_loadsourceids(loadsourceids=self.lrseg_agency_loadsource_table)
+
+        self.land_slabnametable = self.queries.translate_slabidtable_to_slabnametable(self.land_slabidtable)
+        # TODO
+        self.queries.make_scenario_from_slabidtable(self.land_slabidtable).to_csv(os.path.join(writedir,
+                                                                                        'testwrite_scenariowithids.csv'))
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name
