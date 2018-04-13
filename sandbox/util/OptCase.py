@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-#from sandbox.tables.TblQuery import TblQuery
 from sandbox.tables.TblJeeves import TblJeeves
 from sandbox.matrices.MatrixSand import MatrixSand
 from sandbox.matrices.MatrixAnimal import MatrixAnimal
@@ -25,24 +24,30 @@ class OptCase:
         self.geoscalename = None
         self.geoareanames = None
 
-        # Individual Components
+        # Individual Components for metadata
+        self.baseconditionid = pd.DataFrame(data=[1], columns=['baseconditionid'])
+        # TODO: use real baseconditionid instead of this^ temporary placeholder
+
+        # Individual Components for decision space
         self.lrsegids = None  # an LRSeg list for this instance
+        self.countyids = None  # a County list for this instance
         self.agencyids = None  # list of agencies selected to specify free parameter groups
         self.sectorids = None  # list of sectors selected to specify free parameter groups
         self.loadsourceids = None  # list of load sources selected included in the lrsegids-agencies
 
         # Tables for Decision Variable Space
         self.lrseg_agency_table = None
-        self.lrseg_agency_loadsource_table = None
+        self.source_lrseg_agency_table = None
+        self.source_county_agency_table = None
         # Decision Vector - Land
         self.land_slabidtable = None
         self.land_slabnametable = None
         # Decision Vector - Animal
-        self.animal_slabidtable = None
-        self.animal_slabnametable = None
+        self.animal_scabidtable = None
+        self.animal_scabnametable = None
         # Decision Vector - Manure
-        self.manure_slabidtable = None
-        self.manure_slabnametable = None
+        self.manure_sftabidtable = None
+        self.manure_sftabnametable = None
 
         # self.pmatrices = dict.fromkeys(['animal', 'manure', 'ndas'])
         # # self.pmatrices = {'animal': None,
@@ -96,6 +101,7 @@ class OptCase:
     def populate_geography_from_scale_and_areas(self):
         self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
                                                                        areanames=self.geoareanames)
+        self.countyids = self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
 
     def populate_agencies_from_geography(self):
         self.agencyids = self.queries.agencyids_from_lrsegids(lrsegids=self.lrsegids)
@@ -105,18 +111,60 @@ class OptCase:
         self.sectorids = self.queries.all_sectorids()
 
     def populate_loadsources(self):
-        self.lrseg_agency_loadsource_table = self.\
-            queries.loadsourceAgencyLRsegidTable_from_lrsegAgencySectorids(lrsegagencyidtable=self.lrseg_agency_table,
-                                                                           sectorids=self.sectorids)
+        self.source_lrseg_agency_table = self.\
+            queries.sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(lrsegagencyidtable=self.lrseg_agency_table,
+                                                                       sectorids=self.sectorids)
+
+        self.source_county_agency_table = self.\
+            queries.sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=self.
+                                                                            source_lrseg_agency_table)
+
+        # self.source_lrseg_agency_table.to_csv(os.path.join(writedir, 'testwrite_lalidtable.csv'))
+        # self.source_county_agency_table.to_csv(os.path.join(writedir, 'testwrite_lacidtable.csv'))
 
     def populate_land_bmps(self):
-        self.land_slabidtable = self.\
-            queries.bmpids_from_loadsourceids(loadsourceids=self.lrseg_agency_loadsource_table)
+        # Get BMP IDs
+        self.land_slabidtable = self.queries.\
+            land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.
+                                                           source_lrseg_agency_table)
+        # Translate BMP IDs to Names
+        self.land_slabnametable = self.queries.\
+            translate_slabidtable_to_slabnametable(self.land_slabidtable)
+        # Write Table to File
+        self.land_slabidtable.\
+            to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithids.csv'))
+        self.land_slabnametable.\
+            to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithnames.csv'))
 
-        self.land_slabnametable = self.queries.translate_slabidtable_to_slabnametable(self.land_slabidtable)
-        # TODO
-        self.queries.make_scenario_from_slabidtable(self.land_slabidtable).to_csv(os.path.join(writedir,
-                                                                                        'testwrite_scenariowithids.csv'))
+    def populate_animal_bmps(self):
+        # Get BMP IDs
+        self.animal_scabidtable = \
+            self.queries.animal_scabidtable_from_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.
+                                                                           source_county_agency_table,
+                                                                           baseconditionid=self.baseconditionid)
+        # Translate BMP IDs to Names
+        self.animal_scabnametable = \
+            self.queries.translate_scabidtable_to_scabnametable(self.animal_scabidtable)
+        # Write Table to File
+        self.animal_scabidtable.\
+            to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithids.csv'))
+        self.animal_scabnametable.\
+            to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithnames.csv'))
+
+    def populate_manure_bmps(self):
+        # Get BMP IDs
+        self.manure_sftabidtable = \
+            self.queries.manure_sftabidtable_from_SourceFromToAgencyIDtable(SourceCountyAgencyIDtable=self.
+                                                                            source_county_agency_table,
+                                                                            baseconditionid=self.baseconditionid)
+        # Translate BMP IDs to Names
+        self.manure_sftabnametable = \
+            self.queries.translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
+        # Write Table to File
+        self.manure_sftabidtable.\
+            to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithids.csv'))
+        self.manure_sftabnametable.\
+            to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithnames.csv'))
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name

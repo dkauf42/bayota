@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from itertools import product
+from itertools import permutations
 from tqdm import tqdm
 import warnings
 
@@ -136,6 +137,13 @@ class TblJeeves:
             warnings.warn('Specified scale "%s" is unrecognized' % scale, RuntimeWarning)
             return None
 
+    def countyids_from_lrsegids(self, lrsegids=None):
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+        columnmask = ['lrsegid', 'countyid']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(lrsegids, how='inner')
+
+        return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
+
     # Agency Methods
     def agencyids_from(self, agencycodes=None):
         if not isinstance(agencycodes, pd.DataFrame):
@@ -253,7 +261,7 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['loadsourceid']]
 
-    def loadsourceAgencyLRsegidTable_from_lrsegAgencySectorids(self, lrsegagencyidtable=None, sectorids=None):
+    def sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(self, lrsegagencyidtable=None, sectorids=None):
         """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
         """
         # get relevant source data
@@ -271,6 +279,17 @@ class TblJeeves:
         tblsubset = tblloadsourceids1.merge(tblloadsourceids2, how='inner')
 
         return tblsubset
+
+    def sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(self, sourceAgencyLrsegIDtable=None):
+        # get relevant source data
+        TblLandRiverSegment = self.source.TblLandRiverSegment
+
+        columnmask = ['lrsegid', 'countyid']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(sourceAgencyLrsegIDtable, how='inner')
+
+        tblsubset.drop_duplicates(subset=['countyid', 'agencyid', 'loadsourceid'], inplace=True)
+
+        return tblsubset.loc[:, ['countyid', 'agencyid', 'loadsourceid']]
 
     def loadsourceids_from_lrsegid_agencyid_sectorid(self, lrsegids=None, agencyids=None, sectorids=None):
         """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
@@ -333,64 +352,161 @@ class TblJeeves:
         TblBmp = self.source.TblBmp  # get relevant source data
         return TblBmp.loc[:, 'bmpshortname']
 
-    def bmpids_from_loadsourceids(self, loadsourceids):
+    def land_slabidtable_from_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
         TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
 
         TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
         columnmask = ['bmpid', 'loadsourceid']
-        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(loadsourceids, how='inner')
+        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(SourceLrsegAgencyIDtable, how='inner')
 
-        print('TblJeeves.bmpids_from_loadsourceids():')
+        # print('TblJeeves.land_slabidtable_from_SourceLrsegAgencyIDtable():')
+        # print(tblsubset)
+
+        return tblsubset
+
+    def animal_scabidtable_from_SourceCountyAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
+        TblAnimalPopulation = self.source.TblAnimalPopulation
+        TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
+        TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
+        TblAgency = self.source.TblAgency
+
+        sca_table = SourceCountyAgencyIDtable.copy()
+
+        # For Animals, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
+        nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
+        sca_table = sca_table[sca_table["agencyid"] == nonfedid]
+
+        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()0:')
+        # print(sca_table)
+
+        # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
+        sca_table['baseconditionid'] = baseconditionid.baseconditionid.tolist()[0]
+
+        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()1:')
+        # print(sca_table)
+
+        # Get which animals are present in the county, agency, loadsources
+        columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sca_table, how='inner')
+
+        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()2:')
+        # print(tblsubset)
+
+        # Get the animalgroups that each animalid belongs to
+        columnmask = ['animalgroupid', 'animalid']
+        tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
+
+        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()3:')
+        # print(tblsubset)
+
+        # Get the BMPs that can be applied to each animalgroupid
+        columnmask = ['animalgroupid', 'bmpid']
+        tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
+
+        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()4:')
+        # print(tblsubset)
+
+        return tblsubset
+
+    def manure_sftabidtable_from_SourceFromToAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
+        TblAnimalPopulation = self.source.TblAnimalPopulation
+        TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
+        TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
+        TblBmp = self.source.TblBmp
+        TblAgency = self.source.TblAgency
+        TblLoadSource = self.source.TblLoadSource
+
+        sca_table = SourceCountyAgencyIDtable.copy()
+
+        # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
+        sca_table['baseconditionid'] = baseconditionid.baseconditionid.tolist()[0]
+
+        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()0:')
+        # print(sca_table)
+
+        # For Animals, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
+        nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
+        sca_table = sca_table[sca_table["agencyid"] == nonfedid]
+
+        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()1:')
+        # print(sca_table)
+
+        # For Manure, only the "Non-Permitted Feeding Space" and "Permitted Feeding Space" load sources matter,
+        # so remove all rows with loadsources not equal to them
+        npfsid = TblLoadSource['loadsourceid'][TblLoadSource['loadsource'] == 'Non-Permitted Feeding Space'].values[0]
+        pfsid = TblLoadSource['loadsourceid'][TblLoadSource['loadsource'] == 'Permitted Feeding Space'].values[0]
+        allowed_loadsource_list = [npfsid]  # , pfsid]  (ONLY USE ONE FOR NOW) TODO: check-we only need one of the two
+        sca_table = sca_table.loc[sca_table['loadsourceid'].isin(allowed_loadsource_list)]
+
+        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()2:')
+        # print(sca_table)
+
+        # For Manure, calculate all of the From-To permutations
+        allperms = list(permutations(sca_table.countyid, 2))
+        if len(allperms) < 2:
+            sfta_table = sca_table.copy()
+
+            sfta_table['countyidFrom'] = sfta_table.countyid
+            sfta_table['countyidTo'] = sfta_table.countyid
+
+            sfta_table = sfta_table.head(0)  # If there aren't more than one county, then just return a blank table
+        else:
+            zser = pd.Series(allperms)
+            sfta_table = zser.apply(pd.Series)
+            sfta_table.columns = ['countyidFrom', 'countyidTo']
+
+            # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()3:')
+            # print(sfta_table)
+
+            sca_table['countyidFrom'] = sca_table['countyid']  # duplicate the countyid column with the countyidFrom name
+            columnmask = ['countyidFrom', 'countyidTo']
+            sfta_table = sfta_table.loc[:, columnmask].merge(sca_table, how='inner')
+
+            # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()4:')
+            # print(sfta_table)
+
+        # Get which animals are present in the county, agency, loadsources
+        columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sfta_table, how='inner')
+
+        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()5:')
+        # print(tblsubset)
+
+        # Get the animalgroups that each animalid belongs to
+        columnmask = ['animalgroupid', 'animalid']
+        tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
+
+        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()6:')
+        # print(tblsubset)
+
+        # # Get the BMPs that can be applied to each animalgroupid
+        # columnmask = ['animalgroupid', 'bmpid']
+        # tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
+
+        # For Manure transport, there's only one bmp that should be applied (?) TODO: check that this is true
+        mtid = TblBmp['bmpid'][TblBmp['bmpshortname'] == 'ManureTransport'].values[0]
+        tblsubset['bmpid'] = mtid
+
+        tblsubset.drop(['countyid'], axis=1, inplace=True)
+
+        print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()7:')
         print(tblsubset)
 
         return tblsubset
 
-    def animalbmpids_from_loadsourceids(self, loadsourceids):
-        # TODO: make animalbmp table, or at least start w/a table of animal types present in the county
-        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
+    def translate_slabidtable_to_slabnametable(self, slabidtable=None):
+        newtable = slabidtable.copy()
 
-        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
-        columnmask = ['bmpid', 'loadsourceid']
-        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(loadsourceids, how='inner')
-
-        print('TblJeeves.bmpids_from_loadsourceids():')
-        print(tblsubset)
-
-        return tblsubset
-
-    def manurebmpids_from_loadsourceids(self, loadsourceids):
-        # TODO: make manurebmp table, or at least start w/a table of counties present in geography
-        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
-
-        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
-        columnmask = ['bmpid', 'loadsourceid']
-        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(loadsourceids, how='inner')
-
-        print('TblJeeves.bmpids_from_loadsourceids():')
-        print(tblsubset)
-
-        return tblsubset
-
-    def translate_slabidtable_to_slabnametable(self, lalbidtable=None):
-        newtable = lalbidtable.copy()
-
+        # Get relevant source data tables
         TblLandRiverSegment = self.source.TblLandRiverSegment
-        TblGeographyLrSeg = self.source.TblGeographyLrSeg
-        TblGeography = self.source.TblGeography
         TblState = self.source.TblState
-
         TblAgency = self.source.TblAgency
         TblLoadSource = self.source.TblLoadSource
         TblBmp = self.source.TblBmp
-        print(newtable.shape)
 
         # Translate lrsegid to GeographyName
         columnmask = ['landriversegment', 'stateid', 'lrsegid']
         newtable = TblLandRiverSegment.loc[:, columnmask].merge(newtable, how='inner')
-        #columnmask = ['geographyid', 'stateid', 'lrsegid']
-        #newtable = TblGeographyLrSeg.loc[:, columnmask].merge(newtable, how='inner')
-        #columnmask = ['geographyname', 'geographyid']
-        #newtable = TblGeography.loc[:, columnmask].merge(newtable, how='inner')
         columnmask = ['stateabbreviation', 'stateid']
         newtable = TblState.loc[:, columnmask].merge(newtable, how='inner')
         # Translate to Agency codes
@@ -403,14 +519,105 @@ class TblJeeves:
         columnmask = ['bmpshortname', 'bmpid']
         newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
 
-        print(newtable.shape)
-        newtable.drop(['lrsegid', 'stateid', 'agencyid', 'loadsourceid', 'bmpid'], axis=1, inplace=True)
+        newtable.drop(['lrsegid', 'stateid', 'agencyid', 'loadsourceid', 'bmpid', 'unitid'], axis=1, inplace=True)
         newtable.rename({'landriversegment': 'GeographyName',
                          'stateabbreviation': 'StateAbbreviation',
                          'agencycode': 'AgencyCode',
                          'loadsource': 'LoadSourceGroup',
                          'bmpshortname': 'BmpShortName'}, inplace=True)
-        print(newtable.shape)
+
+        newtable["StateUniqueIdentifier"] = np.nan
+        newtable["Amount"] = 100
+        newtable["Unit"] = 'Percent'
+
+        return newtable
+
+    def translate_scabidtable_to_scabnametable(self, scabidtable=None):
+        newtable = scabidtable.copy()
+
+        # Get relevant source data tables
+        TblCounty = self.source.TblCounty
+        TblAnimalGroup = self.source.TblAnimalGroup
+        TblAgency = self.source.TblAgency
+        TblLoadSource = self.source.TblLoadSource
+        TblBmp = self.source.TblBmp
+
+        # Translate countyid to GeographyName (FIPS) and add stateabbreviation
+        columnmask = ['countyid', 'stateabbreviation', 'fips']
+        newtable = TblCounty.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to Agency codes
+        columnmask = ['agencycode', 'agencyid']
+        newtable = TblAgency.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to LoadSource names
+        columnmask = ['loadsource', 'loadsourceid']
+        newtable = TblLoadSource.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to BMP names
+        columnmask = ['bmpshortname', 'bmpid']
+        newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to AnimalGroup names
+        columnmask = ['animalgroupid', 'animalgroup']
+        newtable = TblAnimalGroup.loc[:, columnmask].merge(newtable, how='inner')
+
+        newtable.drop(['countyid', 'agencyid', 'loadsourceid', 'bmpid',
+                       'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
+        newtable.rename({'fips': 'GeographyName',
+                         'stateabbreviation': 'StateAbbreviation',
+                         'agencycode': 'AgencyCode',
+                         'loadsource': 'LoadSourceGroup',
+                         'bmpshortname': 'BmpShortName',
+                         'animalgroup': 'AnimalGroup'}, inplace=True)
+
+        newtable["StateUniqueIdentifier"] = np.nan
+        newtable["Amount"] = 100
+        newtable["Unit"] = 'Percent'
+
+        return newtable
+
+    def translate_sftabidtable_to_sftabnametable(self, sftabidtable=None):
+        newtable = sftabidtable.copy()
+
+        # Get relevant source data tables
+        TblCounty = self.source.TblCounty
+        TblAnimalGroup = self.source.TblAnimalGroup
+        TblAgency = self.source.TblAgency
+        TblLoadSource = self.source.TblLoadSource
+        TblBmp = self.source.TblBmp
+
+        # Translate countyid to FIPSFrom and then FIPSTo (and add stateabbreviation)
+        columnmask = ['countyid', 'stateabbreviation', 'fips']
+        newtable = TblCounty.loc[:, columnmask].merge(newtable, how='inner',
+                                                      left_on='countyid',
+                                                      right_on='countyidFrom')
+        newtable.drop(['countyid', 'countyidFrom'], axis=1, inplace=True)
+        newtable.rename(columns={'fips': 'FIPSFrom'}, inplace=True)
+
+        columnmask = ['countyid', 'fips']
+        newtable = TblCounty.loc[:, columnmask].merge(newtable, how='inner',
+                                                      left_on='countyid',
+                                                      right_on='countyidTo')
+        newtable.drop(['countyid', 'countyidTo'], axis=1, inplace=True)
+        newtable.rename(columns={'fips': 'FIPSTo'}, inplace=True)
+
+        # Translate to Agency codes
+        columnmask = ['agencycode', 'agencyid']
+        newtable = TblAgency.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to LoadSource names
+        columnmask = ['loadsource', 'loadsourceid']
+        newtable = TblLoadSource.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to BMP names
+        columnmask = ['bmpshortname', 'bmpid']
+        newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to AnimalGroup names
+        columnmask = ['animalgroupid', 'animalgroup']
+        newtable = TblAnimalGroup.loc[:, columnmask].merge(newtable, how='inner')
+
+        newtable.drop(['agencyid', 'loadsourceid', 'bmpid',
+                       'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
+        newtable.rename({'stateabbreviation': 'StateAbbreviation',
+                         'agencycode': 'AgencyCode',
+                         'loadsource': 'LoadSourceGroup',
+                         'bmpshortname': 'BmpShortName',
+                         'animalgroup': 'AnimalGroup'}, inplace=True)
 
         newtable["StateUniqueIdentifier"] = np.nan
         newtable["Amount"] = 100
