@@ -187,39 +187,39 @@ class OptCase:
         bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
         removaltotal += mask.sum()
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove "Non-Urban Stream Restoration Protocol" BMP
         bmpnametoremove = 'NonUrbStrmRestPro'
         bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
         removaltotal += mask.sum()
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
         bmpnametoremove = 'RR'
         bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
         removaltotal += mask.sum()
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         bmpnametoremove = 'ST'
         bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
         removaltotal += mask.sum()
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove Policy BMPs
         bmpids = self.queries.bmpids_from_categoryids(categoryids=[4])
         mask = pd.Series(self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist()))
         # TODO: replace the above '4' with a call that gets the number from a string such as 'Land Policy BMPs'
         self.land_slabidtable = self.land_slabidtable[~self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist())]
-        print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
         removaltotal += mask.sum()
+        print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
 
         newrowcnt, newcolcnt = self.land_slabidtable.shape
         print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
