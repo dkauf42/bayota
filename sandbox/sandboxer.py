@@ -61,7 +61,7 @@ def main(numinstances=1, testcase=None):
             optcase.proceed_from_geography_to_decision_space()
 
         elif testcase == 3:
-            print('\nTEST CASE 2 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
+            print('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
             # TODO: make this work with the sqltables!
             """For Testing Purposes"""
             optcase.name = 'TestOne'
