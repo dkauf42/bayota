@@ -103,8 +103,9 @@ class OptCase:
         self.qaqc_animal_decisionspace()
         self.qaqc_manure_decisionspace()
         # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
-        self.create_hardboundtables()
+        self.populate_hardbounds()
 
+    # Decision space generation methods
     def populate_geography_from_scale_and_areas(self):
         self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
                                                                        areanames=self.geoareanames)
@@ -167,6 +168,13 @@ class OptCase:
         self.manure_sftabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithids.csv'))
         self.manure_sftabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithnames.csv'))
 
+    def populate_hardbounds(self):
+        # TODO: code this
+        self.land_decisionspace = self.queries.appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
+
+        pass
+
+    # QA/QC the decision space
     def qaqc_land_decisionspace(self):
         print('OptCase.qaqc_land_decisionspace(): QA/QCing...')
         print('Decision Space Table size: %s' % (self.land_slabidtable.shape, ))
@@ -236,33 +244,13 @@ class OptCase:
         self.lrsegids = None
         #self.get_geographies_included(areanames=self.geoareanames)
 
-    def create_hardboundtables(self):
-        # TODO: code this
-        self.land_decisionspace = self.queries.appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
-
-        pass
-
     def save_freeparamgrps(self, freeparamgrp_results):
         self.agencyids = freeparamgrp_results.agencies
         self.sectorids = freeparamgrp_results.sectors
 
     def generate_scenario(self, scenariotype=''):
+        # TODO: code this (randomization for each variable, and then writing to file)
         generator = ScenarioGenerator()
         if scenariotype == 'random':
             scenario = generator.randomize_belowhub()
-
         # Scenario is written to file.
-
-        # TODO: code this
-        pass
-        # self.pmatrices['ndas'].randomize_belowhub()
-        # self.pmatrices['animal'].randomize_belowhub()
-        # self.pmatrices['manure'].randomize_belowhub()
-        #
-        # # write possibility/parameter matrices to file
-        # self.pmatrices['ndas'].eligibleparametermatrix.\
-        #     to_csv(os.path.join(writedir, 'testwrite_Scenario_possmatrix_ndas.csv'))
-        # self.pmatrices['animal'].eligibleparametermatrix.\
-        #     to_csv(os.path.join(writedir, 'testwrite_Scenario_possmatrix_anim.csv'))
-        # self.pmatrices['manure'].eligibleparametermatrix.\
-        #     to_csv(os.path.join(writedir, 'testwrite_Scenario_possmatrix_manu.csv'))
