@@ -2,7 +2,7 @@
 import os
 import pandas as pd
 
-directory = os.path.abspath('../../data_sql/test_source/')
+directory = os.path.abspath('../../data/test_source/')
 
 for filename in sorted(os.listdir(directory)):
     if filename.endswith(".csv"):
