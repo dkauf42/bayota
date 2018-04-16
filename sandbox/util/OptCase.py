@@ -11,6 +11,8 @@ class OptCase:
     def __init__(self):
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
+        self.logtostdout = False
+
         self.queries = None
 
         self.name = None
@@ -176,8 +178,10 @@ class OptCase:
 
     # QA/QC the decision space
     def qaqc_land_decisionspace(self):
-        print('OptCase.qaqc_land_decisionspace(): QA/QCing...')
-        print('Decision Space Table size: %s' % (self.land_slabidtable.shape, ))
+        if self.logtostdout:
+            print('OptCase.qaqc_land_decisionspace(): QA/QCing...')
+            print('Decision Space Table size: %s' % (self.land_slabidtable.shape, ))
+
         origrowcnt, origcolcnt = self.land_slabidtable.shape
 
         removaltotal = 0
@@ -188,7 +192,8 @@ class OptCase:
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove "Non-Urban Stream Restoration Protocol" BMP
         bmpnametoremove = 'NonUrbStrmRestPro'
@@ -196,7 +201,8 @@ class OptCase:
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
         bmpnametoremove = 'RR'
@@ -204,14 +210,16 @@ class OptCase:
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         bmpnametoremove = 'ST'
         bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove Policy BMPs
         bmpids = self.queries.bmpids_from_categoryids(categoryids=[4])
@@ -219,11 +227,13 @@ class OptCase:
         # TODO: replace the above '4' with a call that gets the number from a string such as 'Land Policy BMPs'
         self.land_slabidtable = self.land_slabidtable[~self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist())]
         removaltotal += mask.sum()
-        print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
 
         newrowcnt, newcolcnt = self.land_slabidtable.shape
-        print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
-              (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
+        if self.logtostdout:
+            print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
+                  (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
     def qaqc_animal_decisionspace(self):
         pass
