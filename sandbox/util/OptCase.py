@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from sandbox.tables.TblJeeves import TblJeeves
-from sandbox.util.ScenarioGenerator import ScenarioGenerator
+from sandbox.util.ScenarioMaker import ScenarioMaker
 from sandbox.__init__ import get_outputdir
 
 writedir = get_outputdir()
@@ -171,8 +171,8 @@ class OptCase:
     def populate_hardbounds(self):
         # TODO: code this
         self.land_decisionspace = self.queries.appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
-
-        pass
+        self.animal_decisionspace = self.queries.appendBounds_to_animal_scabidtable(scabidtable=self.animal_scabidtable)
+        self.manure_decisionspace = self.queries.appendBounds_to_manure_sftabidtable(sftabidtable=self.manure_sftabidtable)
 
     # QA/QC the decision space
     def qaqc_land_decisionspace(self):
@@ -231,6 +231,7 @@ class OptCase:
     def qaqc_manure_decisionspace(self):
         pass
 
+    # hooks for graphical interface get/put
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name
         self.description = metadata_results.description
@@ -248,9 +249,19 @@ class OptCase:
         self.agencyids = freeparamgrp_results.agencies
         self.sectorids = freeparamgrp_results.sectors
 
+    # Generating scenario(s) from the decision space
     def generate_scenario(self, scenariotype=''):
         # TODO: code this (randomization for each variable, and then writing to file)
-        generator = ScenarioGenerator()
+        scenario = ScenarioMaker()
+        scenario.initialize_from_decisionspace(land=self.land_decisionspace,
+                                               animal=self.animal_decisionspace,
+                                               manure=self.manure_decisionspace)
         if scenariotype == 'random':
-            scenario = generator.randomize_belowhub()
+            scenario.randomize_betweenbounds()
+        else:
+            scenario.randomize_betweenbounds()
+
         # Scenario is written to file.
+        scenario.land.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.csv'))
+        scenario.animal.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.csv'))
+        scenario.manure.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.csv'))
