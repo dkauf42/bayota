@@ -90,6 +90,19 @@ class OptCase:
     def set_geography(self, geotable=None):
         self.lrsegids = geotable
 
+    def proceed_from_geography_to_decision_space(self):
+        # Metadata
+        self.populate_geography_from_scale_and_areas()
+        self.populate_agencies_from_geography()
+        self.populate_sectors()
+        self.populate_loadsources()
+        # BMPs
+        self.populate_land_bmps()
+        self.populate_animal_bmps()
+        self.populate_manure_bmps()
+        # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
+        self.create_hardboundtables()
+
     def populate_geography_from_scale_and_areas(self):
         self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
                                                                        areanames=self.geoareanames)
