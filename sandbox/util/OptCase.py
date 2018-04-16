@@ -91,15 +91,16 @@ class OptCase:
         self.lrsegids = geotable
 
     def proceed_from_geography_to_decision_space(self):
-        # Metadata
+        # Metadata to BMPs
         self.populate_geography_from_scale_and_areas()
         self.populate_agencies_from_geography()
         self.populate_sectors()
         self.populate_loadsources()
-        # BMPs
-        self.populate_land_bmps()
-        self.populate_animal_bmps()
-        self.populate_manure_bmps()
+        self.populate_bmps()
+        # QA/QC tables by removing unnecessary BMPs
+        self.qaqc_land_decisionspace()
+        self.qaqc_animal_decisionspace()
+        self.qaqc_manure_decisionspace()
         # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
         self.create_hardboundtables()
 
@@ -127,43 +128,99 @@ class OptCase:
         # self.source_lrseg_agency_table.to_csv(os.path.join(writedir, 'testwrite_lalidtable.csv'))
         # self.source_county_agency_table.to_csv(os.path.join(writedir, 'testwrite_lacidtable.csv'))
 
-    def populate_land_bmps(self):
-        # Get BMP IDs
+    def populate_bmps(self):
+        """ Append the IDs for land, animal, and manure BMPs to the decision space tables
+        """
+        """ LAND BMPs """
+        # get IDs
         self.land_slabidtable = self.queries.\
             land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.
                                                            source_lrseg_agency_table)
-        # Translate BMP IDs to Names
-        self.land_slabnametable = self.queries.\
-            translate_slabidtable_to_slabnametable(self.land_slabidtable)
-        # Write Table to File
+        # Translate to names
+        self.land_slabnametable = self.queries.translate_slabidtable_to_slabnametable(self.land_slabidtable)
+        # Write to file
         self.land_slabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithids.csv'))
         self.land_slabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithnames.csv'))
 
-    def populate_animal_bmps(self):
-        # Get BMP IDs
+        """ ANIMAL BMPs """
+        # get IDs
         self.animal_scabidtable = \
             self.queries.animal_scabidtable_from_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.
                                                                            source_county_agency_table,
                                                                            baseconditionid=self.baseconditionid)
-        # Translate BMP IDs to Names
-        self.animal_scabnametable = \
-            self.queries.translate_scabidtable_to_scabnametable(self.animal_scabidtable)
-        # Write Table to File
+        # Translate to names
+        self.animal_scabnametable = self.queries.translate_scabidtable_to_scabnametable(self.animal_scabidtable)
+        # Write to file
         self.animal_scabidtable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithids.csv'))
         self.animal_scabnametable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithnames.csv'))
 
-    def populate_manure_bmps(self):
-        # Get BMP IDs
+        """ MANURE BMPs """
+        # get IDs
         self.manure_sftabidtable = \
             self.queries.manure_sftabidtable_from_SourceFromToAgencyIDtable(SourceCountyAgencyIDtable=self.
                                                                             source_county_agency_table,
                                                                             baseconditionid=self.baseconditionid)
-        # Translate BMP IDs to Names
-        self.manure_sftabnametable = \
-            self.queries.translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
-        # Write Table to File
+        # Translate to names
+        self.manure_sftabnametable = self.queries.translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
+        # Write to file
         self.manure_sftabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithids.csv'))
         self.manure_sftabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithnames.csv'))
+
+    def qaqc_land_decisionspace(self):
+        print('OptCase.qaqc_land_decisionspace(): QA/QCing...')
+        print('Decision Space Table size: %s' % (self.land_slabidtable.shape, ))
+        origrowcnt, origcolcnt = self.land_slabidtable.shape
+
+        removaltotal = 0
+
+        # Remove "Urban Stream Restoration Protocol" BMP
+        bmpnametoremove = 'UrbStrmRestPro'
+        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
+        self.land_slabidtable = self.land_slabidtable[~mask]
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        removaltotal += mask.sum()
+
+        # Remove "Non-Urban Stream Restoration Protocol" BMP
+        bmpnametoremove = 'NonUrbStrmRestPro'
+        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
+        self.land_slabidtable = self.land_slabidtable[~mask]
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        removaltotal += mask.sum()
+
+        # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
+        bmpnametoremove = 'RR'
+        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
+        self.land_slabidtable = self.land_slabidtable[~mask]
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        removaltotal += mask.sum()
+
+        bmpnametoremove = 'ST'
+        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
+        self.land_slabidtable = self.land_slabidtable[~mask]
+        print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        removaltotal += mask.sum()
+
+        # Remove Policy BMPs
+        bmpids = self.queries.bmpids_from_categoryids(categoryids=[4])
+        mask = pd.Series(self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist()))
+        # TODO: replace the above '4' with a call that gets the number from a string such as 'Land Policy BMPs'
+        self.land_slabidtable = self.land_slabidtable[~self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist())]
+        print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
+        removaltotal += mask.sum()
+
+        newrowcnt, newcolcnt = self.land_slabidtable.shape
+        print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
+              (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
+
+    def qaqc_animal_decisionspace(self):
+        pass
+
+    def qaqc_manure_decisionspace(self):
+        pass
 
     def save_metadata(self, metadata_results):
         self.name = metadata_results.name
@@ -180,7 +237,7 @@ class OptCase:
 
     def create_hardboundtables(self):
         # TODO: code this
-        self.land_decisionspace = self.queries.appendBounds_to_land_slabidtable(sladidtable=self.land_slabidtable)
+        self.land_decisionspace = self.queries.appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
 
         pass
 

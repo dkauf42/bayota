@@ -26,24 +26,13 @@ class TddForOptCase(unittest.TestCase):
         cls.oc.geoscalename = 'County'
         cls.oc.geoareanames = ['Adams, PA']
 
-        cls.oc.populate_geography_from_scale_and_areas()
-        cls.oc.populate_agencies_from_geography()
-        cls.oc.populate_sectors()
-        cls.oc.populate_loadsources()
-
-        cls.oc.populate_land_bmps()
-        cls.oc.populate_animal_bmps()
+        cls.oc.proceed_from_geography_to_decision_space()
 
         pd.Series(cls.oc.land_slabnametable.loadsource.unique()).to_csv(os.path.join(writedir, 'testwrite_uniqueloadsources.csv'))
         pd.Series(cls.oc.land_slabnametable.bmpshortname.unique()).to_csv(os.path.join(writedir, 'testwrite_uniquebmpshortnames.csv'))
 
         cls.oc.land_slabidtable.to_csv(os.path.join(writedir, 'testwrite_lalbidtable.csv'))
         cls.oc.land_slabnametable.to_csv(os.path.join(writedir, 'testwrite_lalbnametable.csv'))
-
-        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        cls.oc.generate_emptyparametermatrices()
-        cls.oc.mark_eligibility()
-        cls.oc.generate_boundsmatrices()
 
     def test_sectors_list_is_correct(self):
         self.assertSequenceEqual(self.oc.sectorids,

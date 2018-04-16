@@ -349,8 +349,22 @@ class TblJeeves:
 
     # BMP Methods
     def all_bmpnames(self):
-        TblBmp = self.source.TblBmp  # get relevant source data
+        TblBmp = self.source.TblBmp  # get relevant source data]
         return TblBmp.loc[:, 'bmpshortname']
+
+    def single_bmpid_from_shortname(self, bmpshortname):
+        TblBmp = self.source.TblBmp  # get relevant source data
+        return TblBmp['bmpid'][TblBmp['bmpshortname'] == bmpshortname].tolist()
+
+    def bmpids_from_categoryids(self, categoryids):
+        if not isinstance(categoryids, pd.DataFrame):
+            categoryids = pd.DataFrame(categoryids, columns=['bmpcategoryid'])
+
+        TblBmp = self.source.TblBmp  # get relevant source data
+        columnmask = ['bmpcategoryid', 'bmpid']
+        tblsubset = TblBmp.loc[:, columnmask].merge(categoryids, how='inner')
+
+        return tblsubset.loc[:, ['bmpid']]
 
     def land_slabidtable_from_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
         TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
