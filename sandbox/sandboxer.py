@@ -52,10 +52,9 @@ def main(numinstances=1, testcase=None):
             optcase.populate_animal_bmps()
             optcase.populate_manure_bmps()
 
-            # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-            optcase.generate_emptyparametermatrices()
-            optcase.mark_eligibility()
-            optcase.generate_boundsmatrices()
+            # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
+            optcase.create_hardboundtables()
+
         elif testcase == 2:
             print('\nTEST CASE 2 : No GUI; 2 Counties: ("Adams, PA" and "Anne Arundel, MD")\n')
             # TODO: make this work with the sqltables!
@@ -78,10 +77,9 @@ def main(numinstances=1, testcase=None):
             optcase.populate_animal_bmps()
             optcase.populate_manure_bmps()
 
-            # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-            optcase.generate_emptyparametermatrices()
-            optcase.mark_eligibility()
-            optcase.generate_boundsmatrices()
+            # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
+            optcase.create_hardboundtables()
+
         elif testcase == 3:
             print('\nTEST CASE 2 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
             # TODO: make this work with the sqltables!
@@ -104,10 +102,9 @@ def main(numinstances=1, testcase=None):
             optcase.populate_animal_bmps()
             optcase.populate_manure_bmps()
 
-            # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-            optcase.generate_emptyparametermatrices()
-            optcase.mark_eligibility()
-            optcase.generate_boundsmatrices()
+            # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
+            optcase.create_hardboundtables()
+
         elif not testcase:
             # Run the GUI
             root = tk.Tk()  # Create a tkinter window

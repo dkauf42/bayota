@@ -489,11 +489,22 @@ class TblJeeves:
 
         tblsubset.drop(['countyid'], axis=1, inplace=True)
 
-        print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()7:')
-        print(tblsubset)
+        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()7:')
+        # print(tblsubset)
 
         return tblsubset
 
+    # Hard Upper/Lower Bounds Methods
+    def appendBounds_to_land_slabidtable(self, slabidtable=None):
+        pass
+
+    def appendBounds_to_animal_scabidtable(self, scabidtable=None):
+        pass
+
+    def appendBounds_to_manure_sftabidtable(self, sftabidtable=None):
+        pass
+
+    # Translation methods (from IDs to NAMEs)
     def translate_slabidtable_to_slabnametable(self, slabidtable=None):
         newtable = slabidtable.copy()
 
