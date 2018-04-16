@@ -45,7 +45,7 @@ class TddForTables(unittest.TestCase):
 
     def test_agencies_query_from_lrsegs(self):
         self.assertIn('NONFED',
-                      self.jeeves.agencies_from_lrsegs(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())
+                      self.jeeves.agencies_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())
 
     def test_sector_names_query(self):
         self.assertIn('Agriculture',

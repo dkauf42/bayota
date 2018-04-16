@@ -240,7 +240,7 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['agencyid']]
 
-    def agencies_from_lrsegs(self, lrsegnames=None):
+    def agencies_from_lrsegnames(self, lrsegnames=None):
         if not isinstance(lrsegnames, list):
             lrsegnames = lrsegnames.tolist()
 
@@ -248,6 +248,20 @@ class TblJeeves:
 
         tblwithlrsegids = self.lrsegids_from(lrsegnames=lrsegnames)
         tblwithagencyids = self.agencyids_from_lrsegids(lrsegids=tblwithlrsegids)
+
+        columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
+        tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
+
+        return tblsubset.loc[:, ['agencycode']]
+
+    def agencies_from_lrsegids(self, lrsegids=None):
+        TblAgency = self.source.TblAgency  # get relevant source data
+
+        print('TblJeeves.agencies_from_lrsegids():')
+        print(lrsegids)
+        print(type(lrsegids))
+
+        tblwithagencyids = self.agencyids_from_lrsegids(lrsegids=lrsegids)
 
         columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
         tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
