@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from sandbox.tables.TblJeeves import TblJeeves
+from sandbox.util.ScenarioGenerator import ScenarioGenerator
 from sandbox.__init__ import get_outputdir
 
 writedir = get_outputdir()
@@ -245,7 +246,13 @@ class OptCase:
         self.agencyids = freeparamgrp_results.agencies
         self.sectorids = freeparamgrp_results.sectors
 
-    def scenario_randomizer(self):
+    def generate_scenario(self, scenariotype=''):
+        generator = ScenarioGenerator()
+        if scenariotype == 'random':
+            scenario = generator.randomize_belowhub()
+
+        # Scenario is written to file.
+
         # TODO: code this
         pass
         # self.pmatrices['ndas'].randomize_belowhub()

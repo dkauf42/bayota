@@ -87,10 +87,11 @@ def main(numinstances=1, testcase=None):
             raise ValueError('Unexpected test case argument')
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
-        optcase.scenario_randomizer()
+        scenario = optcase.generate_scenario(scenariotype='random')
 
-        inputobj = InputsToCast(optcase.pmatrices, optcase=optcase)
-        inputobj.matrix_to_table()
+        # Write scenario tables to file.
+        #inputobj = InputsToCast(optcase.pmatrices, optcase=optcase)
+        #inputobj.matrix_to_table()
         print('<Runner Loading Complete>')
         print("Loading time", timeit.default_timer() - start_time)
         print('<DONE>')
