@@ -59,21 +59,25 @@ class TddForTables(unittest.TestCase):
         self.assertIn('County',
                       self.jeeves.all_geotypes().geographytype.tolist())
 
-    def test_geo_names_query_for_COUNTY_contains_ANNEARUNDEL(self):
+    def test_geo_names_query_using_ID_for_COUNTYID_contains_ANNEARUNDEL(self):
         self.assertIn('Anne Arundel, MD',
-                      self.jeeves.all_geonames_of_geotype(geotype=['County']).tolist())
+                      self.jeeves.geonames_from_geotypeid(geotype=[2]).tolist())
 
-    def test_geo_names_query_for_COUNTYID_contains_ANNEARUNDEL(self):
+    def test_geo_names_query_using_ID_raises_error_when_passed_a_name(self):
+        self.assertRaises(ValueError,
+                          self.jeeves.geonames_from_geotypeid, ['County'])
+
+    def test_geo_names_query_using_name_for_COUNTYID_contains_ANNEARUNDEL(self):
         self.assertIn('Anne Arundel, MD',
-                      self.jeeves.all_geonames_of_geotype(geotype=[2]).tolist())
+                      self.jeeves.geonames_from_geotypename(geotype=['County']).tolist())
 
     def test_geo_names_query_raises_error_when_specified_scale_does_not_exist(self):
         self.assertRaises(ValueError,
-                          self.jeeves.all_geonames_of_geotype, ['MinorState'])
+                          self.jeeves.geonames_from_geotypeid, ['MinorState'])
 
     def test_geo_names_query_raises_error_when_no_scale_specified(self):
         self.assertRaises(ValueError,
-                          self.jeeves.all_geonames_of_geotype)
+                          self.jeeves.geonames_from_geotypeid)
 
     def test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY(self):
         self.assertIn('Legume Hay',

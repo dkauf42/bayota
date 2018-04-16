@@ -152,7 +152,7 @@ class MainWindow(tk.Frame):
                     self.save_constraints()
 
     def load_metadata_options(self):
-        self.metadataframe.load_options(self.queries.source)
+        self.metadataframe.load_options(self.queries)
 
     def save_metadata(self):
         print('mainwindow:save_metadata: saving metadata...')
