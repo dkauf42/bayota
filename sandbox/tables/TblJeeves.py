@@ -496,12 +496,21 @@ class TblJeeves:
 
     # Hard Upper/Lower Bounds Methods
     def appendBounds_to_land_slabidtable(self, slabidtable=None):
+        slabidtable['lowerbound'] = 0
+        slabidtable['upperbound'] = 100
+        # For Acres: Add all of the acres (across LoadSources) from "TblLandUsePreBmp"
         pass
 
     def appendBounds_to_animal_scabidtable(self, scabidtable=None):
+        scabidtable['lowerbound'] = 0
+        scabidtable['upperbound'] = 100
+        # For Animals: Add...?
         pass
 
     def appendBounds_to_manure_sftabidtable(self, sftabidtable=None):
+        sftabidtable['lowerbound'] = 0
+        sftabidtable['upperbound'] = 100
+        # For Dry_Tons_of_Stored_Manure: Add...?
         pass
 
     # Translation methods (from IDs to NAMEs)
