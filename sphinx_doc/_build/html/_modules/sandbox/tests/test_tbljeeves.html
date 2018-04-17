@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sandbox.tests.test_tbljeeves &mdash; OptSandbox 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="OptSandbox 0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="sandbox" href="../../sandbox.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> OptSandbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.html">sandbox package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.gui.html">sandbox.gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tables.html">sandbox.tables package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tests.html">sandbox.tests package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.util.html">sandbox.util package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">OptSandbox</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+          <li><a href="../../sandbox.html">sandbox</a> &raquo;</li>
+      
+    <li>sandbox.tests.test_tbljeeves</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sandbox.tests.test_tbljeeves</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="kn">from</span> <span class="nn">sandbox.tables.TblJeeves</span> <span class="kn">import</span> <span class="n">TblJeeves</span>
+
+
+<div class="viewcode-block" id="TddForTables"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables">[docs]</a><span class="k">class</span> <span class="nc">TddForTables</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TddForTables.setUpClass"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="c1"># Load the Source Data and Base Condition tables</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">jeeves</span> <span class="o">=</span> <span class="n">TblJeeves</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation">[docs]</a>    <span class="k">def</span> <span class="nf">test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">countyid_from_countystatestrs</span><span class="p">(</span><span class="n">getfrom</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Adams, PA&#39;</span><span class="p">,</span>
+                                                                         <span class="s1">&#39;Anne Arundel, MD&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">countyid</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_generic_lrsegid_query_returns_correct_from_countystatestrs"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_generic_lrsegid_query_returns_correct_from_countystatestrs">[docs]</a>    <span class="k">def</span> <span class="nf">test_generic_lrsegid_query_returns_correct_from_countystatestrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">lrsegids_from</span><span class="p">(</span><span class="n">countystatestrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Adams, PA&#39;</span><span class="p">,</span>
+                                                                 <span class="s1">&#39;Anne Arundel, MD&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">lrsegid</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_generic_lrsegid_query_returns_correct_from_lrsegnames"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_generic_lrsegid_query_returns_correct_from_lrsegnames">[docs]</a>    <span class="k">def</span> <span class="nf">test_generic_lrsegid_query_returns_correct_from_lrsegnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="mi">741</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">lrsegids_from</span><span class="p">(</span><span class="n">lrsegnames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;N42001PU2_2790_3290&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">lrsegid</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_generic_lrsegid_query_returns_correct_from_countyids"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_generic_lrsegid_query_returns_correct_from_countyids">[docs]</a>    <span class="k">def</span> <span class="nf">test_generic_lrsegid_query_returns_correct_from_countyids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">lrsegids_from</span><span class="p">(</span><span class="n">countyid</span><span class="o">=</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span><span class="o">.</span><span class="n">lrsegid</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_generic_lrsegid_query_raises_error_for_more_than_one_keyword_argument"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_generic_lrsegid_query_raises_error_for_more_than_one_keyword_argument">[docs]</a>    <span class="k">def</span> <span class="nf">test_generic_lrsegid_query_raises_error_for_more_than_one_keyword_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">lrsegids_from</span><span class="p">,</span>
+                          <span class="n">countystatestrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Adams, PA&#39;</span><span class="p">,</span> <span class="s1">&#39;Anne Arundel, MD&#39;</span><span class="p">],</span>
+                          <span class="n">lrsegnames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;N42001PU2_2790_3290&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_lrsegs_query_from_geoscale_with_names"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_lrsegs_query_from_geoscale_with_names">[docs]</a>    <span class="k">def</span> <span class="nf">test_lrsegs_query_from_geoscale_with_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;N42001PU2_2790_3290&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">lrsegnames_from</span><span class="p">(</span><span class="n">lrsegids</span><span class="o">=</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">lrsegids_from_geoscale_with_names</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="s1">&#39;County&#39;</span><span class="p">,</span>
+                                                                                                <span class="n">areanames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Adams, PA&#39;</span><span class="p">]</span>
+                                                                                                <span class="p">)</span>
+                                                  <span class="p">)</span><span class="o">.</span><span class="n">landriversegment</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                      <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_agencies_query_from_lrsegs"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_agencies_query_from_lrsegs">[docs]</a>    <span class="k">def</span> <span class="nf">test_agencies_query_from_lrsegs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;NONFED&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">agencies_from_lrsegnames</span><span class="p">(</span><span class="n">lrsegnames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;N42001PU2_2790_3290&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">agencycode</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_sector_names_query"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_sector_names_query">[docs]</a>    <span class="k">def</span> <span class="nf">test_sector_names_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;Agriculture&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">all_sector_names</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_agency_names_query"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_agency_names_query">[docs]</a>    <span class="k">def</span> <span class="nf">test_agency_names_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;NONFED&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">all_agency_names</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_geo_scale_query_contains_COUNTY"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_geo_scale_query_contains_COUNTY">[docs]</a>    <span class="k">def</span> <span class="nf">test_geo_scale_query_contains_COUNTY</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;County&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">all_geotypes</span><span class="p">()</span><span class="o">.</span><span class="n">geographytype</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_geo_names_query_for_COUNTY_contains_ANNEARUNDEL"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_geo_names_query_for_COUNTY_contains_ANNEARUNDEL">[docs]</a>    <span class="k">def</span> <span class="nf">test_geo_names_query_for_COUNTY_contains_ANNEARUNDEL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;Anne Arundel, MD&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">geonames_from_geotypeid</span><span class="p">(</span><span class="n">geotype</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;County&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_geo_names_query_for_COUNTYID_contains_ANNEARUNDEL"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_geo_names_query_for_COUNTYID_contains_ANNEARUNDEL">[docs]</a>    <span class="k">def</span> <span class="nf">test_geo_names_query_for_COUNTYID_contains_ANNEARUNDEL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;Anne Arundel, MD&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">geonames_from_geotypeid</span><span class="p">(</span><span class="n">geotype</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_geo_names_query_raises_error_when_specified_scale_does_not_exist"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_geo_names_query_raises_error_when_specified_scale_does_not_exist">[docs]</a>    <span class="k">def</span> <span class="nf">test_geo_names_query_raises_error_when_specified_scale_does_not_exist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">geonames_from_geotypeid</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;MinorState&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_geo_names_query_raises_error_when_no_scale_specified"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_geo_names_query_raises_error_when_no_scale_specified">[docs]</a>    <span class="k">def</span> <span class="nf">test_geo_names_query_raises_error_when_no_scale_specified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">geonames_from_geotypeid</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TddForTables.test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY"><a class="viewcode-back" href="../../../sandbox.tests.test_tbljeeves.html#sandbox.tests.test_tbljeeves.TddForTables.test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY">[docs]</a>    <span class="k">def</span> <span class="nf">test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;Legume Hay&#39;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">jeeves</span><span class="o">.</span><span class="n">loadsources_from_lrseg_agency_sector</span><span class="p">(</span><span class="n">lrsegs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;N42001PU2_2790_3290&#39;</span><span class="p">],</span>
+                                                                       <span class="n">agencies</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NONFED&#39;</span><span class="p">,</span> <span class="s1">&#39;FWS&#39;</span><span class="p">],</span>
+                                                                       <span class="n">sectors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Agriculture&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">loadsource</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                      <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Kaufman.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>TblLoader.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>TblLoader.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="kn">from</span> <span class="nn">tables.TblSourceData</span> <span class="kn">import</span> <span class="n">SourceData</span>
+<span class="kn">from</span> <span class="nn">tables.TblBaseCondition</span> <span class="kn">import</span> <span class="n">BaseCondition</span>
+<span class="kn">from</span> <span class="nn">tables.TblPreBmpLoadSourceNatural</span> <span class="kn">import</span> <span class="n">TblPreBmpLoadSourceNatural</span>
+<span class="kn">from</span> <span class="nn">tables.TblPreBmpLoadSourceDeveloped</span> <span class="kn">import</span> <span class="n">TblPreBmpLoadSourceDeveloped</span>
+<span class="kn">from</span> <span class="nn">tables.TblPreBmpLoadSourceAgriculture</span> <span class="kn">import</span> <span class="n">TblPreBmpLoadSourceAgriculture</span>
+<span class="kn">from</span> <span class="nn">tables.TblManureTonsProduced</span> <span class="kn">import</span> <span class="n">ManureTonsProduced</span>
+<span class="kn">from</span> <span class="nn">tables.TblSepticSystems</span> <span class="kn">import</span> <span class="n">TblSepticSystems</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TblLoader</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Objects that contain the BMP Source Data and Base Condition Data are loaded or generated.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <h2>Attributes</h2>
+<p>tempdir : <code>str</code>
+    location where table objects are written to file to speed up re-runs</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">=</span> <span class="s1">&#39;./temp/&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">srcdata</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basecond</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsnatural</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsdeveloped</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsagriculture</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsmanure</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsseptic</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_source_and_base_files</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">_load_source_and_base_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>BMP Source Data from the Excel Spreadsheet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">srcdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">+</span> <span class="s1">&#39;cast_opt_src.obj&#39;</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="n">SourceData</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Base Condition Data from the Excel Spreadsheet (which has Load Source acreage per LRS)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">basecond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">+</span> <span class="s1">&#39;cast_opt_base.obj&#39;</span><span class="p">,</span>
+                                              <span class="n">cls</span><span class="o">=</span><span class="n">BaseCondition</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>PreBmpLoadSourceNatural from the Excel Spreadsheet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">lsnatural</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">+</span> <span class="s1">&#39;cast_opt_loadsourcenatural.obj&#39;</span><span class="p">,</span>
+                                               <span class="n">cls</span><span class="o">=</span><span class="n">TblPreBmpLoadSourceNatural</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>PreBmpLoadSourceDeveloped from the Excel Spreadsheet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">lsdeveloped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">+</span> <span class="s1">&#39;cast_opt_loadsourcedeveloped.obj&#39;</span><span class="p">,</span>
+                                                 <span class="n">cls</span><span class="o">=</span><span class="n">TblPreBmpLoadSourceDeveloped</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>PreBmpLoadSourceAgriculture from the Excel Spreadsheet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">lsagriculture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">+</span> <span class="s1">&#39;cast_opt_loadsourceagriculture.obj&#39;</span><span class="p">,</span>
+                                                   <span class="n">cls</span><span class="o">=</span><span class="n">TblPreBmpLoadSourceAgriculture</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>ManureTonsProduced from the Excel Spreadsheet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">lsmanure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">+</span> <span class="s1">&#39;cast_opt_manuretonsproduced.obj&#39;</span><span class="p">,</span>
+                                              <span class="n">cls</span><span class="o">=</span><span class="n">ManureTonsProduced</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>SepticSystems from the Excel Spreadsheet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">lsseptic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">+</span> <span class="s1">&#39;cast_opt_septicsystems.obj&#39;</span><span class="p">,</span>
+                                              <span class="n">cls</span><span class="o">=</span><span class="n">TblSepticSystems</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Convert an AgencyCode to its Agency Name</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_or_generate</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">savename</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">savename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">tableobj</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tableobj</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>  <span class="c1"># generate data table object if none exists</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">savename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tableobj</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tableobj</span>
+
+    <span class="k">def</span> <span class="nf">agencytranslate_fromcodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">codes</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Example:
+    &gt;&gt; .agencytranslate('FWS')
+    returns 'US Fish and Wildlife Service'</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">srcdata</span><span class="o">.</span><span class="n">agencies</span>
+        <span class="n">dict_agencycodekeys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">AgencyCode</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">Agency</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">codes</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">dict_agencycodekeys</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Convert an Agency Name to its AgencyCode</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">agencytranslate_fromnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Example:
+    &gt;&gt; .agencytranslate('Department of Defense')
+    returns 'DOD'</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">srcdata</span><span class="o">.</span><span class="n">agencies</span>
+        <span class="n">dict_agencykeys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Agency</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">AgencyCode</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">names</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">dict_agencykeys</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,336 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sandbox.gui.toplevelframes.metadata_frame &mdash; OptSandbox 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="OptSandbox 0.1 documentation" href="../../../../index.html"/>
+        <link rel="up" title="sandbox" href="../../../sandbox.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> OptSandbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sandbox.html">sandbox package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sandbox.gui.html">sandbox.gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sandbox.tables.html">sandbox.tables package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sandbox.tests.html">sandbox.tests package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sandbox.util.html">sandbox.util package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../../index.html">OptSandbox</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      
+          <li><a href="../../../sandbox.html">sandbox</a> &raquo;</li>
+      
+    <li>sandbox.gui.toplevelframes.metadata_frame</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sandbox.gui.toplevelframes.metadata_frame</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="kn">as</span> <span class="nn">tk</span>
+<span class="kn">import</span> <span class="nn">tkinter.ttk</span> <span class="kn">as</span> <span class="nn">ttk</span>
+<span class="kn">from</span> <span class="nn">sandbox.gui.useframes.dualbox</span> <span class="kn">import</span> <span class="n">DualBox</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+
+<div class="viewcode-block" id="MetadataFrame"><a class="viewcode-back" href="../../../../sandbox.gui.toplevelframes.metadata_frame.html#sandbox.gui.toplevelframes.metadata_frame.MetadataFrame">[docs]</a><span class="k">class</span> <span class="nc">MetadataFrame</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The frame to hold instance metadata options for the optimization configuration window&quot;&quot;&quot;</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># Use superclass __init__ to create the actual frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_optname</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_optdesc</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_baseyr</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_basecond</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_wastewtr</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_costprofile</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoareabox</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closedbyuser</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_subframes</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">qrysource</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="MetadataFrame.create_subframes"><a class="viewcode-back" href="../../../../sandbox.gui.toplevelframes.metadata_frame.html#sandbox.gui.toplevelframes.metadata_frame.MetadataFrame.create_subframes">[docs]</a>    <span class="k">def</span> <span class="nf">create_subframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">minsize</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">minsize</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">minsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">minsize</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Text Labels</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Optimization Name&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Base Year&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Base Condition&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Wastewater Data&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cost Profile&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Geographic Scale&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+
+        <span class="c1"># Text Entry Boxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_optname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_textentry</span><span class="p">(</span><span class="n">defaultvalue</span><span class="o">=</span><span class="s1">&#39;TestOne&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_optname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_optdesc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_textentry</span><span class="p">(</span><span class="n">defaultvalue</span><span class="o">=</span><span class="s1">&#39;TestOneDescription&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_optdesc</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+
+        <span class="c1"># Drop Down Menus (Base Year)</span>
+        <span class="n">options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N/A&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_baseyr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_dropdown</span><span class="p">(</span><span class="n">options_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_baseyr</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_baseyr</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># (Base Condition)</span>
+        <span class="n">options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N/A&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_basecond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_dropdown</span><span class="p">(</span><span class="n">options_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_basecond</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_basecond</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># (Wastewater Data)</span>
+        <span class="n">options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N/A&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_wastewtr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_dropdown</span><span class="p">(</span><span class="n">options_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_wastewtr</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_wastewtr</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># (Cost Profile)</span>
+        <span class="n">options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N/A&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_costprofile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_dropdown</span><span class="p">(</span><span class="n">options_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_costprofile</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_costprofile</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># (Geographic Scale)</span>
+        <span class="n">options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N/A&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_dropdown</span><span class="p">(</span><span class="n">options_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_geoareabox_options</span><span class="p">)</span>
+
+        <span class="c1"># Dual Listbox</span>
+        <span class="n">options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;N/A&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoareabox</span> <span class="o">=</span> <span class="n">DualBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoareabox</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Save Button</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Submit&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataFrame.load_options"><a class="viewcode-back" href="../../../../sandbox.gui.toplevelframes.metadata_frame.html#sandbox.gui.toplevelframes.metadata_frame.MetadataFrame.load_options">[docs]</a>    <span class="k">def</span> <span class="nf">load_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qrysource</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qrysource</span> <span class="o">=</span> <span class="n">qrysource</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_baseyr</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Select Base Year&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">qrysource</span><span class="o">.</span><span class="n">get_base_year_names</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_baseyr</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_basecond</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Select Base Condition&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">qrysource</span><span class="o">.</span><span class="n">get_base_condition_names</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_basecond</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_wastewtr</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Select Wastewater Data Set&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">qrysource</span><span class="o">.</span><span class="n">get_wastewaterdata_names</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_wastewtr</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_costprofile</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Select Cost Profile&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">qrysource</span><span class="o">.</span><span class="n">get_costprofile_names</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_costprofile</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Select Geographic Scale&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">qrysource</span><span class="o">.</span><span class="n">all_geotypes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span><span class="o">.</span><span class="n">current</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_geoareabox_options</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MetadataFrame.update_geoareabox_options"><a class="viewcode-back" href="../../../../sandbox.gui.toplevelframes.metadata_frame.html#sandbox.gui.toplevelframes.metadata_frame.MetadataFrame.update_geoareabox_options">[docs]</a>    <span class="k">def</span> <span class="nf">update_geoareabox_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">geoscale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">areas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qrysource</span><span class="o">.</span><span class="n">geonames_from_geotypeid</span><span class="p">(</span><span class="n">geotype</span><span class="o">=</span><span class="n">geoscale</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoareabox</span><span class="o">.</span><span class="n">set_new_left_side_items</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataFrame.get_results"><a class="viewcode-back" href="../../../../sandbox.gui.toplevelframes.metadata_frame.html#sandbox.gui.toplevelframes.metadata_frame.MetadataFrame.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Optmeta</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;name description baseyear basecond &#39;</span>
+                                         <span class="s1">&#39;wastewater costprofile &#39;</span>
+                                         <span class="s1">&#39;scale area&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">Optmeta</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entry_optname</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                               <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entry_optdesc</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                               <span class="n">baseyear</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropdown_baseyr</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                               <span class="n">basecond</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropdown_basecond</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                               <span class="n">wastewater</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropdown_wastewtr</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                               <span class="n">costprofile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropdown_costprofile</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                               <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropdown_geoscale</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                               <span class="n">area</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geoareabox</span><span class="o">.</span><span class="n">get_selection</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span></div>
+
+<div class="viewcode-block" id="MetadataFrame.my_dropdown"><a class="viewcode-back" href="../../../../sandbox.gui.toplevelframes.metadata_frame.html#sandbox.gui.toplevelframes.metadata_frame.MetadataFrame.my_dropdown">[docs]</a>    <span class="k">def</span> <span class="nf">my_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optionslist</span><span class="p">):</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">optionslist</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataFrame.my_textentry"><a class="viewcode-back" href="../../../../sandbox.gui.toplevelframes.metadata_frame.html#sandbox.gui.toplevelframes.metadata_frame.MetadataFrame.my_textentry">[docs]</a>    <span class="k">def</span> <span class="nf">my_textentry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaultvalue</span><span class="p">):</span>
+        <span class="n">entry_box</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">foreground</span><span class="o">=</span><span class="s1">&#39;light gray&#39;</span><span class="p">)</span>
+        <span class="n">entry_box</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">defaultvalue</span><span class="p">)</span>
+
+        <span class="n">entry_box</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;FocusIn&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">entry_box</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">))</span>
+        <span class="n">entry_box</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;FocusIn&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">entry_box</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">foreground</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">entry_box</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Kaufman.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

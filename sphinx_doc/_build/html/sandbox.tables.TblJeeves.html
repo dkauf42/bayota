@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sandbox.tables.TblJeeves module &mdash; OptSandbox 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="OptSandbox 0.1 documentation" href="index.html"/>
+        <link rel="up" title="sandbox.tables package" href="sandbox.tables.html"/>
+        <link rel="next" title="sandbox.tests package" href="sandbox.tests.html"/>
+        <link rel="prev" title="sandbox.tables package" href="sandbox.tables.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OptSandbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="sandbox.html">sandbox package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sandbox.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sandbox.gui.html">sandbox.gui package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sandbox.sqltables.html">sandbox.sqltables package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="sandbox.tables.html">sandbox.tables package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="sandbox.tables.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sandbox.tables.html#module-sandbox.tables">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sandbox.tests.html">sandbox.tests package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sandbox.util.html">sandbox.util package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sandbox.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sandbox.html#module-sandbox">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sandbox.gui.html">sandbox.gui package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="sandbox.tables.html">sandbox.tables package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sandbox.tables.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">sandbox.tables.TblJeeves module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sandbox.tables.html#module-sandbox.tables">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sandbox.tests.html">sandbox.tests package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sandbox.util.html">sandbox.util package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">OptSandbox</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="sandbox.html">sandbox package</a> &raquo;</li>
+      
+          <li><a href="sandbox.tables.html">sandbox.tables package</a> &raquo;</li>
+      
+    <li>sandbox.tables.TblJeeves module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/sandbox.tables.TblJeeves.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-sandbox.tables.TblJeeves">
+<span id="sandbox-tables-tbljeeves-module"></span><h1>sandbox.tables.TblJeeves module<a class="headerlink" href="#module-sandbox.tables.TblJeeves" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="sandbox.tables.TblJeeves.TblJeeves">
+<em class="property">class </em><code class="descclassname">sandbox.tables.TblJeeves.</code><code class="descname">TblJeeves</code><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Wrapper for table queries. Provides methods for querying different information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><strong>source</strong> (<a class="reference internal" href="sandbox.sqltables.source_data.SourceData.html#module-sandbox.sqltables.source_data.SourceData" title="sandbox.sqltables.source_data.SourceData"><em>SourceData</em></a>) &#8211; The source object contains all of the data tables</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.agencies_from_lrsegnames">
+<code class="descname">agencies_from_lrsegnames</code><span class="sig-paren">(</span><em>lrsegnames=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.agencies_from_lrsegnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.agencies_from_lrsegnames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.agencylrsegidtable_from_lrsegids">
+<code class="descname">agencylrsegidtable_from_lrsegids</code><span class="sig-paren">(</span><em>lrsegids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.agencylrsegidtable_from_lrsegids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.agencylrsegidtable_from_lrsegids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.agencyids_from">
+<code class="descname">agencyids_from</code><span class="sig-paren">(</span><em>agencycodes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.agencyids_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.agencyids_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.agencyids_from_lrsegids">
+<code class="descname">agencyids_from_lrsegids</code><span class="sig-paren">(</span><em>lrsegids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.agencyids_from_lrsegids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.agencyids_from_lrsegids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.all_agency_names">
+<code class="descname">all_agency_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.all_agency_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.all_agency_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.all_bmpnames">
+<code class="descname">all_bmpnames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.all_bmpnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.all_bmpnames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.geonames_from_geotypeid">
+<code class="descname">geonames_from_geotypeid</code><span class="sig-paren">(</span><em>geotype=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.geonames_from_geotypeid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.geonames_from_geotypeid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.all_geotypes">
+<code class="descname">all_geotypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.all_geotypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.all_geotypes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.all_sector_names">
+<code class="descname">all_sector_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.all_sector_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.all_sector_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.all_sectorids">
+<code class="descname">all_sectorids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.all_sectorids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.all_sectorids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable">
+<code class="descname">animal_scabidtable_from_SourceCountyAgencyIDtable</code><span class="sig-paren">(</span><em>SourceCountyAgencyIDtable</em>, <em>baseconditionid=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.appendBounds_to_animal_scabidtable">
+<code class="descname">appendBounds_to_animal_scabidtable</code><span class="sig-paren">(</span><em>scabidtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.appendBounds_to_animal_scabidtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.appendBounds_to_animal_scabidtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.appendBounds_to_land_slabidtable">
+<code class="descname">appendBounds_to_land_slabidtable</code><span class="sig-paren">(</span><em>slabidtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.appendBounds_to_land_slabidtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.appendBounds_to_land_slabidtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.appendBounds_to_manure_sftabidtable">
+<code class="descname">appendBounds_to_manure_sftabidtable</code><span class="sig-paren">(</span><em>sftabidtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.appendBounds_to_manure_sftabidtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.appendBounds_to_manure_sftabidtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.bmpids_from_categoryids">
+<code class="descname">bmpids_from_categoryids</code><span class="sig-paren">(</span><em>categoryids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.bmpids_from_categoryids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.bmpids_from_categoryids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.countyid_from_countystatestrs">
+<code class="descname">countyid_from_countystatestrs</code><span class="sig-paren">(</span><em>getfrom=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.countyid_from_countystatestrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.countyid_from_countystatestrs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.countyids_from_lrsegids">
+<code class="descname">countyids_from_lrsegids</code><span class="sig-paren">(</span><em>lrsegids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.countyids_from_lrsegids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.countyids_from_lrsegids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.land_slabidtable_from_SourceLrsegAgencyIDtable">
+<code class="descname">land_slabidtable_from_SourceLrsegAgencyIDtable</code><span class="sig-paren">(</span><em>SourceLrsegAgencyIDtable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.land_slabidtable_from_SourceLrsegAgencyIDtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.land_slabidtable_from_SourceLrsegAgencyIDtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.loadSourceFromSQL">
+<code class="descname">loadSourceFromSQL</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.loadSourceFromSQL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.loadSourceFromSQL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.loadsourcegroupids_from">
+<code class="descname">loadsourcegroupids_from</code><span class="sig-paren">(</span><em>sectorids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.loadsourcegroupids_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.loadsourcegroupids_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.loadsourceids_from">
+<code class="descname">loadsourceids_from</code><span class="sig-paren">(</span><em>sectorids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.loadsourceids_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.loadsourceids_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.loadsourceids_from_lrsegid_agencyid_sectorid">
+<code class="descname">loadsourceids_from_lrsegid_agencyid_sectorid</code><span class="sig-paren">(</span><em>lrsegids=None</em>, <em>agencyids=None</em>, <em>sectorids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.loadsourceids_from_lrsegid_agencyid_sectorid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.loadsourceids_from_lrsegid_agencyid_sectorid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.loadsources_from_lrseg_agency_sector">
+<code class="descname">loadsources_from_lrseg_agency_sector</code><span class="sig-paren">(</span><em>lrsegs=None</em>, <em>agencies=None</em>, <em>sectors=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.loadsources_from_lrseg_agency_sector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.loadsources_from_lrseg_agency_sector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.lrsegids_from">
+<code class="descname">lrsegids_from</code><span class="sig-paren">(</span><em>lrsegnames=None</em>, <em>countystatestrs=None</em>, <em>countyid=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.lrsegids_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.lrsegids_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.lrsegids_from_geoscale_with_names">
+<code class="descname">lrsegids_from_geoscale_with_names</code><span class="sig-paren">(</span><em>scale=''</em>, <em>areanames=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.lrsegids_from_geoscale_with_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.lrsegids_from_geoscale_with_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.lrsegnames_from">
+<code class="descname">lrsegnames_from</code><span class="sig-paren">(</span><em>lrsegids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.lrsegnames_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.lrsegnames_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.make_scenario_from_slabidtable">
+<code class="descname">make_scenario_from_slabidtable</code><span class="sig-paren">(</span><em>slabidtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.make_scenario_from_slabidtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.make_scenario_from_slabidtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable">
+<code class="descname">manure_sftabidtable_from_SourceFromToAgencyIDtable</code><span class="sig-paren">(</span><em>SourceCountyAgencyIDtable</em>, <em>baseconditionid=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.sectorids_from">
+<code class="descname">sectorids_from</code><span class="sig-paren">(</span><em>sectornames=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.sectorids_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.sectorids_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.single_bmpid_from_shortname">
+<code class="descname">single_bmpid_from_shortname</code><span class="sig-paren">(</span><em>bmpshortname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.single_bmpid_from_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.single_bmpid_from_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable">
+<code class="descname">sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable</code><span class="sig-paren">(</span><em>sourceAgencyLrsegIDtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.sourceLrsegAgencyIDtable_from_lrsegAgencySectorids">
+<code class="descname">sourceLrsegAgencyIDtable_from_lrsegAgencySectorids</code><span class="sig-paren">(</span><em>lrsegagencyidtable=None</em>, <em>sectorids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.sourceLrsegAgencyIDtable_from_lrsegAgencySectorids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.sourceLrsegAgencyIDtable_from_lrsegAgencySectorids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.translate_scabidtable_to_scabnametable">
+<code class="descname">translate_scabidtable_to_scabnametable</code><span class="sig-paren">(</span><em>scabidtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.translate_scabidtable_to_scabnametable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.translate_scabidtable_to_scabnametable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.translate_sftabidtable_to_sftabnametable">
+<code class="descname">translate_sftabidtable_to_sftabnametable</code><span class="sig-paren">(</span><em>sftabidtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.translate_sftabidtable_to_sftabnametable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.translate_sftabidtable_to_sftabnametable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sandbox.tables.TblJeeves.TblJeeves.translate_slabidtable_to_slabnametable">
+<code class="descname">translate_slabidtable_to_slabnametable</code><span class="sig-paren">(</span><em>slabidtable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#TblJeeves.translate_slabidtable_to_slabnametable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.TblJeeves.translate_slabidtable_to_slabnametable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sandbox.tables.TblJeeves.checkOnlyOne">
+<code class="descclassname">sandbox.tables.TblJeeves.</code><code class="descname">checkOnlyOne</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#checkOnlyOne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.checkOnlyOne" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sandbox.tables.TblJeeves.loadDataframe">
+<code class="descclassname">sandbox.tables.TblJeeves.</code><code class="descname">loadDataframe</code><span class="sig-paren">(</span><em>tblName</em>, <em>loc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sandbox/tables/TblJeeves.html#loadDataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sandbox.tables.TblJeeves.loadDataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sandbox.tests.html" class="btn btn-neutral float-right" title="sandbox.tests package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sandbox.tables.html" class="btn btn-neutral" title="sandbox.tables package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Kaufman.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

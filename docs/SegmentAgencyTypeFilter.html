@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>SegmentAgencyTypeFilter.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>SegmentAgencyTypeFilter.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">SegmentAgencyTypeFilter</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Find the load sources (along with their maxes {acres, miles, units, etc.}) in the specified SATs</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tables</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">includespec</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <pre><code>    option headers = BaseCondition, LandRiverSegment, CountyName, StateAbbreviation, StateBasin,
+                     OutOfCBWS, AgencyCode, Sector
+</code></pre>
+<h2>Parameters</h2>
+<p>tables : <code>obj</code>
+includespec : <code>obj</code></p>
+<h2>Attributes</h2>
+<p>lsndas : <code>pandas dataframe</code>
+lsani : <code>pandas dataframe</code>
+lsman : <code>pandas dataframe</code></p>
+<p>Loop through tables
+(lsnatural, lsdeveloped, lsagriculture, lsmanure, lsanimal (basecond for now), lsmanure)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">_lsnat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_from_options</span><span class="p">(</span><span class="n">includespec</span><span class="p">,</span> <span class="n">tables</span><span class="p">,</span>
+                                                <span class="n">prebmpls_df</span><span class="o">=</span><span class="n">tables</span><span class="o">.</span><span class="n">lsnatural</span><span class="o">.</span><span class="n">PreBmpLoadSourceNatural</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lsdev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_from_options</span><span class="p">(</span><span class="n">includespec</span><span class="p">,</span> <span class="n">tables</span><span class="p">,</span>
+                                                <span class="n">prebmpls_df</span><span class="o">=</span><span class="n">tables</span><span class="o">.</span><span class="n">lsdeveloped</span><span class="o">.</span><span class="n">PreBmpLoadSourceDeveloped</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lsagr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_from_options</span><span class="p">(</span><span class="n">includespec</span><span class="p">,</span> <span class="n">tables</span><span class="p">,</span>
+                                                <span class="n">prebmpls_df</span><span class="o">=</span><span class="n">tables</span><span class="o">.</span><span class="n">lsagriculture</span><span class="o">.</span><span class="n">PreBmpLoadSourceAgriculture</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lssep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_from_options</span><span class="p">(</span><span class="n">includespec</span><span class="p">,</span> <span class="n">tables</span><span class="p">,</span>
+                                                <span class="n">prebmpls_df</span><span class="o">=</span><span class="n">tables</span><span class="o">.</span><span class="n">lsseptic</span><span class="o">.</span><span class="n">SepticSystems</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsani</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_animals_from_options</span><span class="p">(</span><span class="n">includespec</span><span class="p">,</span>
+                                                       <span class="n">prebmpls_df</span><span class="o">=</span><span class="n">tables</span><span class="o">.</span><span class="n">basecond</span><span class="o">.</span><span class="n">animalcounts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsman</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_animals_from_options</span><span class="p">(</span><span class="n">includespec</span><span class="p">,</span>
+                                                       <span class="n">prebmpls_df</span><span class="o">=</span><span class="n">tables</span><span class="o">.</span><span class="n">lsmanure</span><span class="o">.</span><span class="n">ManureTonsProduced</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsndas</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_lsnat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lsdev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lsagr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lssep</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Find the load sources in the specified SATs within a prebmpls_df</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">_filter_animals_from_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">includespec</span><span class="p">,</span> <span class="n">prebmpls_df</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>option headers = BaseCondition, LandRiverSegment, CountyName,
+    StateAbbreviation, StateBasin,
+    OutOfCBWS, AgencyCode, Sector</p>
+<p>For Animals and Manure, we only need to filter by County (geographically) and not any agencies</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">lsdf_geobool</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">valuestoinclude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getsimilarcol</span><span class="p">(</span><span class="n">includespec</span><span class="o">.</span><span class="n">geo</span><span class="p">,</span> <span class="s1">&#39;CountyName&#39;</span><span class="p">)</span>
+        <span class="n">lsdf_geobool</span><span class="p">[</span><span class="s1">&#39;CountyName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getsimilarcol</span><span class="p">(</span><span class="n">prebmpls_df</span><span class="p">,</span> <span class="s1">&#39;CountyName&#39;</span><span class="p">)</span><span class="o">.</span>\
+            <span class="n">isin</span><span class="p">(</span><span class="n">valuestoinclude</span><span class="p">[</span><span class="s1">&#39;CountyName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="n">lsdf_geobool</span> <span class="o">=</span> <span class="n">lsdf_geobool</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Filtering by Agency is not needed for Animals and Manure?!
+print('lsdf_geobool is %d entries long with %d nonzeros' % (len(lsdf_geobool), lsdf_geobool.sum()))</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">filtered_lsdf</span> <span class="o">=</span> <span class="n">prebmpls_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lsdf_geobool</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="k">return</span> <span class="n">filtered_lsdf</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Find the load sources in the specified SATs within a prebmpls_df</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">_filter_from_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">includespec</span><span class="p">,</span> <span class="n">tables</span><span class="p">,</span> <span class="n">prebmpls_df</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>option headers = BaseCondition, LandRiverSegment, CountyName,
+    StateAbbreviation, StateBasin,
+    OutOfCBWS, AgencyCode, Sector</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>First figure out the filtering by Geography</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">geo_options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LandRiverSegment&#39;</span><span class="p">,</span> <span class="s1">&#39;CountyName&#39;</span><span class="p">,</span> <span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;StateBasin&#39;</span><span class="p">]</span>
+        <span class="n">geocolumnstofilterby</span> <span class="o">=</span> <span class="n">prebmpls_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">prebmpls_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">geo_options_list</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>print('This PreBMPLoadSource table needs geo filtering by "%s"' % geocolumnstofilterby)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">lsdf_geobool</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">geocolumnstofilterby</span><span class="p">:</span>
+            <span class="n">valuestoinclude</span> <span class="o">=</span> <span class="n">includespec</span><span class="o">.</span><span class="n">geo</span><span class="p">[</span><span class="n">h</span><span class="p">]</span>
+            <span class="n">lsdf_geobool</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">prebmpls_df</span><span class="p">[</span><span class="n">h</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">valuestoinclude</span><span class="p">)</span>
+        <span class="n">lsdf_geobool</span> <span class="o">=</span> <span class="n">lsdf_geobool</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Then figure out filtering by Agency</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">non_geo_options_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Agency&#39;</span><span class="p">]</span>
+        <span class="n">nongeocolumnstofilterby</span> <span class="o">=</span> <span class="n">prebmpls_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">prebmpls_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">non_geo_options_list</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>print('This PreBMPLoadSource table needs non-geo filtering by "%s"' % nongeocolumnstofilterby)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">lsdf_nongeobool</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">nongeocolumnstofilterby</span><span class="p">:</span>
+            <span class="n">valuestoinclude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getsimilarcol</span><span class="p">(</span><span class="n">includespec</span><span class="o">.</span><span class="n">agency</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">h</span><span class="p">)</span>
+            <span class="n">valuestoinclude</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">agencytranslate_fromcodes</span><span class="p">(</span><span class="n">valuestoinclude</span><span class="p">[</span><span class="s1">&#39;AgencyCode&#39;</span><span class="p">])</span>
+            <span class="n">lsdf_nongeobool</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">prebmpls_df</span><span class="p">[</span><span class="n">h</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">valuestoinclude</span><span class="p">)</span>
+        <span class="n">lsdf_nongeobool</span> <span class="o">=</span> <span class="n">lsdf_nongeobool</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lsdf_bool</span> <span class="o">=</span> <span class="n">lsdf_geobool</span> <span class="o">&amp;</span> <span class="n">lsdf_nongeobool</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>print('lsdf_bool is %d entries long with %d nonzeros' % (len(lsdf_bool), lsdf_bool.sum()))</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">filtered_lsdf</span> <span class="o">=</span> <span class="n">prebmpls_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lsdf_bool</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="k">return</span> <span class="n">filtered_lsdf</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Returns</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">containssimilarcol</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>(1) True/False if the name is represented in one of the column headers of the dataframe
+(2) <list str> name that is represented as a column header of the dataframe</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">agencyheader</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Agency&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">agencyheader</span><span class="p">:</span>
+            <span class="n">dfheadername</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">agencyheader</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+            <span class="k">return</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">agencyheader</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dfheadername</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dfheadername</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+            <span class="k">return</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dfheadername</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">getsimilarcol</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">agencyheader</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Agency&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">]</span>
+        <span class="n">countyheader</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CountyName&#39;</span><span class="p">,</span> <span class="s1">&#39;County&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">agencyheader</span><span class="p">:</span>
+            <span class="n">dfheadername</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">agencyheader</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">countyheader</span><span class="p">:</span>
+            <span class="n">dfheadername</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">countyheader</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dfheadername</span><span class="p">))]</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

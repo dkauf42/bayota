@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>InputsToCast.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>InputsToCast.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">writedir</span> <span class="o">=</span> <span class="s1">&#39;/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/&#39;</span> \
+              <span class="s1">&#39;Optimization_Tool/2_ExperimentFolder/data_tables/inputs_generated_by_cast_opt_tests/&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">datatowrite</span><span class="p">:</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">InputsToCast</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">possmatrixobj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span> <span class="o">=</span> <span class="n">possmatrixobj</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers_land</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">,</span> <span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;BmpShortname&#39;</span><span class="p">,</span> <span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;Amount&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers_animal</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">,</span> <span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;BmpShortname&#39;</span><span class="p">,</span> <span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="s1">&#39;AnimalGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;Amount&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;NReductionFraction&#39;</span><span class="p">,</span> <span class="s1">&#39;PReductionFraction&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers_manure</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">,</span> <span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;BmpShortname&#39;</span><span class="p">,</span> <span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="s1">&#39;AnimalGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;Amount&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;NReductionFraction&#39;</span><span class="p">,</span> <span class="s1">&#39;PReductionFraction&#39;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Convert an M x N matrix to a stacked (MxN) x 1 table</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">matrix_to_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">stacked_ndas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span><span class="o">.</span><span class="n">ndas</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+        <span class="n">stacked_anim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span><span class="o">.</span><span class="n">anim</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+        <span class="n">stacked_manu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span><span class="o">.</span><span class="n">manu</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">stacked_ndas</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+        <span class="n">stacked_ndas</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;./output/testwrite_InputsToCast_stacked_ndas_matrix.csv&#39;</span><span class="p">)</span>
+        <span class="n">stacked_anim</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;./output/testwrite_InputsToCast_stacked_anim_matrix.csv&#39;</span><span class="p">)</span>
+        <span class="n">stacked_manu</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;./output/testwrite_InputsToCast_stacked_manu_matrix.csv&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">create_landbmp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+        <span class="n">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;landbmp_test&#39;</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span>
+                 <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_land</span><span class="p">,</span>
+                 <span class="n">datatowrite</span><span class="o">=</span><span class="n">datatowrite</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">create_animalbmp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+        <span class="n">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;animalbmp_test&#39;</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span>
+                 <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_animal</span><span class="p">,</span>
+                 <span class="n">datatowrite</span><span class="o">=</span><span class="n">datatowrite</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">create_manurebmp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+        <span class="n">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;landbmp_test&#39;</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span>
+                 <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_manure</span><span class="p">,</span>
+                 <span class="n">datatowrite</span><span class="o">=</span><span class="n">datatowrite</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

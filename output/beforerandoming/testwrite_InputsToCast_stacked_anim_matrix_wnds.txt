@@ -1,0 +1,37 @@
+StateUniqueIdentifier	AgencyCode	StateAbbreviation	BmpShortname	GeographyName	AnimalGroup	LoadSourceGroup	Amount	Unit	NReductionFraction	PReductionFraction
+beebop	NONFED	MD	AgStormEff	24003	beef	Non-Permitted Feeding Space	26	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	beef	Non-Permitted Feeding Space	11	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	beef	Non-Permitted Feeding Space	18	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	broilers	Non-Permitted Feeding Space	23	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	broilers	Non-Permitted Feeding Space	21	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	broilers	Non-Permitted Feeding Space	3	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	dairy	Non-Permitted Feeding Space	30	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	dairy	Non-Permitted Feeding Space	18	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	dairy	Non-Permitted Feeding Space	7	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	goats	Non-Permitted Feeding Space	34	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	goats	Non-Permitted Feeding Space	3	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	goats	Non-Permitted Feeding Space	19	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	hogs and pigs for breeding	Non-Permitted Feeding Space	22	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	hogs and pigs for breeding	Non-Permitted Feeding Space	7	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	hogs and pigs for breeding	Non-Permitted Feeding Space	25	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	hogs for slaughter	Non-Permitted Feeding Space	10	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	hogs for slaughter	Non-Permitted Feeding Space	19	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	hogs for slaughter	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	horses	Non-Permitted Feeding Space	31	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	horses	Non-Permitted Feeding Space	25	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	horses	Non-Permitted Feeding Space	24	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	layers	Non-Permitted Feeding Space	13	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	layers	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	layers	Non-Permitted Feeding Space	29	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	other cattle	Non-Permitted Feeding Space	12	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	other cattle	Non-Permitted Feeding Space	24	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	other cattle	Non-Permitted Feeding Space	27	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	pullets	Non-Permitted Feeding Space	4	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	pullets	Non-Permitted Feeding Space	29	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	pullets	Non-Permitted Feeding Space	6	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	sheep and lambs	Non-Permitted Feeding Space	20	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	sheep and lambs	Non-Permitted Feeding Space	27	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	sheep and lambs	Non-Permitted Feeding Space	35	Animal Count		
+beebop	NONFED	MD	AgStormEff	24003	turkeys	Non-Permitted Feeding Space	33	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	24003	turkeys	Non-Permitted Feeding Space	6	Animal Count		
+beebop	NONFED	MD	LoafLot	24003	turkeys	Non-Permitted Feeding Space	9	Animal Count		

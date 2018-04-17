@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sandbox.util.InputsToCast &mdash; OptSandbox 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="OptSandbox 0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="sandbox" href="../../sandbox.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> OptSandbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.html">sandbox package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.gui.html">sandbox.gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tables.html">sandbox.tables package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tests.html">sandbox.tests package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.util.html">sandbox.util package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">OptSandbox</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+          <li><a href="../../sandbox.html">sandbox</a> &raquo;</li>
+      
+    <li>sandbox.util.InputsToCast</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sandbox.util.InputsToCast</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sandbox.__init__</span> <span class="kn">import</span> <span class="n">get_outputdir</span>
+
+<span class="n">writedir</span> <span class="o">=</span> <span class="n">get_outputdir</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="writecsv"><a class="viewcode-back" href="../../../sandbox.util.InputsToCast.html#sandbox.util.InputsToCast.writecsv">[docs]</a><span class="k">def</span> <span class="nf">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">datatowrite</span><span class="p">:</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InputsToCast"><a class="viewcode-back" href="../../../sandbox.util.InputsToCast.html#sandbox.util.InputsToCast.InputsToCast">[docs]</a><span class="k">class</span> <span class="nc">InputsToCast</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">possmatrixobj</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">optcase</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write data matrices to tab-delimited (.txt) tables readable by CAST&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span> <span class="o">=</span> <span class="n">possmatrixobj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="n">optcase</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">tables</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers_land</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">,</span> <span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;BmpShortname&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;Amount&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers_animal</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">,</span> <span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;BmpShortname&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="s1">&#39;AnimalGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;Amount&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;NReductionFraction&#39;</span><span class="p">,</span> <span class="s1">&#39;PReductionFraction&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers_manure</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">,</span> <span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;BmpShortname&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;FIPSFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;FIPSTo&#39;</span><span class="p">,</span> <span class="s1">&#39;AnimalGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;Amount&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="InputsToCast.matrix_to_table"><a class="viewcode-back" href="../../../sandbox.util.InputsToCast.html#sandbox.util.InputsToCast.InputsToCast.matrix_to_table">[docs]</a>    <span class="k">def</span> <span class="nf">matrix_to_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert an M x N parametermatrix to a stacked (MxN) x 1 Series, and then to a DataFrame&quot;&quot;&quot;</span>
+
+        <span class="c1"># **** LAND ****</span>
+        <span class="n">df_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span><span class="p">[</span><span class="s1">&#39;ndas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">scenariomatrix</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+        <span class="c1">#print(df_l.index.names)  # &#39;LandRiverSegment&#39;, &#39;Agency&#39;, &#39;LoadSource&#39;, &#39;BmpShortname&#39;</span>
+        <span class="n">newindexnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="s1">&#39;AgencyCode&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;BmpShortname&#39;</span><span class="p">]</span>
+        <span class="n">df_l</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">newindexnames</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df_l</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Amount&#39;</span>
+        <span class="n">df_l</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_l</span><span class="p">)</span>
+        <span class="c1"># Make a new column with the State Abbreviation associated with that row&#39;s LRSeg ID</span>
+        <span class="n">df_l</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># convert multiindexes into regular columns</span>
+        <span class="n">geodf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">srcdata</span><span class="o">.</span><span class="n">georefs</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;LandRiverSegment&#39;</span><span class="p">]]</span>
+        <span class="n">df_l</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">df_l</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">geodf</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;LandRiverSegment&#39;</span><span class="p">)</span>
+        <span class="c1"># Add additional necessary columns</span>
+        <span class="n">df_l</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Acres&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_l</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_l</span><span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beebop&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_l</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_l</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df_l</span> <span class="o">=</span> <span class="n">df_l</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_land</span><span class="p">]</span>
+        <span class="n">df_l</span><span class="p">[</span><span class="s1">&#39;AgencyCode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">agencytranslate_fromnames</span><span class="p">(</span><span class="n">df_l</span><span class="p">[</span><span class="s1">&#39;AgencyCode&#39;</span><span class="p">])</span>
+
+        <span class="c1"># **** ANIMAL ****</span>
+        <span class="n">df_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span><span class="p">[</span><span class="s1">&#39;animal&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">scenariomatrix</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+        <span class="c1">#print(df_a.index.names)  # &#39;FIPS&#39;, &#39;AnimalName&#39;, &#39;LoadSource&#39;, &#39;BmpShortname&#39;</span>
+        <span class="n">newindexnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="s1">&#39;AnimalGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;BmpShortname&#39;</span><span class="p">]</span>
+        <span class="n">df_a</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">newindexnames</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df_a</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Amount&#39;</span>
+        <span class="n">df_a</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_a</span><span class="p">)</span>
+        <span class="c1"># Make a new column with the State Abbreviation associated with that row&#39;s LRSeg ID</span>
+        <span class="n">df_a</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># convert multiindexes into regular columns</span>
+        <span class="n">geodf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">srcdata</span><span class="o">.</span><span class="n">georefs</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;FIPS&#39;</span><span class="p">]]</span>
+        <span class="n">df_a</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">df_a</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">geodf</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;GeographyName&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;FIPS&#39;</span><span class="p">)</span>
+        <span class="c1"># Add additional necessary columns</span>
+        <span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Animal Count&#39;</span>
+        <span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;AgencyCode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONFED&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beebop&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;NReductionFraction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;PReductionFraction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_a</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_a</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df_a</span> <span class="o">=</span> <span class="n">df_a</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_animal</span><span class="p">]</span>
+        <span class="c1">#print(df_a.head())</span>
+
+        <span class="c1"># **** MANURE ****</span>
+        <span class="n">df_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">possmatrixobj</span><span class="p">[</span><span class="s1">&#39;manure&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">scenariomatrix</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+        <span class="c1">#print(df_m.index.names)  # &#39;FIPSFrom&#39;, &#39;FIPSTo&#39;, &#39;AnimalName&#39;, &#39;Loadsource&#39;, &#39;BmpShortname&#39;</span>
+        <span class="n">newindexnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FIPSFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;FIPSTo&#39;</span><span class="p">,</span> <span class="s1">&#39;AnimalGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;LoadSourceGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;BmpShortname&#39;</span><span class="p">]</span>
+        <span class="n">df_m</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">newindexnames</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df_m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Amount&#39;</span>
+        <span class="n">df_m</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_m</span><span class="p">)</span>
+        <span class="c1"># Make a new column with the State Abbreviation associated with that row&#39;s LRSeg ID</span>
+        <span class="n">df_m</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># convert multiindexes into regular columns</span>
+        <span class="n">geodf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">srcdata</span><span class="o">.</span><span class="n">georefs</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;StateAbbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;FIPS&#39;</span><span class="p">]]</span>
+        <span class="n">df_m</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">df_m</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">geodf</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;FIPSFrom&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;FIPS&#39;</span><span class="p">)</span>
+        <span class="c1"># Add additional necessary columns</span>
+        <span class="n">df_m</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;WET TONS&#39;</span>
+        <span class="n">df_m</span><span class="p">[</span><span class="s1">&#39;AgencyCode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONFED&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_m</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_m</span><span class="p">[</span><span class="s1">&#39;StateUniqueIdentifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beebop&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_m</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">])</span>
+        <span class="n">df_m</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df_m</span> <span class="o">=</span> <span class="n">df_m</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_manure</span><span class="p">]</span>
+
+        <span class="n">df_l</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;testwrite_InputsToCast_stacked_ndas_matrix.txt&#39;</span><span class="p">,</span>
+                            <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">line_terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">df_a</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;testwrite_InputsToCast_stacked_anim_matrix.txt&#39;</span><span class="p">,</span>
+                            <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">line_terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">df_m</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;testwrite_InputsToCast_stacked_manu_matrix.txt&#39;</span><span class="p">,</span>
+                            <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">line_terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InputsToCast.create_landbmp_file"><a class="viewcode-back" href="../../../sandbox.util.InputsToCast.html#sandbox.util.InputsToCast.InputsToCast.create_landbmp_file">[docs]</a>    <span class="k">def</span> <span class="nf">create_landbmp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+        <span class="n">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;landbmp_test&#39;</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span>
+                 <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_land</span><span class="p">,</span>
+                 <span class="n">datatowrite</span><span class="o">=</span><span class="n">datatowrite</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InputsToCast.create_animalbmp_file"><a class="viewcode-back" href="../../../sandbox.util.InputsToCast.html#sandbox.util.InputsToCast.InputsToCast.create_animalbmp_file">[docs]</a>    <span class="k">def</span> <span class="nf">create_animalbmp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+        <span class="n">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;animalbmp_test&#39;</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span>
+                 <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_animal</span><span class="p">,</span>
+                 <span class="n">datatowrite</span><span class="o">=</span><span class="n">datatowrite</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InputsToCast.create_manurebmp_file"><a class="viewcode-back" href="../../../sandbox.util.InputsToCast.html#sandbox.util.InputsToCast.InputsToCast.create_manurebmp_file">[docs]</a>    <span class="k">def</span> <span class="nf">create_manurebmp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatowrite</span><span class="p">):</span>
+        <span class="n">writecsv</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">writedir</span> <span class="o">+</span> <span class="s1">&#39;landbmp_test&#39;</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span>
+                 <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers_manure</span><span class="p">,</span>
+                 <span class="n">datatowrite</span><span class="o">=</span><span class="n">datatowrite</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Kaufman.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

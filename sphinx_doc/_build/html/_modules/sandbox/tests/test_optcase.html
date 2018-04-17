@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sandbox.tests.test_optcase &mdash; OptSandbox 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="OptSandbox 0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="sandbox" href="../../sandbox.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> OptSandbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.html">sandbox package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.gui.html">sandbox.gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tables.html">sandbox.tables package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tests.html">sandbox.tests package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.util.html">sandbox.util package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">OptSandbox</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+          <li><a href="../../sandbox.html">sandbox</a> &raquo;</li>
+      
+    <li>sandbox.tests.test_optcase</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sandbox.tests.test_optcase</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">sandbox.util.OptCase</span> <span class="kn">import</span> <span class="n">OptCase</span>
+<span class="kn">from</span> <span class="nn">sandbox.__init__</span> <span class="kn">import</span> <span class="n">get_outputdir</span>
+
+<span class="n">writedir</span> <span class="o">=</span> <span class="n">get_outputdir</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="TddForOptCase"><a class="viewcode-back" href="../../../sandbox.tests.test_optcase.html#sandbox.tests.test_optcase.TddForOptCase">[docs]</a><span class="k">class</span> <span class="nc">TddForOptCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TddForOptCase.setUpClass"><a class="viewcode-back" href="../../../sandbox.tests.test_optcase.html#sandbox.tests.test_optcase.TddForOptCase.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="c1"># Load the Source Data and Base Condition tables</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span> <span class="o">=</span> <span class="n">OptCase</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">load_tables</span><span class="p">()</span>
+
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;TestOne&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;TestOneDescription&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">baseyear</span> <span class="o">=</span> <span class="s1">&#39;1995&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">basecondname</span> <span class="o">=</span> <span class="s1">&#39;Example_BaseCond2&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">wastewatername</span> <span class="o">=</span> <span class="s1">&#39;Example_WW1&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">costprofilename</span> <span class="o">=</span> <span class="s1">&#39;Example_CostProfile1&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">geoscalename</span> <span class="o">=</span> <span class="s1">&#39;County&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">geoareanames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Adams, PA&#39;</span><span class="p">]</span>
+
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">proceed_from_geography_to_decision_space</span><span class="p">()</span>
+
+        <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">land_slabnametable</span><span class="o">.</span><span class="n">loadsource</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_uniqueloadsources.csv&#39;</span><span class="p">))</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">land_slabnametable</span><span class="o">.</span><span class="n">bmpshortname</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_uniquebmpshortnames.csv&#39;</span><span class="p">))</span>
+
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_lalbidtable.csv&#39;</span><span class="p">))</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">land_slabnametable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_lalbnametable.csv&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TddForOptCase.test_sectors_list_is_correct"><a class="viewcode-back" href="../../../sandbox.tests.test_optcase.html#sandbox.tests.test_optcase.TddForOptCase.test_sectors_list_is_correct">[docs]</a>    <span class="k">def</span> <span class="nf">test_sectors_list_is_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertSequenceEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">sectorids</span><span class="p">,</span>
+                                 <span class="p">[</span><span class="s1">&#39;Agriculture&#39;</span><span class="p">,</span> <span class="s1">&#39;Developed&#39;</span><span class="p">,</span> <span class="s1">&#39;Natural&#39;</span><span class="p">,</span> <span class="s1">&#39;Septic&#39;</span><span class="p">,</span> <span class="s1">&#39;Wastewater&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TddForOptCase.test_geography_populated_correctly"><a class="viewcode-back" href="../../../sandbox.tests.test_optcase.html#sandbox.tests.test_optcase.TddForOptCase.test_geography_populated_correctly">[docs]</a>    <span class="k">def</span> <span class="nf">test_geography_populated_correctly</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;N42001PU2_2790_3290&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">lrsegids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TddForOptCase.test_agencies_populated_correctly"><a class="viewcode-back" href="../../../sandbox.tests.test_optcase.html#sandbox.tests.test_optcase.TddForOptCase.test_agencies_populated_correctly">[docs]</a>    <span class="k">def</span> <span class="nf">test_agencies_populated_correctly</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="TddForOptCase.test_empty_matrix_is_empty"><a class="viewcode-back" href="../../../sandbox.tests.test_optcase.html#sandbox.tests.test_optcase.TddForOptCase.test_empty_matrix_is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">test_empty_matrix_is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ematrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">pmatrices</span><span class="p">[</span><span class="s1">&#39;ndas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">eligibleparametermatrix</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">ematrix</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">m</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">ematrix</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Kaufman.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

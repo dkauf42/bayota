@@ -1,0 +1,49 @@
+StateUniqueIdentifier	AgencyCode	StateAbbreviation	BmpShortname	GeographyName	AnimalGroup	LoadSourceGroup	Amount	Unit	NReductionFraction	PReductionFraction
+beebop	NONFED	MD	AgStormEff	42001	beef	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	beef	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	beef	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	beef	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	beef	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	beef	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	broilers	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	broilers	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	broilers	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	dairy	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	dairy	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	dairy	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	dairy	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	dairy	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	dairy	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	goats	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	goats	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	goats	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	hogs for slaughter	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	hogs for slaughter	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	hogs for slaughter	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	hogs for slaughter	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	hogs for slaughter	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	hogs for slaughter	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	horses	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	horses	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	horses	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	layers	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	layers	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	layers	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	other cattle	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	other cattle	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	other cattle	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	pullets	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	pullets	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	pullets	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	sheep and lambs	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	sheep and lambs	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	sheep and lambs	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	turkeys	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	turkeys	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	turkeys	Non-Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	AgStormEff	42001	turkeys	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	BarnRunoffCont	42001	turkeys	Permitted Feeding Space	1	Animal Count		
+beebop	NONFED	MD	LoafLot	42001	turkeys	Permitted Feeding Space	1	Animal Count		

@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sandbox.util.OptCase &mdash; OptSandbox 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="OptSandbox 0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="sandbox" href="../../sandbox.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> OptSandbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.html">sandbox package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.gui.html">sandbox.gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tables.html">sandbox.tables package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.tests.html">sandbox.tests package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sandbox.util.html">sandbox.util package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">OptSandbox</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+          <li><a href="../../sandbox.html">sandbox</a> &raquo;</li>
+      
+    <li>sandbox.util.OptCase</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sandbox.util.OptCase</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">sandbox.tables.TblJeeves</span> <span class="kn">import</span> <span class="n">TblJeeves</span>
+<span class="kn">from</span> <span class="nn">sandbox.util.ScenarioMaker</span> <span class="kn">import</span> <span class="n">ScenarioMaker</span>
+<span class="kn">from</span> <span class="nn">sandbox.__init__</span> <span class="kn">import</span> <span class="n">get_outputdir</span>
+
+<span class="n">writedir</span> <span class="o">=</span> <span class="n">get_outputdir</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="OptCase"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase">[docs]</a><span class="k">class</span> <span class="nc">OptCase</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Represent the options and subset of data necessary for conducting a particular optimization run</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queries</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseyear</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basecondname</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wastewatername</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costprofilename</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoscalename</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoareanames</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c1"># Individual Components for metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseconditionid</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;baseconditionid&#39;</span><span class="p">])</span>
+        <span class="c1"># TODO: use real baseconditionid instead of this^ temporary placeholder</span>
+
+        <span class="c1"># Individual Components for decision space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrsegids</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c1"># an LRSeg list for this instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">countyids</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c1"># a County list for this instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agencyids</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c1"># list of agencies selected to specify free parameter groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sectorids</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c1"># list of sectors selected to specify free parameter groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadsourceids</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c1"># list of load sources selected included in the lrsegids-agencies</span>
+
+        <span class="c1"># Intermediary tables for Decision Variable Space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrseg_agency_table</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_lrseg_agency_table</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_county_agency_table</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c1"># For land bmps (no bounds yet)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabnametable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c1"># For animal bmps (no bounds yet)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_scabidtable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_scabnametable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c1"># For manure bmps (no bounds yet)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabidtable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabnametable</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c1"># Decision space vectors with hard bounds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_decisionspace</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_decisionspace</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_decisionspace</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+
+        <span class="n">formattedstr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">***** OptCase Details *****</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;name:                     </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;description:              </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;base year:                </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;base condition:           </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;wastewater:               </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;cost profile:             </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;geographic scale:         </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;geographic areas:         </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;# of lrsegs:              </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;agencies included:        </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;sectors included:         </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;parameter matrices: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                       <span class="s2">&quot;************************************</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span>\
+                       <span class="nb">tuple</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;baseyear&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;basecondname&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;wastewatername&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;costprofilename&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;geoscalename&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;geoareanames&#39;</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;lrsegids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;agencyids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                               <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sectorids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                               <span class="p">]</span>
+                              <span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">formattedstr</span>
+
+<div class="viewcode-block" id="OptCase.load_tables"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.load_tables">[docs]</a>    <span class="k">def</span> <span class="nf">load_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queries</span> <span class="o">=</span> <span class="n">TblJeeves</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="OptCase.set_geography"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.set_geography">[docs]</a>    <span class="k">def</span> <span class="nf">set_geography</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geotable</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrsegids</span> <span class="o">=</span> <span class="n">geotable</span></div>
+
+<div class="viewcode-block" id="OptCase.proceed_from_geography_to_decision_space"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.proceed_from_geography_to_decision_space">[docs]</a>    <span class="k">def</span> <span class="nf">proceed_from_geography_to_decision_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Metadata to BMPs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_geography_from_scale_and_areas</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_agencies_from_geography</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_sectors</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_loadsources</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_bmps</span><span class="p">()</span>
+        <span class="c1"># QA/QC tables by removing unnecessary BMPs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qaqc_land_decisionspace</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qaqc_animal_decisionspace</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qaqc_manure_decisionspace</span><span class="p">()</span>
+        <span class="c1"># Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_hardbounds</span><span class="p">()</span></div>
+
+    <span class="c1"># Decision space generation methods</span>
+<div class="viewcode-block" id="OptCase.populate_geography_from_scale_and_areas"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.populate_geography_from_scale_and_areas">[docs]</a>    <span class="k">def</span> <span class="nf">populate_geography_from_scale_and_areas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrsegids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">lrsegids_from_geoscale_with_names</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geoscalename</span><span class="p">,</span>
+                                                                       <span class="n">areanames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geoareanames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">countyids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">countyids_from_lrsegids</span><span class="p">(</span><span class="n">lrsegids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lrsegids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OptCase.populate_agencies_from_geography"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.populate_agencies_from_geography">[docs]</a>    <span class="k">def</span> <span class="nf">populate_agencies_from_geography</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agencyids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">agencyids_from_lrsegids</span><span class="p">(</span><span class="n">lrsegids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lrsegids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrseg_agency_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">agencylrsegidtable_from_lrsegids</span><span class="p">(</span><span class="n">lrsegids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lrsegids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OptCase.populate_sectors"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.populate_sectors">[docs]</a>    <span class="k">def</span> <span class="nf">populate_sectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sectorids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">all_sectorids</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="OptCase.populate_loadsources"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.populate_loadsources">[docs]</a>    <span class="k">def</span> <span class="nf">populate_loadsources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_lrseg_agency_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span>\
+            <span class="n">queries</span><span class="o">.</span><span class="n">sourceLrsegAgencyIDtable_from_lrsegAgencySectorids</span><span class="p">(</span><span class="n">lrsegagencyidtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lrseg_agency_table</span><span class="p">,</span>
+                                                                       <span class="n">sectorids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sectorids</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_county_agency_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span>\
+            <span class="n">queries</span><span class="o">.</span><span class="n">sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable</span><span class="p">(</span><span class="n">sourceAgencyLrsegIDtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span>
+                                                                            <span class="n">source_lrseg_agency_table</span><span class="p">)</span></div>
+
+        <span class="c1"># self.source_lrseg_agency_table.to_csv(os.path.join(writedir, &#39;testwrite_lalidtable.csv&#39;))</span>
+        <span class="c1"># self.source_county_agency_table.to_csv(os.path.join(writedir, &#39;testwrite_lacidtable.csv&#39;))</span>
+
+<div class="viewcode-block" id="OptCase.populate_bmps"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.populate_bmps">[docs]</a>    <span class="k">def</span> <span class="nf">populate_bmps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Append the IDs for land, animal, and manure BMPs to the decision space tables</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; LAND BMPs &quot;&quot;&quot;</span>
+        <span class="c1"># get IDs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span>\
+            <span class="n">land_slabidtable_from_SourceLrsegAgencyIDtable</span><span class="p">(</span><span class="n">SourceLrsegAgencyIDtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span>
+                                                           <span class="n">source_lrseg_agency_table</span><span class="p">)</span>
+        <span class="c1"># Translate to names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabnametable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">translate_slabidtable_to_slabnametable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">)</span>
+        <span class="c1"># Write to file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_scenariolandbmpswithids.csv&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabnametable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_scenariolandbmpswithnames.csv&#39;</span><span class="p">))</span>
+
+        <span class="sd">&quot;&quot;&quot; ANIMAL BMPs &quot;&quot;&quot;</span>
+        <span class="c1"># get IDs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_scabidtable</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">animal_scabidtable_from_SourceCountyAgencyIDtable</span><span class="p">(</span><span class="n">SourceCountyAgencyIDtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span>
+                                                                           <span class="n">source_county_agency_table</span><span class="p">,</span>
+                                                                           <span class="n">baseconditionid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseconditionid</span><span class="p">)</span>
+        <span class="c1"># Translate to names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_scabnametable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">translate_scabidtable_to_scabnametable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">animal_scabidtable</span><span class="p">)</span>
+        <span class="c1"># Write to file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_scabidtable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_scenarioanimalbmpswithids.csv&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_scabnametable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_scenarioanimalbmpswithnames.csv&#39;</span><span class="p">))</span>
+
+        <span class="sd">&quot;&quot;&quot; MANURE BMPs &quot;&quot;&quot;</span>
+        <span class="c1"># get IDs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabidtable</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">manure_sftabidtable_from_SourceFromToAgencyIDtable</span><span class="p">(</span><span class="n">SourceCountyAgencyIDtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span>
+                                                                            <span class="n">source_county_agency_table</span><span class="p">,</span>
+                                                                            <span class="n">baseconditionid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseconditionid</span><span class="p">)</span>
+        <span class="c1"># Translate to names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabnametable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">translate_sftabidtable_to_sftabnametable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabidtable</span><span class="p">)</span>
+        <span class="c1"># Write to file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabidtable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_scenariomanurebmpswithids.csv&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabnametable</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_scenariomanurebmpswithnames.csv&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="OptCase.populate_hardbounds"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.populate_hardbounds">[docs]</a>    <span class="k">def</span> <span class="nf">populate_hardbounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO: code this</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_decisionspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">appendBounds_to_land_slabidtable</span><span class="p">(</span><span class="n">slabidtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animal_decisionspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">appendBounds_to_animal_scabidtable</span><span class="p">(</span><span class="n">scabidtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">animal_scabidtable</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manure_decisionspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">appendBounds_to_manure_sftabidtable</span><span class="p">(</span><span class="n">sftabidtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manure_sftabidtable</span><span class="p">)</span></div>
+
+    <span class="c1"># QA/QC the decision space</span>
+<div class="viewcode-block" id="OptCase.qaqc_land_decisionspace"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.qaqc_land_decisionspace">[docs]</a>    <span class="k">def</span> <span class="nf">qaqc_land_decisionspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;OptCase.qaqc_land_decisionspace(): QA/QCing...&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Decision Space Table size: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">origrowcnt</span><span class="p">,</span> <span class="n">origcolcnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">removaltotal</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Remove &quot;Urban Stream Restoration Protocol&quot; BMP</span>
+        <span class="n">bmpnametoremove</span> <span class="o">=</span> <span class="s1">&#39;UrbStrmRestPro&#39;</span>
+        <span class="n">bmpid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">single_bmpid_from_shortname</span><span class="p">(</span><span class="n">bmpshortname</span><span class="o">=</span><span class="n">bmpnametoremove</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="s1">&#39;bmpid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">bmpid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;removing </span><span class="si">%d</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">bmpnametoremove</span><span class="p">))</span>
+        <span class="n">removaltotal</span> <span class="o">+=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="c1"># Remove &quot;Non-Urban Stream Restoration Protocol&quot; BMP</span>
+        <span class="n">bmpnametoremove</span> <span class="o">=</span> <span class="s1">&#39;NonUrbStrmRestPro&#39;</span>
+        <span class="n">bmpid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">single_bmpid_from_shortname</span><span class="p">(</span><span class="n">bmpshortname</span><span class="o">=</span><span class="n">bmpnametoremove</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="s1">&#39;bmpid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">bmpid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;removing </span><span class="si">%d</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">bmpnametoremove</span><span class="p">))</span>
+        <span class="n">removaltotal</span> <span class="o">+=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="c1"># Remove &quot;Stormwater Performance Standard&quot; BMPs (RR [runoff reduction] and ST [stormwater treatment])</span>
+        <span class="n">bmpnametoremove</span> <span class="o">=</span> <span class="s1">&#39;RR&#39;</span>
+        <span class="n">bmpid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">single_bmpid_from_shortname</span><span class="p">(</span><span class="n">bmpshortname</span><span class="o">=</span><span class="n">bmpnametoremove</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="s1">&#39;bmpid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">bmpid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;removing </span><span class="si">%d</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">bmpnametoremove</span><span class="p">))</span>
+        <span class="n">removaltotal</span> <span class="o">+=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="n">bmpnametoremove</span> <span class="o">=</span> <span class="s1">&#39;ST&#39;</span>
+        <span class="n">bmpid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">single_bmpid_from_shortname</span><span class="p">(</span><span class="n">bmpshortname</span><span class="o">=</span><span class="n">bmpnametoremove</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="s1">&#39;bmpid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">bmpid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;removing </span><span class="si">%d</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">bmpnametoremove</span><span class="p">))</span>
+        <span class="n">removaltotal</span> <span class="o">+=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="c1"># Remove Policy BMPs</span>
+        <span class="n">bmpids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queries</span><span class="o">.</span><span class="n">bmpids_from_categoryids</span><span class="p">(</span><span class="n">categoryids</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="s1">&#39;bmpid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">bmpids</span><span class="o">.</span><span class="n">bmpid</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+        <span class="c1"># TODO: replace the above &#39;4&#39; with a call that gets the number from a string such as &#39;Land Policy BMPs&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="p">[</span><span class="s1">&#39;bmpid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">bmpids</span><span class="o">.</span><span class="n">bmpid</span><span class="o">.</span><span class="n">tolist</span><span class="p">())]</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;removing </span><span class="si">%d</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="s1">&#39;Land Policy BMPs&#39;</span><span class="p">))</span>
+        <span class="n">removaltotal</span> <span class="o">+=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="n">newrowcnt</span><span class="p">,</span> <span class="n">newcolcnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_slabidtable</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;New decision space size is (</span><span class="si">%d</span><span class="s1">, </span><span class="si">%d</span><span class="s1">) - (</span><span class="si">%d</span><span class="s1">, ) = (</span><span class="si">%d</span><span class="s1">, </span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span>
+              <span class="p">(</span><span class="n">origrowcnt</span><span class="p">,</span> <span class="n">origcolcnt</span><span class="p">,</span> <span class="n">removaltotal</span><span class="p">,</span> <span class="n">newrowcnt</span><span class="p">,</span> <span class="n">newcolcnt</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="OptCase.qaqc_animal_decisionspace"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.qaqc_animal_decisionspace">[docs]</a>    <span class="k">def</span> <span class="nf">qaqc_animal_decisionspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="OptCase.qaqc_manure_decisionspace"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.qaqc_manure_decisionspace">[docs]</a>    <span class="k">def</span> <span class="nf">qaqc_manure_decisionspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="c1"># hooks for graphical interface get/put</span>
+<div class="viewcode-block" id="OptCase.save_metadata"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.save_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">save_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata_results</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseyear</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">baseyear</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basecondname</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">basecond</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wastewatername</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">wastewater</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costprofilename</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">costprofile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoscalename</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geoareanames</span> <span class="o">=</span> <span class="n">metadata_results</span><span class="o">.</span><span class="n">area</span>  <span class="c1"># For Counties, this is in the form of &quot;[County], [StateAbbeviation]&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrsegids</span> <span class="o">=</span> <span class="bp">None</span></div>
+        <span class="c1">#self.get_geographies_included(areanames=self.geoareanames)</span>
+
+<div class="viewcode-block" id="OptCase.save_freeparamgrps"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.save_freeparamgrps">[docs]</a>    <span class="k">def</span> <span class="nf">save_freeparamgrps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freeparamgrp_results</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agencyids</span> <span class="o">=</span> <span class="n">freeparamgrp_results</span><span class="o">.</span><span class="n">agencies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sectorids</span> <span class="o">=</span> <span class="n">freeparamgrp_results</span><span class="o">.</span><span class="n">sectors</span></div>
+
+    <span class="c1"># Generating scenario(s) from the decision space</span>
+<div class="viewcode-block" id="OptCase.generate_scenario"><a class="viewcode-back" href="../../../sandbox.util.OptCase.html#sandbox.util.OptCase.OptCase.generate_scenario">[docs]</a>    <span class="k">def</span> <span class="nf">generate_scenario</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenariotype</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="c1"># TODO: code this (randomization for each variable, and then writing to file)</span>
+        <span class="n">scenario</span> <span class="o">=</span> <span class="n">ScenarioMaker</span><span class="p">()</span>
+        <span class="n">scenario</span><span class="o">.</span><span class="n">initialize_from_decisionspace</span><span class="p">(</span><span class="n">land</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">land_decisionspace</span><span class="p">,</span>
+                                               <span class="n">animal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">animal_decisionspace</span><span class="p">,</span>
+                                               <span class="n">manure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manure_decisionspace</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scenariotype</span> <span class="o">==</span> <span class="s1">&#39;random&#39;</span><span class="p">:</span>
+            <span class="n">scenario</span><span class="o">.</span><span class="n">randomize_betweenbounds</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scenario</span><span class="o">.</span><span class="n">randomize_betweenbounds</span><span class="p">()</span>
+
+        <span class="c1"># Scenario is written to file.</span>
+        <span class="n">scenario</span><span class="o">.</span><span class="n">land</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_CASTscenario_land.csv&#39;</span><span class="p">))</span>
+        <span class="n">scenario</span><span class="o">.</span><span class="n">animal</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_CASTscenario_animal.csv&#39;</span><span class="p">))</span>
+        <span class="n">scenario</span><span class="o">.</span><span class="n">manure</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">writedir</span><span class="p">,</span> <span class="s1">&#39;testwrite_CASTscenario_manure.csv&#39;</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Kaufman.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

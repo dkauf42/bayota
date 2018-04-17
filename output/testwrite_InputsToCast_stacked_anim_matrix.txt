@@ -1,0 +1,289 @@
+StateUniqueIdentifier	AgencyCode	StateAbbreviation	BmpShortname	GeographyName	AnimalGroup	LoadSourceGroup	Amount	Unit	NReductionFraction	PReductionFraction
+beebop	NONFED	PA	AgStormEff	42001	beef	Non-Permitted Feeding Space	2080.3763638425344	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Non-Permitted Feeding Space	2080.3763638425344	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Non-Permitted Feeding Space	2080.3763638425344	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Non-Permitted Feeding Space	2080.3763638425344	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Non-Permitted Feeding Space	2080.3763638425344	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Non-Permitted Feeding Space	2080.3763638425344	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Non-Permitted Feeding Space	2114.878419980163	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Non-Permitted Feeding Space	2114.878419980163	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Non-Permitted Feeding Space	2114.878419980163	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Non-Permitted Feeding Space	2114.878419980163	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Non-Permitted Feeding Space	2114.878419980163	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Non-Permitted Feeding Space	2114.878419980163	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Non-Permitted Feeding Space	1637.42326661801	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Non-Permitted Feeding Space	1637.42326661801	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Non-Permitted Feeding Space	1637.42326661801	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Non-Permitted Feeding Space	1637.42326661801	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Non-Permitted Feeding Space	1637.42326661801	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Non-Permitted Feeding Space	1637.42326661801	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Permitted Feeding Space	127.43276025847074	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Permitted Feeding Space	127.43276025847074	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Permitted Feeding Space	127.43276025847074	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Permitted Feeding Space	127.43276025847074	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Permitted Feeding Space	127.43276025847074	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	beef	Permitted Feeding Space	127.43276025847074	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Permitted Feeding Space	86.81226382842206	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Permitted Feeding Space	86.81226382842206	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Permitted Feeding Space	86.81226382842206	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Permitted Feeding Space	86.81226382842206	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Permitted Feeding Space	86.81226382842206	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	beef	Permitted Feeding Space	86.81226382842206	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Permitted Feeding Space	205.05062709862915	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Permitted Feeding Space	205.05062709862915	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Permitted Feeding Space	205.05062709862915	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Permitted Feeding Space	205.05062709862915	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Permitted Feeding Space	205.05062709862915	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	beef	Permitted Feeding Space	205.05062709862915	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	broilers	Permitted Feeding Space	1311.360484277986	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	broilers	Permitted Feeding Space	1311.360484277986	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	broilers	Permitted Feeding Space	1311.360484277986	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	broilers	Permitted Feeding Space	1311.360484277986	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	broilers	Permitted Feeding Space	1311.360484277986	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	broilers	Permitted Feeding Space	1311.360484277986	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	broilers	Permitted Feeding Space	1638.062774774408	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	broilers	Permitted Feeding Space	1638.062774774408	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	broilers	Permitted Feeding Space	1638.062774774408	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	broilers	Permitted Feeding Space	1638.062774774408	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	broilers	Permitted Feeding Space	1638.062774774408	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	broilers	Permitted Feeding Space	1638.062774774408	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	broilers	Permitted Feeding Space	1577.811660004807	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	broilers	Permitted Feeding Space	1577.811660004807	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	broilers	Permitted Feeding Space	1577.811660004807	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	broilers	Permitted Feeding Space	1577.811660004807	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	broilers	Permitted Feeding Space	1577.811660004807	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	broilers	Permitted Feeding Space	1577.811660004807	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Non-Permitted Feeding Space	2553.2676590425303	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Non-Permitted Feeding Space	2553.2676590425303	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Non-Permitted Feeding Space	2553.2676590425303	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Non-Permitted Feeding Space	2553.2676590425303	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Non-Permitted Feeding Space	2553.2676590425303	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Non-Permitted Feeding Space	2553.2676590425303	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Non-Permitted Feeding Space	3773.9358590370784	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Non-Permitted Feeding Space	3773.9358590370784	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Non-Permitted Feeding Space	3773.9358590370784	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Non-Permitted Feeding Space	3773.9358590370784	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Non-Permitted Feeding Space	3773.9358590370784	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Non-Permitted Feeding Space	3773.9358590370784	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Non-Permitted Feeding Space	1679.9793836481892	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Non-Permitted Feeding Space	1679.9793836481892	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Non-Permitted Feeding Space	1679.9793836481892	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Non-Permitted Feeding Space	1679.9793836481892	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Non-Permitted Feeding Space	1679.9793836481892	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Non-Permitted Feeding Space	1679.9793836481892	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Permitted Feeding Space	5413.052063473685	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Permitted Feeding Space	5413.052063473685	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Permitted Feeding Space	5413.052063473685	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Permitted Feeding Space	5413.052063473685	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Permitted Feeding Space	5413.052063473685	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	dairy	Permitted Feeding Space	5413.052063473685	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Permitted Feeding Space	5816.376418621147	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Permitted Feeding Space	5816.376418621147	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Permitted Feeding Space	5816.376418621147	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Permitted Feeding Space	5816.376418621147	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Permitted Feeding Space	5816.376418621147	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	dairy	Permitted Feeding Space	5816.376418621147	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Permitted Feeding Space	3690.7409915830126	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Permitted Feeding Space	3690.7409915830126	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Permitted Feeding Space	3690.7409915830126	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Permitted Feeding Space	3690.7409915830126	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Permitted Feeding Space	3690.7409915830126	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	dairy	Permitted Feeding Space	3690.7409915830126	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	goats	Non-Permitted Feeding Space	20.067302124689103	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	goats	Non-Permitted Feeding Space	20.067302124689103	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	goats	Non-Permitted Feeding Space	20.067302124689103	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	goats	Non-Permitted Feeding Space	20.067302124689103	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	goats	Non-Permitted Feeding Space	20.067302124689103	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	goats	Non-Permitted Feeding Space	20.067302124689103	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	goats	Non-Permitted Feeding Space	22.95366632564168	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	goats	Non-Permitted Feeding Space	22.95366632564168	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	goats	Non-Permitted Feeding Space	22.95366632564168	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	goats	Non-Permitted Feeding Space	22.95366632564168	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	goats	Non-Permitted Feeding Space	22.95366632564168	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	goats	Non-Permitted Feeding Space	22.95366632564168	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	goats	Non-Permitted Feeding Space	8.453199337853317	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	goats	Non-Permitted Feeding Space	8.453199337853317	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	goats	Non-Permitted Feeding Space	8.453199337853317	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	goats	Non-Permitted Feeding Space	8.453199337853317	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	goats	Non-Permitted Feeding Space	8.453199337853317	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	goats	Non-Permitted Feeding Space	8.453199337853317	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	23.564664537111135	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	23.564664537111135	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	23.564664537111135	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	23.564664537111135	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	23.564664537111135	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	23.564664537111135	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	7.515045574854279	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	7.515045574854279	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	7.515045574854279	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	7.515045574854279	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	7.515045574854279	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	7.515045574854279	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	12.582580300050104	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	12.582580300050104	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	12.582580300050104	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	12.582580300050104	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	12.582580300050104	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs and pigs for breeding	Non-Permitted Feeding Space	12.582580300050104	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Non-Permitted Feeding Space	2048.5827896747624	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Non-Permitted Feeding Space	2048.5827896747624	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Non-Permitted Feeding Space	2048.5827896747624	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Non-Permitted Feeding Space	2048.5827896747624	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Non-Permitted Feeding Space	2048.5827896747624	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Non-Permitted Feeding Space	2048.5827896747624	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Non-Permitted Feeding Space	973.9431392142739	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Non-Permitted Feeding Space	973.9431392142739	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Non-Permitted Feeding Space	973.9431392142739	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Non-Permitted Feeding Space	973.9431392142739	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Non-Permitted Feeding Space	973.9431392142739	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Non-Permitted Feeding Space	973.9431392142739	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Non-Permitted Feeding Space	139.717811278637	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Non-Permitted Feeding Space	139.717811278637	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Non-Permitted Feeding Space	139.717811278637	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Non-Permitted Feeding Space	139.717811278637	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Non-Permitted Feeding Space	139.717811278637	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Non-Permitted Feeding Space	139.717811278637	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Permitted Feeding Space	362.7845982867918	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Permitted Feeding Space	362.7845982867918	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Permitted Feeding Space	362.7845982867918	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Permitted Feeding Space	362.7845982867918	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Permitted Feeding Space	362.7845982867918	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	hogs for slaughter	Permitted Feeding Space	362.7845982867918	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Permitted Feeding Space	450.93312216722757	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Permitted Feeding Space	450.93312216722757	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Permitted Feeding Space	450.93312216722757	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Permitted Feeding Space	450.93312216722757	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Permitted Feeding Space	450.93312216722757	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	hogs for slaughter	Permitted Feeding Space	450.93312216722757	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Permitted Feeding Space	32.43652542270054	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Permitted Feeding Space	32.43652542270054	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Permitted Feeding Space	32.43652542270054	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Permitted Feeding Space	32.43652542270054	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Permitted Feeding Space	32.43652542270054	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	hogs for slaughter	Permitted Feeding Space	32.43652542270054	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	horses	Non-Permitted Feeding Space	984.7575611796772	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	horses	Non-Permitted Feeding Space	984.7575611796772	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	horses	Non-Permitted Feeding Space	984.7575611796772	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	horses	Non-Permitted Feeding Space	984.7575611796772	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	horses	Non-Permitted Feeding Space	984.7575611796772	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	horses	Non-Permitted Feeding Space	984.7575611796772	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	horses	Non-Permitted Feeding Space	1021.9472897557966	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	horses	Non-Permitted Feeding Space	1021.9472897557966	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	horses	Non-Permitted Feeding Space	1021.9472897557966	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	horses	Non-Permitted Feeding Space	1021.9472897557966	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	horses	Non-Permitted Feeding Space	1021.9472897557966	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	horses	Non-Permitted Feeding Space	1021.9472897557966	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	horses	Non-Permitted Feeding Space	5669.201466000279	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	horses	Non-Permitted Feeding Space	5669.201466000279	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	horses	Non-Permitted Feeding Space	5669.201466000279	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	horses	Non-Permitted Feeding Space	5669.201466000279	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	horses	Non-Permitted Feeding Space	5669.201466000279	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	horses	Non-Permitted Feeding Space	5669.201466000279	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	layers	Permitted Feeding Space	916.5254232082053	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	layers	Permitted Feeding Space	916.5254232082053	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	layers	Permitted Feeding Space	916.5254232082053	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	layers	Permitted Feeding Space	916.5254232082053	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	layers	Permitted Feeding Space	916.5254232082053	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	layers	Permitted Feeding Space	916.5254232082053	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	layers	Permitted Feeding Space	858.2997495795782	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	layers	Permitted Feeding Space	858.2997495795782	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	layers	Permitted Feeding Space	858.2997495795782	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	layers	Permitted Feeding Space	858.2997495795782	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	layers	Permitted Feeding Space	858.2997495795782	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	layers	Permitted Feeding Space	858.2997495795782	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	layers	Permitted Feeding Space	591.2867421646329	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	layers	Permitted Feeding Space	591.2867421646329	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	layers	Permitted Feeding Space	591.2867421646329	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	layers	Permitted Feeding Space	591.2867421646329	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	layers	Permitted Feeding Space	591.2867421646329	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	layers	Permitted Feeding Space	591.2867421646329	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	other cattle	Non-Permitted Feeding Space	177.83258681746167	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	other cattle	Non-Permitted Feeding Space	177.83258681746167	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	other cattle	Non-Permitted Feeding Space	177.83258681746167	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	other cattle	Non-Permitted Feeding Space	177.83258681746167	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	other cattle	Non-Permitted Feeding Space	177.83258681746167	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	other cattle	Non-Permitted Feeding Space	177.83258681746167	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	other cattle	Non-Permitted Feeding Space	3899.5321205803616	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	other cattle	Non-Permitted Feeding Space	3899.5321205803616	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	other cattle	Non-Permitted Feeding Space	3899.5321205803616	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	other cattle	Non-Permitted Feeding Space	3899.5321205803616	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	other cattle	Non-Permitted Feeding Space	3899.5321205803616	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	other cattle	Non-Permitted Feeding Space	3899.5321205803616	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	other cattle	Non-Permitted Feeding Space	1185.9038905813848	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	other cattle	Non-Permitted Feeding Space	1185.9038905813848	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	other cattle	Non-Permitted Feeding Space	1185.9038905813848	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	other cattle	Non-Permitted Feeding Space	1185.9038905813848	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	other cattle	Non-Permitted Feeding Space	1185.9038905813848	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	other cattle	Non-Permitted Feeding Space	1185.9038905813848	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	pullets	Non-Permitted Feeding Space	50.63695273126184	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	pullets	Non-Permitted Feeding Space	50.63695273126184	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	pullets	Non-Permitted Feeding Space	50.63695273126184	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	pullets	Non-Permitted Feeding Space	50.63695273126184	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	pullets	Non-Permitted Feeding Space	50.63695273126184	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	pullets	Non-Permitted Feeding Space	50.63695273126184	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	pullets	Non-Permitted Feeding Space	37.17416933206573	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	pullets	Non-Permitted Feeding Space	37.17416933206573	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	pullets	Non-Permitted Feeding Space	37.17416933206573	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	pullets	Non-Permitted Feeding Space	37.17416933206573	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	pullets	Non-Permitted Feeding Space	37.17416933206573	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	pullets	Non-Permitted Feeding Space	37.17416933206573	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	pullets	Non-Permitted Feeding Space	40.80027037441145	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	pullets	Non-Permitted Feeding Space	40.80027037441145	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	pullets	Non-Permitted Feeding Space	40.80027037441145	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	pullets	Non-Permitted Feeding Space	40.80027037441145	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	pullets	Non-Permitted Feeding Space	40.80027037441145	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	pullets	Non-Permitted Feeding Space	40.80027037441145	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	sheep and lambs	Non-Permitted Feeding Space	94.22248595818273	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	sheep and lambs	Non-Permitted Feeding Space	94.22248595818273	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	sheep and lambs	Non-Permitted Feeding Space	94.22248595818273	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	sheep and lambs	Non-Permitted Feeding Space	94.22248595818273	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	sheep and lambs	Non-Permitted Feeding Space	94.22248595818273	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	sheep and lambs	Non-Permitted Feeding Space	94.22248595818273	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	sheep and lambs	Non-Permitted Feeding Space	84.36317919160162	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	sheep and lambs	Non-Permitted Feeding Space	84.36317919160162	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	sheep and lambs	Non-Permitted Feeding Space	84.36317919160162	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	sheep and lambs	Non-Permitted Feeding Space	84.36317919160162	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	sheep and lambs	Non-Permitted Feeding Space	84.36317919160162	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	sheep and lambs	Non-Permitted Feeding Space	84.36317919160162	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	sheep and lambs	Non-Permitted Feeding Space	1.6131686280091222	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	sheep and lambs	Non-Permitted Feeding Space	1.6131686280091222	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	sheep and lambs	Non-Permitted Feeding Space	1.6131686280091222	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	sheep and lambs	Non-Permitted Feeding Space	1.6131686280091222	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	sheep and lambs	Non-Permitted Feeding Space	1.6131686280091222	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	sheep and lambs	Non-Permitted Feeding Space	1.6131686280091222	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Non-Permitted Feeding Space	20010.435929769927	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Non-Permitted Feeding Space	20010.435929769927	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Non-Permitted Feeding Space	20010.435929769927	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Non-Permitted Feeding Space	20010.435929769927	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Non-Permitted Feeding Space	20010.435929769927	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Non-Permitted Feeding Space	20010.435929769927	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Non-Permitted Feeding Space	14805.98284988825	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Non-Permitted Feeding Space	14805.98284988825	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Non-Permitted Feeding Space	14805.98284988825	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Non-Permitted Feeding Space	14805.98284988825	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Non-Permitted Feeding Space	14805.98284988825	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Non-Permitted Feeding Space	14805.98284988825	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Non-Permitted Feeding Space	6178.902291741072	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Non-Permitted Feeding Space	6178.902291741072	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Non-Permitted Feeding Space	6178.902291741072	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Non-Permitted Feeding Space	6178.902291741072	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Non-Permitted Feeding Space	6178.902291741072	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Non-Permitted Feeding Space	6178.902291741072	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Permitted Feeding Space	73.66099336674246	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Permitted Feeding Space	73.66099336674246	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Permitted Feeding Space	73.66099336674246	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Permitted Feeding Space	73.66099336674246	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Permitted Feeding Space	73.66099336674246	Animal Count		
+beebop	NONFED	PA	AgStormEff	42001	turkeys	Permitted Feeding Space	73.66099336674246	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Permitted Feeding Space	500.2059780495853	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Permitted Feeding Space	500.2059780495853	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Permitted Feeding Space	500.2059780495853	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Permitted Feeding Space	500.2059780495853	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Permitted Feeding Space	500.2059780495853	Animal Count		
+beebop	NONFED	PA	BarnRunoffCont	42001	turkeys	Permitted Feeding Space	500.2059780495853	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Permitted Feeding Space	1687.1319837414394	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Permitted Feeding Space	1687.1319837414394	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Permitted Feeding Space	1687.1319837414394	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Permitted Feeding Space	1687.1319837414394	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Permitted Feeding Space	1687.1319837414394	Animal Count		
+beebop	NONFED	PA	LoafLot	42001	turkeys	Permitted Feeding Space	1687.1319837414394	Animal Count		
