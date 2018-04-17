@@ -17,14 +17,7 @@ class TddForOptCase(unittest.TestCase):
         cls.oc = OptCase()
         cls.oc.load_tables()
 
-        cls.oc.name = 'TestOne'
-        cls.oc.description = 'TestOneDescription'
-        cls.oc.baseyear = '1995'
-        cls.oc.basecondname = 'Example_BaseCond2'
-        cls.oc.wastewatername = 'Example_WW1'
-        cls.oc.costprofilename = 'Example_CostProfile1'
-        cls.oc.geoscalename = 'County'
-        cls.oc.geoareanames = ['Adams, PA']
+        cls.oc.load_example(name='adamscounty')
 
         cls.oc.proceed_from_geography_to_decision_space()
 

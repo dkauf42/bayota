@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from sandbox.tables.TblJeeves import TblJeeves
 from sandbox.util.ScenarioMaker import ScenarioMaker
+from sandbox.util.Examples import Examples
 from sandbox.__init__ import get_outputdir
 
 writedir = get_outputdir()
@@ -85,6 +86,18 @@ class OptCase:
                               ])
 
         return formattedstr
+
+    def load_example(self, name=''):
+        ex = Examples(name)
+
+        self.name = ex.name
+        self.description = ex.description
+        self.baseyear = ex.baseyear
+        self.basecondname = ex.basecondname
+        self.wastewatername = ex.wastewatername
+        self.costprofilename = ex.costprofilename
+        self.geoscalename = ex.geoscalename
+        self.geoareanames = ex.geoareanames
 
     def load_tables(self):
         self.queries = TblJeeves()

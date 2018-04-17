@@ -84,24 +84,8 @@ class MainWindow(tk.Frame):
 
     def skipgui_and_use_default_test(self):
         """For Testing Purposes"""
-        self.optcase.name = 'TestOne'
-        self.optcase.description = 'TestOneDescription'
-        self.optcase.baseyear = '1995'
-        self.optcase.basecondname = 'Example_BaseCond2'
-        self.optcase.wastewatername = 'Example_WW1'
-        self.optcase.costprofilename = 'Example_CostProfile1'
-        self.optcase.geoscalename = 'County'
-        self.optcase.geoareanames = ['Adams, PA']
-
-        self.optcase.populate_geography_from_scale_and_areas()
-        self.optcase.populate_agencies_from_geography()
-        self.optcase.populate_sectors()
-        self.optcase.sectors_included = self.queries.source.all_sector_names()
-
-        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        self.optcase.generate_emptyparametermatrices()
-        self.optcase.mark_eligibility()
-        self.optcase.generate_boundsmatrices()
+        self.optcase.load_example(name='adamscounty')
+        self.optcase.proceed_from_geography_to_decision_space()
 
         self.close_and_submit()
 

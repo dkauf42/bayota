@@ -34,45 +34,21 @@ def main(numinstances=1, testcase=None):
             print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
             # TODO: make this work with the sqltables!
             """For Testing Purposes"""
-            optcase.name = 'TestOne'
-            optcase.description = 'TestOneDescription'
-            optcase.baseyear = '1995'
-            optcase.basecondname = 'Example_BaseCond2'
-            optcase.wastewatername = 'Example_WW1'
-            optcase.costprofilename = 'Example_CostProfile1'
-            optcase.geoscalename = 'County'
-            optcase.geoareanames = ['Adams, PA']
-
+            optcase.load_example(name='adamscounty')
             optcase.proceed_from_geography_to_decision_space()
 
         elif testcase == 2:
             print('\nTEST CASE 2 : No GUI; 2 Counties: ("Adams, PA" and "Anne Arundel, MD")\n')
             # TODO: make this work with the sqltables!
             """For Testing Purposes"""
-            optcase.name = 'TestOne'
-            optcase.description = 'TestOneDescription'
-            optcase.baseyear = '1995'
-            optcase.basecondname = 'Example_BaseCond2'
-            optcase.wastewatername = 'Example_WW1'
-            optcase.costprofilename = 'Example_CostProfile1'
-            optcase.geoscalename = 'County'
-            optcase.geoareanames = ['Adams, PA', 'Anne Arundel, MD']
-
+            optcase.load_example(name='adams_and_annearundel')
             optcase.proceed_from_geography_to_decision_space()
 
         elif testcase == 3:
             print('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
             # TODO: make this work with the sqltables!
             """For Testing Purposes"""
-            optcase.name = 'TestOne'
-            optcase.description = 'TestOneDescription'
-            optcase.baseyear = '1995'
-            optcase.basecondname = 'Example_BaseCond2'
-            optcase.wastewatername = 'Example_WW1'
-            optcase.costprofilename = 'Example_CostProfile1'
-            optcase.geoscalename = 'County'
-            optcase.geoareanames = ['Adams, PA', 'York, PA', 'Anne Arundel, MD']
-
+            optcase.load_example(name='adams_annearundel_and_york')
             optcase.proceed_from_geography_to_decision_space()
 
         elif not testcase:
