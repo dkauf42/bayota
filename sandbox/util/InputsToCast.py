@@ -15,12 +15,12 @@ def writecsv(filename, headers, datatowrite):
 
 
 class InputsToCast:
-    def __init__(self, possmatrixobj=None, optinstance=None):
+    def __init__(self, possmatrixobj=None, optcase=None):
         """Write data matrices to tab-delimited (.txt) tables readable by CAST"""
         self.template = None
         self.df = None
         self.possmatrixobj = possmatrixobj
-        self.tables = optinstance.queries.tables
+        self.tables = optcase.queries.tables
 
         self.headers_land = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
                              'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']

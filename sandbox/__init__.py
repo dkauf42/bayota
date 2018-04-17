@@ -21,3 +21,7 @@ def get_tempdir():
 
 def get_outputdir():
     return os.path.join(_ROOT, 'output/')
+
+
+def get_sqlsourcetabledir():
+    return os.path.join(_ROOT, 'data/test_source/')

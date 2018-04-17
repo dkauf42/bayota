@@ -59,38 +59,43 @@ class AdditionalConstraintsFrame(tk.Frame):
         tk.Label(self, text="Animal BMPs", anchor='e').grid(row=2, column=0, sticky=tk.E)
         tk.Label(self, text="Manure BMPs", anchor='e').grid(row=3, column=0, sticky=tk.E)
 
-    def update_box_options(self, optinstance):
-        """Populate the constraint frame with list of eligible bmps included in the OptInstance
+    def update_box_options(self, optcase):
+        """Populate the constraint frame with list of eligible bmps included in the OptCase
         Args:
-            optinstance (OptInstance):
+            optcase (OptCase):
         """
-        print("additionalconstraints_frame:update_box_options: finding eligible parameters and their ya'adim...")
-
-        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        optinstance.generate_emptyparametermatrices()
-        optinstance.mark_eligibility()
-        optinstance.generate_boundsmatrices()
+        # Generate the decision space
+        optcase.proceed_from_geoagencysectorids_to_decision_space()
 
         # Create Dropdown and Range Sliders (Land)
-        land = optinstance.pmatrices['ndas']
+        land_table = optcase.land_slabidtable.drop_duplicates(subset=['bmpid'])
+        list_of_bmps = optcase.queries.bmpnames_from_bmpids(bmpids=land_table['bmpid']).bmpshortname.tolist()
+        list_of_max_hubs_for_bmps = dict(zip(list_of_bmps, land_table['upperbound'].tolist()))
+        list_of_min_hlbs_for_bmps = dict(zip(list_of_bmps, land_table['lowerbound'].tolist()))
         self.bmpcomboslider_land = BmpComboSlider(self,
-                                                  dropdownlist=['Select BMP'] + land.get_list_of_eligible_bmps(),
-                                                  maxs_dict=land.get_list_of_max_hubs_for_bmps(),
-                                                  mins_dict=land.get_list_of_min_hlbs_for_bmps())
+                                                  dropdownlist=['Select BMP'] + list_of_bmps,
+                                                  maxs_dict=list_of_max_hubs_for_bmps,
+                                                  mins_dict=list_of_min_hlbs_for_bmps)
         self.bmpcomboslider_land.grid(row=1, column=1, columnspan=3, sticky='we')
         # (Animal)
-        anim = optinstance.pmatrices['animal']
+        animal_table = optcase.animal_scabidtable.drop_duplicates(subset=['bmpid'])
+        list_of_bmps = optcase.queries.bmpnames_from_bmpids(bmpids=animal_table['bmpid']).bmpshortname.tolist()
+        list_of_max_hubs_for_bmps = dict(zip(list_of_bmps, animal_table['upperbound'].tolist()))
+        list_of_min_hlbs_for_bmps = dict(zip(list_of_bmps, animal_table['lowerbound'].tolist()))
         self.bmpcomboslider_animal = BmpComboSlider(self,
-                                                    dropdownlist=['Select BMP'] + anim.get_list_of_eligible_bmps(),
-                                                    maxs_dict=anim.get_list_of_max_hubs_for_bmps(),
-                                                    mins_dict=anim.get_list_of_min_hlbs_for_bmps())
+                                                    dropdownlist=['Select BMP'] + list_of_bmps,
+                                                    maxs_dict=list_of_max_hubs_for_bmps,
+                                                    mins_dict=list_of_min_hlbs_for_bmps)
         self.bmpcomboslider_animal.grid(row=2, column=1, columnspan=3, sticky='we')
         # (Manure)
-        manu = optinstance.pmatrices['manure']
+        manure_table = optcase.manure_sftabidtable.drop_duplicates(subset=['bmpid'])
+        list_of_bmps = optcase.queries.bmpnames_from_bmpids(bmpids=manure_table['bmpid']).bmpshortname.tolist()
+        list_of_max_hubs_for_bmps = dict(zip(list_of_bmps, manure_table['upperbound'].tolist()))
+        list_of_min_hlbs_for_bmps = dict(zip(list_of_bmps, manure_table['lowerbound'].tolist()))
         self.bmpcomboslider_manure = BmpComboSlider(self,
-                                                    dropdownlist=['Select BMP'] + manu.get_list_of_eligible_bmps(),
-                                                    maxs_dict=manu.get_list_of_max_hubs_for_bmps(),
-                                                    mins_dict=manu.get_list_of_min_hlbs_for_bmps())
+                                                    dropdownlist=['Select BMP'] + list_of_bmps,
+                                                    maxs_dict=list_of_max_hubs_for_bmps,
+                                                    mins_dict=list_of_min_hlbs_for_bmps)
         self.bmpcomboslider_manure.grid(row=3, column=1, columnspan=3, sticky='we')
 
     def clickallsnaptoticks(self, event=None):

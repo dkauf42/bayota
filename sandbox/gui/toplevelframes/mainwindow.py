@@ -9,15 +9,14 @@ from sandbox.gui.useframes.toggleframe import ToggledFrame
 
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, optinstance, no_gui=False, *args, **kwargs):
+    def __init__(self, parent, optcase, *args, **kwargs):
         """The optimization configuration window"""
         my_bgcolor = "bisque"
         tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
         self.parent = parent
 
-        self.optinstance = optinstance
-        self.queries = optinstance.queries
-        self.no_gui = no_gui
+        self.optcase = optcase
+        self.queries = optcase.queries
         
         # We need to get ttk.Label colors to work properly on OS X
         self.style = ttk.Style()
@@ -77,9 +76,6 @@ class MainWindow(tk.Frame):
 
         self.load_metadata_options()
 
-        if no_gui:
-            self.skipgui_and_use_default_test()
-
     def __enter__(self):
         return self
         
@@ -88,25 +84,8 @@ class MainWindow(tk.Frame):
 
     def skipgui_and_use_default_test(self):
         """For Testing Purposes"""
-        self.optinstance.name = 'TestOne'
-        self.optinstance.description = 'TestOneDescription'
-        self.optinstance.baseyear = '1995'
-        self.optinstance.basecondname = 'Example_BaseCond2'
-        self.optinstance.wastewatername = 'Example_WW1'
-        self.optinstance.costprofilename = 'Example_CostProfile1'
-        self.optinstance.geoscalename = 'County'
-        self.optinstance.geoareanames = ['Adams, PA']
-
-        self.optinstance.geographies_included = self.queries.source.\
-            get_lrseg_table(scale=self.optinstance.geoscalename, areanames=self.optinstance.geoareanames)
-        self.optinstance.agencies_included = self.queries.base.\
-            get_agencies_in_lrsegs(lrsegs=self.optinstance.geographies_included.LandRiverSegment)
-        self.optinstance.sectors_included = self.queries.source.get_all_sector_names()
-
-        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        self.optinstance.generate_emptyparametermatrices()
-        self.optinstance.mark_eligibility()
-        self.optinstance.generate_boundsmatrices()
+        self.optcase.load_example(name='adamscounty')
+        self.optcase.proceed_from_geography_to_decision_space()
 
         self.close_and_submit()
 
@@ -157,24 +136,22 @@ class MainWindow(tk.Frame):
                     self.save_constraints()
 
     def load_metadata_options(self):
-        self.metadataframe.load_options(self.queries.source)
+        self.metadataframe.load_options(self.queries)
 
     def save_metadata(self):
         print('mainwindow:save_metadata: saving metadata...')
-        self.optinstance.save_metadata(self.metadataframe.get_results())
-        lrseg_table = self.queries.source.get_lrseg_table(scale=self.optinstance.geoscalename,
-                                                          areanames=self.optinstance.geoareanames)
-        self.optinstance.set_geography(geotable=lrseg_table)
+        self.optcase.save_metadata(self.metadataframe.get_results())
+        self.optcase.populate_geography_from_scale_and_areas()
 
     def load_freeparamgroup_options(self):
-        self.freeparamframe.update_box_options(queries=self.queries, optinstance=self.optinstance)
+        self.freeparamframe.update_box_options(queries=self.queries, optcase=self.optcase)
 
     def save_freeparamgroups(self):
         print('mainwindow:save_freeparamgroups: saving free parameter groups...')
-        self.optinstance.save_freeparamgrps(self.freeparamframe.get_results())
+        self.optcase.save_freeparamgrps(self.freeparamframe.get_results())
 
     def load_constraint_options(self):  # TODO:add constraint widgets
-        self.additionalconstraintsframe.update_box_options(optinstance=self.optinstance)
+        self.additionalconstraintsframe.update_box_options(optcase=self.optcase)
 
     def save_constraints(self):  # TODO:add constraint widgets
         pass

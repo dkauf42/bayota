@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from sandbox.gui.useframes.dualbox import DualBox
 from collections import namedtuple
+import pandas as pd
 
 
 class MetadataFrame(tk.Frame):
@@ -88,25 +89,29 @@ class MetadataFrame(tk.Frame):
         self.save_button = ttk.Button(self, text='Submit')
         self.save_button.grid(row=9, column=1, sticky='we')
 
-    def load_options(self, qrysource=None):
-        self.qrysource = qrysource
+    def load_options(self, queries=None):
+        self.qrysource = queries
 
-        self.dropdown_baseyr['values'] = ['Select Base Year'] + qrysource.get_base_year_names()
+        self.dropdown_baseyr['values'] = ['Select Base Year'] + queries.base_year_names()
         self.dropdown_baseyr.current(0)
-        self.dropdown_basecond['values'] = ['Select Base Condition'] + qrysource.get_base_condition_names()
+        self.dropdown_basecond['values'] = ['Select Base Condition'] + queries.base_condition_names()
         self.dropdown_basecond.current(0)
-        self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + qrysource.get_wastewaterdata_names()
+        self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + queries.wastewaterdata_names()
         self.dropdown_wastewtr.current(0)
-        self.dropdown_costprofile['values'] = ['Select Cost Profile'] + qrysource.get_costprofile_names()
+        self.dropdown_costprofile['values'] = ['Select Cost Profile'] + queries.costprofile_names()
         self.dropdown_costprofile.current(0)
-        self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + qrysource.get_geoscale_names()
+        self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + \
+            queries.all_geotypes().geographytypefullname.tolist()
         self.dropdown_geoscale.current(0)
 
         self.update_geoareabox_options()
 
     def update_geoareabox_options(self, event=None):
         geoscale = self.dropdown_geoscale.get()
-        areas = self.qrysource.get_geoarea_names(scale=geoscale)
+
+        areas = self.qrysource.geonames_from_geotypename(geotype=geoscale)
+        if isinstance(areas, pd.Series):
+            areas = areas.tolist()
 
         self.geoareabox.set_new_left_side_items(areas)
 

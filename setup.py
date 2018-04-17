@@ -9,13 +9,13 @@ with open('README.md') as f:
 with open('LICENSE') as f:
     license_text = f.read()
 
-install_requires = ['numpy==1.14.2',
-                    'pandas==0.22.0',
-                    'Pmw==2.0.1',
-                    'pytz==2018.3',
-                    'six==1.11.0',
-                    'tqdm==4.19.8',
-                    'xlrd==1.1.0',
+install_requires = ['numpy>=1.14.2',
+                    'pandas>=0.22.0',
+                    'Pmw>=2.0.1',
+                    'pytz>=2018.3',
+                    'six>=1.11.0',
+                    'tqdm>=4.19.8',
+                    'xlrd>=1.1.0',
                     ]
 
 setup(name='OptSandbox',
