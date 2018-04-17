@@ -69,7 +69,6 @@ class OptCase:
                        "# of lrsegs:              %s\n" \
                        "agencies included:        %s\n" \
                        "sectors included:         %s\n" \
-                       "parameter matrices: %s\n" \
                        "************************************\n" %\
                        tuple([str(i) for i in [d['name'],
                                                d['description'],
@@ -80,8 +79,8 @@ class OptCase:
                                                d['geoscalename'],
                                                d['geoareanames'],
                                                d['lrsegids'].shape[0],
-                                               d['agencyids'].shape[0],
-                                               d['sectorids'].shape[0],
+                                               d['agencyids'],
+                                               d['sectorids']
                                                ]
                               ])
 
@@ -107,6 +106,19 @@ class OptCase:
         # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
         self.populate_hardbounds()
 
+    def proceed_from_geoagencysectorids_to_decision_space(self):
+
+        self.populate_lrsegagencytable_from_geoagencysectorids()  # TODO: code this method so that the GUI works.
+        # Metadata to BMPs
+        self.populate_loadsources()
+        self.populate_bmps()
+        # QA/QC tables by removing unnecessary BMPs
+        self.qaqc_land_decisionspace()
+        self.qaqc_animal_decisionspace()
+        self.qaqc_manure_decisionspace()
+        # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
+        self.populate_hardbounds()
+
     # Decision space generation methods
     def populate_geography_from_scale_and_areas(self):
         self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
@@ -114,11 +126,19 @@ class OptCase:
         self.countyids = self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
 
     def populate_agencies_from_geography(self):
-        self.agencyids = self.queries.agencyids_from_lrsegids(lrsegids=self.lrsegids)
-        self.lrseg_agency_table = self.queries.agencyidPlusLRsegs_from_lrsegids(lrsegids=self.lrsegids)
+        """ make la_table from lrsegids alone """
+        self.lrseg_agency_table = self.queries.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
+        self.agencyids = self.lrseg_agency_table.loc[:, ['agencyid']]
 
     def populate_sectors(self):
         self.sectorids = self.queries.all_sectorids()
+
+    def populate_lrsegagencytable_from_geoagencysectorids(self):
+        """ make la_table when agencyids have already been populated """
+        all_lrseg_agencyids_table = self.queries.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
+
+        columnmask = ['lrsegid', 'agencyid']
+        self.lrseg_agency_table = all_lrseg_agencyids_table.loc[:, columnmask].merge(self.agencyids, how='inner')
 
     def populate_loadsources(self):
         self.source_lrseg_agency_table = self.\
@@ -256,8 +276,8 @@ class OptCase:
         #self.get_geographies_included(areanames=self.geoareanames)
 
     def save_freeparamgrps(self, freeparamgrp_results):
-        self.agencyids = freeparamgrp_results.agencies
-        self.sectorids = freeparamgrp_results.sectors
+        self.agencyids = self.queries.agencyids_from(agencycodes=freeparamgrp_results.agencies)
+        self.sectorids = self.queries.sectorids_from(sectornames=freeparamgrp_results.sectors)
 
     # Generating scenario(s) from the decision space
     def generate_scenario(self, scenariotype=''):

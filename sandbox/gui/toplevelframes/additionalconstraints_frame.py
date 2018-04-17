@@ -64,12 +64,11 @@ class AdditionalConstraintsFrame(tk.Frame):
         Args:
             optcase (OptCase):
         """
-        print("additionalconstraints_frame:update_box_options: finding eligible parameters and their ya'adim...")
+        print("additionalconstraints_frame.update_box_options(): finding eligible parameters and their ya'adim...")
+        print(optcase)
 
-        # Generate a emptyparametermatrix with rows(i)=seg-agency-sources X columns(j)=BMPs
-        optcase.generate_emptyparametermatrices()
-        optcase.mark_eligibility()
-        optcase.generate_boundsmatrices()
+        # Generate the decision space
+        optcase.proceed_from_geoagencysectorids_to_decision_space()
 
         # Create Dropdown and Range Sliders (Land)
         land = optcase.pmatrices['ndas']

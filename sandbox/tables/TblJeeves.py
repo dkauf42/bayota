@@ -224,21 +224,13 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['agencyid']]
 
-    def agencyidPlusLRsegs_from_lrsegids(self, lrsegids=None):
+    def agencylrsegidtable_from_lrsegids(self, lrsegids=None):
         TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
 
         columnmask = ['lrsegid', 'agencyid']
         tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
 
         return tblsubset.loc[:, ['lrsegid', 'agencyid']]
-
-    def agencyids_from_lrsegids(self, lrsegids=None):
-        TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
-
-        columnmask = ['lrsegid', 'agencyid']
-        tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
-
-        return tblsubset.loc[:, ['agencyid']]
 
     def agencies_from_lrsegnames(self, lrsegnames=None):
         if not isinstance(lrsegnames, list):
@@ -247,7 +239,7 @@ class TblJeeves:
         TblAgency = self.source.TblAgency  # get relevant source data
 
         tblwithlrsegids = self.lrsegids_from(lrsegnames=lrsegnames)
-        tblwithagencyids = self.agencyids_from_lrsegids(lrsegids=tblwithlrsegids)
+        tblwithagencyids = self.agencylrsegidtable_from_lrsegids(lrsegids=tblwithlrsegids).loc[:, ['agencyid']]
 
         columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
         tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
@@ -261,7 +253,7 @@ class TblJeeves:
         print(lrsegids)
         print(type(lrsegids))
 
-        tblwithagencyids = self.agencyids_from_lrsegids(lrsegids=lrsegids)
+        tblwithagencyids = self.agencylrsegidtable_from_lrsegids(lrsegids=lrsegids).loc[:, ['agencyid']]
 
         columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
         tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
