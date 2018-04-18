@@ -20,6 +20,8 @@ sys.path.append(script_dir)
 def main(numinstances=1, testcase=None):
     """Generate an OptCase that populates with metadata, freeparamgroups, constraints, and a parametermatrix
     Parameters:
+        numinstances (int):
+        testcase (int):
     Note:
         This function manages the sequence of events from user-input to initial scenario generation
     """
