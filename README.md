@@ -70,6 +70,14 @@ unittests are located in the subdirectory 'test', and test the following units:
 When running the software with no arguments,
 a GUI appears that allows specifiation of geography and other metadata.
 
+## How do I uninstall?
+
+##### 1. To remove only the files created by "python setup.py install":
+
+    > python setup.py clean
+
+##### 2. To remove everything, delete the directory.
+
 ## Who do I talk to? ###
 
 * The U.S. EPA Chesapeake Bay Program
