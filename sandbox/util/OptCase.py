@@ -56,6 +56,8 @@ class OptCase:
         self.manure_decisionspace = None
 
     def __repr__(self):
+        """ Custom 'print' that displays the metadata defined for this OptCase.
+        """
         d = self.__dict__
 
         formattedstr = "\n***** OptCase Details *****\n" \
@@ -88,7 +90,12 @@ class OptCase:
         return formattedstr
 
     def load_example(self, name=''):
-        """ load pre-defined example metadata options for testing purposes """
+        """ load pre-defined example metadata options for testing purposes
+
+        Parameters:
+            name (str):  this is the name of the example to load.
+
+        """
         ex = Examples(name)
 
         self.name = ex.name
@@ -106,7 +113,13 @@ class OptCase:
     def set_geography(self, geotable=None):
         self.lrsegids = geotable
 
+    # Decision space generation methods
     def proceed_from_geography_to_decision_space(self):
+        """ Generate a decision space from just a geography (scale + area names)
+
+        Note:
+            This will include all agencies, all loadsources, and all bmps.
+        """
         # Metadata to BMPs
         self.populate_geography_from_scale_and_areas()
         self.populate_agencies_from_geography()
@@ -121,6 +134,8 @@ class OptCase:
         self.populate_hardbounds()
 
     def proceed_from_geoagencysectorids_to_decision_space(self):
+        """ Generate a decision space from pre-defined geography (scale + area names), agency, and sector ids.
+        """
         self.populate_lrsegagencytable_from_geoagencysectorids()  # TODO: code this method so that the GUI works.
         # Metadata to BMPs
         self.populate_loadsources()
@@ -132,7 +147,6 @@ class OptCase:
         # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
         self.populate_hardbounds()
 
-    # Decision space generation methods
     def populate_geography_from_scale_and_areas(self):
         self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
                                                                        areanames=self.geoareanames)
@@ -214,6 +228,15 @@ class OptCase:
 
     # QA/QC the decision space
     def qaqc_land_decisionspace(self):
+        """ Remove BMPs that the optimization engine should not modify
+
+        The following BMPs are removed from the decision space:
+        - Urban Stream Restoration Protocol
+        - Non-Urban Stream Restoration Protocol
+        - Stormwater Performance Standards (RR [runoff reduction] and ST [stormwater treatment])
+        - Land policy BMPs
+
+        """
         if self.logtostdout:
             print('OptCase.qaqc_land_decisionspace(): QA/QCing...')
             print('Decision Space Table size: %s' % (self.land_slabidtable.shape, ))
@@ -296,6 +319,11 @@ class OptCase:
 
     # Generating scenario(s) from the decision space
     def generate_scenario(self, scenariotype=''):
+        """ Create a scenario (as CAST-input-tables in .csv format), and write them to file.
+
+        The scenario is created by randomly generating numbers for each variable in the decision space.
+
+        """
         # TODO: code this (randomization for each variable, and then writing to file)
         scenario = ScenarioMaker()
         scenario.initialize_from_decisionspace(land=self.land_decisionspace,
