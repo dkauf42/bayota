@@ -1,0 +1,32 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+
+Each version should:
+- List its release date.
+- Group changes to describe their impact on the project, as follows:
+*Added* for new features.
+*Changed* for changes in existing functionality.
+*Deprecated* for once-stable features removed in upcoming releases.
+*Removed* for deprecated features removed in this release.
+*Fixed* for any bug fixes.
+*Security* to invite users to upgrade in case of vulnerabilities.
+
+## [Unreleased]
+
+## [0.2.0] - 2018-04-18
+### Added
+- This changelod.md file
+- Two data subdirectories for holding the source and metadata .csv files
+
+### Changed
+- Use .csv files loaded from the CAST SQL Server database instead
+of the .xlsx files from CAST website.
+
+### Removed
+- unnecessary TblQuery modules
+
+## [0.1.0] - 2018-01-05
+### Added
+- git source control to this project
