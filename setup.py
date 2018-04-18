@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+import os
+from setuptools import setup, Command
+
+
+class CleanCommand(Command):
+    """Custom clean command to tidy up the project root."""
+    user_options = []
+    def initialize_options(self):
+        pass
+    def finalize_options(self):
+        pass
+    def run(self):
+        os.system('rm -vrf ./build ./dist ./*.egg-info')
 
 
 with open('README.md') as f:
@@ -29,5 +41,6 @@ setup(name='OptSandbox',
       packages=['sandbox', 'data', 'temp', 'output'],
       include_package_data=True,
       install_requires=install_requires,
-      test_suite="sandbox.tests"
+      test_suite="sandbox.tests",
+      cmdclass={'clean': CleanCommand}
       )
