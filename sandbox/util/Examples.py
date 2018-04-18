@@ -6,6 +6,10 @@ writedir = get_outputdir()
 class Examples:
     def __init__(self, name=''):
         """Define example scenarios for testing/prototyping the decision spaces, scenarios, and optimization
+
+        Parameters:
+            name (str): this is the name of the example to load.
+
         """
         self.load(name)
 
