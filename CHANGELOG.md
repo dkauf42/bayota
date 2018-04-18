@@ -17,7 +17,7 @@ Each version should:
 
 ## [0.2.0] - 2018-04-18
 ### Added
-- This changelod.md file
+- This changelog.md file
 - Two data subdirectories for holding the source and metadata .csv files
 
 ### Changed
