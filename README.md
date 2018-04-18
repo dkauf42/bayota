@@ -19,14 +19,29 @@ A simple example:
 python sandboxer.py
 ```
 
+Help is available by using the "-h" parameter:
+
+```python
+python sandboxer.py -h
+```
+
+Example test cases are available by using the "-t" parameter:
+
+```python
+python sandboxer.py -t 1
+```
+
+Note:
+There are three test cases available, and
+no GUI appears when running a test case.
+
 ## How do I get set up?
 
 It is recommended to follow this order:
 1) run install from the setup file to configure
 the python environment with necessary dependencies
 2) run unittests (see below) to ensure proper functioning
-3) run optimization test case
-4) run desired optimization experiments
+3) run desired optimization experiments
 
 ### Installing
 
@@ -47,14 +62,6 @@ unittests are located in the subdirectory 'test', and test the following units:
 * sandboxer.main()
 * sandbox.util.OptCase
 * sandbox.tables.TblJeeves
-
-### Running an optimization test case
-
-    > python sandboxer.py -t 1
-
-Test case #1 generates CAST scenarios for the county of Adams, PA.
-
-Note: no GUI appears when running the test case.
 
 ### Running custom optimization experiments
 
