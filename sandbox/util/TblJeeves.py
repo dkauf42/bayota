@@ -249,10 +249,6 @@ class TblJeeves:
     def agencies_from_lrsegids(self, lrsegids=None):
         TblAgency = self.source.TblAgency  # get relevant source data
 
-        print('TblJeeves.agencies_from_lrsegids():')
-        print(lrsegids)
-        print(type(lrsegids))
-
         tblwithagencyids = self.agencylrsegidtable_from_lrsegids(lrsegids=lrsegids).loc[:, ['agencyid']]
 
         columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
@@ -426,9 +422,6 @@ class TblJeeves:
         columnmask = ['bmpid', 'loadsourceid']
         tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(SourceLrsegAgencyIDtable, how='inner')
 
-        # print('TblJeeves.land_slabidtable_from_SourceLrsegAgencyIDtable():')
-        # print(tblsubset)
-
         return tblsubset
 
     def animal_scabidtable_from_SourceCountyAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
@@ -443,35 +436,20 @@ class TblJeeves:
         nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
         sca_table = sca_table[sca_table["agencyid"] == nonfedid]
 
-        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()0:')
-        # print(sca_table)
-
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
         sca_table['baseconditionid'] = baseconditionid.baseconditionid.tolist()[0]
-
-        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()1:')
-        # print(sca_table)
 
         # Get which animals are present in the county, agency, loadsources
         columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sca_table, how='inner')
 
-        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()2:')
-        # print(tblsubset)
-
         # Get the animalgroups that each animalid belongs to
         columnmask = ['animalgroupid', 'animalid']
         tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
 
-        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()3:')
-        # print(tblsubset)
-
         # Get the BMPs that can be applied to each animalgroupid
         columnmask = ['animalgroupid', 'bmpid']
         tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
-
-        # print('TblJeeves.animal_scabidtable_from_SourceCountyAgencyIDtable()4:')
-        # print(tblsubset)
 
         return tblsubset
 
@@ -488,15 +466,9 @@ class TblJeeves:
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
         sca_table['baseconditionid'] = baseconditionid.baseconditionid.tolist()[0]
 
-        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()0:')
-        # print(sca_table)
-
         # For Animals, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
         nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
         sca_table = sca_table[sca_table["agencyid"] == nonfedid]
-
-        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()1:')
-        # print(sca_table)
 
         # For Manure, only the "Non-Permitted Feeding Space" and "Permitted Feeding Space" load sources matter,
         # so remove all rows with loadsources not equal to them
@@ -504,9 +476,6 @@ class TblJeeves:
         pfsid = TblLoadSource['loadsourceid'][TblLoadSource['loadsource'] == 'Permitted Feeding Space'].values[0]
         allowed_loadsource_list = [npfsid]  # , pfsid]  (ONLY USE ONE FOR NOW) TODO: check-we only need one of the two
         sca_table = sca_table.loc[sca_table['loadsourceid'].isin(allowed_loadsource_list)]
-
-        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()2:')
-        # print(sca_table)
 
         # For Manure, calculate all of the From-To permutations
         allperms = list(permutations(sca_table.countyid, 2))
@@ -522,29 +491,17 @@ class TblJeeves:
             sfta_table = zser.apply(pd.Series)
             sfta_table.columns = ['countyidFrom', 'countyidTo']
 
-            # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()3:')
-            # print(sfta_table)
-
             sca_table['countyidFrom'] = sca_table['countyid']  # duplicate the countyid column with the countyidFrom name
             columnmask = ['countyidFrom', 'countyidTo']
             sfta_table = sfta_table.loc[:, columnmask].merge(sca_table, how='inner')
-
-            # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()4:')
-            # print(sfta_table)
 
         # Get which animals are present in the county, agency, loadsources
         columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sfta_table, how='inner')
 
-        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()5:')
-        # print(tblsubset)
-
         # Get the animalgroups that each animalid belongs to
         columnmask = ['animalgroupid', 'animalid']
         tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
-
-        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()6:')
-        # print(tblsubset)
 
         # # Get the BMPs that can be applied to each animalgroupid
         # columnmask = ['animalgroupid', 'bmpid']
@@ -555,9 +512,6 @@ class TblJeeves:
         tblsubset['bmpid'] = mtid
 
         tblsubset.drop(['countyid'], axis=1, inplace=True)
-
-        # print('TblJeeves.manure_sftabidtable_from_SourceFromToAgencyIDtable()7:')
-        # print(tblsubset)
 
         return tblsubset
 
