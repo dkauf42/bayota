@@ -1,9 +1,8 @@
-# README #
-
-This README documents the steps necessary to get this application
-up and running.
-
 # Overview
+
+This README documents the steps necessary to get the "OptSandbox"
+application up and running.
+
 "OptSandbox" is an optimization application developed for
 the Chesapeake Bay Assessement Scenario Tool (CAST)
 
@@ -13,19 +12,19 @@ the Chesapeake Bay Assessement Scenario Tool (CAST)
 
 ## Usage
 
-A simple example:
+###### A simple example:
 
 ```python
 python sandboxer.py
 ```
 
-Help is available by using the "-h" parameter:
+###### Help is available by using the "-h" parameter:
 
 ```python
 python sandboxer.py -h
 ```
 
-Example test cases are available by using the "-t" parameter:
+###### Example test cases are available by using the "-t" parameter:
 
 ```python
 python sandboxer.py -t 1
@@ -43,7 +42,7 @@ the python environment with necessary dependencies
 2) run unittests (see below) to ensure proper functioning
 3) run desired optimization experiments
 
-### Installing
+#### Install
 
     > python setup.py install
 
@@ -54,7 +53,7 @@ the python environment with necessary dependencies
 * Database configuration
 * Deployment instructions
 
-### Running the unittests
+#### Run the unittests
 
     > python setup.py test
 
@@ -63,7 +62,7 @@ unittests are located in the subdirectory 'test', and test the following units:
 * sandbox.util.OptCase
 * sandbox.tables.TblJeeves
 
-### Running custom optimization experiments
+#### Run custom optimization experiments
 
     > python sandboxer.py
 
