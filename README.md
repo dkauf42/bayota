@@ -14,21 +14,15 @@ application up and running.
 
 ###### A simple example:
 
-```python
-python sandboxer.py
-```
+    > python sandboxer.py
 
 ###### Help is available by using the "-h" parameter:
 
-```python
-python sandboxer.py -h
-```
+    > python sandboxer.py -h
 
 ###### Example test cases are available by using the "-t" parameter:
 
-```python
-python sandboxer.py -t 1
-```
+    > python sandboxer.py -t 1
 
 Note:
 There are three test cases available, and
