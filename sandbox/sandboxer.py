@@ -72,12 +72,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='SANDBOXER',
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description=textwrap.dedent('''\
-                                                 Please do not mess up this text!
                                                  Create and run an optimization case
                                                  --------------------------------
-                                                     I have indented it
-                                                     exactly the way
-                                                     I want it
+                                                 Generate a Decision Space    
+                                                     * specify metadata
+                                                        - base condition
+                                                        - wastewater data
+                                                        - cost profile
+                                                        - geography
+                                                     * specify free parameter groups
+                                                     * specify constraints
+                                                 Generate a Scenario
                                                  '''))
     parser.add_argument('-t', choices=[1, 2, 3], type=int, help='test case #')
     args = parser.parse_args()
