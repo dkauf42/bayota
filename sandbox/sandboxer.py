@@ -32,22 +32,16 @@ def main(numinstances=1, testcase=None):
 
         if testcase == 1:
             print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
-            # TODO: make this work with the sqltables!
-            """For Testing Purposes"""
             optcase.load_example(name='adamscounty')
             optcase.proceed_from_geography_to_decision_space()
 
         elif testcase == 2:
             print('\nTEST CASE 2 : No GUI; 2 Counties: ("Adams, PA" and "Anne Arundel, MD")\n')
-            # TODO: make this work with the sqltables!
-            """For Testing Purposes"""
             optcase.load_example(name='adams_and_annearundel')
             optcase.proceed_from_geography_to_decision_space()
 
         elif testcase == 3:
             print('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
-            # TODO: make this work with the sqltables!
-            """For Testing Purposes"""
             optcase.load_example(name='adams_annearundel_and_york')
             optcase.proceed_from_geography_to_decision_space()
 
