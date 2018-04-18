@@ -11,7 +11,6 @@ import textwrap
 import tkinter as tk
 
 from sandbox.gui.toplevelframes.mainwindow import MainWindow
-from sandbox.util.InputsToCast import InputsToCast
 from sandbox.util.OptCase import OptCase
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
