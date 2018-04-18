@@ -1,6 +1,6 @@
 import unittest
 
-from sandbox.tables.TblJeeves import TblJeeves
+from sandbox.util.TblJeeves import TblJeeves
 
 
 class TddForTables(unittest.TestCase):

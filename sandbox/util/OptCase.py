@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from sandbox.tables.TblJeeves import TblJeeves
+from sandbox.util.TblJeeves import TblJeeves
 from sandbox.util.ScenarioMaker import ScenarioMaker
 from sandbox.util.Examples import Examples
 from sandbox.__init__ import get_outputdir
