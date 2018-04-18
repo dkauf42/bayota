@@ -88,6 +88,7 @@ class OptCase:
         return formattedstr
 
     def load_example(self, name=''):
+        """ load pre-defined example metadata options for testing purposes """
         ex = Examples(name)
 
         self.name = ex.name
@@ -120,7 +121,6 @@ class OptCase:
         self.populate_hardbounds()
 
     def proceed_from_geoagencysectorids_to_decision_space(self):
-
         self.populate_lrsegagencytable_from_geoagencysectorids()  # TODO: code this method so that the GUI works.
         # Metadata to BMPs
         self.populate_loadsources()
@@ -205,9 +205,12 @@ class OptCase:
 
     def populate_hardbounds(self):
         # TODO: code this
-        self.land_decisionspace = self.queries.appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
-        self.animal_decisionspace = self.queries.appendBounds_to_animal_scabidtable(scabidtable=self.animal_scabidtable)
-        self.manure_decisionspace = self.queries.appendBounds_to_manure_sftabidtable(sftabidtable=self.manure_sftabidtable)
+        self.land_decisionspace = self.queries.\
+            appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
+        self.animal_decisionspace = self.queries.\
+            appendBounds_to_animal_scabidtable(scabidtable=self.animal_scabidtable)
+        self.manure_decisionspace = self.queries.\
+            appendBounds_to_manure_sftabidtable(sftabidtable=self.manure_sftabidtable)
 
     # QA/QC the decision space
     def qaqc_land_decisionspace(self):
@@ -286,7 +289,6 @@ class OptCase:
         self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
         self.lrsegids = None
-        #self.get_geographies_included(areanames=self.geoareanames)
 
     def save_freeparamgrps(self, freeparamgrp_results):
         self.agencyids = self.queries.agencyids_from(agencycodes=freeparamgrp_results.agencies)
