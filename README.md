@@ -10,7 +10,7 @@ the Chesapeake Bay Assessement Scenario Tool (CAST)
 This README documents the steps necessary to get the "OptSandbox"
 application up and running.
 
-## Usage
+# Usage
 
 ###### A simple example:
 
@@ -28,7 +28,7 @@ Note:
 There are three test cases available, and
 no GUI appears when running a test case.
 
-## How do I get set up?
+# How do I get set up?
 
 It is recommended to follow this order:
 1) run install from the setup file to configure
@@ -36,7 +36,7 @@ the python environment with necessary dependencies
 2) run unittests (see below) to ensure proper functioning
 3) run desired optimization experiments
 
-#### Install
+### Install
 
     > python setup.py install
 
@@ -63,7 +63,7 @@ unittests are located in the subdirectory 'test', and test the following units:
 When running the software with no arguments,
 a GUI appears that allows specifiation of geography and other metadata.
 
-## How do I uninstall?
+# How do I uninstall?
 
 ##### 1. To remove only the files created by "python setup.py install":
 
@@ -71,7 +71,7 @@ a GUI appears that allows specifiation of geography and other metadata.
 
 ##### 2. To remove everything, delete the directory.
 
-## Who do I talk to? ###
+# Who do I talk to? ###
 
 * The U.S. EPA Chesapeake Bay Program
 * Daniel E. Kaufman: dkaufman@chesapeakebay.net
