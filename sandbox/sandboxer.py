@@ -74,15 +74,15 @@ if __name__ == '__main__':
                                      description=textwrap.dedent('''\
                                                  Create and run an optimization case
                                                  --------------------------------
-                                                 Generate a Decision Space    
-                                                     * specify metadata
-                                                        - base condition
-                                                        - wastewater data
-                                                        - cost profile
-                                                        - geography
-                                                     * specify free parameter groups
-                                                     * specify constraints
-                                                 Generate a Scenario
+                                                 1. Generate a Decision Space    
+                                                      * specify metadata
+                                                         - base condition
+                                                         - wastewater data
+                                                         - cost profile
+                                                         - geography
+                                                      * specify free parameter groups
+                                                      * specify constraints
+                                                 2. Generate a Scenario
                                                  '''))
     parser.add_argument('-t', choices=[1, 2, 3], type=int, help='test case #')
     args = parser.parse_args()
