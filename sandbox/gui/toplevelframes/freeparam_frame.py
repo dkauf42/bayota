@@ -49,7 +49,7 @@ class FreeParamFrame(tk.Frame):
         """Populate first dualbox with agencies included in OptCase and second dualbox with all sectors
 
         Args:
-            queries (TblQuery):
+            queries (TblJeeves):
             optcase (OptCase):
         """
 
