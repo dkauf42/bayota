@@ -1,8 +1,9 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from sandbox.gui.useframes.dualbox import DualBox
 from collections import namedtuple
 import pandas as pd
+
+from sandbox.gui.useframes.DualBox import DualBox
 
 
 class MetadataFrame(tk.Frame):

@@ -1,7 +1,8 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from sandbox.gui.useframes.dualbox import DualBox
 from collections import namedtuple
+
+from sandbox.gui.useframes.DualBox import DualBox
 
 
 class FreeParamFrame(tk.Frame):

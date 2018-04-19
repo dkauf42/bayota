@@ -1,11 +1,11 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from sandbox.gui.toplevelframes.topframe import TopFrame
-from sandbox.gui.toplevelframes.metadata_frame import MetadataFrame
-from sandbox.gui.toplevelframes.freeparam_frame import FreeParamFrame
-from sandbox.gui.toplevelframes.additionalconstraints_frame import AdditionalConstraintsFrame
-from sandbox.gui.useframes.toggleframe import ToggledFrame
+from sandbox.gui.toplevelframes.TopFrame import TopFrame
+from sandbox.gui.toplevelframes.MetadataFrame import MetadataFrame
+from sandbox.gui.toplevelframes.FreeParamFrame import FreeParamFrame
+from sandbox.gui.toplevelframes.AdditionalConstraintsFrame import AdditionalConstraintsFrame
+from sandbox.gui.useframes.ToggleFrame import ToggledFrame
 
 
 class MainWindow(tk.Frame):
