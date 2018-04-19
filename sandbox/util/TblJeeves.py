@@ -568,7 +568,6 @@ class TblJeeves:
                          'bmpshortname': 'BmpShortName'}, inplace=True)
 
         newtable["StateUniqueIdentifier"] = np.nan
-        newtable["Amount"] = 100
         newtable["Unit"] = 'Percent'
 
         return newtable
@@ -609,7 +608,6 @@ class TblJeeves:
                          'animalgroup': 'AnimalGroup'}, inplace=True)
 
         newtable["StateUniqueIdentifier"] = np.nan
-        newtable["Amount"] = 100
         newtable["Unit"] = 'Percent'
 
         return newtable
@@ -661,7 +659,6 @@ class TblJeeves:
                          'animalgroup': 'AnimalGroup'}, inplace=True)
 
         newtable["StateUniqueIdentifier"] = np.nan
-        newtable["Amount"] = 100
         newtable["Unit"] = 'Percent'
 
         return newtable
@@ -670,7 +667,6 @@ class TblJeeves:
         newtable = slabidtable
 
         newtable["stateuniqueidentifier"] = np.nan
-        newtable["amount"] = 100
         newtable["unitid"] = 1
 
         return newtable

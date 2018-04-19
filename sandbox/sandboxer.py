@@ -58,7 +58,8 @@ def main(numinstances=1, testcase=None):
             raise ValueError('Unexpected test case argument')
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
-        scenario = optcase.generate_scenario(scenariotype='random')
+        #optcase.generate_scenario(scenariotype='random')
+        optcase.generate_multiple_scenarios(scenariotype='hypercube')
 
         # Write scenario tables to file.
         #inputobj = InputsToCast(optcase.pmatrices, optcase=optcase)

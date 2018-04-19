@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from sandbox.util.TblJeeves import TblJeeves
 from sandbox.util.ScenarioMaker import ScenarioMaker
+from sandbox.util.PopulationMaker import PopulationMaker
 from sandbox.util.Examples import Examples
 from sandbox.__init__ import get_outputdir
 
@@ -55,6 +56,11 @@ class OptCase:
         self.land_decisionspace = None
         self.animal_decisionspace = None
         self.manure_decisionspace = None
+
+        # Scenarios
+        self.scenarios_land = []
+        self.scenarios_animal = []
+        self.scenarios_manure = []
 
     def __repr__(self):
         """ Custom 'print' that displays the metadata defined for this OptCase.
@@ -337,11 +343,46 @@ class OptCase:
             scenario.randomize_betweenbounds()
 
         # translate the columns that are ids to names
-        land_names = self.queries.translate_slabidtable_to_slabnametable(slabidtable=scenario.land)
-        animal_names = self.queries.translate_scabidtable_to_scabnametable(scabidtable=scenario.animal)
-        manure_names = self.queries.translate_sftabidtable_to_sftabnametable(sftabidtable=scenario.manure)
+        self.scenarios_land.append(self.queries.translate_slabidtable_to_slabnametable(slabidtable=scenario.land))
+        self.scenarios_animal.append(self.queries.translate_scabidtable_to_scabnametable(scabidtable=scenario.animal))
+        self.scenarios_manure.append(self.queries.translate_sftabidtable_to_sftabnametable(sftabidtable=scenario.manure))
 
         # Scenario is written to file.
-        land_names.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.csv'))
-        animal_names.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.csv'))
-        manure_names.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.csv'))
+        self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.csv'))
+        self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.csv'))
+        self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.csv'))
+
+    def generate_multiple_scenarios(self, scenariotype=''):
+        """ Create a scenario (as CAST-input-tables in .csv format), and write them to file.
+
+        The scenario is created by randomly generating numbers for each variable in the decision space.
+
+        """
+        population = PopulationMaker()
+        population.initialize_from_decisionspace(land=self.land_decisionspace,
+                                                 animal=self.animal_decisionspace,
+                                                 manure=self.manure_decisionspace)
+
+        if scenariotype == 'hypercube':
+            population.generate_latinhypercube()
+        else:
+            population.generate_latinhypercube()
+
+        # columns that are ids are translated to names, and scenarios are written to file.
+        i = 0
+        for df in population.scenarios_land:
+            self.scenarios_land.append(self.queries.translate_slabidtable_to_slabnametable(slabidtable=df))
+            self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.csv' % i))
+            i += 1
+
+        i = 0
+        for df in population.scenarios_animal:
+            self.scenarios_animal.append(self.queries.translate_scabidtable_to_scabnametable(scabidtable=df))
+            self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.csv' % i))
+            i += 1
+
+        i = 0
+        for df in population.scenarios_manure:
+            self.scenarios_manure.append(self.queries.translate_sftabidtable_to_sftabnametable(sftabidtable=df))
+            self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.csv' % i))
+            i += 1

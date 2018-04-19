@@ -8,52 +8,44 @@ import pyDOE
 
 class PopulationMaker:
     def __init__(self):
-        self.land = None
-        self.animal = None
-        self.manure = None
+        self.dsland = None
+        self.dsanimal = None
+        self.dsmanure = None
+
+        self.scenarios_land = []
+        self.scenarios_animal = []
+        self.scenarios_manure = []
 
     def initialize_from_decisionspace(self, land=None, animal=None, manure=None):
-        self.land = land.copy()
-        self.animal = animal.copy()
-        self.manure = manure.copy()
+        self.dsland = land.copy()
+        self.dsanimal = animal.copy()
+        self.dsmanure = manure.copy()
 
     def generate_latinhypercube(self):
-        """Generate random integers for each non-empty (Geo, Agency, Source, BMP) coordinate
+        """Conduct a latin hypercube sampling from within the lower/upper bounds
         """
+        # Conduct a latin hypercube sampling from within the lower/upper bounds
+        numsamples = 10
+        self.scenarios_land = self._generate_latinhypercube_from_table(table=self.dsland, numsamples=numsamples)
+        self.scenarios_animal = self._generate_latinhypercube_from_table(table=self.dsanimal, numsamples=numsamples)
+        self.scenarios_manure = self._generate_latinhypercube_from_table(table=self.dsmanure, numsamples=numsamples)
 
-        landvectors = self.generate_latinhypercube_from_bounds(lower=self.land['lowerbound'].values,
-                                                               upper=self.land['upperbound'].values)
-        animalvectors = self.generate_latinhypercube_from_bounds(lower=self.animal['lowerbound'].values,
-                                                                 upper=self.animal['upperbound'].values)
-        manurevectors = self.generate_latinhypercube_from_bounds(lower=self.manure['lowerbound'].values,
-                                                                 upper=self.manure['upperbound'].values)
+    @staticmethod
+    def _generate_latinhypercube_from_table(table, numsamples):
+        lhd = pyDOE.lhs(n=len(table.upperbound), samples=numsamples)
+        # lower and upper bound vectors are tiled so that they match the shape of the latin hypercube
+        lower = np.tile(table.lowerbound, (numsamples, 1))
+        upper = np.tile(table.upperbound, (numsamples, 1))
+        # samples in the 0:1 range are rescaled to the lower:upper range
+        lhd_full = ((upper - lower) * lhd + lower).transpose()
+        # Create new dataframes, each with a new 'amount' column containing each hypercube sample
+        dflist = []
+        for i in range(0, numsamples):
+            thisdf = table.copy().drop(columns=['lowerbound', 'upperbound'])
+            thisdf['Amount'] = lhd_full[:, i]
+            dflist.append(thisdf)
 
-        # self.land['amount'] = self._randomvaluesbetween(lower=self.land['lowerbound'].values,
-        #                                                 upper=self.land['upperbound'].values)
-        # self.animal['amount'] = self._randomvaluesbetween(lower=self.animal['lowerbound'].values,
-        #                                                   upper=self.animal['upperbound'].values)
-        # self.manure['amount'] = self._randomvaluesbetween(lower=self.manure['lowerbound'].values,
-        #                                                   upper=self.manure['upperbound'].values)
-
-        # rand_matrix = self._randomvaluesbetween(lowermatrix=self.hardlowerboundmatrix.values,
-        #                                         uppermatrix=self.hardupperboundmatrix.values)
-        # self.scenariomatrix = pd.DataFrame(rand_matrix, index=self.hardupperboundmatrix.index,
-        #                                    columns=self.hardupperboundmatrix.columns)
-
-    def generate_latinhypercube_from_bounds(self, lower, upper):
-        if type(lower) != type(upper):
-            raise TypeError('Lower and Upper bound objects must be of the same type')
-        if len(lower) != len(upper):
-            raise ValueError('Lower and Upper bound objects must be of the same length')
-
-        lhd = pyDOE.lhs(n=len(upper), samples=10)
-
-        if isinstance(lower, np.ndarray):
-            return (upper - lower) * lhd + lower
-        else:
-            raise TypeError('Unrecognized type, not coded for.')
-
-
+        return dflist
 
     @staticmethod
     def expand_grid(data_dict):
