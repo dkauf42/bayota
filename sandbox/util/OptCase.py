@@ -329,12 +329,18 @@ class OptCase:
         scenario.initialize_from_decisionspace(land=self.land_decisionspace,
                                                animal=self.animal_decisionspace,
                                                manure=self.manure_decisionspace)
+
         if scenariotype == 'random':
             scenario.randomize_betweenbounds()
         else:
             scenario.randomize_betweenbounds()
 
+        # translate the columns that are ids to names
+        land_names = self.queries.translate_slabidtable_to_slabnametable(slabidtable=scenario.land)
+        animal_names = self.queries.translate_scabidtable_to_scabnametable(scabidtable=scenario.animal)
+        manure_names = self.queries.translate_sftabidtable_to_sftabnametable(sftabidtable=scenario.manure)
+
         # Scenario is written to file.
-        scenario.land.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.csv'))
-        scenario.animal.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.csv'))
-        scenario.manure.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.csv'))
+        land_names.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.csv'))
+        animal_names.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.csv'))
+        manure_names.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.csv'))
