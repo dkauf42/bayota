@@ -10,8 +10,8 @@ import argparse
 import textwrap
 import tkinter as tk
 
-from sandbox.gui.toplevelframes.mainwindow import MainWindow
 from sandbox.util.OptCase import OptCase
+from sandbox.gui.toplevelframes.MainWindow import MainWindow
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
@@ -67,7 +67,9 @@ def main(numinstances=1, testcase=None):
         print("Loading time", timeit.default_timer() - start_time)
         print('<DONE>')
 
-        return 1
+        optcase.successful_creation_log = True
+
+        return optcase
 
 
 if __name__ == '__main__':

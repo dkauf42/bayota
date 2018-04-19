@@ -13,6 +13,7 @@ class OptCase:
         """Represent the options and subset of data necessary for conducting a particular optimization run
         """
         self.logtostdout = False
+        self.successful_creation_log = False
 
         self.queries = None
 
