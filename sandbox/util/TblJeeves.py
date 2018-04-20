@@ -37,6 +37,13 @@ def checkOnlyOne(iterable):
     return any(i) and not any(i)
 
 
+def forceToSingleColumnDataFrame(inputarg, colname=''):
+    if not isinstance(inputarg, pd.DataFrame):
+        return pd.DataFrame(inputarg, columns=[colname])
+    else:
+        return inputarg
+
+
 class TblJeeves:
     def __init__(self):
         """Wrapper for table queries. Provides methods for querying different information
@@ -151,8 +158,7 @@ class TblJeeves:
         return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
 
     def lrsegnames_from(self, lrsegids=None):
-        if not isinstance(lrsegids, pd.DataFrame):
-            lrsegids = pd.DataFrame(lrsegids, columns=['landriversegment'])
+        lrsegids = forceToSingleColumnDataFrame(lrsegids, colname='landriversegment')
 
         TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
         columnmask = ['lrsegid', 'landriversegment']
@@ -172,10 +178,11 @@ class TblJeeves:
             return self.__lrsegids_from_countystatestrs(getfrom=countystatestrs)
         elif countyid is not None:
             return self.__lrsegids_from_countyid(getfrom=countyid)
+        else:
+            raise ValueError('unrecognized input')
 
     def __lrsegids_from_lrsegnames(self, getfrom=None):
-        if not isinstance(getfrom, pd.DataFrame):
-            getfrom = pd.DataFrame(getfrom, columns=['landriversegment'])
+        getfrom = forceToSingleColumnDataFrame(getfrom, colname='landriversegment')
 
         TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
         columnmask = ['lrsegid', 'landriversegment']
@@ -188,8 +195,7 @@ class TblJeeves:
         return self.__lrsegids_from_countyid(getfrom=countyids)
 
     def __lrsegids_from_countyid(self, getfrom=None):
-        if not isinstance(getfrom, pd.DataFrame):
-            getfrom = pd.DataFrame(getfrom, columns=['countyid'])
+        getfrom = forceToSingleColumnDataFrame(getfrom, colname='countyid')
 
         TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
 
@@ -215,8 +221,7 @@ class TblJeeves:
 
     # Agency Methods
     def agencyids_from(self, agencycodes=None):
-        if not isinstance(agencycodes, pd.DataFrame):
-            agencycodes = pd.DataFrame(agencycodes, columns=['agencycode'])
+        agencycodes = forceToSingleColumnDataFrame(agencycodes, colname='agencycode')
 
         TblAgency = self.source.TblAgency  # get relevant source data
         columnmask = ['agencycode', 'agencyid']
@@ -262,8 +267,7 @@ class TblJeeves:
 
     # Sector Methods
     def sectorids_from(self, sectornames=None):
-        if not isinstance(sectornames, pd.DataFrame):
-            sectornames = pd.DataFrame(sectornames, columns=['sector'])
+        sectornames = forceToSingleColumnDataFrame(sectornames, colname='sector')
 
         TblSector = self.source.TblSector  # get relevant source data
         columnmask = ['sector', 'sectorid']
@@ -280,19 +284,33 @@ class TblJeeves:
         return TblSector.loc[:, ['sectorid']]
 
     # Load Source Methods
-    def loadsourcegroupids_from(self, sectorids=None):
-        if not isinstance(sectorids, pd.DataFrame):
-            sectorids = pd.DataFrame(sectorids, columns=['sectorid'])
+    def loadsourcegroupids_from(self, sectorids=None, loadsourceids=None):
 
-        TblLoadSourceGroupSector = self.source.TblLoadSourceGroupSector  # get relevant source data
-        columnmask = ['loadsourcegroupid', 'sectorid']
-        tblsubset = TblLoadSourceGroupSector.loc[:, columnmask].merge(sectorids, how='inner')
+        kwargs = (sectorids, loadsourceids)
+        kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
+        if checkOnlyOne(kwargsNoDataFrames) is False:
+            raise ValueError('One and only one keyword argument must be specified')
+
+        if sectorids is not None:
+            sectorids = forceToSingleColumnDataFrame(sectorids, colname='sectorid')
+
+            TblLoadSourceGroupSector = self.source.TblLoadSourceGroupSector  # get relevant source data
+            columnmask = ['loadsourcegroupid', 'sectorid']
+            tblsubset = TblLoadSourceGroupSector.loc[:, columnmask].merge(sectorids, how='inner')
+        elif loadsourceids is not None:
+            loadsourceids = forceToSingleColumnDataFrame(loadsourceids, colname='loadsourceid')
+
+            TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource  # get relevant source data
+            columnmask = ['loadsourcegroupid', 'loadsourceid']
+            tblsubset = TblLoadSourceGroupLoadSource.loc[:, columnmask].merge(loadsourceids, how='inner')
+        else:
+            tblsubset = None
+            raise ValueError('unrecognized input')
 
         return tblsubset.loc[:, ['loadsourcegroupid']]
 
     def loadsourceids_from(self, sectorids=None):
-        if not isinstance(sectorids, pd.DataFrame):
-            sectorids = pd.DataFrame(sectorids, columns=['sectorid'])
+        sectorids = forceToSingleColumnDataFrame(sectorids, colname='sectorid')
 
         TblLoadSource = self.source.TblLoadSource  # get relevant source data
         columnmask = ['loadsourceid', 'sectorid']
@@ -396,8 +414,7 @@ class TblJeeves:
         return TblBmp['bmpid'][TblBmp['bmpshortname'] == bmpshortname].tolist()
 
     def bmpids_from_categoryids(self, categoryids):
-        if not isinstance(categoryids, pd.DataFrame):
-            categoryids = pd.DataFrame(categoryids, columns=['bmpcategoryid'])
+        categoryids = forceToSingleColumnDataFrame(categoryids, colname='bmpcategoryid')
 
         TblBmp = self.source.TblBmp  # get relevant source data
         columnmask = ['bmpcategoryid', 'bmpid']
@@ -406,8 +423,7 @@ class TblJeeves:
         return tblsubset.loc[:, ['bmpid']]
 
     def bmpnames_from_bmpids(self, bmpids):
-        if not isinstance(bmpids, pd.DataFrame):
-            bmpids = pd.DataFrame(bmpids, columns=['bmpid'])
+        bmpids = forceToSingleColumnDataFrame(bmpids, colname='bmpid')
 
         TblBmp = self.source.TblBmp  # get relevant source data
         columnmask = ['bmpshortname', 'bmpid']
@@ -558,14 +574,19 @@ class TblJeeves:
         newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
 
         newtable.drop(['lrsegid', 'stateid', 'agencyid', 'loadsourceid', 'bmpid', 'unitid'], axis=1, inplace=True)
-        newtable.rename({'landriversegment': 'GeographyName',
-                         'stateabbreviation': 'StateAbbreviation',
-                         'agencycode': 'AgencyCode',
-                         'loadsource': 'LoadSourceGroup',
-                         'bmpshortname': 'BmpShortName'}, inplace=True)
+        newtable.rename(columns={'landriversegment': 'GeographyName',
+                                 'stateabbreviation': 'StateAbbreviation',
+                                 'agencycode': 'AgencyCode',
+                                 'loadsource': 'LoadSourceGroup',
+                                 'bmpshortname': 'BmpShortname'}, inplace=True)
 
-        newtable["StateUniqueIdentifier"] = np.nan
-        newtable["Unit"] = 'Percent'
+        newtable['Unit'] = 'Percent'
+
+        if 'Amount' in newtable.columns:
+            newtable['StateUniqueIdentifier'] = np.nan
+            # Reorder columns to match CAST input table format
+            newtable = newtable[['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                 'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']]
 
         return newtable
 
@@ -597,15 +618,23 @@ class TblJeeves:
 
         newtable.drop(['countyid', 'agencyid', 'loadsourceid', 'bmpid',
                        'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
-        newtable.rename({'fips': 'GeographyName',
-                         'stateabbreviation': 'StateAbbreviation',
-                         'agencycode': 'AgencyCode',
-                         'loadsource': 'LoadSourceGroup',
-                         'bmpshortname': 'BmpShortName',
-                         'animalgroup': 'AnimalGroup'}, inplace=True)
+        newtable.rename(columns={'fips': 'GeographyName',
+                                 'stateabbreviation': 'StateAbbreviation',
+                                 'agencycode': 'AgencyCode',
+                                 'loadsource': 'LoadSourceGroup',
+                                 'bmpshortname': 'BmpShortname',
+                                 'animalgroup': 'AnimalGroup'}, inplace=True)
 
-        newtable["StateUniqueIdentifier"] = np.nan
-        newtable["Unit"] = 'Percent'
+        newtable['Unit'] = 'Percent'
+
+        if 'Amount' in newtable.columns:
+            newtable['StateUniqueIdentifier'] = np.nan
+            newtable['NReductionFraction'] = np.nan
+            newtable['PReductionFraction'] = np.nan
+            # Reorder columns to match CAST input table format
+            newtable = newtable[['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                 'GeographyName', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit',
+                                 'NReductionFraction', 'PReductionFraction']]
 
         return newtable
 
@@ -655,22 +684,27 @@ class TblJeeves:
 
         newtable.drop(['agencyid', 'loadsourceid', 'bmpid',
                        'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
-        newtable.rename({'stateabbreviation': 'StateAbbreviation',
-                         'agencycode': 'AgencyCode',
-                         'loadsource': 'LoadSourceGroup',
-                         'bmpshortname': 'BmpShortName',
-                         'animalgroup': 'AnimalGroup'}, inplace=True)
+        newtable.rename(columns={'stateabbreviation': 'StateAbbreviation',
+                                 'agencycode': 'AgencyCode',
+                                 'loadsource': 'LoadSourceGroup',
+                                 'bmpshortname': 'BmpShortname',
+                                 'animalgroup': 'AnimalGroup'}, inplace=True)
 
-        newtable["StateUniqueIdentifier"] = np.nan
-        newtable["Unit"] = 'Percent'
+        newtable['Unit'] = 'Percent'
+
+        if 'Amount' in newtable.columns:
+            newtable['StateUniqueIdentifier'] = np.nan
+            # Reorder columns to match CAST input table format
+            newtable = newtable[['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                 'FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit']]
 
         return newtable
 
     def make_scenario_from_slabidtable(self, slabidtable=None):
         newtable = slabidtable
 
-        newtable["stateuniqueidentifier"] = np.nan
-        newtable["unitid"] = 1
+        newtable['stateuniqueidentifier'] = np.nan
+        newtable['unitid'] = 1
 
         return newtable
 
