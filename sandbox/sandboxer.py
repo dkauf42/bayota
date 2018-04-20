@@ -62,8 +62,7 @@ def main(numinstances=1, testcase=None):
         optcase.generate_multiple_scenarios(scenariotype='hypercube')
 
         # Write scenario tables to file.
-        #inputobj = InputsToCast(optcase.pmatrices, optcase=optcase)
-        #inputobj.matrix_to_table()
+
         print('<Runner Loading Complete>')
         print("Loading time", timeit.default_timer() - start_time)
         print('<DONE>')

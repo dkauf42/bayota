@@ -466,7 +466,7 @@ class TblJeeves:
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
         sca_table['baseconditionid'] = baseconditionid.baseconditionid.tolist()[0]
 
-        # For Animals, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
+        # For Manure, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
         nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
         sca_table = sca_table[sca_table["agencyid"] == nonfedid]
 
@@ -474,26 +474,23 @@ class TblJeeves:
         # so remove all rows with loadsources not equal to them
         npfsid = TblLoadSource['loadsourceid'][TblLoadSource['loadsource'] == 'Non-Permitted Feeding Space'].values[0]
         pfsid = TblLoadSource['loadsourceid'][TblLoadSource['loadsource'] == 'Permitted Feeding Space'].values[0]
-        allowed_loadsource_list = [npfsid]  # , pfsid]  (ONLY USE ONE FOR NOW) TODO: check-we only need one of the two
+        # Why use both feeding space types?  Answer from Olivia:
+        # The two feeding spaces have "the same effect in that the manure has the same concentrations.
+        # But there are different amounts of manure on permitted vs. non-permitted.
+        # If you specified only one, then you would be missing some amount of manure."
+        allowed_loadsource_list = [npfsid, pfsid]
         sca_table = sca_table.loc[sca_table['loadsourceid'].isin(allowed_loadsource_list)]
+        countylist = sca_table.countyid.unique()
 
         # For Manure, calculate all of the From-To permutations
-        allperms = list(permutations(sca_table.countyid, 2))
-        if len(allperms) < 2:
-            sfta_table = sca_table.copy()
-
-            sfta_table['countyidFrom'] = sfta_table.countyid
-            sfta_table['countyidTo'] = sfta_table.countyid
-
-            sfta_table = sfta_table.head(0)  # If there aren't more than one county, then just return a blank table
-        else:
-            zser = pd.Series(allperms)
-            sfta_table = zser.apply(pd.Series)
-            sfta_table.columns = ['countyidFrom', 'countyidTo']
-
-            sca_table['countyidFrom'] = sca_table['countyid']  # duplicate the countyid column with the countyidFrom name
-            columnmask = ['countyidFrom', 'countyidTo']
-            sfta_table = sfta_table.loc[:, columnmask].merge(sca_table, how='inner')
+        allbetweencountyperms = list(permutations(countylist, 2))
+        alloutofwatersheds = list(product(countylist, ['']))  # a blank represents transport out of the watershed
+        zser = pd.Series(allbetweencountyperms + alloutofwatersheds)
+        sfta_table = zser.apply(pd.Series)
+        sfta_table.columns = ['countyidFrom', 'countyidTo']
+        sca_table['countyidFrom'] = sca_table['countyid']  # duplicate countyid column with the countyidFrom name
+        columnmask = ['countyidFrom', 'countyidTo']
+        sfta_table = sfta_table.loc[:, columnmask].merge(sca_table, how='inner')
 
         # Get which animals are present in the county, agency, loadsources
         columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
@@ -630,12 +627,18 @@ class TblJeeves:
         newtable.drop(['countyid', 'countyidFrom'], axis=1, inplace=True)
         newtable.rename(columns={'fips': 'FIPSFrom'}, inplace=True)
 
+        # For countyidTo's that are blank (meaning transport out of the watershed),
+        # we need special consideration and use a RIGHT OUTER JOIN instead of an INNER JOIN.
         columnmask = ['countyid', 'fips']
-        newtable = TblCounty.loc[:, columnmask].merge(newtable, how='inner',
+        newtable = TblCounty.loc[:, columnmask].merge(newtable, how='right',
                                                       left_on='countyid',
                                                       right_on='countyidTo')
         newtable.drop(['countyid', 'countyidTo'], axis=1, inplace=True)
         newtable.rename(columns={'fips': 'FIPSTo'}, inplace=True)
+        # Also because there are NaNs, the merge converts the data type to float instead of integer.
+        # So let's remove the NaNs and then remove the unnecessary decimal points
+        newtable['FIPSTo'] = newtable['FIPSTo'].replace(np.nan, '', regex=True)
+        newtable['FIPSTo'] = newtable['FIPSTo'].astype(dtype=str).replace('\.0', '', regex=True)
 
         # Translate to Agency codes
         columnmask = ['agencycode', 'agencyid']
@@ -670,3 +673,19 @@ class TblJeeves:
         newtable["unitid"] = 1
 
         return newtable
+
+    # Extra Info Methods
+    def appendBmpSector_to_table_with_bmpid(self):
+        pass
+
+    def appendBmpType_to_table_with_bmpid(self):
+        pass
+
+    def appendBmpGroup_to_table_with_bmpid(self):
+        pass
+
+    def appendLoadSourceSector_to_table_with_loadsourceid(self):
+        pass
+
+    def appendLoadSourceMajor_to_table_with_loadsourceid(self):
+        pass
