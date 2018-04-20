@@ -237,21 +237,14 @@ class TblJeeves:
 
         return tblsubset.loc[:, ['lrsegid', 'agencyid']]
 
-    def agencies_from_lrsegnames(self, lrsegnames=None):
+    def agencycodes_from_lrsegnames(self, lrsegnames=None):
         if not isinstance(lrsegnames, list):
             lrsegnames = lrsegnames.tolist()
 
-        TblAgency = self.source.TblAgency  # get relevant source data
-
         tblwithlrsegids = self.lrsegids_from(lrsegnames=lrsegnames)
-        tblwithagencyids = self.agencylrsegidtable_from_lrsegids(lrsegids=tblwithlrsegids).loc[:, ['agencyid']]
+        return self.agencycodes_from_lrsegids(lrsegids=tblwithlrsegids)
 
-        columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
-        tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
-
-        return tblsubset.loc[:, ['agencycode']]
-
-    def agencies_from_lrsegids(self, lrsegids=None):
+    def agencycodes_from_lrsegids(self, lrsegids=None):
         TblAgency = self.source.TblAgency  # get relevant source data
 
         tblwithagencyids = self.agencylrsegidtable_from_lrsegids(lrsegids=lrsegids).loc[:, ['agencyid']]
@@ -285,29 +278,33 @@ class TblJeeves:
 
     # Load Source Methods
     def loadsourcegroupids_from(self, sectorids=None, loadsourceids=None):
-
         kwargs = (sectorids, loadsourceids)
         kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
         if checkOnlyOne(kwargsNoDataFrames) is False:
             raise ValueError('One and only one keyword argument must be specified')
 
         if sectorids is not None:
-            sectorids = forceToSingleColumnDataFrame(sectorids, colname='sectorid')
-
-            TblLoadSourceGroupSector = self.source.TblLoadSourceGroupSector  # get relevant source data
-            columnmask = ['loadsourcegroupid', 'sectorid']
-            tblsubset = TblLoadSourceGroupSector.loc[:, columnmask].merge(sectorids, how='inner')
+            return self.__loadsourcegroupids_from_sectorids(getfrom=sectorids)
         elif loadsourceids is not None:
-            loadsourceids = forceToSingleColumnDataFrame(loadsourceids, colname='loadsourceid')
+            return self.__loadsourcegroupids_from_loadsourceids(getfrom=loadsourceids)
 
-            TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource  # get relevant source data
-            columnmask = ['loadsourcegroupid', 'loadsourceid']
-            tblsubset = TblLoadSourceGroupLoadSource.loc[:, columnmask].merge(loadsourceids, how='inner')
-        else:
-            tblsubset = None
-            raise ValueError('unrecognized input')
+    def __loadsourcegroupids_from_sectorids(self, getfrom=None):
+        getfrom = forceToSingleColumnDataFrame(getfrom, colname='sectorid')
 
-        return tblsubset.loc[:, ['loadsourcegroupid']]
+        TblLoadSourceGroupSector = self.source.TblLoadSourceGroupSector  # get relevant source data
+        columnmask = ['loadsourcegroupid', 'sectorid']
+        tblsubset = TblLoadSourceGroupSector.loc[:, columnmask].merge(getfrom, how='inner')
+
+        return tblsubset.loc[:, ['loadsourcegroupid']]  # pass column name as list so return type is pandas.DataFrame
+
+    def __loadsourcegroupids_from_loadsourceids(self, getfrom=None):
+        getfrom = forceToSingleColumnDataFrame(getfrom, colname='loadsourceid')
+
+        TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource  # get relevant source data
+        columnmask = ['loadsourcegroupid', 'loadsourceid']
+        tblsubset = TblLoadSourceGroupLoadSource.loc[:, columnmask].merge(getfrom, how='inner')
+
+        return tblsubset.loc[:, ['loadsourcegroupid']]  # pass column name as list so return type is pandas.DataFrame
 
     def loadsourceids_from(self, sectorids=None):
         sectorids = forceToSingleColumnDataFrame(sectorids, colname='sectorid')

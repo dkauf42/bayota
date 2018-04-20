@@ -54,7 +54,7 @@ class FreeParamFrame(tk.Frame):
             optcase (OptCase):
         """
 
-        mylist = queries.agencies_from_lrsegids(lrsegids=optcase.lrsegids).agencycode.unique().tolist()
+        mylist = queries.agencycodes_from_lrsegids(lrsegids=optcase.lrsegids).agencycode.unique().tolist()
         self.agencydualbox.set_new_left_side_items(mylist)
 
         mylist = queries.all_sector_names().tolist()
