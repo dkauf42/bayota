@@ -49,7 +49,7 @@ def main(numinstances=1, testcase=None, scale='', areanames=''):
             optcase.proceed_from_geography_to_decision_space()
 
         elif testcase == 99:
-            print('\nTEST CASE 3 : No GUI; Choose your own geography\n')
+            print('\nTEST CASE 99 : No GUI; Custom geography specified.\n')
             optcase.custom_scenario(scale=scale, areanames=areanames)
             optcase.proceed_from_geography_to_decision_space()
 
