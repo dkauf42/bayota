@@ -28,6 +28,7 @@ install_requires = ['numpy>=1.14.2',
                     'six>=1.11.0',
                     'tqdm>=4.19.8',
                     'xlrd>=1.1.0',
+                    'pyDOE>=0.3.8',
                     ]
 
 setup(name='OptSandbox',
