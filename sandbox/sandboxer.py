@@ -17,11 +17,13 @@ script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of 
 sys.path.append(script_dir)
 
 
-def main(numinstances=1, testcase=None):
+def main(numinstances=1, testcase=None, scale='', areanames=''):
     """Generate an OptCase that populates with metadata, freeparamgroups, constraints, and a parametermatrix
     Parameters:
         numinstances (int):
         testcase (int):
+        scale (str): specified for a custom scenario
+        areanames (str): specified for a custom scenario
     Note:
         This function manages the sequence of events from user-input to initial scenario generation
     """
@@ -44,6 +46,11 @@ def main(numinstances=1, testcase=None):
         elif testcase == 3:
             print('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
             optcase.load_example(name='adams_annearundel_and_york')
+            optcase.proceed_from_geography_to_decision_space()
+
+        elif testcase == 99:
+            print('\nTEST CASE 3 : No GUI; Choose your own geography\n')
+            optcase.custom_scenario(scale=scale, areanames=areanames)
             optcase.proceed_from_geography_to_decision_space()
 
         elif not testcase:

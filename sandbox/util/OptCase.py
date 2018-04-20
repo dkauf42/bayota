@@ -114,6 +114,19 @@ class OptCase:
         self.geoscalename = ex.geoscalename
         self.geoareanames = ex.geoareanames
 
+    def custom_scenario(self, scale='', areanames=''):
+        ex = Examples('basenogeography')
+
+        self.name = ex.name
+        self.description = ex.description
+        self.baseyear = ex.baseyear
+        self.basecondname = ex.basecondname
+        self.wastewatername = ex.wastewatername
+        self.costprofilename = ex.costprofilename
+
+        self.geoscalename = scale
+        self.geoareanames = areanames
+
     def load_tables(self):
         self.queries = TblJeeves()
 

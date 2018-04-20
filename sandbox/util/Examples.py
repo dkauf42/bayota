@@ -44,6 +44,16 @@ class Examples:
             self.geoscalename = 'County'
             self.geoareanames = ['Adams, PA', 'York, PA', 'Anne Arundel, MD']
 
+        elif name == 'basenogeography':
+            self.name = 'TestOne'
+            self.description = 'TestOneDescription'
+            self.baseyear = '1995'
+            self.basecondname = 'Example_BaseCond2'
+            self.wastewatername = 'Example_WW1'
+            self.costprofilename = 'Example_CostProfile1'
+            self.geoscalename = ''
+            self.geoareanames = ''
+
         else:
             if not name:
                 raise ValueError('example name not supplied')
