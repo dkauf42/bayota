@@ -52,9 +52,9 @@ class TblJeeves:
             source (SourceData): The source object contains all of the data tables
 
         """
-        self.source = self.loadSourceFromSQL()
+        self.source = self.loadInSourceDataFromSQL()
 
-    def loadSourceFromSQL(self):
+    def loadInSourceDataFromSQL(self):
         savename = get_tempdir() + 'SourceData.obj'
 
         if os.path.exists(savename):
