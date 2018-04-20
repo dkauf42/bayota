@@ -10,24 +10,6 @@ the Chesapeake Bay Assessement Scenario Tool (CAST)
 This README documents the steps necessary to get the "OptSandbox"
 application up and running.
 
-# Usage
-
-###### A simple example:
-
-    > python sandboxer.py
-
-###### Help is available by using the "-h" parameter:
-
-    > python sandboxer.py -h
-
-###### Example test cases are available by using the "-t" parameter:
-
-    > python sandboxer.py -t 1
-
-Note:
-There are three test cases available, and
-no GUI appears when running a test case.
-
 # How do I get set up?
 
 It is recommended to follow this order:
@@ -62,6 +44,24 @@ unittests are located in the subdirectory 'test', and test the following units:
 
 When running the software with no arguments,
 a GUI appears that allows specifiation of geography and other metadata.
+
+# Usage
+
+###### A simple example:
+
+    > python sandboxer.py
+
+###### Help is available by using the "-h" parameter:
+
+    > python sandboxer.py -h
+
+###### Example test cases are available by using the "-t" parameter:
+
+    > python sandboxer.py -t 1
+
+Note:
+There are three test cases available, and
+no GUI appears when running a test case.
 
 # How do I uninstall?
 
