@@ -76,6 +76,12 @@ class TblJeeves:
 
         return sourcedata
 
+    def __singleconvert(self, sourcetbl=None, toandfromheaders=None, fromtable=None, toname=''):
+        sourcetable = getattr(self.source, sourcetbl)
+        tblsubset = sourcetable.loc[:, toandfromheaders].merge(fromtable, how='inner')
+
+        return tblsubset.loc[:, [toname]]  # pass column name as list so return type is pandas.DataFrame
+
     # Methods to get metadata options
     def base_year_names(self):
         return ['640', '1642', '1812', '1918']
@@ -159,12 +165,8 @@ class TblJeeves:
 
     def lrsegnames_from(self, lrsegids=None):
         lrsegids = forceToSingleColumnDataFrame(lrsegids, colname='landriversegment')
-
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
-        columnmask = ['lrsegid', 'landriversegment']
-        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(lrsegids, how='inner')
-
-        return tblsubset.loc[:, ['landriversegment']]  # pass column name as list so return type is pandas.DataFrame
+        return self.__singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
+                                    fromtable=lrsegids, toname='landriversegment')
 
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
@@ -183,12 +185,8 @@ class TblJeeves:
 
     def __lrsegids_from_lrsegnames(self, getfrom=None):
         getfrom = forceToSingleColumnDataFrame(getfrom, colname='landriversegment')
-
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
-        columnmask = ['lrsegid', 'landriversegment']
-        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(getfrom, how='inner')
-
-        return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
+        return self.__singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
+                                    fromtable=getfrom, toname='lrsegid')
 
     def __lrsegids_from_countystatestrs(self, getfrom=None):
         countyids = self.countyid_from_countystatestrs(getfrom=getfrom)
@@ -196,13 +194,8 @@ class TblJeeves:
 
     def __lrsegids_from_countyid(self, getfrom=None):
         getfrom = forceToSingleColumnDataFrame(getfrom, colname='countyid')
-
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
-
-        columnmask = ['lrsegid', 'landriversegment', 'stateid', 'countyid', 'outofcbws']
-        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(getfrom, how='inner')
-
-        return tblsubset.loc[:, ['lrsegid']]  # pass column name as list so return type is pandas.DataFrame
+        return self.__singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
+                                    fromtable=getfrom, toname='lrsegid')
 
     def lrsegids_from_geoscale_with_names(self, scale='', areanames=None):
         if scale == 'County':
@@ -213,21 +206,14 @@ class TblJeeves:
             return None
 
     def countyids_from_lrsegids(self, lrsegids=None):
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
-        columnmask = ['lrsegid', 'countyid']
-        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(lrsegids, how='inner')
-
-        return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
+        return self.__singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
+                                    fromtable=lrsegids, toname='countyid')
 
     # Agency Methods
     def agencyids_from(self, agencycodes=None):
         agencycodes = forceToSingleColumnDataFrame(agencycodes, colname='agencycode')
-
-        TblAgency = self.source.TblAgency  # get relevant source data
-        columnmask = ['agencycode', 'agencyid']
-        tblsubset = TblAgency.loc[:, columnmask].merge(agencycodes, how='inner')
-
-        return tblsubset.loc[:, ['agencyid']]
+        return self.__singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
+                                    fromtable=agencycodes, toname='agencyid')
 
     def agencylrsegidtable_from_lrsegids(self, lrsegids=None):
         TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
@@ -245,14 +231,10 @@ class TblJeeves:
         return self.agencycodes_from_lrsegids(lrsegids=tblwithlrsegids)
 
     def agencycodes_from_lrsegids(self, lrsegids=None):
-        TblAgency = self.source.TblAgency  # get relevant source data
-
         tblwithagencyids = self.agencylrsegidtable_from_lrsegids(lrsegids=lrsegids).loc[:, ['agencyid']]
 
-        columnmask = ['agencyid', 'agencycode', 'agencyfullname', 'agencytypeid']
-        tblsubset = TblAgency.loc[:, columnmask].merge(tblwithagencyids, how='inner')
-
-        return tblsubset.loc[:, ['agencycode']]
+        return self.__singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
+                                    fromtable=tblwithagencyids, toname='agencycode')
 
     def all_agency_names(self):
         TblAgency = self.source.TblAgency  # get relevant source data
@@ -261,12 +243,8 @@ class TblJeeves:
     # Sector Methods
     def sectorids_from(self, sectornames=None):
         sectornames = forceToSingleColumnDataFrame(sectornames, colname='sector')
-
-        TblSector = self.source.TblSector  # get relevant source data
-        columnmask = ['sector', 'sectorid']
-        tblsubset = TblSector.loc[:, columnmask].merge(sectornames, how='inner')
-
-        return tblsubset.loc[:, ['sectorid']]
+        return self.__singleconvert(sourcetbl='TblSector', toandfromheaders=['sector', 'sectorid'],
+                                    fromtable=sectornames, toname='sectorid')
 
     def all_sector_names(self):
         TblSector = self.source.TblSector  # get relevant source data
@@ -290,30 +268,20 @@ class TblJeeves:
 
     def __loadsourcegroupids_from_sectorids(self, getfrom=None):
         getfrom = forceToSingleColumnDataFrame(getfrom, colname='sectorid')
-
-        TblLoadSourceGroupSector = self.source.TblLoadSourceGroupSector  # get relevant source data
-        columnmask = ['loadsourcegroupid', 'sectorid']
-        tblsubset = TblLoadSourceGroupSector.loc[:, columnmask].merge(getfrom, how='inner')
-
-        return tblsubset.loc[:, ['loadsourcegroupid']]  # pass column name as list so return type is pandas.DataFrame
+        return self.__singleconvert(sourcetbl='TblLoadSourceGroupSector',
+                                    toandfromheaders=['loadsourcegroupid', 'sectorid'],
+                                    fromtable=getfrom, toname='loadsourcegroupid')
 
     def __loadsourcegroupids_from_loadsourceids(self, getfrom=None):
         getfrom = forceToSingleColumnDataFrame(getfrom, colname='loadsourceid')
-
-        TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource  # get relevant source data
-        columnmask = ['loadsourcegroupid', 'loadsourceid']
-        tblsubset = TblLoadSourceGroupLoadSource.loc[:, columnmask].merge(getfrom, how='inner')
-
-        return tblsubset.loc[:, ['loadsourcegroupid']]  # pass column name as list so return type is pandas.DataFrame
+        return self.__singleconvert(sourcetbl='TblLoadSourceGroupLoadSource',
+                                    toandfromheaders=['loadsourcegroupid', 'loadsourceid'],
+                                    fromtable=getfrom, toname='loadsourcegroupid')
 
     def loadsourceids_from(self, sectorids=None):
         sectorids = forceToSingleColumnDataFrame(sectorids, colname='sectorid')
-
-        TblLoadSource = self.source.TblLoadSource  # get relevant source data
-        columnmask = ['loadsourceid', 'sectorid']
-        tblsubset = TblLoadSource.loc[:, columnmask].merge(sectorids, how='inner')
-
-        return tblsubset.loc[:, ['loadsourceid']]
+        return self.__singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceid', 'sectorid'],
+                                    fromtable=sectorids, toname='loadsourceid')
 
     def sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(self, lrsegagencyidtable=None, sectorids=None):
         """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
@@ -412,21 +380,13 @@ class TblJeeves:
 
     def bmpids_from_categoryids(self, categoryids):
         categoryids = forceToSingleColumnDataFrame(categoryids, colname='bmpcategoryid')
-
-        TblBmp = self.source.TblBmp  # get relevant source data
-        columnmask = ['bmpcategoryid', 'bmpid']
-        tblsubset = TblBmp.loc[:, columnmask].merge(categoryids, how='inner')
-
-        return tblsubset.loc[:, ['bmpid']]
+        return self.__singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
+                                    fromtable=categoryids, toname='bmpid')
 
     def bmpnames_from_bmpids(self, bmpids):
         bmpids = forceToSingleColumnDataFrame(bmpids, colname='bmpid')
-
-        TblBmp = self.source.TblBmp  # get relevant source data
-        columnmask = ['bmpshortname', 'bmpid']
-        tblsubset = TblBmp.loc[:, columnmask].merge(bmpids, how='inner')
-
-        return tblsubset.loc[:, ['bmpshortname']]
+        return self.__singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpshortname', 'bmpid'],
+                                    fromtable=bmpids, toname='bmpshortname')
 
     def land_slabidtable_from_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
         TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
