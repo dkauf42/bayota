@@ -210,8 +210,8 @@ class OptCase:
         # Translate to names
         self.land_slabnametable = self.queries.translate_slabidtable_to_slabnametable(self.land_slabidtable)
         # Write to file
-        self.land_slabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithids.csv'))
-        self.land_slabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithnames.csv'))
+        # self.land_slabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithids.csv'))
+        # self.land_slabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithnames.csv'))
 
         """ ANIMAL BMPs """
         # get IDs
@@ -222,8 +222,8 @@ class OptCase:
         # Translate to names
         self.animal_scabnametable = self.queries.translate_scabidtable_to_scabnametable(self.animal_scabidtable)
         # Write to file
-        self.animal_scabidtable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithids.csv'))
-        self.animal_scabnametable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithnames.csv'))
+        # self.animal_scabidtable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithids.csv'))
+        # self.animal_scabnametable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithnames.csv'))
 
         """ MANURE BMPs """
         # get IDs
@@ -234,8 +234,8 @@ class OptCase:
         # Translate to names
         self.manure_sftabnametable = self.queries.translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
         # Write to file
-        self.manure_sftabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithids.csv'))
-        self.manure_sftabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithnames.csv'))
+        # self.manure_sftabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithids.csv'))
+        # self.manure_sftabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithnames.csv'))
 
     def populate_hardbounds(self):
         # TODO: code this
@@ -385,17 +385,20 @@ class OptCase:
         i = 0
         for df in population.scenarios_land:
             self.scenarios_land.append(self.queries.translate_slabidtable_to_slabnametable(slabidtable=df))
-            self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.csv' % i))
+            self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
+                                           sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1
 
         i = 0
         for df in population.scenarios_animal:
             self.scenarios_animal.append(self.queries.translate_scabidtable_to_scabnametable(scabidtable=df))
-            self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.csv' % i))
+            self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
+                                             sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1
 
         i = 0
         for df in population.scenarios_manure:
             self.scenarios_manure.append(self.queries.translate_sftabidtable_to_sftabnametable(sftabidtable=df))
-            self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.csv' % i))
+            self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.txt' % i),
+                                             sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1
