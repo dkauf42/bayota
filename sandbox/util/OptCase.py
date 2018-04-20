@@ -196,9 +196,6 @@ class OptCase:
             queries.sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=self.
                                                                             source_lrseg_agency_table)
 
-        # self.source_lrseg_agency_table.to_csv(os.path.join(writedir, 'testwrite_lalidtable.csv'))
-        # self.source_county_agency_table.to_csv(os.path.join(writedir, 'testwrite_lacidtable.csv'))
-
     def populate_bmps(self):
         """ Append the IDs for land, animal, and manure BMPs to the decision space tables
         """
@@ -209,9 +206,6 @@ class OptCase:
                                                            source_lrseg_agency_table)
         # Translate to names
         self.land_slabnametable = self.queries.translate_slabidtable_to_slabnametable(self.land_slabidtable)
-        # Write to file
-        # self.land_slabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithids.csv'))
-        # self.land_slabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariolandbmpswithnames.csv'))
 
         """ ANIMAL BMPs """
         # get IDs
@@ -221,9 +215,6 @@ class OptCase:
                                                                            baseconditionid=self.baseconditionid)
         # Translate to names
         self.animal_scabnametable = self.queries.translate_scabidtable_to_scabnametable(self.animal_scabidtable)
-        # Write to file
-        # self.animal_scabidtable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithids.csv'))
-        # self.animal_scabnametable.to_csv(os.path.join(writedir, 'testwrite_scenarioanimalbmpswithnames.csv'))
 
         """ MANURE BMPs """
         # get IDs
@@ -233,9 +224,6 @@ class OptCase:
                                                                             baseconditionid=self.baseconditionid)
         # Translate to names
         self.manure_sftabnametable = self.queries.translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
-        # Write to file
-        # self.manure_sftabidtable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithids.csv'))
-        # self.manure_sftabnametable.to_csv(os.path.join(writedir, 'testwrite_scenariomanurebmpswithnames.csv'))
 
     def populate_hardbounds(self):
         # TODO: code this
