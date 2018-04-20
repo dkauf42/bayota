@@ -156,7 +156,7 @@ class OptCase:
     def proceed_from_geoagencysectorids_to_decision_space(self):
         """ Generate a decision space from pre-defined geography (scale + area names), agency, and sector ids.
         """
-        self.populate_lrsegagencytable_from_geoagencysectorids()  # TODO: code this method so that the GUI works.
+        self.populate_lrsegagencytable_from_geoagencysectorids()
         # Metadata to BMPs
         self.populate_loadsources()
         self.populate_bmps()
