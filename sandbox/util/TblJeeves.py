@@ -402,6 +402,7 @@ class TblJeeves:
         TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
         TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
         TblAgency = self.source.TblAgency
+        TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
 
         sca_table = SourceCountyAgencyIDtable.copy()
 
@@ -424,6 +425,11 @@ class TblJeeves:
         columnmask = ['animalgroupid', 'bmpid']
         tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
 
+        # Convert loadsourceids to loadsourcegroupids
+        columnmask = ['loadsourcegroupid', 'loadsourceid']
+        tblsubset = TblLoadSourceGroupLoadSource.loc[:, columnmask].merge(tblsubset, how='inner')
+        tblsubset.drop(['loadsourceid'], axis=1, inplace=True)
+
         return tblsubset
 
     def manure_sftabidtable_from_SourceFromToAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
@@ -433,6 +439,7 @@ class TblJeeves:
         TblBmp = self.source.TblBmp
         TblAgency = self.source.TblAgency
         TblLoadSource = self.source.TblLoadSource
+        TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
 
         sca_table = SourceCountyAgencyIDtable.copy()
 
@@ -468,6 +475,7 @@ class TblJeeves:
         # Get which animals are present in the county, agency, loadsources
         columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sfta_table, how='inner')
+        tblsubset.drop(['countyid'], axis=1, inplace=True)
 
         # Get the animalgroups that each animalid belongs to
         columnmask = ['animalgroupid', 'animalid']
@@ -481,7 +489,10 @@ class TblJeeves:
         mtid = TblBmp['bmpid'][TblBmp['bmpshortname'] == 'ManureTransport'].values[0]
         tblsubset['bmpid'] = mtid
 
-        tblsubset.drop(['countyid'], axis=1, inplace=True)
+        # Convert loadsourceids to loadsourcegroupids
+        columnmask = ['loadsourcegroupid', 'loadsourceid']
+        tblsubset = TblLoadSourceGroupLoadSource.loc[:, columnmask].merge(tblsubset, how='inner')
+        tblsubset.drop(['loadsourceid'], axis=1, inplace=True)
 
         return tblsubset
 
@@ -556,6 +567,7 @@ class TblJeeves:
         TblAgency = self.source.TblAgency
         TblLoadSource = self.source.TblLoadSource
         TblBmp = self.source.TblBmp
+        TblLoadSourceGroup = self.source.TblLoadSourceGroup
 
         # Translate countyid to GeographyName (FIPS) and add stateabbreviation
         columnmask = ['countyid', 'stateabbreviation', 'fips']
@@ -563,9 +575,9 @@ class TblJeeves:
         # Translate to Agency codes
         columnmask = ['agencycode', 'agencyid']
         newtable = TblAgency.loc[:, columnmask].merge(newtable, how='inner')
-        # Translate to LoadSource names
-        columnmask = ['loadsource', 'loadsourceid']
-        newtable = TblLoadSource.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to LoadSourceGroup names
+        columnmask = ['loadsourcegroup', 'loadsourcegroupid']
+        newtable = TblLoadSourceGroup.loc[:, columnmask].merge(newtable, how='inner')
         # Translate to BMP names
         columnmask = ['bmpshortname', 'bmpid']
         newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
@@ -573,12 +585,12 @@ class TblJeeves:
         columnmask = ['animalgroupid', 'animalgroup']
         newtable = TblAnimalGroup.loc[:, columnmask].merge(newtable, how='inner')
 
-        newtable.drop(['countyid', 'agencyid', 'loadsourceid', 'bmpid',
+        newtable.drop(['countyid', 'agencyid', 'loadsourcegroupid', 'bmpid',
                        'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
         newtable.rename(columns={'fips': 'GeographyName',
                                  'stateabbreviation': 'StateAbbreviation',
                                  'agencycode': 'AgencyCode',
-                                 'loadsource': 'LoadSourceGroup',
+                                 'loadsourcegroup': 'LoadSourceGroup',
                                  'bmpshortname': 'BmpShortname',
                                  'animalgroup': 'AnimalGroup'}, inplace=True)
 
@@ -604,6 +616,7 @@ class TblJeeves:
         TblAgency = self.source.TblAgency
         TblLoadSource = self.source.TblLoadSource
         TblBmp = self.source.TblBmp
+        TblLoadSourceGroup = self.source.TblLoadSourceGroup
 
         # Translate countyid to FIPSFrom and then FIPSTo (and add stateabbreviation)
         columnmask = ['countyid', 'stateabbreviation', 'fips']
@@ -629,9 +642,9 @@ class TblJeeves:
         # Translate to Agency codes
         columnmask = ['agencycode', 'agencyid']
         newtable = TblAgency.loc[:, columnmask].merge(newtable, how='inner')
-        # Translate to LoadSource names
-        columnmask = ['loadsource', 'loadsourceid']
-        newtable = TblLoadSource.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to LoadSourceGroup names
+        columnmask = ['loadsourcegroup', 'loadsourcegroupid']
+        newtable = TblLoadSourceGroup.loc[:, columnmask].merge(newtable, how='inner')
         # Translate to BMP names
         columnmask = ['bmpshortname', 'bmpid']
         newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
@@ -639,11 +652,11 @@ class TblJeeves:
         columnmask = ['animalgroupid', 'animalgroup']
         newtable = TblAnimalGroup.loc[:, columnmask].merge(newtable, how='inner')
 
-        newtable.drop(['agencyid', 'loadsourceid', 'bmpid',
+        newtable.drop(['agencyid', 'loadsourcegroupid', 'bmpid',
                        'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
         newtable.rename(columns={'stateabbreviation': 'StateAbbreviation',
                                  'agencycode': 'AgencyCode',
-                                 'loadsource': 'LoadSourceGroup',
+                                 'loadsourcegroup': 'LoadSourceGroup',
                                  'bmpshortname': 'BmpShortname',
                                  'animalgroup': 'AnimalGroup'}, inplace=True)
 
