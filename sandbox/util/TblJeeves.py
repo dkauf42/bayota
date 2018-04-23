@@ -283,6 +283,11 @@ class TblJeeves:
         return self.__singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceid', 'sectorid'],
                                     fromtable=sectorids, toname='loadsourceid')
 
+    def single_loadsourcegroupid_from_loadsourcegroup_name(self, loadsourcegroupname):
+        TblLoadSourceGroup = self.source.TblLoadSourceGroup  # get relevant source data
+        return TblLoadSourceGroup['loadsourcegroupid'][TblLoadSourceGroup['loadsourcegroup'] ==
+                                                       loadsourcegroupname].tolist()
+
     def sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(self, lrsegagencyidtable=None, sectorids=None):
         """Get the load sources present (whether zero acres or not) in the specified lrseg-agency-sectors
         """

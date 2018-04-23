@@ -306,7 +306,59 @@ class OptCase:
         pass
 
     def qaqc_manure_decisionspace(self):
-        pass
+        """ Remove LoadSources or BMPs that the optimization engine should not modify
+
+        The following LoadSources are removed from the decision space:
+        - AllLoadSources
+
+        """
+        if self.logtostdout:
+            print('OptCase.qaqc_manure_decisionspace(): QA/QCing...')
+            print('Decision Space Table size: %s' % (self.manure_sftabidtable.shape, ))
+
+        origrowcnt, origcolcnt = self.manure_sftabidtable.shape
+
+        removaltotal = 0
+
+        # Remove "AllLoadSources" loadsourcegroup from the manure table
+        loadsourcenametoremove = 'AllLoadSources'
+        loadsourcegroupid = self.queries.\
+            single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
+        mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
+        self.manure_sftabidtable = self.manure_sftabidtable[~mask]
+        removaltotal += mask.sum()
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
+
+        # Remove "FEEDPermitted" and "FEEDNonPermitted" loadsourcegroups from the manure table,
+        # leaving only "FEED", which contains both anyway
+        loadsourcenametoremove = 'FEEDPermitted'
+        loadsourcegroupid = self.queries.\
+            single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
+        mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
+        self.manure_sftabidtable = self.manure_sftabidtable[~mask]
+        removaltotal += mask.sum()
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
+        loadsourcenametoremove = 'FEEDNonPermitted'
+        loadsourcegroupid = self.queries. \
+            single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
+        mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
+        self.manure_sftabidtable = self.manure_sftabidtable[~mask]
+        removaltotal += mask.sum()
+        if self.logtostdout:
+            print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
+
+        # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
+        print('OptCase.qaqc_manure_decisionspace():')
+        print(self.manure_sftabidtable.head())
+        self.manure_sftabidtable.drop_duplicates()
+        print(self.manure_sftabidtable.head())
+
+        newrowcnt, newcolcnt = self.manure_sftabidtable.shape
+        if self.logtostdout:
+            print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
+                  (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
     # hooks for graphical interface get/put
     def save_metadata(self, metadata_results):
