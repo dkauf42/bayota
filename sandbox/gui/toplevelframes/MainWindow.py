@@ -139,8 +139,8 @@ class MainWindow(tk.Frame):
         self.metadataframe.load_options(self.queries)
 
     def save_metadata(self):
-        print('mainwindow:save_metadata: saving metadata...')
-        self.optcase.save_metadata(self.metadataframe.get_results())
+        print('mainwindow:set_metadata: saving metadata...')
+        self.optcase.set_metadata(self.metadataframe.get_results())
         self.optcase.populate_geography_from_scale_and_areas()
 
     def load_freeparamgroup_options(self):
@@ -148,7 +148,7 @@ class MainWindow(tk.Frame):
 
     def save_freeparamgroups(self):
         print('mainwindow:save_freeparamgroups: saving free parameter groups...')
-        self.optcase.save_freeparamgrps(self.freeparamframe.get_results())
+        self.optcase.set_freeparamgrps(self.freeparamframe.get_results())
 
     def load_constraint_options(self):  # TODO:add constraint widgets
         self.additionalconstraintsframe.update_box_options(optcase=self.optcase)
