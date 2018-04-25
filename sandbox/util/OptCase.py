@@ -171,6 +171,7 @@ class OptCase:
         self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
                                                                        areanames=self.geoareanames)
         self.countyids = self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
+        # TODO REPLACE ^ WITH:  self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
 
     def populate_agencies_from_geography(self):
         """ make la_table from lrsegids alone """
