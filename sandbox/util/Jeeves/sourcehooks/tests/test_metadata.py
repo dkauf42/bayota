@@ -1,7 +1,7 @@
 import unittest
 
 from sandbox.util.Jeeves import Jeeves
-from sandbox.util.Jeeves.metadata import Metadata
+from sandbox.util.Jeeves.sourcehooks.metadata import Metadata
 
 
 class TddForMetadata(unittest.TestCase):

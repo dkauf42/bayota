@@ -1,7 +1,7 @@
 import pandas as pd
 import warnings
 
-from sandbox.util.Jeeves.sourcehooks import SourceHook
+from sandbox.util.Jeeves.sourcehooks.sourcehooks import SourceHook
 
 
 class Lrseg(SourceHook):

@@ -1,7 +1,7 @@
 import pandas as pd
 from itertools import product
 
-from sandbox.util.Jeeves.sourcehooks import SourceHook
+from sandbox.util.Jeeves.sourcehooks.sourcehooks import SourceHook
 from .agency import Agency
 from .lrseg import Lrseg
 from .sector import Sector

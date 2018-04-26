@@ -8,14 +8,14 @@ from sandbox.__init__ import get_tempdir
 from sandbox.__init__ import get_sqlsourcetabledir
 from sandbox.sqltables.source_data import SourceData
 
-from .agency import Agency
-from .bmp import Bmp
-from .geo import Geo
-from .loadsource import LoadSource
-from .lrseg import Lrseg
-from .metadata import Metadata
-from .sector import Sector
-from .translator import Translator
+from .sourcehooks.agency import Agency
+from .sourcehooks.bmp import Bmp
+from .sourcehooks.geo import Geo
+from .sourcehooks.loadsource import LoadSource
+from .sourcehooks.lrseg import Lrseg
+from .sourcehooks.metadata import Metadata
+from .sourcehooks.sector import Sector
+from .sourcehooks.translator import Translator
 
 
 class Jeeves:
