@@ -1,7 +1,7 @@
 import unittest
 
-from sandbox.util.Jeeves import Jeeves
-from sandbox.util.Jeeves.sourcehooks.sector import Sector
+from sandbox.util.jeeves import Jeeves
+from sandbox.util.jeeves.sourcehooks.sector import Sector
 
 
 class TddForSector(unittest.TestCase):

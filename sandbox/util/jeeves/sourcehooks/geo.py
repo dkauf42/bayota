@@ -1,7 +1,7 @@
 import pandas as pd
 import warnings
 
-from sandbox.util.Jeeves.sourcehooks.sourcehooks import SourceHook
+from sandbox.util.jeeves.sourcehooks.sourcehooks import SourceHook
 from .lrseg import Lrseg
 from .county import County
 

@@ -1,7 +1,7 @@
 import unittest
 
-from sandbox.util.Jeeves import Jeeves
-from sandbox.util.Jeeves.sourcehooks.agency import Agency
+from sandbox.util.jeeves import Jeeves
+from sandbox.util.jeeves.sourcehooks.agency import Agency
 
 
 class TddForAgency(unittest.TestCase):

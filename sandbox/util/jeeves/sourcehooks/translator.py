@@ -1,6 +1,6 @@
 import numpy as np
 
-from sandbox.util.Jeeves.sourcehooks.sourcehooks import SourceHook
+from sandbox.util.jeeves.sourcehooks.sourcehooks import SourceHook
 
 
 class Translator(SourceHook):

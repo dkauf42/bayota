@@ -2,7 +2,7 @@ import pandas as pd
 from itertools import product
 from itertools import permutations
 
-from sandbox.util.Jeeves.sourcehooks.sourcehooks import SourceHook
+from sandbox.util.jeeves.sourcehooks.sourcehooks import SourceHook
 
 
 class Bmp(SourceHook):

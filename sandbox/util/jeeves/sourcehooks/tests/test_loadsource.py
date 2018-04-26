@@ -1,7 +1,7 @@
 import unittest
 
-from sandbox.util.Jeeves import Jeeves
-from sandbox.util.Jeeves.sourcehooks.loadsource import LoadSource
+from sandbox.util.jeeves import Jeeves
+from sandbox.util.jeeves.sourcehooks.loadsource import LoadSource
 
 
 class TddForLoadSource(unittest.TestCase):
