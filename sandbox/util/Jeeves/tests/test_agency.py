@@ -1,5 +1,6 @@
 import unittest
 
+from sandbox.util.Jeeves import Jeeves
 from sandbox.util.Jeeves.agency import Agency
 
 
@@ -8,7 +9,8 @@ class TddForAgency(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load the Source Data and Base Condition tables
-        cls.agency = Agency()
+        source = Jeeves.loadInSourceDataFromSQL()
+        cls.agency = Agency(sourcedata=source)
 
     def test_agency_names_query(self):
         self.assertIn('NONFED',

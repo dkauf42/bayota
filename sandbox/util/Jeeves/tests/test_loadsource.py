@@ -1,5 +1,6 @@
 import unittest
 
+from sandbox.util.Jeeves import Jeeves
 from sandbox.util.Jeeves.loadsource import LoadSource
 
 
@@ -8,7 +9,8 @@ class TddForLoadSource(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load the Source Data and Base Condition tables
-        cls.loadsource = LoadSource()
+        source = Jeeves.loadInSourceDataFromSQL()
+        cls.loadsource = LoadSource(sourcedata=source)
 
     def test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY(self):
         self.assertIn('Legume Hay',

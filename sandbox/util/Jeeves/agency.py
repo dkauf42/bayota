@@ -4,11 +4,11 @@ from .lrseg import Lrseg
 
 
 class Agency(SourceHook):
-    def __init__(self):
+    def __init__(self, sourcedata=None):
         """ Agency Methods """
-        SourceHook.__init__(self)
+        SourceHook.__init__(self, sourcedata=sourcedata)
 
-        self.lrseg = Lrseg()
+        self.lrseg = Lrseg(sourcedata=sourcedata)
 
     def all_names(self):
         TblAgency = self.source.TblAgency  # get relevant source data

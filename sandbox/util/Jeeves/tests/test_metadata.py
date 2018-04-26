@@ -1,5 +1,6 @@
 import unittest
 
+from sandbox.util.Jeeves import Jeeves
 from sandbox.util.Jeeves.metadata import Metadata
 
 
@@ -8,7 +9,8 @@ class TddForMetadata(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load the Source Data and Base Condition tables
-        cls.metadata = Metadata()
+        source = Jeeves.loadInSourceDataFromSQL()
+        cls.metadata = Metadata(sourcedata=source)
 
     def test_correct_metadata(self):
         pass

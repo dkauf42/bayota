@@ -4,9 +4,9 @@ from sandbox.util.Jeeves.sourcehooks import SourceHook
 
 
 class Translator(SourceHook):
-    def __init__(self):
+    def __init__(self, sourcedata=None):
         """ Sector Methods """
-        SourceHook.__init__(self)
+        SourceHook.__init__(self, sourcedata=sourcedata)
 
     # Translation methods (from IDs to NAMEs)
     def translate_slabidtable_to_slabnametable(self, slabidtable=None):
@@ -50,7 +50,6 @@ class Translator(SourceHook):
                                  'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']]
 
         return newtable
-
 
     def translate_scabidtable_to_scabnametable(self, scabidtable=None):
         newtable = scabidtable.copy()
@@ -100,7 +99,6 @@ class Translator(SourceHook):
                                  'NReductionFraction', 'PReductionFraction']]
 
         return newtable
-
 
     def translate_sftabidtable_to_sftabnametable(self, sftabidtable=None):
         newtable = sftabidtable.copy()

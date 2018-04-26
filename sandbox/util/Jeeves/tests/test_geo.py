@@ -1,5 +1,6 @@
 import unittest
 
+from sandbox.util.Jeeves import Jeeves
 from sandbox.util.Jeeves.geo import Geo
 
 
@@ -8,7 +9,8 @@ class TddForGeo(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load the Source Data and Base Condition tables
-        cls.geo = Geo()
+        source = Jeeves.loadInSourceDataFromSQL()
+        cls.geo = Geo(sourcedata=source)
 
     def test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation(self):
         self.assertIn(11,

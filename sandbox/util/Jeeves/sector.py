@@ -2,9 +2,9 @@ from sandbox.util.Jeeves.sourcehooks import SourceHook
 
 
 class Sector(SourceHook):
-    def __init__(self):
+    def __init__(self, sourcedata=None):
         """ Sector Methods """
-        SourceHook.__init__(self)
+        SourceHook.__init__(self, sourcedata=sourcedata)
 
     # Sector Methods
     def all_names(self):

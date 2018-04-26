@@ -8,13 +8,13 @@ from .sector import Sector
 
 
 class LoadSource(SourceHook):
-    def __init__(self):
+    def __init__(self, sourcedata=None):
         """ Load Source Methods """
-        SourceHook.__init__(self)
+        SourceHook.__init__(self, sourcedata=sourcedata)
 
-        self.agency = Agency()
-        self.lrseg = Lrseg()
-        self.sector = Sector()
+        self.agency = Agency(sourcedata=sourcedata)
+        self.lrseg = Lrseg(sourcedata=sourcedata)
+        self.sector = Sector(sourcedata=sourcedata)
 
     def loadsourcegroupids_from(self, sectorids=None, loadsourceids=None):
         kwargs = (sectorids, loadsourceids)
