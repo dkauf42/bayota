@@ -15,15 +15,15 @@ class Lrseg(SourceHook):
     def all_ids(self):
         pass
 
-    def ids_from_names(self, getfrom=None):
-        getfrom = self.forceToSingleColumnDataFrame(getfrom, colname='landriversegment')
+    def ids_from_names(self, names=None):
+        names = self.forceToSingleColumnDataFrame(names, colname='landriversegment')
         return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
-                                  fromtable=getfrom, toname='lrsegid')
+                                  fromtable=names, toname='lrsegid')
 
-    def names_from_ids(self, lrsegids=None):
-        lrsegids = self.forceToSingleColumnDataFrame(lrsegids, colname='landriversegment')
+    def names_from_ids(self, ids=None):
+        ids = self.forceToSingleColumnDataFrame(ids, colname='landriversegment')
         return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
-                                  fromtable=lrsegids, toname='landriversegment')
+                                  fromtable=ids, toname='landriversegment')
 
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
@@ -32,7 +32,7 @@ class Lrseg(SourceHook):
             raise ValueError('One and only one keyword argument must be specified')
 
         if lrsegnames is not None:
-            return self.__lrsegids_from_lrsegnames(getfrom=lrsegnames)
+            return self.ids_from_names(names=lrsegnames)
         elif countystatestrs is not None:
             return self.__lrsegids_from_countystatestrs(getfrom=countystatestrs)
         elif countyid is not None:

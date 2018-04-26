@@ -77,7 +77,7 @@ class Geo(SourceHook):
             raise ValueError('One and only one keyword argument must be specified')
 
         if lrsegnames is not None:
-            return self.__lrsegids_from_lrsegnames(getfrom=lrsegnames)
+            return self.lrseg.ids_from_names(names=lrsegnames)
         elif countystatestrs is not None:
             return self.__lrsegids_from_countystatestrs(getfrom=countystatestrs)
         elif countyid is not None:
@@ -86,13 +86,13 @@ class Geo(SourceHook):
             raise ValueError('unrecognized input')
 
     def __lrsegids_from_countystatestrs(self, getfrom=None):
-        countyids = self.countyid_from_countystatestrs(getfrom=getfrom)
+        countyids = self.county.countyid_from_countystatestrs(getfrom=getfrom)
         return self.__lrsegids_from_countyid(getfrom=countyids)
 
     def __lrsegids_from_countyid(self, getfrom=None):
         getfrom = self.forceToSingleColumnDataFrame(getfrom, colname='countyid')
-        return self.__singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
-                                    fromtable=getfrom, toname='lrsegid')
+        return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
+                                  fromtable=getfrom, toname='lrsegid')
 
     def lrsegids_from_geoscale_with_names(self, scale='', areanames=None):
         if scale == 'County':
@@ -103,5 +103,5 @@ class Geo(SourceHook):
             return None
 
     def countyids_from_lrsegids(self, lrsegids=None):
-        return self.__singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
+        return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
                                     fromtable=lrsegids, toname='countyid')

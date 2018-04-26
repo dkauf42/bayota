@@ -21,14 +21,14 @@ class LoadSource(SourceHook):
             return self.__loadsourcegroupids_from_loadsourceids(getfrom=loadsourceids)
 
     def __loadsourcegroupids_from_sectorids(self, getfrom=None):
-        getfrom = forceToSingleColumnDataFrame(getfrom, colname='sectorid')
-        return self.__singleconvert(sourcetbl='TblLoadSourceGroupSector',
+        getfrom = self.forceToSingleColumnDataFrame(getfrom, colname='sectorid')
+        return self.singleconvert(sourcetbl='TblLoadSourceGroupSector',
                                     toandfromheaders=['loadsourcegroupid', 'sectorid'],
                                     fromtable=getfrom, toname='loadsourcegroupid')
 
     def __loadsourcegroupids_from_loadsourceids(self, getfrom=None):
-        getfrom = forceToSingleColumnDataFrame(getfrom, colname='loadsourceid')
-        return self.__singleconvert(sourcetbl='TblLoadSourceGroupLoadSource',
+        getfrom = self.forceToSingleColumnDataFrame(getfrom, colname='loadsourceid')
+        return self.singleconvert(sourcetbl='TblLoadSourceGroupLoadSource',
                                     toandfromheaders=['loadsourcegroupid', 'loadsourceid'],
                                     fromtable=getfrom, toname='loadsourcegroupid')
 
