@@ -40,3 +40,11 @@ class Agency(SourceHook):
 
         return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
                                   fromtable=tblwithagencyids, toname='agencycode')
+
+    def agencylrsegidtable_from_lrsegids(self, lrsegids=None):
+        TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
+
+        columnmask = ['lrsegid', 'agencyid']
+        tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
+
+        return tblsubset.loc[:, ['lrsegid', 'agencyid']]

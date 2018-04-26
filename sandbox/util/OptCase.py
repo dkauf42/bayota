@@ -120,8 +120,10 @@ class OptCase(object):
         self.dsmanure = ManureDecisionSpace()
 
     # hooks for graphical interface get/put
-    def set_geography(self, geotable=None):
-        self.lrsegids = geotable
+    def populate_geography_from_scale_and_areas(self):
+        self.dsland.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
+        self.dsanimal.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
+        self.dsmanure.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
 
     def set_metadata(self, metadata_results):
         self.name = metadata_results.name
@@ -133,11 +135,13 @@ class OptCase(object):
         self.geoscalename = metadata_results.scale
         self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
-        self.lrsegids = None
-
     def set_freeparamgrps(self, freeparamgrp_results):
-        self.agencyids = self.queries.ids_from_names(agencycodes=freeparamgrp_results.agencies)
-        self.sectorids = self.queries.ids_from_names(names=freeparamgrp_results.sectors)
+        self.dsland.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
+                                      sectornames=freeparamgrp_results.sectors)
+        self.dsanimal.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
+                                        sectornames=freeparamgrp_results.sectors)
+        self.dsmanure.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
+                                        sectornames=freeparamgrp_results.sectors)
 
     # Generating scenario(s) from the decision space
     def generate_scenario(self, scenariotype=''):
@@ -148,19 +152,14 @@ class OptCase(object):
         """
         # TODO: code this (randomization for each variable, and then writing to file)
         scenario = ScenarioMaker()
-        scenario.initialize_from_decisionspace(land=self.land_decisionspace,
-                                               animal=self.animal_decisionspace,
-                                               manure=self.manure_decisionspace)
+        scenario.initialize_from_decisionspace(land=self.dsland.idtable,
+                                               animal=self.dsanimal.idtable,
+                                               manure=self.dsmanure.idtable)
 
         if scenariotype == 'random':
             scenario.randomize_betweenbounds()
         else:
             scenario.randomize_betweenbounds()
-
-        # translate the columns that are ids to names
-        self.scenarios_land.append(self.queries.translate_slabidtable_to_slabnametable(slabidtable=scenario.land))
-        self.scenarios_animal.append(self.queries.translate_scabidtable_to_scabnametable(scabidtable=scenario.animal))
-        self.scenarios_manure.append(self.queries.translate_sftabidtable_to_sftabnametable(sftabidtable=scenario.manure))
 
         # Scenario is written to file.
         self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.txt'),

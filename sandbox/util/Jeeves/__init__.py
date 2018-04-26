@@ -7,3 +7,4 @@ from .loadsource import LoadSource
 from .lrseg import Lrseg
 from .metadata import Metadata
 from .sector import Sector
+from .translator import Translator

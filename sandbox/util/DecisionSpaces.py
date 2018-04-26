@@ -1,5 +1,4 @@
 import collections
-from random import shuffle
 import pandas as pd
 
 from .Jeeves import Agency
@@ -8,6 +7,9 @@ from .Jeeves import Geo
 from .Jeeves import LoadSource
 from .Jeeves import Metadata
 from .Jeeves import Sector
+from .Jeeves import Translator
+
+from sandbox import settings
 
 
 class DecisionSpace(object):
@@ -24,6 +26,8 @@ class DecisionSpace(object):
         """
         self.name = ''
         self.specs = None
+
+        # Primary decision space tables
         self.idtable = None
         self.nametable = None
 
@@ -47,6 +51,14 @@ class DecisionSpace(object):
         # For manure bmps (no bounds yet)
         self.manure_sftabidtable = None
         self.manure_sftabnametable = None
+
+        # SourceHooks
+        self.agency = Agency()
+        self.bmp = Bmp()
+        self.geo = Geo()
+        self.loadsource = LoadSource()
+        self.sector = Sector()
+        self.translator = Translator()
 
     def __repr__(self):
         """ Custom 'print' that displays the decision space details
@@ -82,6 +94,18 @@ class DecisionSpace(object):
 
         return formattedstr
 
+    def populate_bmps(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
+    def qc(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
+    def append_bounds(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
     # Generation Recipes
     def proceed_from_geography_to_decision_space(self):
         """ Generate a decision space from just a geography (scale + area names)
@@ -91,104 +115,71 @@ class DecisionSpace(object):
         """
         # Metadata to BMPs
         self.populate_geography_from_scale_and_areas()
-        self.populate_agencies_from_geography()
-        self.populate_sectors()
-        self.populate_loadsources()
-        self.populate_bmps()
-        # QA/QC tables by removing unnecessary BMPs
-        self.qaqc_land_decisionspace()
-        self.qaqc_animal_decisionspace()
-        self.qaqc_manure_decisionspace()
-        # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
-        self.populate_hardbounds()
+
+        # Populate Agencies from Geography
+        # i.e. make la_table from lrsegids alone
+        self.lrseg_agency_table = self.agency.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
+        self.agencyids = self.lrseg_agency_table.loc[:, ['agencyid']]
+
+        # Populate Sectors
+        self.sectorids = self.sector.all_ids()
+
+        # Generate DecisionSpace
+        self.populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=self.lrseg_agency_table,
+                                                            sectorids=self.sectorids)
 
     def proceed_from_geoagencysectorids_to_decision_space(self):
         """ Generate a decision space from pre-defined geography (scale + area names), agency, and sector ids.
         """
-        self.populate_lrsegagencytable_from_geoagencysectorids()
-        # Metadata to BMPs
-        self.populate_loadsources()
-        self.populate_bmps()
-        # QA/QC tables by removing unnecessary BMPs
-        self.qaqc_land_decisionspace()
-        self.qaqc_animal_decisionspace()
-        self.qaqc_manure_decisionspace()
-        # Replicate the slab, scab, and sftab tables with hard upper/lower bounds where possible.
-        self.populate_hardbounds()
-
-    # Generation steps
-    def populate_geography_from_scale_and_areas(self):
-        self.lrsegids = Geo.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
-                                                                       areanames=self.geoareanames)
-        self.countyids = Geo.countyids_from_lrsegids(lrsegids=self.lrsegids)
-        # TODO REPLACE ^ WITH:  self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
-
-    def populate_agencies_from_geography(self):
-        """ make la_table from lrsegids alone """
-        self.lrseg_agency_table = Agency.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
-        self.agencyids = self.lrseg_agency_table.loc[:, ['agencyid']]
-
-    def populate_sectors(self):
-        self.sectorids = Sector.all_ids()
-
-    def populate_lrsegagencytable_from_geoagencysectorids(self):
-        """ make la_table when agencyids have already been populated """
-        all_lrseg_agencyids_table = self.queries.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
+        # make la_table when agencyids have already been populated """
+        all_lrseg_agencyids_table = self.agency.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
 
         columnmask = ['lrsegid', 'agencyid']
         self.lrseg_agency_table = all_lrseg_agencyids_table.loc[:, columnmask].merge(self.agencyids, how='inner')
 
-    def populate_loadsources(self):
-        self.source_lrseg_agency_table = self.\
-            queries.sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(lrsegagencyidtable=self.lrseg_agency_table,
-                                                                       sectorids=self.sectorids)
+        # Generate DecisionSpace
+        self.populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=self.lrseg_agency_table,
+                                                            sectorids=self.sectorids)
 
-        self.source_county_agency_table = self.\
-            queries.sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=self.
-                                                                            source_lrseg_agency_table)
+    # Generation steps
+    def populate_decisionspace_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
+        # Populate Load Sources
+        self.source_lrseg_agency_table = self.loadsource.\
+            sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(lrsegagencyidtable=lrsegagencyidtable,
+                                                               sectorids=sectorids)
+        self.source_county_agency_table = self.loadsource.\
+            sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=self.
+                                                                    source_lrseg_agency_table)
+        # Populate BMPs
+        self.populate_bmps()
+        # QC
+        self.qc()
+        self.append_bounds()
 
-    def populate_bmps(self):
-        """ Append the IDs for land, animal, and manure BMPs to the decision space tables
-        """
-        """ LAND BMPs """
-        # get IDs
-        self.land_slabidtable = self.queries.\
-            land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.
-                                                           source_lrseg_agency_table)
-        # Translate to names
-        self.land_slabnametable = self.queries.translate_slabidtable_to_slabnametable(self.land_slabidtable)
+    def populate_geography_from_scale_and_areas(self, scale=None, areanames=None):
+        self.lrsegids = self.geo.lrsegids_from_geoscale_with_names(scale=scale,
+                                                                   areanames=areanames)
+        self.countyids = self.geo.countyids_from_lrsegids(lrsegids=self.lrsegids)
+        # TODO REPLACE ^ WITH:  self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
 
-        """ ANIMAL BMPs """
-        # get IDs
-        self.animal_scabidtable = \
-            self.queries.animal_scabidtable_from_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.
-                                                                           source_county_agency_table,
-                                                                           baseconditionid=self.baseconditionid)
-        # Translate to names
-        self.animal_scabnametable = self.queries.translate_scabidtable_to_scabnametable(self.animal_scabidtable)
-
-        """ MANURE BMPs """
-        # get IDs
-        self.manure_sftabidtable = \
-            self.queries.manure_sftabidtable_from_SourceFromToAgencyIDtable(SourceCountyAgencyIDtable=self.
-                                                                            source_county_agency_table,
-                                                                            baseconditionid=self.baseconditionid)
-        # Translate to names
-        self.manure_sftabnametable = self.queries.translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
-
-    def populate_hardbounds(self):
-        # TODO: code this
-        self.land_decisionspace = self.queries.\
-            appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
-        self.animal_decisionspace = self.queries.\
-            appendBounds_to_animal_scabidtable(scabidtable=self.animal_scabidtable)
-        self.manure_decisionspace = self.queries.\
-            appendBounds_to_manure_sftabidtable(sftabidtable=self.manure_sftabidtable)
+    # GUI API
+    def set_freeparamgrps(self, agencycodes=None, sectornames=None):
+        self.agencyids = self.agency.ids_from_names(agencycodes=agencycodes)
+        self.sectorids = self.sector.ids_from_names(names=sectornames)
 
 
 class LandDecisionSpace(DecisionSpace):
     def __init__(self):
         DecisionSpace.__init__(self)
+
+    def populate_bmps(self):
+        """ Append the BMPs to the decision space table """
+        # get IDs
+        self.land_slabidtable = self.bmp.\
+            land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.
+                                                           source_lrseg_agency_table)
+        # Translate to names
+        self.land_slabnametable = self.translator.translate_slabidtable_to_slabnametable(self.land_slabidtable)
 
     def qc(self):
         """ Remove BMPs that the optimization engine should not modify
@@ -200,7 +191,7 @@ class LandDecisionSpace(DecisionSpace):
         - Land policy BMPs
 
         """
-        if self.logtostdout:
+        if settings.verbose:
             print('OptCase.qaqc_land_decisionspace(): QA/QCing...')
             print('Decision Space Table size: %s' % (self.land_slabidtable.shape, ))
 
@@ -214,7 +205,7 @@ class LandDecisionSpace(DecisionSpace):
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove "Non-Urban Stream Restoration Protocol" BMP
@@ -223,7 +214,7 @@ class LandDecisionSpace(DecisionSpace):
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
@@ -232,7 +223,7 @@ class LandDecisionSpace(DecisionSpace):
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         bmpnametoremove = 'ST'
@@ -240,7 +231,7 @@ class LandDecisionSpace(DecisionSpace):
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove Policy BMPs
@@ -249,30 +240,62 @@ class LandDecisionSpace(DecisionSpace):
         # TODO: replace the above '4' with a call that gets the number from a string such as 'Land Policy BMPs'
         self.land_slabidtable = self.land_slabidtable[~self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist())]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
 
         newrowcnt, newcolcnt = self.land_slabidtable.shape
-        if self.logtostdout:
+        if settings.verbose:
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
-    def populate_hardbounds(self):
-        self.land_decisionspace = self.queries. \
-            appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
+    def append_bounds(self):
+        self.slabidtable['lowerbound'] = 0
+        self.slabidtable['upperbound'] = 100
+        # For Acres: Add all of the acres (across LoadSources) from "TblLandUsePreBmp"
+        return self.slabidtable.copy()
+
+        # self.land_decisionspace = self.queries. \
+        #     appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)
 
 
 class AnimalDecisionSpace(DecisionSpace):
     def __init__(self):
         DecisionSpace.__init__(self)
 
+    def populate_bmps(self):
+        """ Append the BMPs to the decision space table """
+        # get IDs
+        self.animal_scabidtable = self.bmp.\
+            animal_scabidtable_from_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.source_county_agency_table,
+                                                              baseconditionid=self.baseconditionid)
+        # Translate to names
+        self.animal_scabnametable = self.translator.translate_scabidtable_to_scabnametable(self.animal_scabidtable)
+
     def qc(self):
         pass
+
+    def append_bounds(self):
+        self.scabidtable['lowerbound'] = 0
+        self.scabidtable['upperbound'] = 100
+        # For Animals: Add...?
+        return self.scabidtable.copy()
+        # self.animal_decisionspace = self.queries.\
+        #     appendBounds_to_animal_scabidtable(scabidtable=self.animal_scabidtable)
 
 
 class ManureDecisionSpace(DecisionSpace):
     def __init__(self):
         DecisionSpace.__init__(self)
+
+    def populate_bmps(self):
+        """ Append the BMPs to the decision space table """
+        # get IDs
+        self.manure_sftabidtable = self.bmp.\
+            manure_sftabidtable_from_SourceFromToAgencyIDtable(SourceCountyAgencyIDtable=self.
+                                                                            source_county_agency_table,
+                                                                            baseconditionid=self.baseconditionid)
+        # Translate to names
+        self.manure_sftabnametable = self.translator.translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
 
     def qc(self):
         """ Remove LoadSources or BMPs that the optimization engine should not modify
@@ -281,7 +304,7 @@ class ManureDecisionSpace(DecisionSpace):
         - AllLoadSources
 
         """
-        if self.logtostdout:
+        if settings.verbose:
             print('OptCase.qaqc_manure_decisionspace(): QA/QCing...')
             print('Decision Space Table size: %s' % (self.manure_sftabidtable.shape, ))
 
@@ -296,7 +319,7 @@ class ManureDecisionSpace(DecisionSpace):
         mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
         self.manure_sftabidtable = self.manure_sftabidtable[~mask]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove "FEEDPermitted" and "FEEDNonPermitted" loadsourcegroups from the manure table,
@@ -307,7 +330,7 @@ class ManureDecisionSpace(DecisionSpace):
         mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
         self.manure_sftabidtable = self.manure_sftabidtable[~mask]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
         loadsourcenametoremove = 'FEEDNonPermitted'
         loadsourcegroupid = LoadSource. \
@@ -315,7 +338,7 @@ class ManureDecisionSpace(DecisionSpace):
         mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
         self.manure_sftabidtable = self.manure_sftabidtable[~mask]
         removaltotal += mask.sum()
-        if self.logtostdout:
+        if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
@@ -325,8 +348,16 @@ class ManureDecisionSpace(DecisionSpace):
         print(self.manure_sftabidtable.head())
 
         newrowcnt, newcolcnt = self.manure_sftabidtable.shape
-        if self.logtostdout:
+        if settings.verbose:
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
+
+    def append_bounds(self):
+        self.sftabidtable['lowerbound'] = 0
+        self.sftabidtable['upperbound'] = 100
+        # For Dry_Tons_of_Stored_Manure: Add...?
+        return self.sftabidtable.copy()
+        # self.manure_decisionspace = self.queries.\
+        #     appendBounds_to_manure_sftabidtable(sftabidtable=self.manure_sftabidtable)
 
 
