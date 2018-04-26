@@ -1,10 +1,14 @@
 from sandbox.util.Jeeves.sourcehooks import SourceHook
 
+from .lrseg import Lrseg
+
 
 class Agency(SourceHook):
     def __init__(self):
         """ Agency Methods """
         SourceHook.__init__(self)
+
+        self.lrseg = Lrseg()
 
     def all_names(self):
         TblAgency = self.source.TblAgency  # get relevant source data
@@ -27,12 +31,12 @@ class Agency(SourceHook):
         if not isinstance(lrsegnames, list):
             lrsegnames = lrsegnames.tolist()
 
-        self.__ids_from_names(idtype='lrseg', names=lrsegnames)
-        tblwithlrsegids = self.lrsegids_from(lrsegnames=lrsegnames)
+        # self.__ids_from_names(idtype='lrseg', names=lrsegnames)
+        tblwithlrsegids = self.lrseg.ids_from_names(names=lrsegnames)
         return self.agencycodes_from_lrsegids(lrsegids=tblwithlrsegids)
 
     def agencycodes_from_lrsegids(self, lrsegids=None):
         tblwithagencyids = self.append_agencyid_to_lrsegids(lrsegids=lrsegids).loc[:, ['agencyid']]
 
-        return self.__singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
-                                    fromtable=tblwithagencyids, toname='agencycode')
+        return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
+                                  fromtable=tblwithagencyids, toname='agencycode')

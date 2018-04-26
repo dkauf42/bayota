@@ -42,10 +42,6 @@ class TddForGeo(unittest.TestCase):
                                                     ).landriversegment.tolist()
                       )
 
-    def test_agencies_query_from_lrsegs(self):
-        self.assertIn('NONFED',
-                      self.geo.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())
-
     def test_geo_scale_query_contains_COUNTY(self):
         self.assertIn('County',
                       self.geo.all_geotypes().geographytype.tolist())

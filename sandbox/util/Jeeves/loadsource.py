@@ -2,12 +2,19 @@ import pandas as pd
 from itertools import product
 
 from sandbox.util.Jeeves.sourcehooks import SourceHook
+from .agency import Agency
+from .lrseg import Lrseg
+from .sector import Sector
 
 
 class LoadSource(SourceHook):
     def __init__(self):
         """ Load Source Methods """
         SourceHook.__init__(self)
+
+        self.agency = Agency()
+        self.lrseg = Lrseg()
+        self.sector = Sector()
 
     def loadsourcegroupids_from(self, sectorids=None, loadsourceids=None):
         kwargs = (sectorids, loadsourceids)
@@ -104,9 +111,9 @@ class LoadSource(SourceHook):
         TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
 
         # Convert names to IDs
-        lrsegids = self.lrsegids_from(lrsegnames=lrsegs)
-        agencyids = self.agencyids_from(agencycodes=agencies)
-        sectorids = self.sectorids_from(sectornames=sectors)
+        lrsegids = self.lrseg.ids_from_names(names=lrsegs)
+        agencyids = self.agency.ids_from_names(agencycodes=agencies)
+        sectorids = self.sector.ids_from_names(names=sectors)
 
         # Generate all combinations of the lrseg, agency, sectors
         combos = list(product(lrsegids['lrsegid'], agencyids['agencyid']))

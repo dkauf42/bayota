@@ -16,4 +16,4 @@ class TddForAgency(unittest.TestCase):
 
     def test_agencies_query_from_lrsegs(self):
         self.assertIn('NONFED',
-                      self.jeeves.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())
+                      self.agency.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())
