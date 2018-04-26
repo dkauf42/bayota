@@ -136,3 +136,12 @@ class Bmp(SourceHook):
         tblsubset.drop(['loadsourceid'], axis=1, inplace=True)
 
         return tblsubset
+
+    def appendBmpSector_to_table_with_bmpid(self):
+        pass
+
+    def appendBmpType_to_table_with_bmpid(self):
+        pass
+
+    def appendBmpGroup_to_table_with_bmpid(self):
+        pass

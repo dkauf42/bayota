@@ -154,3 +154,9 @@ class LoadSource(SourceHook):
         tblsubset.drop(['animalid'], axis=1, inplace=True)
 
         return tblsubset
+
+    def appendLoadSourceSector_to_table_with_loadsourceid(self):
+        pass
+
+    def appendLoadSourceMajor_to_table_with_loadsourceid(self):
+        pass
