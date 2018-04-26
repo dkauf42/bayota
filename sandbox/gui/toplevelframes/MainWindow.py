@@ -69,7 +69,7 @@ class MainWindow(tk.Frame):
         self.done_button.config(style="Grey.TButton")
         self.done_button.config(state=tk.DISABLED)
         
-        # Set up keyboard control of the window
+        # Set up keyboard con   trol of the window
         self.parent.bind('<Escape>', self.on_mainwindow_closing)
         
         self.parent.protocol("WM_DELETE_WINDOW", self.on_mainwindow_closing)

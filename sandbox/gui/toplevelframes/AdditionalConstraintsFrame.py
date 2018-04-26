@@ -69,7 +69,7 @@ class AdditionalConstraintsFrame(tk.Frame):
 
         # Create Dropdown and Range Sliders (Land)
         land_table = optcase.land_slabidtable.drop_duplicates(subset=['bmpid'])
-        list_of_bmps = optcase.queries.bmpnames_from_bmpids(bmpids=land_table['bmpid']).bmpshortname.tolist()
+        list_of_bmps = optcase.queries.names_from_ids(bmpids=land_table['bmpid']).bmpshortname.tolist()
         list_of_max_hubs_for_bmps = dict(zip(list_of_bmps, land_table['upperbound'].tolist()))
         list_of_min_hlbs_for_bmps = dict(zip(list_of_bmps, land_table['lowerbound'].tolist()))
         self.bmpcomboslider_land = BmpComboSlider(self,
@@ -79,7 +79,7 @@ class AdditionalConstraintsFrame(tk.Frame):
         self.bmpcomboslider_land.grid(row=1, column=1, columnspan=3, sticky='we')
         # (Animal)
         animal_table = optcase.animal_scabidtable.drop_duplicates(subset=['bmpid'])
-        list_of_bmps = optcase.queries.bmpnames_from_bmpids(bmpids=animal_table['bmpid']).bmpshortname.tolist()
+        list_of_bmps = optcase.queries.names_from_ids(bmpids=animal_table['bmpid']).bmpshortname.tolist()
         list_of_max_hubs_for_bmps = dict(zip(list_of_bmps, animal_table['upperbound'].tolist()))
         list_of_min_hlbs_for_bmps = dict(zip(list_of_bmps, animal_table['lowerbound'].tolist()))
         self.bmpcomboslider_animal = BmpComboSlider(self,
@@ -89,7 +89,7 @@ class AdditionalConstraintsFrame(tk.Frame):
         self.bmpcomboslider_animal.grid(row=2, column=1, columnspan=3, sticky='we')
         # (Manure)
         manure_table = optcase.manure_sftabidtable.drop_duplicates(subset=['bmpid'])
-        list_of_bmps = optcase.queries.bmpnames_from_bmpids(bmpids=manure_table['bmpid']).bmpshortname.tolist()
+        list_of_bmps = optcase.queries.names_from_ids(bmpids=manure_table['bmpid']).bmpshortname.tolist()
         list_of_max_hubs_for_bmps = dict(zip(list_of_bmps, manure_table['upperbound'].tolist()))
         list_of_min_hlbs_for_bmps = dict(zip(list_of_bmps, manure_table['lowerbound'].tolist()))
         self.bmpcomboslider_manure = BmpComboSlider(self,

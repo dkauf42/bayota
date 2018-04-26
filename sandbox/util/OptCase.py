@@ -136,8 +136,8 @@ class OptCase(object):
         self.lrsegids = None
 
     def set_freeparamgrps(self, freeparamgrp_results):
-        self.agencyids = self.queries.agencyids_from(agencycodes=freeparamgrp_results.agencies)
-        self.sectorids = self.queries.sectorids_from(sectornames=freeparamgrp_results.sectors)
+        self.agencyids = self.queries.ids_from_names(agencycodes=freeparamgrp_results.agencies)
+        self.sectorids = self.queries.ids_from_names(names=freeparamgrp_results.sectors)
 
     # Generating scenario(s) from the decision space
     def generate_scenario(self, scenariotype=''):

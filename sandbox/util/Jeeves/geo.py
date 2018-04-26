@@ -1,26 +1,18 @@
 import pandas as pd
 import warnings
 
+from sandbox.util.Jeeves.sourcehooks import SourceHook
 from .lrseg import Lrseg
+from .county import County
 
 
-class Geo:
+class Geo(SourceHook):
     def __init__(self):
         """ Geography Methods """
+        SourceHook.__init__(self)
 
-        self.aj = Lrseg()
-
-    def all_names(self):
-        pass
-
-    def all_ids(self):
-        pass
-
-    def ids_from_names(self):
-        pass
-
-    def names_from_ids(self):
-        pass
+        self.lrseg = Lrseg()
+        self.county = County()
 
     def all_geotypes(self):
         TblGeoType = self.source.TblGeographyType  # get relevant source data
@@ -78,22 +70,6 @@ class Geo:
         tblsubset = TblGeography.loc[:, columnmask].merge(typeids, how='inner')
         return tblsubset.loc[:, 'geographyfullname']
 
-    def countyid_from_countystatestrs(self, getfrom=None):
-        TblCounty = self.source.TblCounty  # get relevant source data
-
-        areas = [x.split(', ') for x in getfrom]  # split ('County, StateAbbrev')
-        rowmask = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
-
-        columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
-        tblsubset = TblCounty.loc[:, columnmask].merge(rowmask, how='inner')
-
-        return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
-
-    def lrsegnames_from(self, lrsegids=None):
-        lrsegids = self.forceToSingleColumnDataFrame(lrsegids, colname='landriversegment')
-        return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
-                                  fromtable=lrsegids, toname='landriversegment')
-
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
         kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
@@ -108,11 +84,6 @@ class Geo:
             return self.__lrsegids_from_countyid(getfrom=countyid)
         else:
             raise ValueError('unrecognized input')
-
-    def __lrsegids_from_lrsegnames(self, getfrom=None):
-        getfrom = self.forceToSingleColumnDataFrame(getfrom, colname='landriversegment')
-        return self.__singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
-                                    fromtable=getfrom, toname='lrsegid')
 
     def __lrsegids_from_countystatestrs(self, getfrom=None):
         countyids = self.countyid_from_countystatestrs(getfrom=getfrom)

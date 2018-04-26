@@ -10,9 +10,14 @@ class Bmp(SourceHook):
         """ Load Source Methods """
         SourceHook.__init__(self)
 
-    def all_bmpnames(self):
+    def all_names(self):
         TblBmp = self.source.TblBmp  # get relevant source data]
         return TblBmp.loc[:, 'bmpshortname']
+
+    def names_from_ids(self, bmpids=None):
+        bmpids = self.forceToSingleColumnDataFrame(bmpids, colname='bmpid')
+        return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpshortname', 'bmpid'],
+                                  fromtable=bmpids, toname='bmpshortname')
 
     def single_bmpid_from_shortname(self, bmpshortname):
         TblBmp = self.source.TblBmp  # get relevant source data
@@ -21,12 +26,7 @@ class Bmp(SourceHook):
     def bmpids_from_categoryids(self, categoryids):
         categoryids = self.forceToSingleColumnDataFrame(categoryids, colname='bmpcategoryid')
         return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
-                                    fromtable=categoryids, toname='bmpid')
-
-    def bmpnames_from_bmpids(self, bmpids):
-        bmpids = self.forceToSingleColumnDataFrame(bmpids, colname='bmpid')
-        return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpshortname', 'bmpid'],
-                                    fromtable=bmpids, toname='bmpshortname')
+                                  fromtable=categoryids, toname='bmpid')
 
     def land_slabidtable_from_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
         # TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo

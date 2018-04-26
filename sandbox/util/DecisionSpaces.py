@@ -2,6 +2,13 @@ import collections
 from random import shuffle
 import pandas as pd
 
+from .Jeeves import Agency
+from .Jeeves import Bmp
+from .Jeeves import Geo
+from .Jeeves import LoadSource
+from .Jeeves import Metadata
+from .Jeeves import Sector
+
 
 class DecisionSpace(object):
     def __init__(self):
@@ -111,18 +118,18 @@ class DecisionSpace(object):
 
     # Generation steps
     def populate_geography_from_scale_and_areas(self):
-        self.lrsegids = self.queries.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
+        self.lrsegids = Geo.lrsegids_from_geoscale_with_names(scale=self.geoscalename,
                                                                        areanames=self.geoareanames)
-        self.countyids = self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
+        self.countyids = Geo.countyids_from_lrsegids(lrsegids=self.lrsegids)
         # TODO REPLACE ^ WITH:  self.queries.countyids_from_lrsegids(lrsegids=self.lrsegids)
 
     def populate_agencies_from_geography(self):
         """ make la_table from lrsegids alone """
-        self.lrseg_agency_table = self.queries.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
+        self.lrseg_agency_table = Agency.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
         self.agencyids = self.lrseg_agency_table.loc[:, ['agencyid']]
 
     def populate_sectors(self):
-        self.sectorids = self.queries.all_sectorids()
+        self.sectorids = Sector.all_ids()
 
     def populate_lrsegagencytable_from_geoagencysectorids(self):
         """ make la_table when agencyids have already been populated """
@@ -203,7 +210,7 @@ class LandDecisionSpace(DecisionSpace):
 
         # Remove "Urban Stream Restoration Protocol" BMP
         bmpnametoremove = 'UrbStrmRestPro'
-        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        bmpid = Bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
@@ -212,7 +219,7 @@ class LandDecisionSpace(DecisionSpace):
 
         # Remove "Non-Urban Stream Restoration Protocol" BMP
         bmpnametoremove = 'NonUrbStrmRestPro'
-        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        bmpid = Bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
@@ -221,7 +228,7 @@ class LandDecisionSpace(DecisionSpace):
 
         # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
         bmpnametoremove = 'RR'
-        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        bmpid = Bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
@@ -229,7 +236,7 @@ class LandDecisionSpace(DecisionSpace):
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         bmpnametoremove = 'ST'
-        bmpid = self.queries.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        bmpid = Bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
         mask = pd.Series(self.land_slabidtable['bmpid'] == bmpid)
         self.land_slabidtable = self.land_slabidtable[~mask]
         removaltotal += mask.sum()
@@ -237,7 +244,7 @@ class LandDecisionSpace(DecisionSpace):
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove Policy BMPs
-        bmpids = self.queries.bmpids_from_categoryids(categoryids=[4])
+        bmpids = Bmp.bmpids_from_categoryids(categoryids=[4])
         mask = pd.Series(self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist()))
         # TODO: replace the above '4' with a call that gets the number from a string such as 'Land Policy BMPs'
         self.land_slabidtable = self.land_slabidtable[~self.land_slabidtable['bmpid'].isin(bmpids.bmpid.tolist())]
@@ -284,7 +291,7 @@ class ManureDecisionSpace(DecisionSpace):
 
         # Remove "AllLoadSources" loadsourcegroup from the manure table
         loadsourcenametoremove = 'AllLoadSources'
-        loadsourcegroupid = self.queries.\
+        loadsourcegroupid = LoadSource.\
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
         mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
         self.manure_sftabidtable = self.manure_sftabidtable[~mask]
@@ -295,7 +302,7 @@ class ManureDecisionSpace(DecisionSpace):
         # Remove "FEEDPermitted" and "FEEDNonPermitted" loadsourcegroups from the manure table,
         # leaving only "FEED", which contains both anyway
         loadsourcenametoremove = 'FEEDPermitted'
-        loadsourcegroupid = self.queries.\
+        loadsourcegroupid = LoadSource.\
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
         mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
         self.manure_sftabidtable = self.manure_sftabidtable[~mask]
@@ -303,7 +310,7 @@ class ManureDecisionSpace(DecisionSpace):
         if self.logtostdout:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
         loadsourcenametoremove = 'FEEDNonPermitted'
-        loadsourcegroupid = self.queries. \
+        loadsourcegroupid = LoadSource. \
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
         mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
         self.manure_sftabidtable = self.manure_sftabidtable[~mask]

@@ -6,7 +6,11 @@ class Agency(SourceHook):
         """ Agency Methods """
         SourceHook.__init__(self)
 
-    def agencyids_from(self, agencycodes=None):
+    def all_names(self):
+        TblAgency = self.source.TblAgency  # get relevant source data
+        return TblAgency.loc[:, 'agencycode']
+
+    def ids_from_names(self, agencycodes=None):
         agencycodes = self.forceToSingleColumnDataFrame(agencycodes, colname='agencycode')
         return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
                                   fromtable=agencycodes, toname='agencyid')
@@ -32,7 +36,3 @@ class Agency(SourceHook):
 
         return self.__singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
                                     fromtable=tblwithagencyids, toname='agencycode')
-
-    def all_agency_names(self):
-        TblAgency = self.source.TblAgency  # get relevant source data
-        return TblAgency.loc[:, 'agencycode']

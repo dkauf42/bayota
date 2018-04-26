@@ -7,15 +7,15 @@ class Sector(SourceHook):
         SourceHook.__init__(self)
 
     # Sector Methods
-    def sectorids_from(self, sectornames=None):
-        sectornames = self.forceToSingleColumnDataFrame(sectornames, colname='sector')
-        return self.singleconvert(sourcetbl='TblSector', toandfromheaders=['sector', 'sectorid'],
-                                  fromtable=sectornames, toname='sectorid')
-
-    def all_sector_names(self):
+    def all_names(self):
         TblSector = self.source.TblSector  # get relevant source data
         return TblSector.loc[:, 'sector']
 
-    def all_sectorids(self):
+    def all_ids(self):
         TblSector = self.source.TblSector  # get relevant source data
         return TblSector.loc[:, ['sectorid']]
+
+    def ids_from_names(self, names=None):
+        names = self.forceToSingleColumnDataFrame(names, colname='sector')
+        return self.singleconvert(sourcetbl='TblSector', toandfromheaders=['sector', 'sectorid'],
+                                  fromtable=names, toname='sectorid')
