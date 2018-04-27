@@ -50,26 +50,12 @@ class Space(object):
 
         formattedstr = "\n***** Decision Space Details *****\n" \
                        "name:                     %s\n" \
-                       "description:              %s\n" \
-                       "base year:                %s\n" \
-                       "base condition:           %s\n" \
-                       "wastewater:               %s\n" \
-                       "cost profile:             %s\n" \
-                       "geographic scale:         %s\n" \
-                       "geographic areas:         %s\n" \
                        "# of lrsegs:              %s\n" \
                        "agencies included:        %s\n" \
                        "sectors included:         %s\n" \
                        "************************************\n" %\
                        tuple([str(i) for i in [d['name'],
-                                               d['description'],
-                                               d['baseyear'],
-                                               d['basecondname'],
-                                               d['wastewatername'],
-                                               d['costprofilename'],
-                                               d['geoscalename'],
-                                               d['geoareanames'],
-                                               d['lrsegids'].shape[0],
+                                               d['lrsegids'],
                                                d['agencyids'],
                                                d['sectorids']
                                                ]
