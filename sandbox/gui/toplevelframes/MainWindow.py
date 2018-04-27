@@ -141,7 +141,7 @@ class MainWindow(tk.Frame):
     def save_metadata(self):
         print('mainwindow:set_metadata: saving metadata...')
         self.optcase.set_metadata(self.metadataframe.get_results())
-        self.optcase.populate_geography_from_scale_and_areas()
+        self.optcase.populate_geography()
 
     def load_freeparamgroup_options(self):
         self.freeparamframe.update_box_options(jeeves=self.optcase.jeeves, optcase=self.optcase)
