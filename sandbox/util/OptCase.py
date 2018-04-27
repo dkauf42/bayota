@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 from sandbox.util.decisionspace import DecisionSpace
 from sandbox.util.scenariomaker.scenariomaker import ScenarioMaker
 from sandbox.util.Examples import Examples
@@ -141,7 +140,7 @@ class OptCase(object):
                                  sectornames=freeparamgrp_results.sectors)
 
     # Generating scenario(s) from the decision space
-    def generate_scenario(self, scenariotype=''):
+    def generate_single_scenario(self, scenariotype=''):
         """ Create a scenario (as CAST-input-tables in .csv format), and write them to file.
 
         The scenario is created by randomly generating numbers for each variable in the decision space.
@@ -155,13 +154,25 @@ class OptCase(object):
         else:
             scenario.randomize_betweenbounds()
 
-        # Scenario is written to file.
-        self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.txt'),
-                                       sep='\t', header=True, index=False, line_terminator='\r\n')
-        self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.txt'),
-                                         sep='\t', header=True, index=False, line_terminator='\r\n')
-        self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.txt'),
-                                         sep='\t', header=True, index=False, line_terminator='\r\n')
+        # add scenarios to OptCase attribute
+        for scenariotype, scenarios in scenario:
+            for df in scenarios:
+                if scenariotype == 'animal':
+                    self.scenarios_animal.append(df)
+                if scenariotype == 'land':
+                    self.scenarios_land.append(df)
+                if scenariotype == 'manure':
+                    self.scenarios_manure.append(df)
+
+        scenario.write_to_tab_delimited_txt_file()
+
+        # # Scenario is written to file.
+        # self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.txt'),
+        #                                sep='\t', header=True, index=False, line_terminator='\r\n')
+        # self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.txt'),
+        #                                  sep='\t', header=True, index=False, line_terminator='\r\n')
+        # self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.txt'),
+        #                                  sep='\t', header=True, index=False, line_terminator='\r\n')
 
     def generate_multiple_scenarios(self, scenariotype=''):
         """ Create a scenario (as CAST-input-tables in .csv format), and write them to file.
@@ -171,29 +182,20 @@ class OptCase(object):
         """
         population = ScenarioMaker(decisionspace=self.decisionspace).population
 
+        # Generate scenarios
         if scenariotype == 'hypercube':
             population.generate_latinhypercube()
         else:
             population.generate_latinhypercube()
 
-        # columns that are ids are translated to names, and scenarios are written to file.
-        i = 0
-        for df in population.scenarios_land:
-            self.scenarios_land.append(self.decisionspace.land.nametable)
-            self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
-                                           sep='\t', header=True, index=False, line_terminator='\r\n')
-            i += 1
+        # add scenarios to OptCase attribute
+        for scenariotype, scenarios in population:
+            for df in scenarios:
+                if scenariotype == 'animal':
+                    self.scenarios_animal.append(df)
+                if scenariotype == 'land':
+                    self.scenarios_land.append(df)
+                if scenariotype == 'manure':
+                    self.scenarios_manure.append(df)
 
-        i = 0
-        for df in population.scenarios_animal:
-            self.scenarios_animal.append(self.decisionspace.animal.nametable)
-            self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
-                                             sep='\t', header=True, index=False, line_terminator='\r\n')
-            i += 1
-
-        i = 0
-        for df in population.scenarios_manure:
-            self.scenarios_manure.append(self.decisionspace.manure.nametable)
-            self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.txt' % i),
-                                             sep='\t', header=True, index=False, line_terminator='\r\n')
-            i += 1
+        population.write_to_tab_delimited_txt_file()
