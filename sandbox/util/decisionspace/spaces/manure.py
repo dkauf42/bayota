@@ -13,6 +13,9 @@ class Manure(Space):
         """
         Space.__init__(self, jeeves=jeeves)
 
+    def set_idtable_fromSourceGeoAgency(self):
+        self.idtable = self.source_county_agency_table
+
     def populate_bmps(self):
         """ Append the BMPs to the decision space table """
         # get IDs
@@ -25,15 +28,25 @@ class Manure(Space):
         # Translate to names
         self.nametable = self.jeeves.translator.translate_sftabidtable_to_sftabnametable(self.idtable)
 
-    def qc(self):
+    def qc_loadsources(self):
         """ Remove LoadSources or BMPs that the optimization engine should not modify
 
         The following LoadSources are removed from the decision space:
         - AllLoadSources
 
         """
+        pass
+
+    def qc_bmps(self):
+        """ Remove LoadSources or BMPs that the optimization engine should not modify
+
+        The following LoadSources are removed from the decision space:
+        - AllLoadSources
+        - "FEEDPermitted" and "FEEDNonPermitted" are removed; replaced by "FEED"
+
+        """
         if settings.verbose:
-            print('manure.qc(): QCing...')
+            print('manure.qc_bmps(): QCing...')
             print('Decision Space Table size: %s' % (self.idtable.shape, ))
             print(self.idtable)
 
@@ -71,7 +84,7 @@ class Manure(Space):
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
-        print('manure.qc():')
+        print('manure.qc_bmps():')
         print(self.idtable.head())
         self.idtable.drop_duplicates()
         print(self.idtable.head())

@@ -13,6 +13,9 @@ class Land(Space):
         """
         Space.__init__(self, jeeves=jeeves)
 
+    def set_idtable_fromSourceGeoAgency(self):
+        self.idtable = self.source_lrseg_agency_table
+
     def populate_bmps(self):
         """ Append the BMPs to the decision space table """
         # get IDs
@@ -23,7 +26,10 @@ class Land(Space):
         # Translate to names
         self.nametable = self.jeeves.translator.translate_slabidtable_to_slabnametable(self.idtable)
 
-    def qc(self):
+    def qc_loadsources(self):
+        pass
+
+    def qc_bmps(self):
         """ Remove BMPs that the optimization engine should not modify
 
         The following BMPs are removed from the decision space:
@@ -34,7 +40,7 @@ class Land(Space):
 
         """
         if settings.verbose:
-            print('land.qc(): QCing...')
+            print('land.qc_bmps(): QCing...')
             print('Decision Space Table size: %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape
