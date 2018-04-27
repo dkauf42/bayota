@@ -1,7 +1,12 @@
+import os
 import random
 import numpy as np
 import pandas as pd
 from itertools import product
+
+from sandbox.__init__ import get_outputdir
+
+writedir = get_outputdir()
 
 
 class Maker(object):
@@ -9,13 +14,46 @@ class Maker(object):
         """ Base class for all scenario makers in the optimizer engine
 
         """
-        self.landnametable = decisionspace.land.nametable.copy()
         self.animalnametable = decisionspace.animal.nametable.copy()
+        self.landnametable = decisionspace.land.nametable.copy()
         self.manurenametable = decisionspace.manure.nametable.copy()
 
-        self.scenarios_land = []
+        # self.scenarios = []
+
         self.scenarios_animal = []
+        self.scenarios_land = []
         self.scenarios_manure = []
+
+    def __iter__(self):
+        """ Generator to return the scenario objects, e.g. in For loops """
+        # self.scenarios = [self.scenarios_animal, self.scenarios_land, self.scenarios_manure]
+        for x, y in zip(['animal', 'land', 'manure'],
+                        [self.scenarios_animal, self.scenarios_land, self.scenarios_manure]):
+            yield x, y
+
+    def write_to_tab_delimited_txt_file(self):
+        print('Makers.write_to_tab_delimited_txt_file()')
+        print(self.scenarios_land)
+        # columns that are ids are translated to names, and scenarios are written to file.
+        i = 0
+        for df in self.scenarios_land:
+            print('Makers.write_to_tab_delimited_txt_file()')
+            df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
+                      sep='\t', header=True, index=False, line_terminator='\r\n')
+            i += 1
+
+        i = 0
+        for df in self.scenarios_animal:
+            df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
+                      sep='\t', header=True, index=False, line_terminator='\r\n')
+            i += 1
+
+        i = 0
+        for df in self.scenarios_manure:
+            df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.txt' % i),
+                      sep='\t', header=True, index=False, line_terminator='\r\n')
+            i += 1
+
 
     @staticmethod
     def expand_grid(data_dict):
