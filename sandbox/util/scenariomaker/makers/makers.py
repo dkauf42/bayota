@@ -32,12 +32,9 @@ class Maker(object):
             yield x, y
 
     def write_to_tab_delimited_txt_file(self):
-        print('Makers.write_to_tab_delimited_txt_file()')
-        print(self.scenarios_land)
         # columns that are ids are translated to names, and scenarios are written to file.
         i = 0
         for df in self.scenarios_land:
-            print('Makers.write_to_tab_delimited_txt_file()')
             df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
                       sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1

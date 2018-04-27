@@ -63,8 +63,6 @@ def main(numinstances=1, testcase=None, scale='', areanames=''):
         else:
             raise ValueError('Unexpected test case argument')
 
-        print('Sandboxer.main()')
-        print(optcase.decisionspace.land)
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         optcase.generate_single_scenario(scenariotype='random')
         # optcase.generate_multiple_scenarios(scenariotype='hypercube')

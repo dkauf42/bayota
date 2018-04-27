@@ -168,14 +168,6 @@ class OptCase(object):
 
         scenario.write_to_tab_delimited_txt_file()
 
-        # # Scenario is written to file.
-        # self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land.txt'),
-        #                                sep='\t', header=True, index=False, line_terminator='\r\n')
-        # self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal.txt'),
-        #                                  sep='\t', header=True, index=False, line_terminator='\r\n')
-        # self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure.txt'),
-        #                                  sep='\t', header=True, index=False, line_terminator='\r\n')
-
     def generate_multiple_scenarios(self, scenariotype=''):
         """ Create a scenario (as CAST-input-tables in .csv format), and write them to file.
 
