@@ -2,6 +2,9 @@ import collections
 import pandas as pd
 
 from sandbox.util.jeeves import Jeeves
+from .types.animal import Animal
+from .types.land import Land
+from .types.manure import Manure
 
 from sandbox import settings
 
@@ -20,6 +23,10 @@ class DecisionSpace(object):
         """
         self.name = ''
         self.specs = None
+
+        self.animal = Animal()
+        self.land = Land()
+        self.manure = Manure()
 
         # Primary decision space tables
         self.idtable = None

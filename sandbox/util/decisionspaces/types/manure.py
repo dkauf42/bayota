@@ -1,8 +1,8 @@
-from .decisionspace import DecisionSpace
+from sandbox.util.decisionspaces.decisionspace import DecisionSpace
 from sandbox import settings
 
 
-class ManureDecisionSpace(DecisionSpace):
+class Manure(DecisionSpace):
     def __init__(self):
         DecisionSpace.__init__(self)
 

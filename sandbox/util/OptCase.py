@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from sandbox.util.DecisionSpaces import LandDecisionSpace, AnimalDecisionSpace, ManureDecisionSpace
+from sandbox.util.decisionspaces import DecisionSpace
 from sandbox.util.ScenarioMaker import ScenarioMaker
 from sandbox.util.PopulationMaker import PopulationMaker
 from sandbox.util.Examples import Examples
@@ -40,9 +40,7 @@ class OptCase(object):
         # TODO: use real baseconditionid instead of this^ temporary placeholder
 
         # Decision Spaces
-        self.dsland = None
-        self.dsanimal = None
-        self.dsmanure = None
+        self.decisionspace = DecisionSpace()
 
         # Scenarios
         self.scenarios_land = []
@@ -114,16 +112,16 @@ class OptCase(object):
         self.geoscalename = scale
         self.geoareanames = areanames
 
-    def generate_decisionspaces(self):
-        self.dsland = LandDecisionSpace()
-        self.dsanimal = AnimalDecisionSpace()
-        self.dsmanure = ManureDecisionSpace()
+    def proceed_from_geography_to_decision_space(self):
+        self.decisionspace.land.proceed_from_geography_to_decision_space(scale=self.geoscalename, areanames=self.geoareanames)
+        self.decisionspace.animal.proceed_from_geography_to_decision_space(scale=self.geoscalename, areanames=self.geoareanames)
+        self.decisionspace.manure.proceed_from_geography_to_decision_space(scale=self.geoscalename, areanames=self.geoareanames)
 
     # hooks for graphical interface get/put
     def populate_geography_from_scale_and_areas(self):
-        self.dsland.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
-        self.dsanimal.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
-        self.dsmanure.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
+        self.decisionspace.land.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
+        self.decisionspace.animal.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
+        self.decisionspace.manure.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
 
     def set_metadata(self, metadata_results):
         self.name = metadata_results.name
@@ -136,12 +134,12 @@ class OptCase(object):
         self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
     def set_freeparamgrps(self, freeparamgrp_results):
-        self.dsland.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
-                                      sectornames=freeparamgrp_results.sectors)
-        self.dsanimal.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
-                                        sectornames=freeparamgrp_results.sectors)
-        self.dsmanure.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
-                                        sectornames=freeparamgrp_results.sectors)
+        self.decisionspace.land.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
+                                                  sectornames=freeparamgrp_results.sectors)
+        self.decisionspace.animal.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
+                                                    sectornames=freeparamgrp_results.sectors)
+        self.decisionspace.manure.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
+                                                    sectornames=freeparamgrp_results.sectors)
 
     # Generating scenario(s) from the decision space
     def generate_scenario(self, scenariotype=''):
@@ -152,9 +150,9 @@ class OptCase(object):
         """
         # TODO: code this (randomization for each variable, and then writing to file)
         scenario = ScenarioMaker()
-        scenario.initialize_from_decisionspace(land=self.dsland.idtable,
-                                               animal=self.dsanimal.idtable,
-                                               manure=self.dsmanure.idtable)
+        scenario.initialize_from_decisionspace(land=self.decisionspace.land.idtable,
+                                               animal=self.decisionspace.animal.idtable,
+                                               manure=self.decisionspace.manure.idtable)
 
         if scenariotype == 'random':
             scenario.randomize_betweenbounds()
@@ -176,9 +174,9 @@ class OptCase(object):
 
         """
         population = PopulationMaker()
-        population.initialize_from_decisionspace(land=self.land_decisionspace,
-                                                 animal=self.animal_decisionspace,
-                                                 manure=self.manure_decisionspace)
+        population.initialize_from_decisionspace(land=self.decisionspace.land.idtable,
+                                                 animal=self.decisionspace.animal.idtable,
+                                                 manure=self.decisionspace.manure.idtable)
 
         if scenariotype == 'hypercube':
             population.generate_latinhypercube()
@@ -188,14 +186,14 @@ class OptCase(object):
         # columns that are ids are translated to names, and scenarios are written to file.
         i = 0
         for df in population.scenarios_land:
-            self.scenarios_land.append(self.queries.translate_slabidtable_to_slabnametable(slabidtable=df))
+            self.scenarios_land.append(self.decisionspace.land.nametable)
             self.scenarios_land[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
                                            sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1
 
         i = 0
         for df in population.scenarios_animal:
-            self.scenarios_animal.append(self.queries.translate_scabidtable_to_scabnametable(scabidtable=df))
+            self.scenarios_animal.append(self.dsanimal.nametable)
             self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
                                              sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1

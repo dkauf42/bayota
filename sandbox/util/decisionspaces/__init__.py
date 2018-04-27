@@ -1,1 +1,2 @@
-__all__ = ['AnimalDecisionSpace', 'LandDecisionSpace', 'ManureDecisionSpace']
+
+from .decisionspace import DecisionSpace

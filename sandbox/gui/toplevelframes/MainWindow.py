@@ -11,12 +11,12 @@ from sandbox.gui.useframes.ToggleFrame import ToggledFrame
 class MainWindow(tk.Frame):
     def __init__(self, parent, optcase, *args, **kwargs):
         """The optimization configuration window"""
-        my_bgcolor = "bisque"
+        # my_bgcolor = "bisque"
+        my_bgcolor = 'cornflower blue'
         tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
         self.parent = parent
 
         self.optcase = optcase
-        self.queries = optcase.queries
         
         # We need to get ttk.Label colors to work properly on OS X
         self.style = ttk.Style()
@@ -85,7 +85,6 @@ class MainWindow(tk.Frame):
     def skipgui_and_use_default_test(self):
         """For Testing Purposes"""
         self.optcase.load_example(name='adamscounty')
-        self.optcase.generate_decisionspaces()
 
         self.close_and_submit()
 

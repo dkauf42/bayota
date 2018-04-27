@@ -1,8 +1,8 @@
-from .decisionspace import DecisionSpace
+from sandbox.util.decisionspaces.decisionspace import DecisionSpace
 from sandbox import settings
 
 
-class LandDecisionSpace(DecisionSpace):
+class Land(DecisionSpace):
     def __init__(self):
         DecisionSpace.__init__(self)
 

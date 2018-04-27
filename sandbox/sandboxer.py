@@ -31,7 +31,6 @@ def main(numinstances=1, testcase=None, scale='', areanames=''):
     for i in range(numinstances):
         # Load the Source Data and Base Condition tables
         optcase = OptCase()
-        optcase.load_tables()
 
         if testcase == 1:
             print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
