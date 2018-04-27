@@ -26,6 +26,12 @@ class DecisionSpace(object):
         self.land = Land(jeeves=self.jeeves)
         self.manure = Manure(jeeves=self.jeeves)
 
+    def __iter__(self):
+        """ Generator to return the decision space names and decision space objects, e.g. in For loops """
+        for x, y in zip(['animal', 'land', 'manure'],
+                        [self.animal, self.land, self.manure]):
+            yield x, y
+
     @staticmethod
     def load_queries():
         # SourceHooks

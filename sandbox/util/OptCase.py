@@ -111,21 +111,20 @@ class OptCase(object):
         self.geoareanames = areanames
 
     def proceed_from_geography_to_decision_space(self):
-        self.decisionspace.land.proceed_from_geography_to_decision_space(scale=self.geoscalename,
-                                                                         areanames=self.geoareanames)
-        self.decisionspace.animal.proceed_from_geography_to_decision_space(scale=self.geoscalename,
-                                                                           areanames=self.geoareanames)
-        self.decisionspace.manure.proceed_from_geography_to_decision_space(scale=self.geoscalename,
-                                                                           areanames=self.geoareanames)
+        for dsname, ds in self.decisionspace:
+            ds.proceed_from_geography_to_decision_space(scale=self.geoscalename,
+                                                        areanames=self.geoareanames)
+
+    def proceed_from_geoagencysectorids_to_decision_space(self):
+        for dsname, ds in self.decisionspace:
+            ds.proceed_from_geoagencysectorids_to_decision_space(scale=self.geoscalename,
+                                                                 areanames=self.geoareanames)
 
     # hooks for graphical interface get/put
     def populate_geography_from_scale_and_areas(self):
-        self.decisionspace.land.populate_geography_from_scale_and_areas(scale=self.geoscalename,
-                                                                        areanames=self.geoareanames)
-        self.decisionspace.animal.populate_geography_from_scale_and_areas(scale=self.geoscalename,
-                                                                          areanames=self.geoareanames)
-        self.decisionspace.manure.populate_geography_from_scale_and_areas(scale=self.geoscalename,
-                                                                          areanames=self.geoareanames)
+        for dsname, ds in self.decisionspace:
+            ds.populate_geography_from_scale_and_areas(scale=self.geoscalename,
+                                                       areanames=self.geoareanames)
 
     def set_metadata(self, metadata_results):
         self.name = metadata_results.name
@@ -138,12 +137,9 @@ class OptCase(object):
         self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
     def set_freeparamgrps(self, freeparamgrp_results):
-        self.decisionspace.land.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
-                                                  sectornames=freeparamgrp_results.sectors)
-        self.decisionspace.animal.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
-                                                    sectornames=freeparamgrp_results.sectors)
-        self.decisionspace.manure.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
-                                                    sectornames=freeparamgrp_results.sectors)
+        for dsname, ds in self.decisionspace:
+            ds.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
+                                 sectornames=freeparamgrp_results.sectors)
 
     # Generating scenario(s) from the decision space
     def generate_scenario(self, scenariotype=''):
