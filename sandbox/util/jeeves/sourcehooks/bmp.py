@@ -58,13 +58,15 @@ class Bmp(SourceHook):
         columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sca_table, how='inner')
 
-        # # Get the animalgroups that each animalid belongs to
-        # columnmask = ['animalgroupid', 'animalid']
-        # tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
-
+        # BMPs are associated with AnimalGroupIDs not AnimalIDs
+        # Get the animalgroups that each animalid belongs to
+        columnmask = ['animalgroupid', 'animalid']
+        tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
         # Get the BMPs that can be applied to each animalgroupid
         columnmask = ['animalgroupid', 'bmpid']
         tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
+        tblsubset.drop(['animalgroupid'], axis=1, inplace=True)
+        tblsubset.drop_duplicates(inplace=True)
 
         # Convert loadsourceids to loadsourcegroupids
         columnmask = ['loadsourcegroupid', 'loadsourceid']

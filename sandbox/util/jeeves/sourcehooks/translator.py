@@ -56,6 +56,7 @@ class Translator(SourceHook):
 
         # Get relevant source data tables
         TblCounty = self.source.TblCounty
+        TblAnimal = self.source.TblAnimal
         TblAnimalGroup = self.source.TblAnimalGroup
         TblAgency = self.source.TblAgency
         TblLoadSource = self.source.TblLoadSource
@@ -74,18 +75,18 @@ class Translator(SourceHook):
         # Translate to BMP names
         columnmask = ['bmpshortname', 'bmpid']
         newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
-        # Translate to AnimalGroup names
-        columnmask = ['animalgroupid', 'animalgroup']
-        newtable = TblAnimalGroup.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to Animal names
+        columnmask = ['animalid', 'animalname']
+        newtable = TblAnimal.loc[:, columnmask].merge(newtable, how='inner')
 
         newtable.drop(['countyid', 'agencyid', 'loadsourcegroupid', 'bmpid',
-                       'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
+                       'animalid', 'baseconditionid'], axis=1, inplace=True)
         newtable.rename(columns={'fips': 'GeographyName',
                                  'stateabbreviation': 'StateAbbreviation',
                                  'agencycode': 'AgencyCode',
+                                 'animalname': 'AnimalGroup',
                                  'loadsourcegroup': 'LoadSourceGroup',
-                                 'bmpshortname': 'BmpShortname',
-                                 'animalgroup': 'AnimalGroup'}, inplace=True)
+                                 'bmpshortname': 'BmpShortname'}, inplace=True)
 
         newtable['Unit'] = 'Percent'
 
@@ -105,6 +106,7 @@ class Translator(SourceHook):
 
         # Get relevant source data tables
         TblCounty = self.source.TblCounty
+        TblAnimal = self.source.TblAnimal
         TblAnimalGroup = self.source.TblAnimalGroup
         TblAgency = self.source.TblAgency
         TblLoadSource = self.source.TblLoadSource
@@ -141,17 +143,17 @@ class Translator(SourceHook):
         # Translate to BMP names
         columnmask = ['bmpshortname', 'bmpid']
         newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
-        # Translate to AnimalGroup names
-        columnmask = ['animalgroupid', 'animalgroup']
-        newtable = TblAnimalGroup.loc[:, columnmask].merge(newtable, how='inner')
+        # Translate to Animal names
+        columnmask = ['animalid', 'animalname']
+        newtable = TblAnimal.loc[:, columnmask].merge(newtable, how='inner')
 
         newtable.drop(['agencyid', 'loadsourcegroupid', 'bmpid',
-                       'animalgroupid', 'animalid', 'baseconditionid'], axis=1, inplace=True)
+                       'animalid', 'baseconditionid'], axis=1, inplace=True)
         newtable.rename(columns={'stateabbreviation': 'StateAbbreviation',
                                  'agencycode': 'AgencyCode',
+                                 'animalname': 'AnimalGroup',
                                  'loadsourcegroup': 'LoadSourceGroup',
-                                 'bmpshortname': 'BmpShortname',
-                                 'animalgroup': 'AnimalGroup'}, inplace=True)
+                                 'bmpshortname': 'BmpShortname'}, inplace=True)
 
         newtable['Unit'] = 'Percent'
 
