@@ -6,8 +6,6 @@ from .spaces.animal import Animal
 from .spaces.land import Land
 from .spaces.manure import Manure
 
-from sandbox import settings
-
 
 class DecisionSpace(object):
     def __init__(self):
@@ -22,8 +20,13 @@ class DecisionSpace(object):
 
         """
         # SourceHooks
-        jeeves = Jeeves()
+        jeeves = self.load_queries()
 
         self.animal = Animal(jeeves=jeeves)
         self.land = Land(jeeves=jeeves)
         self.manure = Manure(jeeves=jeeves)
+
+    @staticmethod
+    def load_queries():
+        # SourceHooks
+        return Jeeves()
