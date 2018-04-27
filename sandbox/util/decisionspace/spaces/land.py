@@ -17,7 +17,7 @@ class Land(Space):
         """ Append the BMPs to the decision space table """
         # get IDs
         self.idtable = self.jeeves.bmp.\
-            land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.source_lrseg_agency_table)
+            append_bmpids_to_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.source_lrseg_agency_table)
 
     def translate_ids_to_names(self):
         # Translate to names
@@ -34,7 +34,7 @@ class Land(Space):
 
         """
         if settings.verbose:
-            print('land.qc(): QA/QCing...')
+            print('land.qc(): QCing...')
             print('Decision Space Table size: %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape

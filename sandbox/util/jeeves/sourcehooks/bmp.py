@@ -28,7 +28,7 @@ class Bmp(SourceHook):
         return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
                                   fromtable=categoryids, toname='bmpid')
 
-    def land_slabidtable_from_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
+    def append_bmpids_to_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
         TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
 
         TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
@@ -38,7 +38,7 @@ class Bmp(SourceHook):
         return tblsubset
         # return SourceLrsegAgencyIDtable
 
-    def animal_scabidtable_from_SourceCountyAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
+    def append_animal_bmpids_to_SourceCountyAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation
         TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
         TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
@@ -50,6 +50,8 @@ class Bmp(SourceHook):
         # For Animals, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
         nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
         sca_table = sca_table[sca_table["agencyid"] == nonfedid]
+        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()-1:')
+        print(sca_table)
 
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
         sca_table['baseconditionid'] = baseconditionid
@@ -57,14 +59,20 @@ class Bmp(SourceHook):
         # Get which animals are present in the county, agency, loadsources
         columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sca_table, how='inner')
+        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()0:')
+        print(tblsubset)
 
         # BMPs are associated with AnimalGroupIDs not AnimalIDs
         # Get the animalgroups that each animalid belongs to
         columnmask = ['animalgroupid', 'animalid']
         tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
+        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()1:')
+        print(tblsubset)
         # Get the BMPs that can be applied to each animalgroupid
         columnmask = ['animalgroupid', 'bmpid']
         tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
+        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()2:')
+        print(tblsubset)
         tblsubset.drop(['animalgroupid'], axis=1, inplace=True)
         tblsubset.drop_duplicates(inplace=True)
 

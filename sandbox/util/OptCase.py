@@ -3,6 +3,7 @@ from sandbox.util.decisionspace import DecisionSpace
 from sandbox.util.scenariomaker.scenariomaker import ScenarioMaker
 from sandbox.util.Examples import Examples
 from sandbox.__init__ import get_outputdir
+from sandbox import settings
 
 writedir = get_outputdir()
 
@@ -84,6 +85,9 @@ class OptCase(object):
             name (str):  this is the name of the example to load.
 
         """
+        if settings.verbose:
+            print('** OptCase is loading example "%s" **' % name)
+
         ex = Examples(name)
 
         self.name = ex.name

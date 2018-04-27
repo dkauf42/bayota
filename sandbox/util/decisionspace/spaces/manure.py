@@ -33,8 +33,9 @@ class Manure(Space):
 
         """
         if settings.verbose:
-            print('manure.qc(): QA/QCing...')
+            print('manure.qc(): QCing...')
             print('Decision Space Table size: %s' % (self.idtable.shape, ))
+            print(self.idtable)
 
         origrowcnt, origcolcnt = self.idtable.shape
 

@@ -86,6 +86,9 @@ class Space(object):
         Note:
             This will include all agencies, all loadsources, and all bmps.
         """
+        if settings.verbose:
+            print('** %s DecisionSpace being generated from geography **' % type(self).__name__)
+
         # Set basecondition
         self.baseconditionid = baseconditionid
 
@@ -107,6 +110,9 @@ class Space(object):
     def proceed_to_decision_space_from_geoagencysectorids(self):
         """ Generate a decision space from pre-defined geography (scale + area names), agency, and sector ids.
         """
+        if settings.verbose:
+            print('** DecisionSpace being generated from geography, agencies, sectors **')
+
         # make la_table when agencyids have already been populated """
         all_lrseg_agencyids_table = self.jeeves.agency.agencylrsegidtable_from_lrsegids(lrsegids=self.lrsegids)
 
@@ -123,6 +129,12 @@ class Space(object):
         # TODO: replace this with a jeeves call to get a real ID number using a name argument
 
     def __populate_decisionspace_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
+        if settings.verbose:
+            print('\t-- appending loadsources to the lrseg,agency,sector table, which looks like:')
+            print(lrsegagencyidtable.head())
+            print('\t^shape is %s' % str(lrsegagencyidtable.shape))
+            print('\t--')
+
         # Populate Load Sources
         self.source_lrseg_agency_table = self.jeeves.loadsource.\
             sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(lrsegagencyidtable=lrsegagencyidtable,
@@ -130,6 +142,12 @@ class Space(object):
         self.source_county_agency_table = self.jeeves.loadsource.\
             sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=self.
                                                                     source_lrseg_agency_table)
+
+        if settings.verbose:
+            print('\t-- appending bmps to the source,lrseg,agency,sector table, which looks like:')
+            print(self.source_lrseg_agency_table.head())
+            print('\t^shape is %s' % str(self.source_lrseg_agency_table.shape))
+            print('\t--')
         # Populate BMPs
         self.populate_bmps()
         # QC
@@ -137,9 +155,11 @@ class Space(object):
         self.append_bounds()
         self.translate_ids_to_names()
 
-        print('spaces.__populate_decisionspace_from_lrseg_agency_table()')
-        print(self.idtable.head())
-        print(self.nametable.head())
+        if settings.verbose:
+            print('\t-- after qc and translation, the idtable looks like')
+            print(self.idtable.head())
+            print('\t^shape is %s' % str(self.idtable.shape))
+            print('\t--')
 
     def populate_geography_from_scale_and_areas(self, scale=None, areanames=None):
         self.lrsegids = self.jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)

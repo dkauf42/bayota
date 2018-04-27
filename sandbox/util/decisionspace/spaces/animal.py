@@ -17,7 +17,7 @@ class Animal(Space):
         """ Append the BMPs to the decision space table """
         # get IDs
         self.idtable = self.jeeves.bmp.\
-            animal_scabidtable_from_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.source_county_agency_table,
+            append_animal_bmpids_to_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.source_county_agency_table,
                                                               baseconditionid=self.baseconditionid)
 
     def translate_ids_to_names(self):
