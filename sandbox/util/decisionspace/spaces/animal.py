@@ -27,10 +27,10 @@ class Animal(Space):
         pass
 
     def append_bounds(self):
-        self.scabidtable['lowerbound'] = 0
-        self.scabidtable['upperbound'] = 100
+        self.idtable['lowerbound'] = 0
+        self.idtable['upperbound'] = 100
         # For Animals: Add...?
-        return self.scabidtable.copy()
+        return self.idtable.copy()
         # self.animal_decisionspace = self.queries.\
         #     appendBounds_to_animal_scabidtable(scabidtable=self.animal_scabidtable)
 

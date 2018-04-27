@@ -33,9 +33,9 @@ class Manure(Space):
         """
         if settings.verbose:
             print('OptCase.qaqc_manure_decisionspace(): QA/QCing...')
-            print('Decision Space Table size: %s' % (self.manure_sftabidtable.shape, ))
+            print('Decision Space Table size: %s' % (self.idtable.shape, ))
 
-        origrowcnt, origcolcnt = self.manure_sftabidtable.shape
+        origrowcnt, origcolcnt = self.idtable.shape
 
         removaltotal = 0
 
@@ -43,8 +43,8 @@ class Manure(Space):
         loadsourcenametoremove = 'AllLoadSources'
         loadsourcegroupid = self.jeeves.loadsource.\
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
-        mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
-        self.manure_sftabidtable = self.manure_sftabidtable[~mask]
+        mask = pd.Series(self.idtable['loadsourcegroupid'] == loadsourcegroupid)
+        self.idtable = self.idtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
@@ -54,36 +54,36 @@ class Manure(Space):
         loadsourcenametoremove = 'FEEDPermitted'
         loadsourcegroupid = self.jeeves.loadsource.\
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
-        mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
-        self.manure_sftabidtable = self.manure_sftabidtable[~mask]
+        mask = pd.Series(self.idtable['loadsourcegroupid'] == loadsourcegroupid)
+        self.idtable = self.idtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
         loadsourcenametoremove = 'FEEDNonPermitted'
         loadsourcegroupid = self.jeeves.loadsource. \
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
-        mask = pd.Series(self.manure_sftabidtable['loadsourcegroupid'] == loadsourcegroupid)
-        self.manure_sftabidtable = self.manure_sftabidtable[~mask]
+        mask = pd.Series(self.idtable['loadsourcegroupid'] == loadsourcegroupid)
+        self.idtable = self.idtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
         print('OptCase.qaqc_manure_decisionspace():')
-        print(self.manure_sftabidtable.head())
-        self.manure_sftabidtable.drop_duplicates()
-        print(self.manure_sftabidtable.head())
+        print(self.idtable.head())
+        self.idtable.drop_duplicates()
+        print(self.idtable.head())
 
-        newrowcnt, newcolcnt = self.manure_sftabidtable.shape
+        newrowcnt, newcolcnt = self.idtable.shape
         if settings.verbose:
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
     def append_bounds(self):
-        self.sftabidtable['lowerbound'] = 0
-        self.sftabidtable['upperbound'] = 100
+        self.idtable['lowerbound'] = 0
+        self.idtable['upperbound'] = 100
         # For Dry_Tons_of_Stored_Manure: Add...?
-        return self.sftabidtable.copy()
+        return self.idtable.copy()
         # self.manure_decisionspace = self.queries.\
         #     appendBounds_to_manure_sftabidtable(sftabidtable=self.manure_sftabidtable)
 
