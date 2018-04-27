@@ -1,5 +1,4 @@
 import random
-import collections
 import numpy as np
 import pandas as pd
 from itertools import product

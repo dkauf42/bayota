@@ -65,7 +65,7 @@ class AdditionalConstraintsFrame(tk.Frame):
             optcase (OptCase):
         """
         # Generate the decision space
-        optcase.proceed_from_geoagencysectorids_to_decision_space()
+        optcase.proceed_to_decision_space_from_geoagencysectorids()
 
         # Create Dropdown and Range Sliders (Land)
         land_table = optcase.land_slabidtable.drop_duplicates(subset=['bmpid'])

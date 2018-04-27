@@ -31,6 +31,7 @@ class Space(object):
         self.nametable = None
 
         # Individual Components for decision space
+        self.baseconditionid = None
         self.lrsegids = None  # an LRSeg list for this instance
         self.countyids = None  # a County list for this instance
         self.agencyids = None  # list of agencies selected to specify free parameter groups
@@ -75,12 +76,16 @@ class Space(object):
         pass
 
     # Generation Recipes
-    def proceed_from_geography_to_decision_space(self, scale=None, areanames=None):
+    def proceed_to_decision_space_from_geography(self, scale=None, areanames=None, baseconditionid=None):
         """ Generate a decision space from just a geography (scale + area names)
 
         Note:
             This will include all agencies, all loadsources, and all bmps.
         """
+        # Set basecondition
+        self.baseconditionid = baseconditionid
+
+        print('spaces.proceed_to_decision_space_from_geography()')
         # Metadata to BMPs
         self.populate_geography_from_scale_and_areas(scale=scale, areanames=areanames)
 
@@ -93,10 +98,10 @@ class Space(object):
         self.sectorids = self.jeeves.sector.all_ids()
 
         # Generate DecisionSpace
-        self.populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=self.lrseg_agency_table,
-                                                            sectorids=self.sectorids)
+        self.__populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=self.lrseg_agency_table,
+                                                              sectorids=self.sectorids)
 
-    def proceed_from_geoagencysectorids_to_decision_space(self):
+    def proceed_to_decision_space_from_geoagencysectorids(self):
         """ Generate a decision space from pre-defined geography (scale + area names), agency, and sector ids.
         """
         # make la_table when agencyids have already been populated """
@@ -106,11 +111,11 @@ class Space(object):
         self.lrseg_agency_table = all_lrseg_agencyids_table.loc[:, columnmask].merge(self.agencyids, how='inner')
 
         # Generate DecisionSpace
-        self.populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=self.lrseg_agency_table,
-                                                            sectorids=self.sectorids)
+        self.__populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=self.lrseg_agency_table,
+                                                              sectorids=self.sectorids)
 
     # Generation steps
-    def populate_decisionspace_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
+    def __populate_decisionspace_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
         # Populate Load Sources
         self.source_lrseg_agency_table = self.jeeves.loadsource.\
             sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(lrsegagencyidtable=lrsegagencyidtable,
@@ -123,6 +128,10 @@ class Space(object):
         # QC
         self.qc()
         self.append_bounds()
+
+        print('spaces.__populate_decisionspace_from_lrseg_agency_table()')
+        print(self.idtable.head())
+        print(self.nametable.head())
 
     def populate_geography_from_scale_and_areas(self, scale=None, areanames=None):
         self.lrsegids = self.jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)

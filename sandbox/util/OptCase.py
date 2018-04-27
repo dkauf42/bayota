@@ -109,15 +109,15 @@ class OptCase(object):
         self.geoscalename = scale
         self.geoareanames = areanames
 
-    def proceed_from_geography_to_decision_space(self):
+    def proceed_to_decision_space_from_geography(self):
         for dsname, ds in self.decisionspace:
-            ds.proceed_from_geography_to_decision_space(scale=self.geoscalename,
-                                                        areanames=self.geoareanames)
+            ds.proceed_to_decision_space_from_geography(scale=self.geoscalename,
+                                                        areanames=self.geoareanames,
+                                                        baseconditionid=self.baseconditionid)
 
-    def proceed_from_geoagencysectorids_to_decision_space(self):
+    def proceed_to_decision_space_from_geoagencysectorids(self):
         for dsname, ds in self.decisionspace:
-            ds.proceed_from_geoagencysectorids_to_decision_space(scale=self.geoscalename,
-                                                                 areanames=self.geoareanames)
+            ds.proceed_to_decision_space_from_geoagencysectorids()
 
     # hooks for graphical interface get/put
     def populate_geography_from_scale_and_areas(self):
