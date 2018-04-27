@@ -9,7 +9,7 @@ Submodules
    sandbox.util.Constraints
    sandbox.util.Examples
    sandbox.util.OptCase
-   sandbox.util.ScenarioMaker
+   sandbox.util.Single
    sandbox.util.TblJeeves
    sandbox.util.pullfromdb
 

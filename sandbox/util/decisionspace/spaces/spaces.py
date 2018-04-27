@@ -1,4 +1,3 @@
-import collections
 import pandas as pd
 
 from sandbox import settings

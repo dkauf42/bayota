@@ -1,7 +1,7 @@
-sandbox.util.ScenarioMaker module
+sandbox.util.Single module
 =================================
 
-.. automodule:: sandbox.util.ScenarioMaker
+.. automodule:: sandbox.util.Single
     :members:
     :undoc-members:
     :show-inheritance:

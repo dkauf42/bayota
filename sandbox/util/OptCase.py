@@ -1,8 +1,7 @@
 import pandas as pd
 import os
 from sandbox.util.decisionspace import DecisionSpace
-from sandbox.util.ScenarioMaker import ScenarioMaker
-from sandbox.util.PopulationMaker import PopulationMaker
+from sandbox.util.scenariomaker.scenariomaker import ScenarioMaker
 from sandbox.util.Examples import Examples
 from sandbox.__init__ import get_outputdir
 
@@ -149,10 +148,7 @@ class OptCase(object):
 
         """
         # TODO: code this (randomization for each variable, and then writing to file)
-        scenario = ScenarioMaker()
-        scenario.initialize_from_decisionspace(land=self.decisionspace.land.idtable,
-                                               animal=self.decisionspace.animal.idtable,
-                                               manure=self.decisionspace.manure.idtable)
+        scenario = ScenarioMaker(decisionspace=self.decisionspace).single
 
         if scenariotype == 'random':
             scenario.randomize_betweenbounds()
@@ -173,10 +169,7 @@ class OptCase(object):
         The scenario is created by randomly generating numbers for each variable in the decision space.
 
         """
-        population = PopulationMaker()
-        population.initialize_from_decisionspace(land=self.decisionspace.land.idtable,
-                                                 animal=self.decisionspace.animal.idtable,
-                                                 manure=self.decisionspace.manure.idtable)
+        population = ScenarioMaker(decisionspace=self.decisionspace).population
 
         if scenariotype == 'hypercube':
             population.generate_latinhypercube()
