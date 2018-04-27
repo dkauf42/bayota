@@ -19,9 +19,10 @@ class Animal(Space):
         self.idtable = self.jeeves.bmp.\
             animal_scabidtable_from_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.source_county_agency_table,
                                                               baseconditionid=self.baseconditionid)
+
+    def translate_ids_to_names(self):
         # Translate to names
-        self.nametable = self.jeeves.translator.\
-            translate_scabidtable_to_scabnametable(self.idtable)
+        self.nametable = self.jeeves.translator.translate_scabidtable_to_scabnametable(self.idtable)
 
     def qc(self):
         pass

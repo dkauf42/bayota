@@ -18,6 +18,8 @@ class Land(Space):
         # get IDs
         self.idtable = self.jeeves.bmp.\
             land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.source_lrseg_agency_table)
+
+    def translate_ids_to_names(self):
         # Translate to names
         self.nametable = self.jeeves.translator.translate_slabidtable_to_slabnametable(self.idtable)
 

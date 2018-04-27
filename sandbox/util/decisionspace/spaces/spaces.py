@@ -75,6 +75,10 @@ class Space(object):
         """ Overridden by land, animal, manure subclasses """
         pass
 
+    def translate_ids_to_names(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
     # Generation Recipes
     def proceed_to_decision_space_from_geography(self, scale=None, areanames=None, baseconditionid=None):
         """ Generate a decision space from just a geography (scale + area names)
@@ -85,7 +89,6 @@ class Space(object):
         # Set basecondition
         self.baseconditionid = baseconditionid
 
-        print('spaces.proceed_to_decision_space_from_geography()')
         # Metadata to BMPs
         self.populate_geography_from_scale_and_areas(scale=scale, areanames=areanames)
 
@@ -128,6 +131,7 @@ class Space(object):
         # QC
         self.qc()
         self.append_bounds()
+        self.translate_ids_to_names()
 
         print('spaces.__populate_decisionspace_from_lrseg_agency_table()')
         print(self.idtable.head())

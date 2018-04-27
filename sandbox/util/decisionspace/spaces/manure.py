@@ -20,9 +20,10 @@ class Manure(Space):
             manure_sftabidtable_from_SourceFromToAgencyIDtable(SourceCountyAgencyIDtable=self.
                                                                source_county_agency_table,
                                                                baseconditionid=self.baseconditionid)
+
+    def translate_ids_to_names(self):
         # Translate to names
-        self.nametable = self.jeeves.translator.\
-            translate_sftabidtable_to_sftabnametable(self.idtable)
+        self.nametable = self.jeeves.translator.translate_sftabidtable_to_sftabnametable(self.idtable)
 
     def qc(self):
         """ Remove LoadSources or BMPs that the optimization engine should not modify
