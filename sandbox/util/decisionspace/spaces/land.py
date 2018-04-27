@@ -17,8 +17,7 @@ class Land(Space):
         """ Append the BMPs to the decision space table """
         # get IDs
         self.idtable = self.jeeves.bmp.\
-            land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.
-                                                           source_lrseg_agency_table)
+            land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.source_lrseg_agency_table)
         # Translate to names
         self.nametable = self.jeeves.translator.translate_slabidtable_to_slabnametable(self.idtable)
 
