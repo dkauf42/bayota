@@ -26,6 +26,11 @@ class OptCase(object):
         self.logtostdout = False
         self.successful_creation_log = False
 
+        # Decision Space
+        self.decisionspace = DecisionSpace()
+        # Queries to the source data
+        self.jeeves = self.decisionspace.jeeves
+
         self.name = None
         self.description = None
         self.baseyear = None
@@ -38,9 +43,6 @@ class OptCase(object):
         # Individual Components for metadata
         self.baseconditionid = pd.DataFrame(data=[1], columns=['baseconditionid'])
         # TODO: use real baseconditionid instead of this^ temporary placeholder
-
-        # Decision Spaces
-        self.decisionspace = DecisionSpace()
 
         # Scenarios
         self.scenarios_land = []
@@ -61,9 +63,7 @@ class OptCase(object):
                        "cost profile:             %s\n" \
                        "geographic scale:         %s\n" \
                        "geographic areas:         %s\n" \
-                       "# of lrsegs:              %s\n" \
-                       "agencies included:        %s\n" \
-                       "sectors included:         %s\n" \
+                       "deicisionspace:           %s\n" \
                        "************************************\n" %\
                        tuple([str(i) for i in [d['name'],
                                                d['description'],
@@ -73,9 +73,7 @@ class OptCase(object):
                                                d['costprofilename'],
                                                d['geoscalename'],
                                                d['geoareanames'],
-                                               d['lrsegids'].shape[0],
-                                               d['agencyids'],
-                                               d['sectorids']
+                                               d['decisionspace'].__dict__
                                                ]
                               ])
 

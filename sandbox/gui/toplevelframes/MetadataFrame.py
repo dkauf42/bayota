@@ -29,7 +29,7 @@ class MetadataFrame(tk.Frame):
 
         self.create_subframes()
 
-        self.qrysource = None
+        self.jeeves = None
 
     def create_subframes(self):
         self.columnconfigure(0, minsize=50)
@@ -90,19 +90,19 @@ class MetadataFrame(tk.Frame):
         self.save_button = ttk.Button(self, text='Submit')
         self.save_button.grid(row=9, column=1, sticky='we')
 
-    def load_options(self, queries=None):
-        self.qrysource = queries
+    def load_options(self, jeeves=None):
+        self.jeeves = jeeves
 
-        self.dropdown_baseyr['values'] = ['Select Base Year'] + queries.base_year_names()
+        self.dropdown_baseyr['values'] = ['Select Base Year'] + jeeves.metadata.base_year_names()
         self.dropdown_baseyr.current(0)
-        self.dropdown_basecond['values'] = ['Select Base Condition'] + queries.base_condition_names()
+        self.dropdown_basecond['values'] = ['Select Base Condition'] + jeeves.metadata.base_condition_names()
         self.dropdown_basecond.current(0)
-        self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + queries.wastewaterdata_names()
+        self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + jeeves.metadata.wastewaterdata_names()
         self.dropdown_wastewtr.current(0)
-        self.dropdown_costprofile['values'] = ['Select Cost Profile'] + queries.costprofile_names()
+        self.dropdown_costprofile['values'] = ['Select Cost Profile'] + jeeves.metadata.costprofile_names()
         self.dropdown_costprofile.current(0)
         self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + \
-            queries.all_geotypes().geographytypefullname.tolist()
+                                           jeeves.geo.all_geotypes().geographytypefullname.tolist()
         self.dropdown_geoscale.current(0)
 
         self.update_geoareabox_options()
@@ -110,7 +110,7 @@ class MetadataFrame(tk.Frame):
     def update_geoareabox_options(self, event=None):
         geoscale = self.dropdown_geoscale.get()
 
-        areas = self.qrysource.geonames_from_geotypename(geotype=geoscale)
+        areas = self.jeeves.geo.geonames_from_geotypename(geotype=geoscale)
         if isinstance(areas, pd.Series):
             areas = areas.tolist()
 

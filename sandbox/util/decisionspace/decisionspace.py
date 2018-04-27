@@ -20,11 +20,11 @@ class DecisionSpace(object):
 
         """
         # SourceHooks
-        jeeves = self.load_queries()
+        self.jeeves = self.load_queries()
 
-        self.animal = Animal(jeeves=jeeves)
-        self.land = Land(jeeves=jeeves)
-        self.manure = Manure(jeeves=jeeves)
+        self.animal = Animal(jeeves=self.jeeves)
+        self.land = Land(jeeves=self.jeeves)
+        self.manure = Manure(jeeves=self.jeeves)
 
     @staticmethod
     def load_queries():
