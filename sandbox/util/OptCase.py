@@ -113,11 +113,14 @@ class OptCase(object):
         self.geoareanames = areanames
 
     def proceed_to_decision_space_from_geography(self):
-        for dsname, ds in self.decisionspace:
-            ds.set_baseconditionid_from_name(name=self.basecondname)
-            ds.proceed_to_decision_space_from_geography(scale=self.geoscalename,
-                                                        areanames=self.geoareanames,
-                                                        baseconditionid=self.baseconditionid)
+        # for dsname, ds in self.decisionspace:
+        #     ds.set_baseconditionid_from_name(name=self.basecondname)
+        #     ds.proceed_to_decision_space_from_geography(scale=self.geoscalename,
+        #                                                 areanames=self.geoareanames,
+        #                                                 baseconditionid=self.baseconditionid)
+        self.decisionspace.proceed_to_decision_space_from_geography(scale=self.geoscalename,
+                                                                    areanames=self.geoareanames,
+                                                                    baseconditionid=self.baseconditionid)
 
     def proceed_to_decision_space_from_geoagencysectorids(self):
         for dsname, ds in self.decisionspace:
@@ -125,10 +128,12 @@ class OptCase(object):
             ds.proceed_to_decision_space_from_geoagencysectorids()
 
     # hooks for graphical interface get/put
-    def populate_geography_from_scale_and_areas(self):
-        for dsname, ds in self.decisionspace:
-            ds.populate_geography_from_scale_and_areas(scale=self.geoscalename,
-                                                       areanames=self.geoareanames)
+    def populate_geography(self):
+        # for dsname, ds in self.decisionspace:
+        #     ds.populate_geography(scale=self.geoscalename,
+        #                                                areanames=self.geoareanames)
+        self.decisionspace.populate_geography_from_scale_and_areas(scale=self.geoscalename,
+                                                                   areanames=self.geoareanames)
 
     def set_metadata(self, metadata_results):
         self.name = metadata_results.name
