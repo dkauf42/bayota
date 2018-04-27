@@ -29,14 +29,14 @@ class Bmp(SourceHook):
                                   fromtable=categoryids, toname='bmpid')
 
     def land_slabidtable_from_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
-        # TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
-        #
-        # TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
-        # columnmask = ['bmpid', 'loadsourceid']
-        # tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(SourceLrsegAgencyIDtable, how='inner')
-        #
-        # return tblsubset
-        return SourceLrsegAgencyIDtable
+        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
+
+        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
+        columnmask = ['bmpid', 'loadsourceid']
+        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(SourceLrsegAgencyIDtable, how='inner')
+
+        return tblsubset
+        # return SourceLrsegAgencyIDtable
 
     def animal_scabidtable_from_SourceCountyAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation
