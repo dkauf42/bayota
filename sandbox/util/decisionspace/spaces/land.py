@@ -34,7 +34,7 @@ class Land(Space):
 
         """
         if settings.verbose:
-            print('OptCase.qaqc_land_decisionspace(): QA/QCing...')
+            print('land.qc(): QA/QCing...')
             print('Decision Space Table size: %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape

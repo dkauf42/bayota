@@ -33,7 +33,7 @@ class Manure(Space):
 
         """
         if settings.verbose:
-            print('OptCase.qaqc_manure_decisionspace(): QA/QCing...')
+            print('manure.qc(): QA/QCing...')
             print('Decision Space Table size: %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape
@@ -70,7 +70,7 @@ class Manure(Space):
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
-        print('OptCase.qaqc_manure_decisionspace():')
+        print('manure.qc():')
         print(self.idtable.head())
         self.idtable.drop_duplicates()
         print(self.idtable.head())
