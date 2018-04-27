@@ -66,9 +66,9 @@ def main(numinstances=1, testcase=None, scale='', areanames=''):
         print('Sandboxer.main()')
         print(optcase.decisionspace.land)
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
-        #optcase.generate_scenario(scenariotype='random')
-        optcase.generate_multiple_scenarios(scenariotype='hypercube')
-
+        optcase.generate_single_scenario(scenariotype='random')
+        # optcase.generate_multiple_scenarios(scenariotype='hypercube')
+        #
         # Write scenario tables to file.
 
         print('<Runner Loading Complete>')

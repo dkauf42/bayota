@@ -3,7 +3,7 @@
 "OptSandbox" is an optimization application developed for
 the Chesapeake Bay Assessement Scenario Tool (CAST)
 
-* Version 0.2.0
+* Version 0.3.0
 * This release adapts the data queries to use csv tables
     generated from the CAST SQL Server.
 

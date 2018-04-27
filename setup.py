@@ -32,7 +32,7 @@ install_requires = ['numpy>=1.14.2',
                     ]
 
 setup(name='OptSandbox',
-      version='0.2.0',
+      version='0.3.0',
       description='Python package to create CAST scenarios for cost optimization',
       long_description=readme_text,
       author='Daniel Kaufman',
