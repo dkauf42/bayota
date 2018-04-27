@@ -118,6 +118,10 @@ class Space(object):
                                                               sectorids=self.sectorids)
 
     # Generation steps
+    def set_baseconditionid_from_name(self, name=''):
+        self.baseconditionid = 1
+        # TODO: replace this with a jeeves call to get a real ID number using a name argument
+
     def __populate_decisionspace_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
         # Populate Load Sources
         self.source_lrseg_agency_table = self.jeeves.loadsource.\

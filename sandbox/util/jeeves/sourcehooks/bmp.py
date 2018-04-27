@@ -52,7 +52,7 @@ class Bmp(SourceHook):
         sca_table = sca_table[sca_table["agencyid"] == nonfedid]
 
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
-        sca_table['baseconditionid'] = baseconditionid.baseconditionid.tolist()[0]
+        sca_table['baseconditionid'] = baseconditionid
 
         # Get which animals are present in the county, agency, loadsources
         columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
@@ -87,7 +87,7 @@ class Bmp(SourceHook):
         sca_table = SourceCountyAgencyIDtable.copy()
 
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
-        sca_table['baseconditionid'] = baseconditionid.baseconditionid.tolist()[0]
+        sca_table['baseconditionid'] = baseconditionid
 
         # For Manure, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
         nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]

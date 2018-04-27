@@ -110,12 +110,14 @@ class OptCase(object):
 
     def proceed_to_decision_space_from_geography(self):
         for dsname, ds in self.decisionspace:
+            ds.set_baseconditionid_from_name(name=self.basecondname)
             ds.proceed_to_decision_space_from_geography(scale=self.geoscalename,
                                                         areanames=self.geoareanames,
                                                         baseconditionid=self.baseconditionid)
 
     def proceed_to_decision_space_from_geoagencysectorids(self):
         for dsname, ds in self.decisionspace:
+            ds.set_baseconditionid_from_name(name=self.basecondname)
             ds.proceed_to_decision_space_from_geoagencysectorids()
 
     # hooks for graphical interface get/put
