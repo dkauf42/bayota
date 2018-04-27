@@ -1,19 +1,26 @@
+import pandas as pd
 from sandbox.util.decisionspace.spaces.spaces import Space
 from sandbox import settings
 
 
 class Land(Space):
     def __init__(self, jeeves=None):
+        """ Land Decision Space
+
+        the idtable for land is characterized as a 'slab' table, i.e.
+        S(ource), L(andriversegment), A(gency), B(mp)
+
+        """
         Space.__init__(self, jeeves=jeeves)
 
     def populate_bmps(self):
         """ Append the BMPs to the decision space table """
         # get IDs
-        self.land_slabidtable = self.jeeves.bmp.\
+        self.idtable = self.jeeves.bmp.\
             land_slabidtable_from_SourceLrsegAgencyIDtable(SourceLrsegAgencyIDtable=self.
                                                            source_lrseg_agency_table)
         # Translate to names
-        self.land_slabnametable = self.jeeves.translator.translate_slabidtable_to_slabnametable(self.land_slabidtable)
+        self.nametable = self.jeeves.translator.translate_slabidtable_to_slabnametable(self.idtable)
 
     def qc(self):
         """ Remove BMPs that the optimization engine should not modify
@@ -83,10 +90,10 @@ class Land(Space):
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
     def append_bounds(self):
-        self.slabidtable['lowerbound'] = 0
-        self.slabidtable['upperbound'] = 100
+        self.idtable['lowerbound'] = 0
+        self.idtable['upperbound'] = 100
         # For Acres: Add all of the acres (across LoadSources) from "TblLandUsePreBmp"
-        return self.slabidtable.copy()
+        return self.idtable.copy()
 
         # self.land_decisionspace = self.queries. \
         #     appendBounds_to_land_slabidtable(slabidtable=self.land_slabidtable)

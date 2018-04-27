@@ -1,20 +1,27 @@
+import pandas as pd
 from sandbox.util.decisionspace.spaces.spaces import Space
 from sandbox import settings
 
 
 class Animal(Space):
     def __init__(self, jeeves=None):
+        """ Animal Decision Space
+
+        the idtable for animal is characterized as a 'scab' table, i.e.
+        S(ource), C(ounty), A(gency), B(mp)
+
+        """
         Space.__init__(self, jeeves=jeeves)
 
     def populate_bmps(self):
         """ Append the BMPs to the decision space table """
         # get IDs
-        self.animal_scabidtable = self.jeeves.bmp.\
+        self.idtable = self.jeeves.bmp.\
             animal_scabidtable_from_SourceCountyAgencyIDtable(SourceCountyAgencyIDtable=self.source_county_agency_table,
                                                               baseconditionid=self.baseconditionid)
         # Translate to names
-        self.animal_scabnametable = self.jeeves.translator.\
-            translate_scabidtable_to_scabnametable(self.animal_scabidtable)
+        self.nametable = self.jeeves.translator.\
+            translate_scabidtable_to_scabnametable(self.idtable)
 
     def qc(self):
         pass

@@ -1,21 +1,28 @@
+import pandas as pd
 from sandbox.util.decisionspace.spaces.spaces import Space
 from sandbox import settings
 
 
 class Manure(Space):
     def __init__(self, jeeves=None):
+        """ Manure Decision Space
+
+        the idtable for manure is characterized as a 'sftab' table, i.e.
+        S(ource), F(rom-FIPS), T(o-FIPS), A(gency), B(mp)
+
+        """
         Space.__init__(self, jeeves=jeeves)
 
     def populate_bmps(self):
         """ Append the BMPs to the decision space table """
         # get IDs
-        self.manure_sftabidtable = self.jeeves.bmp.\
+        self.idtable = self.jeeves.bmp.\
             manure_sftabidtable_from_SourceFromToAgencyIDtable(SourceCountyAgencyIDtable=self.
                                                                source_county_agency_table,
                                                                baseconditionid=self.baseconditionid)
         # Translate to names
-        self.manure_sftabnametable = self.jeeves.translator.\
-            translate_sftabidtable_to_sftabnametable(self.manure_sftabidtable)
+        self.nametable = self.jeeves.translator.\
+            translate_sftabidtable_to_sftabnametable(self.idtable)
 
     def qc(self):
         """ Remove LoadSources or BMPs that the optimization engine should not modify

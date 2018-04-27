@@ -133,6 +133,9 @@ class Space(object):
         self.source_county_agency_table = self.jeeves.loadsource.\
             sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=self.
                                                                     source_lrseg_agency_table)
+
+        print('Spaces.source_county_agency_table()')
+        print(self.source_lrseg_agency_table.head())
         # Populate BMPs
         self.populate_bmps()
         # QC
