@@ -1,16 +1,11 @@
 import collections
 import pandas as pd
 
-from sandbox.util.jeeves import Jeeves
-from .types.animal import Animal
-from .types.land import Land
-from .types.manure import Manure
-
 from sandbox import settings
 
 
-class DecisionSpace(object):
-    def __init__(self):
+class Space(object):
+    def __init__(self, jeeves=None):
         """ Base class for all decision spaces in the optimizer engine
         Represent the variables that make up the decision space along with their upper and lower bounds.
 
@@ -20,13 +15,17 @@ class DecisionSpace(object):
             - construct itself from a specified geography or geoagencysector table
             - QC itself
 
+        Attributes:
+            name (str):
+            idtable (pd.DataFrame):
+            nametable (pd.DataFrame):
+
         """
         self.name = ''
         self.specs = None
 
-        self.animal = Animal()
-        self.land = Land()
-        self.manure = Manure()
+        # Jeeves provides hooks to query the source data
+        self.jeeves = jeeves
 
         # Primary decision space tables
         self.idtable = None
@@ -43,18 +42,6 @@ class DecisionSpace(object):
         self.lrseg_agency_table = None
         self.source_lrseg_agency_table = None
         self.source_county_agency_table = None
-        # For land bmps (no bounds yet)
-        self.land_slabidtable = None
-        self.land_slabnametable = None
-        # For animal bmps (no bounds yet)
-        self.animal_scabidtable = None
-        self.animal_scabnametable = None
-        # For manure bmps (no bounds yet)
-        self.manure_sftabidtable = None
-        self.manure_sftabnametable = None
-
-        # SourceHooks
-        self.jeeves = Jeeves()
 
     def __repr__(self):
         """ Custom 'print' that displays the decision space details

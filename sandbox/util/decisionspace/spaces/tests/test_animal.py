@@ -1,0 +1,21 @@
+import unittest
+
+from sandbox.util.decisionspace.spaces import Jeeves
+from sandbox.util.jeeves.sourcehooks.agency import Agency
+
+
+class TddForAnimal(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Load the Source Data and Base Condition tables
+        source = Jeeves.loadInSourceDataFromSQL()
+        cls.agency = Agency(sourcedata=source)
+
+    def test_agency_names_query(self):
+        self.assertIn('NONFED',
+                      self.agency.all_names().tolist())
+
+    def test_agencies_query_from_lrsegs(self):
+        self.assertIn('NONFED',
+                      self.agency.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist())

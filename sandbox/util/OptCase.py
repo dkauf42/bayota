@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from sandbox.util.decisionspaces import DecisionSpace
+from sandbox.util.decisionspace import DecisionSpace
 from sandbox.util.ScenarioMaker import ScenarioMaker
 from sandbox.util.PopulationMaker import PopulationMaker
 from sandbox.util.Examples import Examples
@@ -113,15 +113,21 @@ class OptCase(object):
         self.geoareanames = areanames
 
     def proceed_from_geography_to_decision_space(self):
-        self.decisionspace.land.proceed_from_geography_to_decision_space(scale=self.geoscalename, areanames=self.geoareanames)
-        self.decisionspace.animal.proceed_from_geography_to_decision_space(scale=self.geoscalename, areanames=self.geoareanames)
-        self.decisionspace.manure.proceed_from_geography_to_decision_space(scale=self.geoscalename, areanames=self.geoareanames)
+        self.decisionspace.land.proceed_from_geography_to_decision_space(scale=self.geoscalename,
+                                                                         areanames=self.geoareanames)
+        self.decisionspace.animal.proceed_from_geography_to_decision_space(scale=self.geoscalename,
+                                                                           areanames=self.geoareanames)
+        self.decisionspace.manure.proceed_from_geography_to_decision_space(scale=self.geoscalename,
+                                                                           areanames=self.geoareanames)
 
     # hooks for graphical interface get/put
     def populate_geography_from_scale_and_areas(self):
-        self.decisionspace.land.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
-        self.decisionspace.animal.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
-        self.decisionspace.manure.populate_geography_from_scale_and_areas(scale=self.geoscalename, areanames=self.geoareanames)
+        self.decisionspace.land.populate_geography_from_scale_and_areas(scale=self.geoscalename,
+                                                                        areanames=self.geoareanames)
+        self.decisionspace.animal.populate_geography_from_scale_and_areas(scale=self.geoscalename,
+                                                                          areanames=self.geoareanames)
+        self.decisionspace.manure.populate_geography_from_scale_and_areas(scale=self.geoscalename,
+                                                                          areanames=self.geoareanames)
 
     def set_metadata(self, metadata_results):
         self.name = metadata_results.name

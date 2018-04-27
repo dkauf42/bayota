@@ -1,10 +1,10 @@
-from sandbox.util.decisionspaces.decisionspace import DecisionSpace
+from sandbox.util.decisionspace.spaces.spaces import Space
 from sandbox import settings
 
 
-class Land(DecisionSpace):
-    def __init__(self):
-        DecisionSpace.__init__(self)
+class Land(Space):
+    def __init__(self, jeeves=None):
+        Space.__init__(self, jeeves=jeeves)
 
     def populate_bmps(self):
         """ Append the BMPs to the decision space table """
