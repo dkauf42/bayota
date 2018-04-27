@@ -87,11 +87,6 @@ class Space(object):
         """ Overridden by land, animal, manure subclasses """
         pass
 
-    # Generation steps
-    def set_baseconditionid_from_name(self, name=''):
-        self.baseconditionid = 1
-        # TODO: replace this with a jeeves call to get a real ID number using a name argument
-
     def populate_decisionspace_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
         if settings.verbose:
             print('\t-- appending loadsources to the lrseg,agency,sector table, which looks like:')
@@ -120,8 +115,3 @@ class Space(object):
             print(self.idtable.head())
             print('\t^shape is %s' % str(self.idtable.shape))
             print('\t--')
-
-    # GUI API
-    def set_freeparamgrps(self, agencycodes=None, sectornames=None):
-        self.agencyids = self.jeeves.agency.ids_from_names(agencycodes=agencycodes)
-        self.sectorids = self.jeeves.sector.ids_from_names(names=sectornames)

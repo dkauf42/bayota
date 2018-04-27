@@ -114,6 +114,19 @@ class DecisionSpace(object):
             ds.lrsegids = self.lrsegids
             ds.countyids = self.countyids
 
+    # GUI API
+    def set_freeparamgrps(self, agencycodes=None, sectornames=None):
+        self.agencyids = self.jeeves.agency.ids_from_names(agencycodes=agencycodes)
+        self.sectorids = self.jeeves.sector.ids_from_names(names=sectornames)
+        for dsname, ds in self:
+            ds.agencyids = self.agencyids
+            ds.sectorids = self.sectorids
+
+    # Generation steps
+    def set_baseconditionid_from_name(self, name=''):
+        self.baseconditionid = 1
+        # TODO: replace this with a jeeves call to get a real ID number using a name argument
+
     @staticmethod
     def load_queries():
         # SourceHooks
