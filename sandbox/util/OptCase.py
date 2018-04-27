@@ -186,14 +186,14 @@ class OptCase(object):
 
         i = 0
         for df in population.scenarios_animal:
-            self.scenarios_animal.append(self.dsanimal.nametable)
+            self.scenarios_animal.append(self.decisionspace.animal.nametable)
             self.scenarios_animal[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
                                              sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1
 
         i = 0
         for df in population.scenarios_manure:
-            self.scenarios_manure.append(self.queries.translate_sftabidtable_to_sftabnametable(sftabidtable=df))
+            self.scenarios_manure.append(self.decisionspace.manure.nametable)
             self.scenarios_manure[-1].to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.txt' % i),
                                              sep='\t', header=True, index=False, line_terminator='\r\n')
             i += 1
