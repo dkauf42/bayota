@@ -50,29 +50,22 @@ class Bmp(SourceHook):
         # For Animals, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
         nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
         sca_table = sca_table[sca_table["agencyid"] == nonfedid]
-        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()-1:')
-        print(sca_table)
 
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
         sca_table['baseconditionid'] = baseconditionid
 
         # Get which animals are present in the county, agency, loadsources
-        columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        # columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        columnmask = ['countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sca_table, how='inner')
-        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()0:')
-        print(tblsubset)
 
         # BMPs are associated with AnimalGroupIDs not AnimalIDs
         # Get the animalgroups that each animalid belongs to
         columnmask = ['animalgroupid', 'animalid']
         tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
-        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()1:')
-        print(tblsubset)
         # Get the BMPs that can be applied to each animalgroupid
         columnmask = ['animalgroupid', 'bmpid']
         tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
-        print('bmp.append_animal_bmpids_to_SourceCountyAgencyIDtable()2:')
-        print(tblsubset)
         tblsubset.drop(['animalgroupid'], axis=1, inplace=True)
         tblsubset.drop_duplicates(inplace=True)
 
@@ -124,7 +117,8 @@ class Bmp(SourceHook):
         sfta_table = sfta_table.loc[:, columnmask].merge(sca_table, how='inner')
 
         # Get which animals are present in the county, agency, loadsources
-        columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        # columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        columnmask = ['countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sfta_table, how='inner')
         tblsubset.drop(['countyid'], axis=1, inplace=True)
 
