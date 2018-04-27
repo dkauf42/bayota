@@ -143,7 +143,7 @@ class MainWindow(tk.Frame):
         self.optcase.populate_geography_from_scale_and_areas()
 
     def load_freeparamgroup_options(self):
-        self.freeparamframe.update_box_options(queries=self.optcase.jeeves, optcase=self.optcase)
+        self.freeparamframe.update_box_options(jeeves=self.optcase.jeeves, optcase=self.optcase)
 
     def save_freeparamgroups(self):
         print('mainwindow:save_freeparamgroups: saving free parameter groups...')

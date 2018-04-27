@@ -46,18 +46,19 @@ class FreeParamFrame(tk.Frame):
         self.save_button = ttk.Button(self, text='Submit')
         self.save_button.grid(row=9, column=1, sticky='we')
 
-    def update_box_options(self, queries=None, optcase=None):
+    def update_box_options(self, jeeves=None, optcase=None):
         """Populate first dualbox with agencies included in OptCase and second dualbox with all sectors
 
         Args:
-            queries (TblJeeves):
+            jeeves (TblJeeves):
             optcase (OptCase):
         """
 
-        mylist = queries.agencycodes_from_lrsegids(lrsegids=optcase.lrsegids).agencycode.unique().tolist()
+        mylist = jeeves.agency.\
+            agencycodes_from_lrsegids(lrsegids=optcase.decisionspace.land.lrsegids).agencycode.unique().tolist()
         self.agencydualbox.set_new_left_side_items(mylist)
 
-        mylist = queries.all_names().tolist()
+        mylist = jeeves.sector.all_names().tolist()
         self.sectordualbox.set_new_left_side_items(mylist)
 
     def get_results(self):
