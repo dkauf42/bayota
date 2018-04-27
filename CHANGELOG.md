@@ -13,6 +13,8 @@ Each version should:
 *Fixed* for any bug fixes.
 *Security* to invite users to upgrade in case of vulnerabilities.
 
+## [Unreleased]
+
 ## [0.3.0] - 2018-04-27
 ### Added
 - Ability to generate scenarios with a latin hypercube sampling method
