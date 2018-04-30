@@ -28,17 +28,18 @@ class Bmp(SourceHook):
         return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
                                   fromtable=categoryids, toname='bmpid')
 
-    def append_bmpids_to_SourceLrsegAgencyIDtable(self, SourceLrsegAgencyIDtable):
+    # Methods to append BMPids to loadsource tables
+    def append_land_bmpids(self, table_with_loadsourceids):
         TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
 
         TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
         columnmask = ['bmpid', 'loadsourceid']
-        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(SourceLrsegAgencyIDtable, how='inner')
+        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(table_with_loadsourceids, how='inner')
 
         return tblsubset
-        # return SourceLrsegAgencyIDtable
+        # return table_with_loadsourceids
 
-    def append_animal_bmpids_to_SourceCountyAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
+    def append_animal_bmpids(self, SourceCountyAgencyIDtable=None, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation
         TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
         TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
@@ -76,7 +77,7 @@ class Bmp(SourceHook):
 
         return tblsubset
 
-    def manure_sftabidtable_from_SourceFromToAgencyIDtable(self, SourceCountyAgencyIDtable, baseconditionid=None):
+    def append_manure_bmpids(self, SourceFromToAgencyIDtable=None, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation
         TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
         TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
@@ -85,7 +86,7 @@ class Bmp(SourceHook):
         TblLoadSource = self.source.TblLoadSource
         TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
 
-        sca_table = SourceCountyAgencyIDtable.copy()
+        sca_table = SourceFromToAgencyIDtable.copy()
 
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
         sca_table['baseconditionid'] = baseconditionid

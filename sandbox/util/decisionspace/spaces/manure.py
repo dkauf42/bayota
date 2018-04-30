@@ -25,10 +25,8 @@ class Manure(Space):
     def populate_bmps(self):
         """ Append the BMPs to the decision space table """
         # get IDs
-        self.idtable = self.jeeves.bmp.\
-            manure_sftabidtable_from_SourceFromToAgencyIDtable(SourceCountyAgencyIDtable=self.
-                                                               source_county_agency_table,
-                                                               baseconditionid=self.baseconditionid)
+        self.idtable = self.jeeves.bmp.append_manure_bmpids(SourceFromToAgencyIDtable=self.source_county_agency_table,
+                                                            baseconditionid=self.baseconditionid)
 
     def translate_ids_to_names(self):
         # Translate to names
