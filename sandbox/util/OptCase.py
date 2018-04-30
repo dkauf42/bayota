@@ -26,7 +26,7 @@ class OptCase(object):
         self.successful_creation_log = False
 
         # Decision Space
-        self.decisionspace = DecisionSpace()
+        self.decisionspace = DecisionSpace.blank()
         # Queries to the source data
         self.jeeves = self.decisionspace.jeeves
 
@@ -113,9 +113,9 @@ class OptCase(object):
         self.geoareanames = areanames
 
     def proceed_to_decision_space_from_geography(self):
-        self.decisionspace.proceed_to_decision_space_from_geography(scale=self.geoscalename,
-                                                                    areanames=self.geoareanames,
-                                                                    baseconditionid=self.baseconditionid)
+        self.decisionspace = DecisionSpace.fromgeo(scale=self.geoscalename,
+                                                   areanames=self.geoareanames,
+                                                   baseconditionid=self.baseconditionid)
 
     def proceed_to_decision_space_from_geoagencysectorids(self):
         self.decisionspace.set_baseconditionid_from_name(name=self.basecondname)

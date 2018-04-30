@@ -4,14 +4,14 @@ from sandbox import settings
 
 
 class Manure(Space):
-    def __init__(self, jeeves=None):
+    def __init__(self, jeeves=None, lrsegids=None, countyids=None):
         """ Manure Decision Space
 
         the idtable for manure is characterized as a 'sftab' table, i.e.
         S(ource), F(rom-FIPS), T(o-FIPS), A(gency), B(mp)
 
         """
-        Space.__init__(self, jeeves=jeeves)
+        Space.__init__(self, jeeves=jeeves, lrsegids=lrsegids, countyids=countyids)
 
     def set_idtable_fromSourceGeoAgency(self):
         self.idtable = self.source_county_agency_table

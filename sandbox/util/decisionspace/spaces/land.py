@@ -4,14 +4,14 @@ from sandbox import settings
 
 
 class Land(Space):
-    def __init__(self, jeeves=None):
+    def __init__(self, jeeves=None, lrsegids=None, countyids=None):
         """ Land Decision Space
 
         the idtable for land is characterized as a 'slab' table, i.e.
         S(ource), L(andriversegment), A(gency), B(mp)
 
         """
-        Space.__init__(self, jeeves=jeeves)
+        Space.__init__(self, jeeves=jeeves, lrsegids=lrsegids, countyids=countyids)
 
     def set_idtable_fromSourceGeoAgency(self):
         self.idtable = self.source_lrseg_agency_table

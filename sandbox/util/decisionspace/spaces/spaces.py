@@ -4,7 +4,7 @@ from sandbox import settings
 
 
 class Space(object):
-    def __init__(self, jeeves=None):
+    def __init__(self, jeeves=None, lrsegids=None, countyids=None):
         """ Base class for all decision spaces in the optimizer engine
         Represent the variables that make up the decision space along with their upper and lower bounds.
 
@@ -32,8 +32,8 @@ class Space(object):
 
         # Individual Components for decision space
         self.baseconditionid = None
-        self.lrsegids = None  # an LRSeg list for this instance
-        self.countyids = None  # a County list for this instance
+        self.lrsegids = lrsegids  # an LRSeg list for this instance
+        self.countyids = countyids  # a County list for this instance
         self.agencyids = None  # list of agencies selected to specify free parameter groups
         self.sectorids = None  # list of sectors selected to specify free parameter groups
         self.loadsourceids = None  # list of load sources selected included in the lrsegids-agencies
