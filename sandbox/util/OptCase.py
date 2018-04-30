@@ -40,7 +40,7 @@ class OptCase(object):
         self.geoareanames = None
 
         # Individual Components for metadata
-        self.baseconditionid = pd.DataFrame(data=[1], columns=['baseconditionid'])
+        self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
         # TODO: use real baseconditionid instead of this^ temporary placeholder
 
         # Scenarios

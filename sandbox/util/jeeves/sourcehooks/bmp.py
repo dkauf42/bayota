@@ -29,20 +29,12 @@ class Bmp(SourceHook):
                                   fromtable=categoryids, toname='bmpid')
 
     # Methods to append BMPids to loadsource tables
-    def append_land_bmpids(self, table_with_loadsourceids):
-        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
-
-        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
-        columnmask = ['bmpid', 'loadsourceid']
-        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(table_with_loadsourceids, how='inner')
-
-        return tblsubset
-        # return table_with_loadsourceids
-
     def append_animal_bmpids(self, SourceCountyAgencyIDtable=None, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation
         TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
+        TblBmp = self.source.TblBmp
         TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
+        TblBmpType = self.source.TblBmpType
         TblAgency = self.source.TblAgency
         TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
 
@@ -53,22 +45,31 @@ class Bmp(SourceHook):
         sca_table = sca_table[sca_table["agencyid"] == nonfedid]
 
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
-        sca_table['baseconditionid'] = baseconditionid
+        sca_table.loc[:, 'baseconditionid'] = int(baseconditionid['baseconditionid'])
 
         # Get which animals are present in the county, agency, loadsources
-        # columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
-        columnmask = ['countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sca_table, how='inner')
 
         # BMPs are associated with AnimalGroupIDs not AnimalIDs
-        # Get the animalgroups that each animalid belongs to
-        columnmask = ['animalgroupid', 'animalid']
-        tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
+        # # Get the animalgroups that each animalid belongs to
+        # columnmask = ['animalgroupid', 'animalid']
+        # tblsubset = TblAnimalGroupAnimal.loc[:, columnmask].merge(tblsubset, how='inner')
+
         # Get the BMPs that can be applied to each animalgroupid
+        # !! Use the table assumption that animalgroupid is equal to animalid for each individual animal !!
         columnmask = ['animalgroupid', 'bmpid']
-        tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
+        tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='right',
+                                                               left_on='animalgroupid', right_on='animalid')
         tblsubset.drop(['animalgroupid'], axis=1, inplace=True)
         tblsubset.drop_duplicates(inplace=True)
+
+        # Remove those bmps that aren't of type "Animal Manure"
+        animaltypeid = TblBmpType['bmptypeid'][TblBmpType['bmptype'] == 'Animal Manure'].values[0]
+        columnmask = ['bmpid', 'bmptypeid']
+        tblsubset = TblBmp.loc[:, columnmask].merge(tblsubset, how='inner')
+        tblsubset = tblsubset.loc[tblsubset['bmptypeid'] == animaltypeid]
+        tblsubset.drop(['bmptypeid'], axis=1, inplace=True)
 
         # Convert loadsourceids to loadsourcegroupids
         columnmask = ['loadsourcegroupid', 'loadsourceid']
@@ -77,11 +78,21 @@ class Bmp(SourceHook):
 
         return tblsubset
 
+    def append_land_bmpids(self, table_with_loadsourceids):
+        TblBmpLoadSourceFromTo = self.source.TblBmpLoadSourceFromTo
+
+        TblBmpLoadSourceFromTo.rename(columns={'fromloadsourceid': 'loadsourceid'}, inplace=True)
+        columnmask = ['bmpid', 'loadsourceid']
+        tblsubset = TblBmpLoadSourceFromTo.loc[:, columnmask].merge(table_with_loadsourceids, how='inner')
+
+        return tblsubset
+
     def append_manure_bmpids(self, SourceFromToAgencyIDtable=None, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation
         TblAnimalGroupAnimal = self.source.TblAnimalGroupAnimal
         TblBmpAnimalGroup = self.source.TblBmpAnimalGroup
         TblBmp = self.source.TblBmp
+        TblBmpType = self.source.TblBmpType
         TblAgency = self.source.TblAgency
         TblLoadSource = self.source.TblLoadSource
         TblLoadSourceGroupLoadSource = self.source.TblLoadSourceGroupLoadSource
@@ -89,7 +100,7 @@ class Bmp(SourceHook):
         sca_table = SourceFromToAgencyIDtable.copy()
 
         # Baseconditionid is needed for indexing with the AnimalPopulation table, so and a column for it to the SCAtable
-        sca_table['baseconditionid'] = baseconditionid
+        sca_table.loc[:, 'baseconditionid'] = int(baseconditionid['baseconditionid'])
 
         # For Manure, only the NONFED agency matters, so remove all rows with agencies not equal to NONFED
         nonfedid = TblAgency['agencyid'][TblAgency['agencycode'] == 'NONFED'].values[0]
@@ -118,8 +129,7 @@ class Bmp(SourceHook):
         sfta_table = sfta_table.loc[:, columnmask].merge(sca_table, how='inner')
 
         # Get which animals are present in the county, agency, loadsources
-        # columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
-        columnmask = ['countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
+        columnmask = ['baseconditionid', 'countyid', 'loadsourceid', 'animalid', 'animalcount', 'animalunits']
         tblsubset = TblAnimalPopulation.loc[:, columnmask].merge(sfta_table, how='inner')
         tblsubset.drop(['countyid'], axis=1, inplace=True)
 
@@ -131,9 +141,20 @@ class Bmp(SourceHook):
         # columnmask = ['animalgroupid', 'bmpid']
         # tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='inner')
 
-        # For Manure transport, there's only one bmp that should be applied (?) TODO: check that this is true
-        mtid = TblBmp['bmpid'][TblBmp['bmpshortname'] == 'ManureTransport'].values[0]
-        tblsubset['bmpid'] = mtid
+        # Get the BMPs that can be applied to each animalgroupid
+        # !! Use the table assumption that animalgroupid is equal to animalid for each individual animal !!
+        columnmask = ['animalgroupid', 'bmpid']
+        tblsubset = TblBmpAnimalGroup.loc[:, columnmask].merge(tblsubset, how='right',
+                                                               left_on='animalgroupid', right_on='animalid')
+        tblsubset.drop(['animalgroupid'], axis=1, inplace=True)
+        tblsubset.drop_duplicates(inplace=True)
+
+        # Remove those bmps that aren't of type "Manure Transport"
+        manuretypeid = TblBmpType['bmptypeid'][TblBmpType['bmptype'] == 'Manure Transport'].values[0]
+        columnmask = ['bmpid', 'bmptypeid']
+        tblsubset = TblBmp.loc[:, columnmask].merge(tblsubset, how='inner')
+        tblsubset = tblsubset.loc[tblsubset['bmptypeid'] == manuretypeid]
+        tblsubset.drop(['bmptypeid'], axis=1, inplace=True)
 
         # Convert loadsourceids to loadsourcegroupids
         columnmask = ['loadsourcegroupid', 'loadsourceid']

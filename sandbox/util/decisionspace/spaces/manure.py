@@ -55,6 +55,7 @@ class Manure(Space):
             print('^shape is %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape
+        newtable = self.idtable
 
         removaltotal = 0
 
@@ -62,8 +63,8 @@ class Manure(Space):
         loadsourcenametoremove = 'AllLoadSources'
         loadsourcegroupid = self.jeeves.loadsource.\
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
-        mask = pd.Series(self.idtable['loadsourcegroupid'] == loadsourcegroupid)
-        self.idtable = self.idtable[~mask]
+        mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
+        newtable = newtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
@@ -73,23 +74,28 @@ class Manure(Space):
         loadsourcenametoremove = 'FEEDPermitted'
         loadsourcegroupid = self.jeeves.loadsource.\
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
-        mask = pd.Series(self.idtable['loadsourcegroupid'] == loadsourcegroupid)
-        self.idtable = self.idtable[~mask]
+        mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
+        newtable = newtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
         loadsourcenametoremove = 'FEEDNonPermitted'
         loadsourcegroupid = self.jeeves.loadsource. \
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
-        mask = pd.Series(self.idtable['loadsourcegroupid'] == loadsourcegroupid)
-        self.idtable = self.idtable[~mask]
+        mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
+        newtable = newtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
-        # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
-        self.idtable.drop_duplicates()
+        # Add together the AnimalUnits and AnimalCount for Permitted and NonPermitted
+        keycols = ['loadsourcegroupid', 'bmpid', 'baseconditionid', 'countyidFrom', 'countyidTo', 'animalid', 'agencyid']
+        newtable = newtable.groupby(keycols)['animalcount', 'animalunits'].sum().reset_index()
 
+        # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
+        newtable.drop_duplicates()
+
+        self.idtable = newtable
         newrowcnt, newcolcnt = self.idtable.shape
         if settings.verbose:
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %

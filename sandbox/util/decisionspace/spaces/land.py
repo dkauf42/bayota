@@ -51,14 +51,15 @@ class Land(Space):
             print('^shape is %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape
+        newtable = self.idtable
 
         removaltotal = 0
 
         # Remove "Urban Stream Restoration Protocol" BMP
         bmpnametoremove = 'UrbStrmRestPro'
         bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(self.idtable['bmpid'] == bmpid)
-        self.idtable = self.idtable[~mask]
+        mask = pd.Series(newtable['bmpid'] == bmpid)
+        newtable = newtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
@@ -66,8 +67,8 @@ class Land(Space):
         # Remove "Non-Urban Stream Restoration Protocol" BMP
         bmpnametoremove = 'NonUrbStrmRestPro'
         bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(self.idtable['bmpid'] == bmpid)
-        self.idtable = self.idtable[~mask]
+        mask = pd.Series(newtable['bmpid'] == bmpid)
+        newtable = newtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
@@ -75,29 +76,30 @@ class Land(Space):
         # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
         bmpnametoremove = 'RR'
         bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(self.idtable['bmpid'] == bmpid)
-        self.idtable = self.idtable[~mask]
+        mask = pd.Series(newtable['bmpid'] == bmpid)
+        newtable = newtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         bmpnametoremove = 'ST'
         bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(self.idtable['bmpid'] == bmpid)
-        self.idtable = self.idtable[~mask]
+        mask = pd.Series(newtable['bmpid'] == bmpid)
+        newtable = newtable[~mask]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove Policy BMPs
         bmpids = self.jeeves.bmp.bmpids_from_categoryids(categoryids=[4])
-        mask = pd.Series(self.idtable['bmpid'].isin(bmpids.bmpid.tolist()))
+        mask = pd.Series(newtable['bmpid'].isin(bmpids.bmpid.tolist()))
         # TODO: replace the above '4' with a call that gets the number from a string such as 'Land Policy BMPs'
-        self.idtable = self.idtable[~self.idtable['bmpid'].isin(bmpids.bmpid.tolist())]
+        newtable = newtable[~newtable['bmpid'].isin(bmpids.bmpid.tolist())]
         removaltotal += mask.sum()
         if settings.verbose:
             print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
 
+        self.idtable = newtable
         newrowcnt, newcolcnt = self.idtable.shape
         if settings.verbose:
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
