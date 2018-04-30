@@ -4,14 +4,20 @@ from sandbox import settings
 
 
 class Animal(Space):
-    def __init__(self, jeeves=None, lrsegids=None, countyids=None):
+    def __init__(self, jeeves=None, baseconditionid=None,
+                 lrsegids=None, countyids=None, agencyids=None, sectorids=None,
+                 lrseg_agency_table=None, source_lrseg_agency_table=None, source_county_agency_table=None):
         """ Animal Decision Space
 
         the idtable for animal is characterized as a 'scab' table, i.e.
         S(ource), C(ounty), A(gency), B(mp)
 
         """
-        Space.__init__(self, jeeves=jeeves, lrsegids=lrsegids, countyids=countyids)
+        Space.__init__(self, jeeves=jeeves, baseconditionid=baseconditionid,
+                       lrsegids=lrsegids, countyids=countyids,
+                       agencyids=agencyids, sectorids=sectorids,
+                       lrseg_agency_table=lrseg_agency_table, source_lrseg_agency_table=source_lrseg_agency_table,
+                       source_county_agency_table=source_county_agency_table)
 
     def set_idtable_fromSourceGeoAgency(self):
         self.idtable = self.source_county_agency_table

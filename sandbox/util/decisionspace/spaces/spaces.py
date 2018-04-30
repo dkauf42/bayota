@@ -4,7 +4,9 @@ from sandbox import settings
 
 
 class Space(object):
-    def __init__(self, jeeves=None, lrsegids=None, countyids=None):
+    def __init__(self, jeeves=None, baseconditionid=None,
+                 lrsegids=None, countyids=None, agencyids=None, sectorids=None,
+                 lrseg_agency_table=None, source_lrseg_agency_table=None, source_county_agency_table=None):
         """ Base class for all decision spaces in the optimizer engine
         Represent the variables that make up the decision space along with their upper and lower bounds.
 
@@ -31,17 +33,16 @@ class Space(object):
         self.nametable = None
 
         # Individual Components for decision space
-        self.baseconditionid = None
+        self.baseconditionid = baseconditionid
         self.lrsegids = lrsegids  # an LRSeg list for this instance
         self.countyids = countyids  # a County list for this instance
-        self.agencyids = None  # list of agencies selected to specify free parameter groups
-        self.sectorids = None  # list of sectors selected to specify free parameter groups
-        self.loadsourceids = None  # list of load sources selected included in the lrsegids-agencies
+        self.agencyids = agencyids  # list of agencies selected to specify free parameter groups
+        self.sectorids = sectorids  # list of sectors selected to specify free parameter groups
 
         # Intermediary tables for Decision Variable Space
-        self.lrseg_agency_table = None
-        self.source_lrseg_agency_table = None
-        self.source_county_agency_table = None
+        self.lrseg_agency_table = lrseg_agency_table
+        self.source_lrseg_agency_table = source_lrseg_agency_table
+        self.source_county_agency_table = source_county_agency_table
 
     def __repr__(self):
         """ Custom 'print' that displays the decision space details

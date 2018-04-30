@@ -112,7 +112,7 @@ class OptCase(object):
         self.geoscalename = scale
         self.geoareanames = areanames
 
-    def proceed_to_decision_space_from_geography(self):
+    def generate_decisionspace_using_case_geography(self):
         self.decisionspace = DecisionSpace.fromgeo(scale=self.geoscalename,
                                                    areanames=self.geoareanames,
                                                    baseconditionid=self.baseconditionid)

@@ -85,7 +85,7 @@ class MainWindow(tk.Frame):
     def skipgui_and_use_default_test(self):
         """For Testing Purposes"""
         self.optcase.load_example(name='adamscounty')
-        self.optcase.proceed_to_decision_space_from_geography()
+        self.optcase.generate_decisionspace_using_case_geography()
 
         self.close_and_submit()
 

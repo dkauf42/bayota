@@ -65,41 +65,43 @@ class DecisionSpace(object):
 
         # SourceHooks
         jeeves = cls.load_queries()
-
-        # Set geography for each decision space
+        # Get geography
         lrsegids = jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)
         countyids = jeeves.geo.countyids_from_lrsegids(lrsegids=lrsegids)
-        cls.animal = Animal(jeeves=jeeves, lrsegids=lrsegids, countyids=countyids)
-        cls.land = Land(jeeves=jeeves, lrsegids=lrsegids, countyids=countyids)
-        cls.manure = Manure(jeeves=jeeves, lrsegids=lrsegids, countyids=countyids)
-
-        # Populate Agencies from Geography (i.e. make la_table from lrsegids alone)
+        # Get Agencies from Geography (i.e. make la_table from lrsegids alone)
         lrseg_agency_table = jeeves.agency.append_agencyid_to_lrsegidtable(lrsegids=lrsegids)
-        cls.agencyids = lrseg_agency_table.loc[:, ['agencyid']]
-
-        # Populate Sectors
-        cls.sectorids = jeeves.sector.all_ids()
-
-        # Populate Load Sources
+        agencyids = lrseg_agency_table.loc[:, ['agencyid']]
+        # Get Sectors
+        sectorids = jeeves.sector.all_ids()
+        # Get Load Sources
         source_lrseg_agency_table = jeeves.loadsource.\
             sourceLrsegAgencyIDtable_from_lrsegAgencySectorids(lrsegagencyidtable=lrseg_agency_table,
-                                                               sectorids=cls.sectorids)
+                                                               sectorids=sectorids)
         source_county_agency_table = jeeves.loadsource.\
             sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=source_lrseg_agency_table)
 
-        # Generate DecisionSpaces
+        # Set up each individual decision space type
+        cls.animal = Animal(jeeves=jeeves, baseconditionid=baseconditionid,
+                            lrsegids=lrsegids, countyids=countyids,
+                            agencyids=agencyids, sectorids=sectorids,
+                            lrseg_agency_table=lrseg_agency_table, source_lrseg_agency_table=source_lrseg_agency_table,
+                            source_county_agency_table=source_county_agency_table)
+        cls.land = Land(jeeves=jeeves, baseconditionid=baseconditionid,
+                        lrsegids=lrsegids, countyids=countyids,
+                        agencyids=agencyids, sectorids=sectorids,
+                        lrseg_agency_table=lrseg_agency_table, source_lrseg_agency_table=source_lrseg_agency_table,
+                        source_county_agency_table=source_county_agency_table)
+        cls.manure = Manure(jeeves=jeeves, baseconditionid=baseconditionid,
+                            lrsegids=lrsegids, countyids=countyids,
+                            agencyids=agencyids, sectorids=sectorids,
+                            lrseg_agency_table=lrseg_agency_table, source_lrseg_agency_table=source_lrseg_agency_table,
+                            source_county_agency_table=source_county_agency_table)
+
+        # Continue setting up the DecisionSpaces
         for ds in [cls.animal, cls.land, cls.manure]:
-            # Set basecondition
-            ds.baseconditionid = baseconditionid
-
-            ds.agencyids = cls.agencyids
-            ds.sectorids = cls.sectorids
-            ds.lrseg_agency_table = lrseg_agency_table
-            ds.source_lrseg_agency_table = source_lrseg_agency_table
-            ds.source_county_agency_table = source_county_agency_table
-
             ds.populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=ds.lrseg_agency_table,
                                                               sectorids=ds.sectorids)
+
         return cls(jeeves=jeeves, animalds=cls.animal, landds=cls.land, manureds=cls.manure,
                    lrsegids=lrsegids, countyids=countyids)
 
@@ -118,7 +120,6 @@ class DecisionSpace(object):
         # make la_table when agencyids have already been populated """
         all_lrseg_agencyids_table = self.jeeves.agency.append_agencyid_to_lrsegidtable(lrsegids=self.lrsegids)
         columnmask = ['lrsegid', 'agencyid']
-
         lrseg_agency_table = all_lrseg_agencyids_table.loc[:, columnmask].merge(self.agencyids, how='inner')
 
         # Populate Load Sources

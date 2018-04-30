@@ -35,22 +35,22 @@ def main(numinstances=1, testcase=None, scale='', areanames=''):
         if testcase == 1:
             print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
             optcase.load_example(name='adamscounty')
-            optcase.proceed_to_decision_space_from_geography()
+            optcase.generate_decisionspace_using_case_geography()
 
         elif testcase == 2:
             print('\nTEST CASE 2 : No GUI; 2 Counties: ("Adams, PA" and "Anne Arundel, MD")\n')
             optcase.load_example(name='adams_and_annearundel')
-            optcase.proceed_to_decision_space_from_geography()
+            optcase.generate_decisionspace_using_case_geography()
 
         elif testcase == 3:
             print('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
             optcase.load_example(name='adams_annearundel_and_york')
-            optcase.proceed_to_decision_space_from_geography()
+            optcase.generate_decisionspace_using_case_geography()
 
         elif testcase == 99:
             print('\nTEST CASE 99 : No GUI; Custom geography specified.\n')
             optcase.custom_scenario(scale=scale, areanames=areanames)
-            optcase.proceed_to_decision_space_from_geography()
+            optcase.generate_decisionspace_using_case_geography()
 
         elif not testcase:
             # Run the GUI
