@@ -88,7 +88,11 @@ class Space(object):
         """ Overridden by land, animal, manure subclasses """
         pass
 
-    def populate_decisionspace_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
+    def generate_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
+        if settings.verbose:
+            print('** %s space being populated from lrseg_agency_table **  '
+                  '{Space.generate_from_lrseg_agency_table()}' % type(self).__name__)
+
         if settings.verbose:
             print('\t-- appending loadsources to the lrseg,agency,sector table, which looks like:')
             print(lrsegagencyidtable.head())
@@ -106,6 +110,7 @@ class Space(object):
             print('\t--')
         # Populate BMPs
         self.populate_bmps()
+
         # QC BMPs
         self.qc_bmps()
         self.append_bounds()

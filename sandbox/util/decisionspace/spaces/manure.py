@@ -52,9 +52,9 @@ class Manure(Space):
 
         """
         if settings.verbose:
-            print('manure.qc_bmps(): QCing...')
-            print('Decision Space Table size: %s' % (self.idtable.shape, ))
-            print(self.idtable)
+            print('\t-- QC\'ing the idtable { in manure.qc_bmps() }, which looks like:')
+            print(self.idtable.head())
+            print('^shape is %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape
 
@@ -90,10 +90,7 @@ class Manure(Space):
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
-        print('manure.qc_bmps():')
-        print(self.idtable.head())
         self.idtable.drop_duplicates()
-        print(self.idtable.head())
 
         newrowcnt, newcolcnt = self.idtable.shape
         if settings.verbose:

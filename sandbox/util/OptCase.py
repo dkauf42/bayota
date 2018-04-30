@@ -86,7 +86,7 @@ class OptCase(object):
 
         """
         if settings.verbose:
-            print('** OptCase is loading example "%s" **' % name)
+            print('** OptCase is loading example "%s" **  {OptCase.load_example()}' % name)
 
         ex = Examples(name)
 

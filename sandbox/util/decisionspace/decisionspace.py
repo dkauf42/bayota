@@ -41,7 +41,7 @@ class DecisionSpace(object):
             This will include all agencies, all loadsources, and all bmps.
         """
         if settings.verbose:
-            print('** %s DecisionSpace being generated from geography **' % type(cls).__name__)
+            print('** An Empty DecisionSpace is being generated ** {DecisionSpace.blank()}')
 
         # SourceHooks
         jeeves = cls.load_queries()
@@ -61,7 +61,7 @@ class DecisionSpace(object):
             This will include all agencies, all loadsources, and all bmps.
         """
         if settings.verbose:
-            print('** %s DecisionSpace being generated from geography **' % type(cls).__name__)
+            print('** DecisionSpaces being generated from geography ** {DecisionSpace.fromgeo()}')
 
         # SourceHooks
         jeeves = cls.load_queries()
@@ -99,8 +99,8 @@ class DecisionSpace(object):
 
         # Continue setting up the DecisionSpaces
         for ds in [cls.animal, cls.land, cls.manure]:
-            ds.populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=ds.lrseg_agency_table,
-                                                              sectorids=ds.sectorids)
+            ds.generate_from_lrseg_agency_table(lrsegagencyidtable=ds.lrseg_agency_table,
+                                                sectorids=ds.sectorids)
 
         return cls(jeeves=jeeves, animalds=cls.animal, landds=cls.land, manureds=cls.manure,
                    lrsegids=lrsegids, countyids=countyids)
@@ -134,8 +134,8 @@ class DecisionSpace(object):
             ds.source_lrseg_agency_table = source_lrseg_agency_table
             ds.source_county_agency_table = source_county_agency_table
             # Generate DecisionSpace
-            ds.populate_decisionspace_from_lrseg_agency_table(lrsegagencyidtable=ds.lrseg_agency_table,
-                                                              sectorids=ds.sectorids)
+            ds.generate_from_lrseg_agency_table(lrsegagencyidtable=ds.lrseg_agency_table,
+                                                sectorids=ds.sectorids)
 
     def populate_geography_from_scale_and_areas(self, scale=None, areanames=None):
         self.lrsegids = self.jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)

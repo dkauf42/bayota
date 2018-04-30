@@ -46,8 +46,9 @@ class Land(Space):
 
         """
         if settings.verbose:
-            print('land.qc_bmps(): QCing...')
-            print('Decision Space Table size: %s' % (self.idtable.shape, ))
+            print('\t-- QC\'ing the idtable { in land.qc_bmps() }, which looks like:')
+            print(self.idtable.head())
+            print('^shape is %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape
 
