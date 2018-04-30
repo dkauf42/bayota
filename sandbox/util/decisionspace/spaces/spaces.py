@@ -64,30 +64,6 @@ class Space(object):
 
         return formattedstr
 
-    def set_idtable_fromSourceGeoAgency(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
-    def qc_loadsources(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
-    def populate_bmps(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
-    def qc_bmps(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
-    def append_bounds(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
-    def translate_ids_to_names(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
     def generate_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
         if settings.verbose:
             print('** %s space being populated from lrseg_agency_table **  '
@@ -121,3 +97,27 @@ class Space(object):
             print(self.idtable.head())
             print('\t^shape is %s' % str(self.idtable.shape))
             print('\t--')
+
+    def set_idtable_fromSourceGeoAgency(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
+    def qc_loadsources(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
+    def populate_bmps(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
+    def qc_bmps(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
+    def append_bounds(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
+
+    def translate_ids_to_names(self):
+        """ Overridden by land, animal, manure subclasses """
+        pass
