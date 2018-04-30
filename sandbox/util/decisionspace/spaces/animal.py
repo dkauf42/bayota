@@ -19,10 +19,7 @@ class Animal(Space):
                        lrseg_agency_table=lrseg_agency_table, source_lrseg_agency_table=source_lrseg_agency_table,
                        source_county_agency_table=source_county_agency_table)
 
-    def set_idtable_fromSourceGeoAgency(self):
-        self.idtable = self.source_county_agency_table
-
-    def populate_bmps(self):
+    def append_bmps_to_SourceGeoAgencytable(self):
         """ Append the BMPs to the decision space table """
         # get IDs
         self.idtable = self.jeeves.bmp.append_animal_bmpids(SourceCountyAgencyIDtable=self.source_county_agency_table,
@@ -31,9 +28,6 @@ class Animal(Space):
     def translate_ids_to_names(self):
         # Translate to names
         self.nametable = self.jeeves.translator.translate_scabidtable_to_scabnametable(self.idtable)
-
-    def qc_loadsources(self):
-        pass
 
     def qc_bmps(self):
         """ Remove LoadSources or BMPs that the optimization engine should not modify

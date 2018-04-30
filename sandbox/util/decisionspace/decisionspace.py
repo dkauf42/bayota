@@ -1,3 +1,4 @@
+import pandas as pd
 from sandbox.util.jeeves import Jeeves
 from .spaces.animal import Animal
 from .spaces.land import Land
@@ -61,7 +62,7 @@ class DecisionSpace(object):
             This will include all agencies, all loadsources, and all bmps.
         """
         if settings.verbose:
-            print('** DecisionSpaces being generated from geography ** {DecisionSpace.fromgeo()}')
+            print('** DecisionSpaces are being generated from geography ** {DecisionSpace.fromgeo()}')
 
         # SourceHooks
         jeeves = cls.load_queries()
@@ -99,8 +100,7 @@ class DecisionSpace(object):
 
         # Continue setting up the DecisionSpaces
         for ds in [cls.animal, cls.land, cls.manure]:
-            ds.generate_from_lrseg_agency_table(lrsegagencyidtable=ds.lrseg_agency_table,
-                                                sectorids=ds.sectorids)
+            ds.generate_from_SourceGeoAgencytable()
 
         return cls(jeeves=jeeves, animalds=cls.animal, landds=cls.land, manureds=cls.manure,
                    lrsegids=lrsegids, countyids=countyids)
@@ -130,12 +130,12 @@ class DecisionSpace(object):
             sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(sourceAgencyLrsegIDtable=source_lrseg_agency_table)
 
         for dsname, ds in self:
+            ds.baseconditionid = self.baseconditionid
             ds.lrseg_agency_table = lrseg_agency_table
             ds.source_lrseg_agency_table = source_lrseg_agency_table
             ds.source_county_agency_table = source_county_agency_table
             # Generate DecisionSpace
-            ds.generate_from_lrseg_agency_table(lrsegagencyidtable=ds.lrseg_agency_table,
-                                                sectorids=ds.sectorids)
+            ds.generate_from_SourceGeoAgencytable()
 
     def populate_geography_from_scale_and_areas(self, scale=None, areanames=None):
         self.lrsegids = self.jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)
@@ -154,7 +154,7 @@ class DecisionSpace(object):
 
     # Generation steps
     def set_baseconditionid_from_name(self, name=''):
-        self.baseconditionid = 1
+        self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
         # TODO: replace this with a jeeves call to get a real ID number using a name argument
 
     @staticmethod

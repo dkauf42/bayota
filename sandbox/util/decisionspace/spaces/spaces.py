@@ -64,28 +64,18 @@ class Space(object):
 
         return formattedstr
 
-    def generate_from_lrseg_agency_table(self, lrsegagencyidtable=None, sectorids=None):
+    def generate_from_SourceGeoAgencytable(self):
         if settings.verbose:
             print('** %s space being populated from lrseg_agency_table **  '
-                  '{Space.generate_from_lrseg_agency_table()}' % type(self).__name__)
+                  '{Space.generate_from_SourceGeoAgencytable()}' % type(self).__name__)
 
-        if settings.verbose:
-            print('\t-- appending loadsources to the lrseg,agency,sector table, which looks like:')
-            print(lrsegagencyidtable.head())
-            print('\t^shape is %s' % str(lrsegagencyidtable.shape))
-            print('\t--')
-
-        # QC LoadSources
-        self.set_idtable_fromSourceGeoAgency()
-        self.qc_loadsources()
-
-        if settings.verbose:
-            print('\t-- appending bmps to the source,lrseg,agency,sector table, which looks like:')
-            print(self.source_lrseg_agency_table.head())
-            print('\t^shape is %s' % str(self.source_lrseg_agency_table.shape))
-            print('\t--')
         # Populate BMPs
-        self.populate_bmps()
+        self.append_bmps_to_SourceGeoAgencytable()
+        if settings.verbose:
+            print('\t-- idtable has  set to the Source,Geo,Agency table, which looks like:')
+            print(self.idtable.head())
+            print('\t^shape is %s' % str(self.idtable.shape))
+            print('\t--')
 
         # QC BMPs
         self.qc_bmps()
@@ -98,15 +88,7 @@ class Space(object):
             print('\t^shape is %s' % str(self.idtable.shape))
             print('\t--')
 
-    def set_idtable_fromSourceGeoAgency(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
-    def qc_loadsources(self):
-        """ Overridden by land, animal, manure subclasses """
-        pass
-
-    def populate_bmps(self):
+    def append_bmps_to_SourceGeoAgencytable(self):
         """ Overridden by land, animal, manure subclasses """
         pass
 
