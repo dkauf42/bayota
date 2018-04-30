@@ -41,23 +41,33 @@ class Maker(object):
                           sep='\t', header=True, index=False, line_terminator='\r\n')
                 i += 1
 
-        # i = 0
-        # for df in self.scenarios_land:
-        #     df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
-        #               sep='\t', header=True, index=False, line_terminator='\r\n')
-        #     i += 1
-        #
-        # i = 0
-        # for df in self.scenarios_animal:
-        #     df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
-        #               sep='\t', header=True, index=False, line_terminator='\r\n')
-        #     i += 1
-        #
-        # i = 0
-        # for df in self.scenarios_manure:
-        #     df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.txt' % i),
-        #               sep='\t', header=True, index=False, line_terminator='\r\n')
-        #     i += 1
+    def apply_softmax_constraints(self):
+
+        pass
+
+    @staticmethod
+    def softmax(x):
+        """Calculate the softmax of a list of numbers x.
+
+            Parameters:
+                x : list of numbers
+
+            Return:
+                a list of the same length as x of non-negative numbers
+
+            Examples:
+                softmax([0.1, 0.2])
+                    array([ 0.47502081,  0.52497919])
+                softmax([-0.1, 0.2])
+                    array([ 0.42555748,  0.57444252])
+                softmax([0.9, -10])
+                    array([  9.99981542e-01,   1.84578933e-05])
+                softmax([0, 10])
+                    array([  4.53978687e-05,   9.99954602e-01])
+            """
+        e_x = np.exp(x - np.max(x))
+        out = e_x / e_x.sum()
+        return out
 
     @staticmethod
     def reorder_headers(table, tablename):
