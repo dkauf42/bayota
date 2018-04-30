@@ -33,24 +33,48 @@ class Maker(object):
 
     def write_to_tab_delimited_txt_file(self):
         # columns that are ids are translated to names, and scenarios are written to file.
-        i = 0
-        for df in self.scenarios_land:
-            df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
-                      sep='\t', header=True, index=False, line_terminator='\r\n')
-            i += 1
+        for type_name, scenario_type in self:
+            i = 0
+            for df in scenario_type:
+                df = self.reorder_headers(table=df, tablename=type_name)
+                df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_%s_%d.txt' % (type_name, i)),
+                          sep='\t', header=True, index=False, line_terminator='\r\n')
+                i += 1
 
-        i = 0
-        for df in self.scenarios_animal:
-            df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
-                      sep='\t', header=True, index=False, line_terminator='\r\n')
-            i += 1
+        # i = 0
+        # for df in self.scenarios_land:
+        #     df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_land_%d.txt' % i),
+        #               sep='\t', header=True, index=False, line_terminator='\r\n')
+        #     i += 1
+        #
+        # i = 0
+        # for df in self.scenarios_animal:
+        #     df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_animal_%d.txt' % i),
+        #               sep='\t', header=True, index=False, line_terminator='\r\n')
+        #     i += 1
+        #
+        # i = 0
+        # for df in self.scenarios_manure:
+        #     df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.txt' % i),
+        #               sep='\t', header=True, index=False, line_terminator='\r\n')
+        #     i += 1
 
-        i = 0
-        for df in self.scenarios_manure:
-            df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_manure_%d.txt' % i),
-                      sep='\t', header=True, index=False, line_terminator='\r\n')
-            i += 1
+    @staticmethod
+    def reorder_headers(table, tablename):
+        # TODO: rewrite this to pull the header order from the SQL Server Source Data
+        header_order = dict()
+        # Animal
+        header_order['animal'] = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                  'GeographyName', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit',
+                                  'NReductionFraction', 'PReductionFraction']
+        # Land
+        header_order['land'] = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']
+        # Manure
+        header_order['manure'] = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                  'FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit']
 
+        return table[header_order[tablename]]
 
     @staticmethod
     def expand_grid(data_dict):

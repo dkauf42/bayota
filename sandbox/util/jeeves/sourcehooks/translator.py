@@ -42,9 +42,9 @@ class Translator(SourceHook):
                                  'bmpshortname': 'BmpShortname'}, inplace=True)
 
         newtable['Unit'] = 'Percent'
+        newtable['StateUniqueIdentifier'] = np.nan
 
         if 'Amount' in newtable.columns:
-            newtable['StateUniqueIdentifier'] = np.nan
             # Reorder columns to match CAST input table format
             newtable = newtable[['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
                                  'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']]
@@ -89,11 +89,11 @@ class Translator(SourceHook):
                                  'bmpshortname': 'BmpShortname'}, inplace=True)
 
         newtable['Unit'] = 'Percent'
+        newtable['StateUniqueIdentifier'] = np.nan
+        newtable['NReductionFraction'] = np.nan
+        newtable['PReductionFraction'] = np.nan
 
         if 'Amount' in newtable.columns:
-            newtable['StateUniqueIdentifier'] = np.nan
-            newtable['NReductionFraction'] = np.nan
-            newtable['PReductionFraction'] = np.nan
             # Reorder columns to match CAST input table format
             newtable = newtable[['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
                                  'GeographyName', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit',
@@ -156,9 +156,9 @@ class Translator(SourceHook):
                                  'bmpshortname': 'BmpShortname'}, inplace=True)
 
         newtable['Unit'] = 'Percent'
+        newtable['StateUniqueIdentifier'] = np.nan
 
         if 'Amount' in newtable.columns:
-            newtable['StateUniqueIdentifier'] = np.nan
             # Reorder columns to match CAST input table format
             newtable = newtable[['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
                                  'FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit']]
