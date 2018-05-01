@@ -14,9 +14,7 @@ class TddForOptCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load the Source Data and Base Condition tables
-        cls.oc = OptCase()
-
-        cls.oc.load_example(name='adamscounty')
+        cls.oc = OptCase.loadexample(name='adamscounty')
 
     def test_example_populated_correctly(self):
         pass

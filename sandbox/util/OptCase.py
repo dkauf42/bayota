@@ -9,7 +9,8 @@ writedir = get_outputdir()
 
 
 class OptCase(object):
-    def __init__(self):
+    def __init__(self, name=None, description=None, baseyear=None, basecondname=None,
+                 wastewatername=None, costprofilename=None, geoscalename=None, geoareanames=None):
         """ Base class for all optimization Cases.
         Represents the options and subset of data necessary for conducting a particular optimization run
 
@@ -30,16 +31,17 @@ class OptCase(object):
         # Queries to the source data
         self.jeeves = self.decisionspace.jeeves
 
-        self.name = None
-        self.description = None
-        self.baseyear = None
-        self.basecondname = None
-        self.wastewatername = None
-        self.costprofilename = None
-        self.geoscalename = None
-        self.geoareanames = None
+        self.name = name
+        self.description = description
+        self.baseyear = baseyear
+        self.basecondname = basecondname
+        self.wastewatername = wastewatername
+        self.costprofilename = costprofilename
+        self.geoscalename = geoscalename
+        self.geoareanames = geoareanames
 
         # Individual Components for metadata
+        # self.baseconditionid = None
         self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
         # TODO: use real baseconditionid instead of this^ temporary placeholder
 
@@ -78,7 +80,24 @@ class OptCase(object):
 
         return formattedstr
 
-    def load_example(self, name=''):
+    @classmethod
+    def loadexample(cls, name=''):
+        """ Constructor to generate an OptCase from a metadata example set
+        load pre-defined example metadata options for testing purposes
+
+        Parameters:
+            name (str):  this is the name of the example to load.
+        """
+        if settings.verbose:
+            print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
+
+        ex = Examples(name)
+
+        return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
+                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename, geoscalename=ex.geoscalename,
+                   geoareanames=ex.geoareanames)
+
+    def set_metadata_to_example(self, name=''):
         """ load pre-defined example metadata options for testing purposes
 
         Parameters:
@@ -86,7 +105,7 @@ class OptCase(object):
 
         """
         if settings.verbose:
-            print('** OptCase is loading example "%s" **  {OptCase.load_example()}' % name)
+            print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
 
         ex = Examples(name)
 

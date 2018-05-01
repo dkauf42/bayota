@@ -69,7 +69,7 @@ class MainWindow(tk.Frame):
         self.done_button.config(style="Grey.TButton")
         self.done_button.config(state=tk.DISABLED)
         
-        # Set up keyboard con   trol of the window
+        # Set up keyboard control of the window
         self.parent.bind('<Escape>', self.on_mainwindow_closing)
         
         self.parent.protocol("WM_DELETE_WINDOW", self.on_mainwindow_closing)
@@ -84,7 +84,9 @@ class MainWindow(tk.Frame):
 
     def skipgui_and_use_default_test(self):
         """For Testing Purposes"""
-        self.optcase.load_example(name='adamscounty')
+        # self.optcase.loadexample(name='adamscounty')
+        self.optcase.set_metadata_to_example(name='adams_and_annearundel')
+        print(self.optcase)
         self.optcase.generate_decisionspace_using_case_geography()
 
         self.close_and_submit()

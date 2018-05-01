@@ -17,8 +17,8 @@ class Examples:
         if name == 'adamscounty':
             self.name = 'TestOne'
             self.description = 'TestOneDescription'
-            self.baseyear = '1995'
-            self.basecondname = 'Example_BaseCond2'
+            self.baseyear = '2013'
+            self.basecondname = 'Historic Trends'
             self.wastewatername = 'Example_WW1'
             self.costprofilename = 'Example_CostProfile1'
             self.geoscalename = 'County'
@@ -27,8 +27,8 @@ class Examples:
         elif name == 'adams_and_annearundel':
             self.name = 'TestOne'
             self.description = 'TestOneDescription'
-            self.baseyear = '1995'
-            self.basecondname = 'Example_BaseCond2'
+            self.baseyear = '2013'
+            self.basecondname = 'Historic Trends'
             self.wastewatername = 'Example_WW1'
             self.costprofilename = 'Example_CostProfile1'
             self.geoscalename = 'County'
@@ -37,8 +37,8 @@ class Examples:
         elif name == 'adams_annearundel_and_york':
             self.name = 'TestOne'
             self.description = 'TestOneDescription'
-            self.baseyear = '1995'
-            self.basecondname = 'Example_BaseCond2'
+            self.baseyear = '2013'
+            self.basecondname = 'Historic Trends'
             self.wastewatername = 'Example_WW1'
             self.costprofilename = 'Example_CostProfile1'
             self.geoscalename = 'County'
@@ -47,8 +47,8 @@ class Examples:
         elif name == 'basenogeography':
             self.name = 'TestOne'
             self.description = 'TestOneDescription'
-            self.baseyear = '1995'
-            self.basecondname = 'Example_BaseCond2'
+            self.baseyear = '2013'
+            self.basecondname = 'Historic Trends'
             self.wastewatername = 'Example_WW1'
             self.costprofilename = 'Example_CostProfile1'
             self.geoscalename = ''
