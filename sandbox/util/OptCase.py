@@ -94,8 +94,22 @@ class OptCase(object):
         ex = Examples(name)
 
         return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
-                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename, geoscalename=ex.geoscalename,
-                   geoareanames=ex.geoareanames)
+                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
+                   geoscalename=ex.geoscalename, geoareanames=ex.geoareanames)
+
+    @classmethod
+    def load_custom(cls, scale='', areanames=''):
+        """ Constructor to generate an OptCase with input arguments: scale and a list of areanames
+
+        Parameters:
+            scale (str):
+            areanames (list of str):
+        """
+        ex = Examples('basenogeography')
+
+        return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
+                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
+                   geoscalename=scale, geoareanames=areanames)
 
     def set_metadata_to_example(self, name=''):
         """ load pre-defined example metadata options for testing purposes
@@ -117,19 +131,6 @@ class OptCase(object):
         self.costprofilename = ex.costprofilename
         self.geoscalename = ex.geoscalename
         self.geoareanames = ex.geoareanames
-
-    def custom_scenario(self, scale='', areanames=''):
-        ex = Examples('basenogeography')
-
-        self.name = ex.name
-        self.description = ex.description
-        self.baseyear = ex.baseyear
-        self.basecondname = ex.basecondname
-        self.wastewatername = ex.wastewatername
-        self.costprofilename = ex.costprofilename
-
-        self.geoscalename = scale
-        self.geoareanames = areanames
 
     def generate_decisionspace_using_case_geography(self):
         self.decisionspace = DecisionSpace.fromgeo(scale=self.geoscalename,
