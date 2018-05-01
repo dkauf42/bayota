@@ -41,10 +41,6 @@ class Maker(object):
                           sep='\t', header=True, index=False, line_terminator='\r\n')
                 i += 1
 
-    def apply_softmax_constraints(self):
-
-        pass
-
     @staticmethod
     def softmax(x):
         """Calculate the softmax of a list of numbers x.

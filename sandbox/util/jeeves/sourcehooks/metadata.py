@@ -7,11 +7,13 @@ class Metadata(SourceHook):
         SourceHook.__init__(self, sourcedata=sourcedata)
 
     # Methods to get metadata options
-    def base_year_names(self):
-        return ['640', '1642', '1812', '1918']
+    def all_base_year_names(self):
+        TblBaseYear = self.source.TblBaseYear  # get relevant source data
+        return TblBaseYear.loc[:, 'baseyear']
 
-    def base_condition_names(self):
-        return ['BaseCondition0001', 'BaseCondition0002', 'BaseCondition0003', 'BaseCondition0004']
+    def all_base_condition_names(self):
+        TblLandChangeModelScenario = self.source.TblLandChangeModelScenario  # get relevant source data
+        return TblLandChangeModelScenario.loc[:, 'landchangemodelscenarioname']
 
     def wastewaterdata_names(self):
         return ['WasteWater0001', 'WasteWater0002', 'WasteWater0003', 'WasteWater0004']

@@ -93,9 +93,10 @@ class MetadataFrame(tk.Frame):
     def load_options(self, jeeves=None):
         self.jeeves = jeeves
 
-        self.dropdown_baseyr['values'] = ['Select Base Year'] + jeeves.metadata.base_year_names()
+        self.dropdown_baseyr['values'] = ['Select Base Year'] + jeeves.metadata.all_base_year_names().tolist()
         self.dropdown_baseyr.current(0)
-        self.dropdown_basecond['values'] = ['Select Base Condition'] + jeeves.metadata.base_condition_names()
+        self.dropdown_basecond['values'] = ['Select Base Condition'] + \
+                                           jeeves.metadata.all_base_condition_names().tolist()
         self.dropdown_basecond.current(0)
         self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + jeeves.metadata.wastewaterdata_names()
         self.dropdown_wastewtr.current(0)
