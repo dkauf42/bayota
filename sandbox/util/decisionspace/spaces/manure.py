@@ -90,11 +90,16 @@ class Manure(Space):
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
     def append_bounds(self):
+        # Manure can't be submitted as percent, but rather must be in Dry Tons.
+        # So, let's calculate the maximum Dry Tons per animal, per county for this basecondition
         self.idtable['lowerbound'] = 0
-        self.idtable['upperbound'] = 100
-        # For Dry_Tons_of_Stored_Manure: Add...?
+
+        tempforcalc = self.idtable.copy()
+        tempforcalc.rename(columns={'countyidFrom': 'countyid'}, inplace=True)
+        tempforcalc = self.jeeves.animal.manuredrytons_from(basecondcountyanimalids=tempforcalc)
+        self.idtable['upperbound'] = tempforcalc.manurelbsperanimalunitdaily * tempforcalc.animalunits
+        self.idtable.rename(columns={'countyid': 'countyidFrom'}, inplace=True)
+
         return self.idtable.copy()
-        # self.manure_decisionspace = self.queries.\
-        #     appendBounds_to_manure_sftabidtable(sftabidtable=self.manure_sftabidtable)
 
 

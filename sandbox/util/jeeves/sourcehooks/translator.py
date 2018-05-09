@@ -155,7 +155,7 @@ class Translator(SourceHook):
                                  'loadsourcegroup': 'LoadSourceGroup',
                                  'bmpshortname': 'BmpShortname'}, inplace=True)
 
-        newtable['Unit'] = 'Percent'
+        newtable['Unit'] = 'DRY TONS'
         newtable['StateUniqueIdentifier'] = np.nan
 
         if 'Amount' in newtable.columns:

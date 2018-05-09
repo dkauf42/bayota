@@ -9,6 +9,7 @@ from sandbox.__init__ import get_sqlsourcetabledir
 from sandbox.sqltables.source_data import SourceData
 
 from .sourcehooks.agency import Agency
+from .sourcehooks.animal import Animal
 from .sourcehooks.bmp import Bmp
 from .sourcehooks.geo import Geo
 from .sourcehooks.loadsource import LoadSource
@@ -23,6 +24,7 @@ class Jeeves:
         source = self.loadInSourceDataFromSQL()
 
         self.agency = Agency(sourcedata=source)
+        self.animal = Animal(sourcedata=source)
         self.bmp = Bmp(sourcedata=source)
         self.geo = Geo(sourcedata=source)
         self.loadsource = LoadSource(sourcedata=source)
