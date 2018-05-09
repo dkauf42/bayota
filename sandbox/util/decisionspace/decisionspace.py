@@ -137,12 +137,12 @@ class DecisionSpace(object):
             # Generate DecisionSpace
             ds.generate_from_SourceGeoAgencytable()
 
-    def populate_geography_from_scale_and_areas(self, scale=None, areanames=None):
-        self.lrsegids = self.jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)
-        self.countyids = self.jeeves.geo.countyids_from_lrsegids(lrsegids=self.lrsegids)
-        for dsname, ds in self:
-            ds.lrsegids = self.lrsegids
-            ds.countyids = self.countyids
+    # def set_geography_from_scale_and_areas(self, scale=None, areanames=None):
+    #     self.lrsegids = self.jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)
+    #     self.countyids = self.jeeves.geo.countyids_from_lrsegids(lrsegids=self.lrsegids)
+    #     for dsname, ds in self:
+    #         ds.lrsegids = self.lrsegids
+    #         ds.countyids = self.countyids
 
     # GUI API
     def set_freeparamgrps(self, agencycodes=None, sectornames=None):
@@ -154,6 +154,7 @@ class DecisionSpace(object):
 
     # Generation steps
     def set_baseconditionid_from_name(self, name=''):
+        self.baseconditionid = self.jeeves.metadata.get_baseconditionid()
         self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
         # TODO: replace this with a jeeves call to get a real ID number using a name argument
 

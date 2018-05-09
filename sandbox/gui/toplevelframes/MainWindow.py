@@ -9,11 +9,10 @@ from sandbox.gui.useframes.ToggleFrame import ToggledFrame
 
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, optcase, *args, **kwargs):
+    def __init__(self, parent, optcase=None, *args, **kwargs):
         """The optimization configuration window"""
-        # my_bgcolor = "bisque"
         my_bgcolor = 'cornflower blue'
-        tk.Frame.__init__(self, parent, *args, **kwargs, background=my_bgcolor)
+        tk.Frame.__init__(self, parent, optcase=None, *args, **kwargs, background=my_bgcolor)
         self.parent = parent
 
         self.optcase = optcase
@@ -86,8 +85,7 @@ class MainWindow(tk.Frame):
         """For Testing Purposes"""
         # self.optcase.loadexample(name='adamscounty')
         self.optcase.set_metadata_to_example(name='adams_and_annearundel')
-        print(self.optcase)
-        self.optcase.generate_decisionspace_using_case_geography()
+        # self.optcase = OptCase.loadexample(name='adams_and_annearundel')
 
         self.close_and_submit()
 
@@ -142,15 +140,19 @@ class MainWindow(tk.Frame):
 
     def save_metadata(self):
         print('mainwindow:set_metadata: saving metadata...')
-        self.optcase.set_metadata(self.metadataframe.get_results())
-        self.optcase.populate_geography()
+        mr = self.metadataframe.get_results()
+        self.optcase.set_metadata(name=mr.name, description=mr.description, baseyear=mr.baseyear,
+                                  basecondname=mr.basecondname, wastewatername=mr.wastewatername,
+                                  costprofilename=mr.costprofilename,
+                                  geoscalename=mr.scale, geoareanames=mr.areanames)
 
     def load_freeparamgroup_options(self):
         self.freeparamframe.update_box_options(jeeves=self.optcase.jeeves, optcase=self.optcase)
 
     def save_freeparamgroups(self):
         print('mainwindow:save_freeparamgroups: saving free parameter groups...')
-        self.optcase.set_freeparamgrps(self.freeparamframe.get_results())
+        self.optcase.set_decisionspace_agencies_and_sectors(agencycodes=self.freeparamframe.get_results().agencies,
+                                                            sectornames=self.freeparamframe.get_results().sectors)
 
     def load_constraint_options(self):  # TODO:add constraint widgets
         self.additionalconstraintsframe.update_box_options(optcase=self.optcase)

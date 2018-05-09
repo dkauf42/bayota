@@ -20,3 +20,9 @@ class Metadata(SourceHook):
 
     def costprofile_names(self):
         return ['CostProfile0001', 'CostProfile0002', 'CostProfile0003', 'CostProfile0004']
+
+    def get_baseconditionid(self, baseyear=None, landchangemodelscenarioid=None):
+        TblBaseCondition = self.source.TblBaseCondition  # get relevant source data
+        row = TblBaseCondition[(TblBaseCondition.baseyear == baseyear) &
+                               (TblBaseCondition.landchangemodelscenarioid == landchangemodelscenarioid)]
+        return row[['baseconditionid']]

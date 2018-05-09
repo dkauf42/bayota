@@ -33,22 +33,20 @@ def main(numinstances=1, testcase=None, scale='', areanames=None):
         if testcase == 1:
             print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
             oc = OptCase.loadexample(name='adamscounty')
-            oc.generate_decisionspace_using_case_geography()
 
         elif testcase == 2:
             print('\nTEST CASE 2 : No GUI; 2 Counties: ("Adams, PA" and "Anne Arundel, MD")\n')
             oc = OptCase.loadexample(name='adams_and_annearundel')
-            oc.generate_decisionspace_using_case_geography()
 
         elif testcase == 3:
             print('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
             oc = OptCase.loadexample(name='adams_annearundel_and_york')
-            oc.generate_decisionspace_using_case_geography()
 
         elif testcase == 99:
             print('\nTEST CASE 99 : No GUI; Custom geography specified.\n')
-            oc = OptCase.load_custom(scale=scale, areanames=areanames)
-            oc.generate_decisionspace_using_case_geography()
+            print('\tScale = %s\n' % scale)
+            print('\tAreanames = %s\n' % areanames)
+            oc = OptCase.loadcustom(scale=scale, areanames=areanames)
 
         elif not testcase:
             oc = OptCase()
@@ -58,12 +56,12 @@ def main(numinstances=1, testcase=None, scale='', areanames=None):
             mainwindow.pack(side="top", fill="both", expand=True)
             root.title("Optimization Options")
             root.mainloop()
-            print(oc)
         else:
             raise ValueError('Unexpected test case argument')
 
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         # optcase.generate_single_scenario(scenariotype='random')
+        print(oc)
         oc.generate_multiple_scenarios(scenariotype='hypercube')
 
         # Write scenario tables to file.
@@ -86,14 +84,20 @@ if __name__ == '__main__':
                                                  1. Generate a Decision Space    
                                                       * specify metadata
                                                          - base condition
-                                                         - wastewater data
+                                                         - wastewatername data
                                                          - cost profile
                                                          - geography
                                                       * specify free parameter groups
                                                       * specify constraints
                                                  2. Generate a Scenario
                                                  '''))
-    parser.add_argument('-t', choices=[1, 2, 3], type=int, help='test case #')
+    parser.add_argument('-t', choices=[1, 2, 3, 99], type=int, help='test case #')
+    parser.add_argument('-s', '--scale',
+                        action="store", type=str, dest="s",
+                        help="geographic scale string", default="")
+    parser.add_argument('-a', '--areanames', nargs='+',
+                        action="store", type=str, dest="a",
+                        help="geographic area names", default="")
     args = parser.parse_args()
 
-    main(testcase=args.t)
+    main(testcase=args.t, scale=args.s, areanames=args.a)

@@ -50,6 +50,40 @@ class OptCase(object):
         self.scenarios_animal = []
         self.scenarios_manure = []
 
+        if geoscalename is not None:
+            self.__generate_decisionspace_using_case_geography()
+
+    @classmethod
+    def loadexample(cls, name=''):
+        """ Constructor to generate an OptCase from a metadata example set
+        load pre-defined example metadata options for testing purposes
+
+        Parameters:
+            name (str):  this is the name of the example to load.
+        """
+        if settings.verbose:
+            print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
+
+        ex = Examples(name)
+
+        return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
+                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
+                   geoscalename=ex.geoscalename, geoareanames=ex.geoareanames)
+
+    @classmethod
+    def loadcustom(cls, scale='', areanames=''):
+        """ Constructor to generate an OptCase with input arguments: scale and a list of areanames
+
+        Parameters:
+            scale (str):
+            areanames (list of str):
+        """
+        ex = Examples('basenogeography')
+
+        return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
+                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
+                   geoscalename=scale, geoareanames=areanames)
+
     def __repr__(self):
         """ Custom 'print' that displays the metadata defined for this OptCase.
         """
@@ -80,37 +114,7 @@ class OptCase(object):
 
         return formattedstr
 
-    @classmethod
-    def loadexample(cls, name=''):
-        """ Constructor to generate an OptCase from a metadata example set
-        load pre-defined example metadata options for testing purposes
-
-        Parameters:
-            name (str):  this is the name of the example to load.
-        """
-        if settings.verbose:
-            print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
-
-        ex = Examples(name)
-
-        return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
-                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
-                   geoscalename=ex.geoscalename, geoareanames=ex.geoareanames)
-
-    @classmethod
-    def load_custom(cls, scale='', areanames=''):
-        """ Constructor to generate an OptCase with input arguments: scale and a list of areanames
-
-        Parameters:
-            scale (str):
-            areanames (list of str):
-        """
-        ex = Examples('basenogeography')
-
-        return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
-                   wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
-                   geoscalename=scale, geoareanames=areanames)
-
+    # Setters
     def set_metadata_to_example(self, name=''):
         """ load pre-defined example metadata options for testing purposes
 
@@ -123,42 +127,40 @@ class OptCase(object):
 
         ex = Examples(name)
 
-        self.name = ex.name
-        self.description = ex.description
-        self.baseyear = ex.baseyear
-        self.basecondname = ex.basecondname
-        self.wastewatername = ex.wastewatername
-        self.costprofilename = ex.costprofilename
-        self.geoscalename = ex.geoscalename
-        self.geoareanames = ex.geoareanames
+        self.set_metadata(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
+                          wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
+                          geoscalename=ex.geoscalename, geoareanames=ex.geoareanames)
 
-    def generate_decisionspace_using_case_geography(self):
+    def set_metadata(self, name=None, description=None, baseyear=None, basecondname=None,
+                     wastewatername=None, costprofilename=None, geoscalename=None, geoareanames=None):
+        self.name = name
+        self.description = description
+        self.baseyear = baseyear
+        self.basecondname = basecondname
+        self.wastewatername = wastewatername
+        self.costprofilename = costprofilename
+        self.geoscalename = geoscalename
+        self.geoareanames = geoareanames  # For Counties, this is in the form of "[County], [StateAbbeviation]"
+
+        self.__generate_decisionspace_using_case_geography()
+        # self.set_decisionspace_geography()
+
+    # def set_decisionspace_geography(self):
+    #     self.decisionspace.set_geography_from_scale_and_areas(scale=self.geoscalename,
+    #                                                           areanames=self.geoareanames)
+
+    def set_decisionspace_agencies_and_sectors(self, agencycodes=None, sectornames=None):
+        self.decisionspace.set_freeparamgrps(agencycodes=agencycodes, sectornames=sectornames)
+
+    def __generate_decisionspace_using_case_geography(self):
         self.decisionspace = DecisionSpace.fromgeo(scale=self.geoscalename,
                                                    areanames=self.geoareanames,
                                                    baseconditionid=self.baseconditionid)
 
-    def proceed_to_decision_space_from_geoagencysectorids(self):
+    # hooks for graphical interface get/put
+    def generate_decision_space_using_case_geoagencysectorids(self):
         self.decisionspace.set_baseconditionid_from_name(name=self.basecondname)
         self.decisionspace.proceed_to_decision_space_from_geoagencysectorids()
-
-    # hooks for graphical interface get/put
-    def populate_geography(self):
-        self.decisionspace.populate_geography_from_scale_and_areas(scale=self.geoscalename,
-                                                                   areanames=self.geoareanames)
-
-    def set_metadata(self, metadata_results):
-        self.name = metadata_results.name
-        self.description = metadata_results.description
-        self.baseyear = metadata_results.baseyear
-        self.basecondname = metadata_results.basecond
-        self.wastewatername = metadata_results.wastewater
-        self.costprofilename = metadata_results.costprofile
-        self.geoscalename = metadata_results.scale
-        self.geoareanames = metadata_results.area  # For Counties, this is in the form of "[County], [StateAbbeviation]"
-
-    def set_freeparamgrps(self, freeparamgrp_results):
-        self.decisionspace.set_freeparamgrps(agencycodes=freeparamgrp_results.agencies,
-                                             sectornames=freeparamgrp_results.sectors)
 
     # Generating scenario(s) from the decision space
     def generate_single_scenario(self, scenariotype=''):

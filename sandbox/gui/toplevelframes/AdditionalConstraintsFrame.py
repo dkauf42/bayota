@@ -63,7 +63,7 @@ class AdditionalConstraintsFrame(tk.Frame):
             optcase (OptCase):
         """
         # Generate the decision space
-        optcase.proceed_to_decision_space_from_geoagencysectorids()
+        optcase.generate_decision_space_using_case_geoagencysectorids()
 
         # Create Dropdown and Range Sliders (Land)
         i = 1

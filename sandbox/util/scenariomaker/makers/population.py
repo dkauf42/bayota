@@ -13,13 +13,18 @@ class Population(Maker):
         """Conduct a latin hypercube sampling from within the lower/upper bounds
         """
         # Conduct a latin hypercube sampling from within the lower/upper bounds
-        numsamples = 10
-        self.scenarios_land = self._generate_latinhypercube_from_table(table=self.landnametable, numsamples=numsamples)
-        self.scenarios_animal = self._generate_latinhypercube_from_table(table=self.animalnametable, numsamples=numsamples)
-        self.scenarios_manure = self._generate_latinhypercube_from_table(table=self.manurenametable, numsamples=numsamples)
+        numsamples = 4
+        self.scenarios_land = self._generate_latinhypercube_from_table(table=self.landnametable,
+                                                                       numsamples=numsamples,
+                                                                       tablename='land')
+        self.scenarios_animal = self._generate_latinhypercube_from_table(table=self.animalnametable,
+                                                                         numsamples=numsamples,
+                                                                         tablename='animal')
+        self.scenarios_manure = self._generate_latinhypercube_from_table(table=self.manurenametable,
+                                                                         numsamples=numsamples,
+                                                                         tablename='manure')
 
-    @staticmethod
-    def _generate_latinhypercube_from_table(table, numsamples):
+    def _generate_latinhypercube_from_table(self, table, numsamples, tablename):
         lhd = pyDOE.lhs(n=len(table.upperbound), samples=numsamples)
         # lower and upper bound vectors are tiled so that they match the shape of the latin hypercube
         lower = np.tile(table.lowerbound, (numsamples, 1))
@@ -31,6 +36,24 @@ class Population(Maker):
         for i in range(0, numsamples):
             thisdf = table.copy().drop(columns=['lowerbound', 'upperbound'])
             thisdf['Amount'] = lhd_full[:, i]
+
+            # # Apply Softmax to Animals
+            # if tablename == 'animal':
+            #     keycols = ['AgencyCode', 'BmpShortname', 'GeographyName', 'AnimalGroup', 'LoadSourceGroup']
+            #
+            #     # sumToOneGroups = thisdf.groupby(keycols)
+            #     # sumToOneGroups = self.softmax(sumToOneGroups['Amount'])
+            #     print(thisdf.head())
+            #     g = thisdf.groupby(keycols)
+            #     # adskfjhsdfkhadkh
+            #     for key, item in g:
+            #         print(g.get_group(key), "\n\n")
+            #
+            #     thisdf['Amount'] = g['Amount'].transform(lambda x: self.softmax(x))
+            #     # g['Amount'] = self.softmax(g['Amount'])
+            #
+            #     # thisdf['Amount'] = thisdf[keycols].map(g['Amount'])
+
             dflist.append(thisdf)
 
         return dflist

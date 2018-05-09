@@ -118,17 +118,17 @@ class MetadataFrame(tk.Frame):
         self.geoareabox.set_new_left_side_items(areas)
 
     def get_results(self):
-        Optmeta = namedtuple('metadata', 'name description baseyear basecond '
-                                         'wastewater costprofile '
-                                         'scale area')
+        Optmeta = namedtuple('metadata', 'name description baseyear basecondname '
+                                         'wastewatername costprofilename '
+                                         'scale areanames')
         self.results = Optmeta(name=self.entry_optname.get(),
                                description=self.entry_optdesc.get(),
                                baseyear=self.dropdown_baseyr.get(),
-                               basecond=self.dropdown_basecond.get(),
-                               wastewater=self.dropdown_wastewtr.get(),
-                               costprofile=self.dropdown_costprofile.get(),
+                               basecondname=self.dropdown_basecond.get(),
+                               wastewatername=self.dropdown_wastewtr.get(),
+                               costprofilename=self.dropdown_costprofile.get(),
                                scale=self.dropdown_geoscale.get(),
-                               area=self.geoareabox.get_selection())
+                               areanames=self.geoareabox.get_selection())
         return self.results
 
     def my_dropdown(self, optionslist):
