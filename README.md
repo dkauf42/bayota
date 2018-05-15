@@ -47,17 +47,24 @@ a GUI appears that allows specifiation of geography and other metadata.
 
 # Usage
 
-###### A simple example:
+###### A simple example (to run using GUI):
 
     > python sandboxer.py
+
+###### To specify a particular county, use '-t 99' along with the scale (county) and areanames, for example:
+
+    > python sandboxer.py -t 99 -s "County" -a "Anne Arundel, MD"
+... To specify two counties, just pass extra string arguments, for example:
+
+    > python sandboxer.py -t 99 -s "County" -a "Anne Arundel, MD" "Lancaster, PA"
+
+###### Example test cases (there are three) are available by using the "-t" parameter:
+
+    > python sandboxer.py -t 1
 
 ###### Help is available by using the "-h" parameter:
 
     > python sandboxer.py -h
-
-###### Example test cases are available by using the "-t" parameter:
-
-    > python sandboxer.py -t 1
 
 Note:
 There are three test cases available, and
