@@ -33,10 +33,10 @@ class Maker(object):
 
     def write_to_tab_delimited_txt_file(self):
         # columns that are ids are translated to names, and scenarios are written to file.
-        for type_name, scenario_type in self:
+        for type_name, scenarios in self:
             i = 0
-            for df in scenario_type:
-                df = self.reorder_headers(table=df, tablename=type_name)
+            for df in scenarios:
+                # df = self.reorder_headers(table=df, tablename=type_name)
                 df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_%s_%d.txt' % (type_name, i)),
                           sep='\t', header=True, index=False, line_terminator='\r\n')
                 i += 1
