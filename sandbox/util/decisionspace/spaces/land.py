@@ -48,40 +48,51 @@ class Land(Space):
 
         removaltotal = 0
 
-        # Remove "Urban Stream Restoration Protocol" BMP
-        bmpnametoremove = 'UrbStrmRestPro'
-        bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(newtable['bmpid'] == bmpid)
-        newtable = newtable[~mask]
-        removaltotal += mask.sum()
-        if settings.verbose:
-            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        # Identify land BMPs that should be excluded because
+        # they are already affected when a land use change BMP is applied
+        #  (This is based on an email conversation w/Jess on 8 May 2018
+        #   [subject: "question: Efficiency parts of land use change BMPs"]
+        #   and a convo w/Olivia on 2 May 2018 [subject: "quick followup"])
+        uplandbmpstoexclude = self.jeeves.bmp.get_land_uplandbmps_to_exclude()
 
-        # Remove "Non-Urban Stream Restoration Protocol" BMP
-        bmpnametoremove = 'NonUrbStrmRestPro'
-        bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(newtable['bmpid'] == bmpid)
-        newtable = newtable[~mask]
-        removaltotal += mask.sum()
-        if settings.verbose:
-            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        # It's fine to include PoultRed for now:
+        uplandbmpstoexclude = uplandbmpstoexclude.drop(
+            uplandbmpstoexclude[uplandbmpstoexclude['bmpshortname'] == 'PoultRed'].index)
 
-        # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
-        bmpnametoremove = 'RR'
-        bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(newtable['bmpid'] == bmpid)
-        newtable = newtable[~mask]
-        removaltotal += mask.sum()
-        if settings.verbose:
-            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        singlebmpstoremove = ['UrbStrmRestPro',  # "Urban Stream Restoration Protocol"
+                              'NonUrbStrmRestPro',  # "Non-Urban Stream Restoration Protocol"
+                              ] + uplandbmpstoexclude['bmpshortname'].tolist()
 
-        bmpnametoremove = 'ST'
-        bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
-        mask = pd.Series(newtable['bmpid'] == bmpid)
-        newtable = newtable[~mask]
-        removaltotal += mask.sum()
-        if settings.verbose:
-            print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        for bmpnametoremove in singlebmpstoremove:
+            bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+            bmptypename = self.jeeves.bmp.single_bmptype_from_bmpid(bmpid=bmpid)
+            mask = pd.Series(newtable['bmpid'] == bmpid)
+            newtable = newtable[~mask]
+            removaltotal += mask.sum()
+            if settings.verbose:
+                print('removing %d for %s (type=%s)' % (mask.sum(), bmpnametoremove, bmptypename))
+
+        """
+        "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
+        ^
+        shouldn’t be excluded, but need assumed values for two of their three inputs
+        """
+        # # Remove "Stormwater Performance Standard" BMPs (RR [runoff reduction] and ST [stormwater treatment])
+        # bmpnametoremove = 'RR'
+        # bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        # mask = pd.Series(newtable['bmpid'] == bmpid)
+        # newtable = newtable[~mask]
+        # removaltotal += mask.sum()
+        # if settings.verbose:
+        #     print('removing %d for %s' % (mask.sum(), bmpnametoremove))
+        #
+        # bmpnametoremove = 'ST'
+        # bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+        # mask = pd.Series(newtable['bmpid'] == bmpid)
+        # newtable = newtable[~mask]
+        # removaltotal += mask.sum()
+        # if settings.verbose:
+        #     print('removing %d for %s' % (mask.sum(), bmpnametoremove))
 
         # Remove Policy BMPs
         bmpids = self.jeeves.bmp.bmpids_from_categoryids(categoryids=[4])
