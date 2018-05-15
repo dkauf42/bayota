@@ -98,10 +98,16 @@ class Geo(SourceHook):
         if scale == 'County':
             tblsubset = self.lrsegids_from(countystatestrs=areanames)
             return tblsubset.loc[:, ['lrsegid']]
+        elif scale == "Land River Segment indicating if in or out of CBWS":
+            segstrlist = [x.split("-")[1].split("(")[0] for x in areanames]
+            return self.singleconvert(sourcetbl='TblLandRiverSegment',
+                                      toandfromheaders=['lrsegid', 'landriversegment'],
+                                      fromtable=self.forceToSingleColumnDataFrame(segstrlist,
+                                                                                  colname='landriversegment'),
+                                      toname='lrsegid')
         else:
-            warnings.warn('Specified scale "%s" is unrecognized' % scale, RuntimeWarning)
-            return None
+            raise ValueError('The specified scale ("%s") is unsupported' % scale)
 
     def countyids_from_lrsegids(self, lrsegids=None):
         return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
-                                    fromtable=lrsegids, toname='countyid')
+                                  fromtable=lrsegids, toname='countyid')
