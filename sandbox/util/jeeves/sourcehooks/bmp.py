@@ -23,6 +23,13 @@ class Bmp(SourceHook):
         TblBmp = self.source.TblBmp  # get relevant source data
         return TblBmp['bmpid'][TblBmp['bmpshortname'] == bmpshortname].tolist()
 
+    def single_bmptype_from_bmpid(self, bmpid):
+        TblBmp = self.source.TblBmp  # get relevant source data
+        TblBmpType = self.source.TblBmpType  # get relevant source data
+
+        typeid = TblBmp['bmptypeid'][TblBmp['bmpid'] == bmpid].tolist()
+        return TblBmpType['bmptype'][TblBmpType['bmptypeid'] == typeid].tolist()
+
     def bmpids_from_categoryids(self, categoryids):
         categoryids = self.forceToSingleColumnDataFrame(categoryids, colname='bmpcategoryid')
         return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
@@ -163,11 +170,53 @@ class Bmp(SourceHook):
 
         return tblsubset
 
+    def get_land_uplandbmps_to_exclude(self):
+        # they are already affected when a land use change BMP is applied
+        #  (This is based on an email conversation w/Jess on 8 May 2018
+        #   [subject: "question: Efficiency parts of land use change BMPs"]
+        #   and a convo w/Olivia on 2 May 2018 [subject: "quick followup"])
+        TblBmp = self.source.TblBmp
+        TblBmpScenarioType = self.source.TblBmpScenarioType
+
+        subsetscenario1 = TblBmpScenarioType.loc[TblBmpScenarioType['scenariotypeid'] == 1]
+
+        columnmask = ['bmpid', 'bmpshortname']
+        tblsubset = TblBmp.loc[:, columnmask].merge(subsetscenario1, how='left', indicator=True)
+        tblsubset = tblsubset[tblsubset['_merge'] == 'left_only']
+
+        return tblsubset.loc[:, ['bmpid', 'bmpshortname']]
+
     def appendBmpSector_to_table_with_bmpid(self):
         pass
 
-    def appendBmpType_to_table_with_bmpid(self):
-        pass
+    def appendBmpType_to_table_with_bmpid(self, bmpidstable):
+        TblBmp = self.source.TblBmp
+        TblBmpType = self.source.TblBmpType
+
+        columnmask = ['bmpid', 'bmptypeid']
+        tblsubset = TblBmp.loc[:, columnmask].merge(bmpidstable, how='inner')
+
+        columnmask = ['bmptypeid', 'bmptype']
+        tblsubset = TblBmpType.loc[:, columnmask].merge(tblsubset, how='inner')
+
+        tblsubset.drop(['bmptypeid'], axis=1, inplace=True)
+
+        return tblsubset
+
+    def appendBmpType_to_table_with_bmpshortnames(self, bmpshortnamestable):
+        TblBmp = self.source.TblBmp
+
+        bmpshortnamestable.rename(columns={'BmpShortname': 'bmpshortname'}, inplace=True)
+
+        columnmask = ['bmpshortname', 'bmpid']
+        tblsubset = TblBmp.loc[:, columnmask].merge(bmpshortnamestable, how='inner')
+
+        tblsubset = self.appendBmpType_to_table_with_bmpid(tblsubset)
+        tblsubset.drop(['bmpid'], axis=1, inplace=True)
+
+        tblsubset.rename(columns={'bmpshortname': 'BmpShortname'}, inplace=True)
+
+        return tblsubset
 
     def appendBmpGroup_to_table_with_bmpid(self):
         pass

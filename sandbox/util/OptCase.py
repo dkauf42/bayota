@@ -213,4 +213,14 @@ class OptCase(object):
                 if scenariotype == 'manure':
                     self.scenarios_manure.append(df)
 
+        for i in range(len(population.scenarios_animal)):
+            population.scenarios_animal[i] = self.jeeves.bmp. \
+                appendBmpType_to_table_with_bmpshortnames(population.scenarios_animal[i])
+        for i in range(len(population.scenarios_land)):
+            population.scenarios_land[i] = self.jeeves.bmp. \
+                appendBmpType_to_table_with_bmpshortnames(population.scenarios_land[i])
+        for i in range(len(population.scenarios_manure)):
+            population.scenarios_manure[i] = self.jeeves.bmp. \
+                appendBmpType_to_table_with_bmpshortnames(population.scenarios_manure[i])
+
         population.write_to_tab_delimited_txt_file()
