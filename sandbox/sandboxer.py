@@ -62,7 +62,7 @@ def main(numinstances=1, testcase=None, scale='', areanames=None):
         # Populate the Possibilities Matrix with a random assortment of numbers for each ST-B combination
         # optcase.generate_single_scenario(scenariotype='random')
         print(oc)
-        oc.generate_multiple_scenarios(scenariotype='hypercube')
+        oc.generate_scenarios_from_decisionspace(scenariotype='hypercube', n='population')
 
         # Write scenario tables to file.
 

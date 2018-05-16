@@ -13,7 +13,7 @@ class Population(Maker):
         """Conduct a latin hypercube sampling from within the lower/upper bounds
         """
         # Conduct a latin hypercube sampling from within the lower/upper bounds
-        numsamples = 4
+        numsamples = 2
         self.scenarios_land = self._generate_latinhypercube_from_table(table=self.landnametable,
                                                                        numsamples=numsamples,
                                                                        tablename='land')
@@ -57,4 +57,15 @@ class Population(Maker):
             dflist.append(thisdf)
 
         return dflist
+
+    def add_bmptype_column(self, jeeves):
+        for i in range(len(self.scenarios_animal)):
+            self.scenarios_animal[i] = jeeves.bmp. \
+                appendBmpType_to_table_with_bmpshortnames(self.scenarios_animal[i])
+        for i in range(len(self.scenarios_land)):
+            self.scenarios_land[i] = jeeves.bmp. \
+                appendBmpType_to_table_with_bmpshortnames(self.scenarios_land[i])
+        for i in range(len(self.scenarios_manure)):
+            self.scenarios_manure[i] = jeeves.bmp. \
+                appendBmpType_to_table_with_bmpshortnames(self.scenarios_manure[i])
 

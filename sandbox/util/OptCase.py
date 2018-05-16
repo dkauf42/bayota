@@ -46,9 +46,7 @@ class OptCase(object):
         # TODO: use real baseconditionid instead of this^ temporary placeholder
 
         # Scenarios
-        self.scenarios_land = []
-        self.scenarios_animal = []
-        self.scenarios_manure = []
+        self.scenarios = None
 
         if geoscalename is not None:
             self.__generate_decisionspace_using_case_geography()
@@ -163,64 +161,25 @@ class OptCase(object):
         self.decisionspace.proceed_to_decision_space_from_geoagencysectorids()
 
     # Generating scenario(s) from the decision space
-    def generate_single_scenario(self, scenariotype=''):
+    def generate_scenarios_from_decisionspace(self, scenariotype='hypercube', n='population'):
         """ Create a scenario (as CAST-input-tables in .csv format), and write them to file.
 
         The scenario is created by randomly generating numbers for each variable in the decision space.
 
         """
-        # TODO: code this (randomization for each variable, and then writing to file)
-        scenario = ScenarioMaker(decisionspace=self.decisionspace).single
+        if n == 'single':
+            self.scenarios = ScenarioMaker(decisionspace=self.decisionspace).single
+        elif n == 'population':
+            self.scenarios = ScenarioMaker(decisionspace=self.decisionspace).population
 
         if scenariotype == 'random':
-            scenario.randomize_betweenbounds()
+            self.scenarios.randomize_betweenbounds()
+        elif scenariotype == 'hypercube':
+            self.scenarios.generate_latinhypercube()
         else:
-            scenario.randomize_betweenbounds()
+            self.scenarios.randomize_betweenbounds()
 
-        # add scenarios to OptCase attribute
-        for scenariotype, scenarios in scenario:
-            for df in scenarios:
-                if scenariotype == 'animal':
-                    self.scenarios_animal.append(df)
-                if scenariotype == 'land':
-                    self.scenarios_land.append(df)
-                if scenariotype == 'manure':
-                    self.scenarios_manure.append(df)
+        # Add Any extra info columns to the output
+        self.scenarios.add_bmptype_column(jeeves=self.jeeves)
 
-        scenario.write_to_tab_delimited_txt_file()
-
-    def generate_multiple_scenarios(self, scenariotype=''):
-        """ Create a scenario (as CAST-input-tables in .csv format), and write them to file.
-
-        The scenario is created by randomly generating numbers for each variable in the decision space.
-
-        """
-        population = ScenarioMaker(decisionspace=self.decisionspace).population
-
-        # Generate scenarios
-        if scenariotype == 'hypercube':
-            population.generate_latinhypercube()
-        else:
-            population.generate_latinhypercube()
-
-        # add scenarios to OptCase attribute
-        for scenariotype, scenarios in population:
-            for df in scenarios:
-                if scenariotype == 'animal':
-                    self.scenarios_animal.append(df)
-                if scenariotype == 'land':
-                    self.scenarios_land.append(df)
-                if scenariotype == 'manure':
-                    self.scenarios_manure.append(df)
-
-        for i in range(len(population.scenarios_animal)):
-            population.scenarios_animal[i] = self.jeeves.bmp. \
-                appendBmpType_to_table_with_bmpshortnames(population.scenarios_animal[i])
-        for i in range(len(population.scenarios_land)):
-            population.scenarios_land[i] = self.jeeves.bmp. \
-                appendBmpType_to_table_with_bmpshortnames(population.scenarios_land[i])
-        for i in range(len(population.scenarios_manure)):
-            population.scenarios_manure[i] = self.jeeves.bmp. \
-                appendBmpType_to_table_with_bmpshortnames(population.scenarios_manure[i])
-
-        population.write_to_tab_delimited_txt_file()
+        self.scenarios.write_to_tab_delimited_txt_file()
