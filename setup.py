@@ -30,7 +30,8 @@ install_requires = ['numpy>=1.14.2',
                     'xlrd>=1.1.0',
                     'pyDOE>=0.3.8',
                     'requests',
-                    's3fs'
+                    's3fs',
+                    'dask'
                     ]
 
 setup(name='OptSandbox',

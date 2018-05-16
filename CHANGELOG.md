@@ -14,6 +14,17 @@ Each version should:
 *Security* to invite users to upgrade in case of vulnerabilities.
 
 ## [Unreleased]
+### Added
+- Ability to recognize running on AWS, and if so, read/write to s3
+- Reorder the CAST-input table headers priot to writing to file
+- Add ScenarioName column to CAST-input tables when lhs sampling
+
+### Changed
+- Use Dry Tons as units for manure transport instead of percent
+
+### Fixed
+- Methods that append bmps to the decision space tables
+- Use appropriate Base Condition (from year and name metadata info)
 
 ## [0.3.0] - 2018-04-27
 ### Added
