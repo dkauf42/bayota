@@ -5,7 +5,7 @@ import pandas as pd
 from itertools import product
 
 from sandbox.__init__ import get_outputdir
-from sandbox.__init__ import inaws, s3
+from sandbox.__init__ import inaws, s3, _S3BUCKET
 
 writedir = get_outputdir()
 
@@ -52,13 +52,13 @@ class Maker(object):
         df_manure = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
         if inaws:
             bytes_to_write = df_animal.to_csv(None).encode()
-            with s3.open('s3://modeling-data.chesapeakebay.net/my-file_animal.txt', mode='wb') as f:
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='wb') as f:
                 f.write(bytes_to_write)
             bytes_to_write = df_land.to_csv(None).encode()
-            with s3.open('s3://modeling-data.chesapeakebay.net/my-file_land.txt', mode='wb') as f:
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_land.txt'), mode='wb') as f:
                 f.write(bytes_to_write)
             bytes_to_write = df_manure.to_csv(None).encode()
-            with s3.open('s3://modeling-data.chesapeakebay.net/my-file_manure.txt', mode='wb') as f:
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_manure.txt'), mode='wb') as f:
                 f.write(bytes_to_write)
         else:
             df_animal.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal'),
