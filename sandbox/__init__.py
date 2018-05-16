@@ -3,6 +3,7 @@ Module for cast_opt_tests
 """
 
 import os
+import requests
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 _WORKINGDIR = os.path.abspath(os.path.join(os.getcwd(), '..'))
@@ -10,7 +11,6 @@ _WORKINGDIR = os.path.abspath(os.path.join(os.getcwd(), '..'))
 # Check if running on AWS
 inaws = False
 s3 = None
-import requests
 try:
     resp = requests.get('http://169.254.169.254', timeout=0.001)
     print('In AWS')
