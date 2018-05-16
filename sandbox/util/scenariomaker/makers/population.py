@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 import pyDOE
 
@@ -13,16 +14,16 @@ class Population(Maker):
         """Conduct a latin hypercube sampling from within the lower/upper bounds
         """
         # Conduct a latin hypercube sampling from within the lower/upper bounds
-        numsamples = 2
-        self.scenarios_land = self._generate_latinhypercube_from_table(table=self.landnametable,
-                                                                       numsamples=numsamples,
-                                                                       tablename='land')
-        self.scenarios_animal = self._generate_latinhypercube_from_table(table=self.animalnametable,
-                                                                         numsamples=numsamples,
-                                                                         tablename='animal')
-        self.scenarios_manure = self._generate_latinhypercube_from_table(table=self.manurenametable,
-                                                                         numsamples=numsamples,
-                                                                         tablename='manure')
+        numsamples = 4
+        self.scenarios_land, self.longdf_land = self._generate_latinhypercube_from_table(table=self.landnametable,
+                                                                                         numsamples=numsamples,
+                                                                                         tablename='land')
+        self.scenarios_animal, self.longdf_animal = self._generate_latinhypercube_from_table(table=self.animalnametable,
+                                                                                         numsamples=numsamples,
+                                                                                         tablename='animal')
+        self.scenarios_manure, self.longdf_manure = self._generate_latinhypercube_from_table(table=self.manurenametable,
+                                                                                         numsamples=numsamples,
+                                                                                         tablename='manure')
 
     def _generate_latinhypercube_from_table(self, table, numsamples, tablename):
         lhd = pyDOE.lhs(n=len(table.upperbound), samples=numsamples)
@@ -36,6 +37,8 @@ class Population(Maker):
         for i in range(0, numsamples):
             thisdf = table.copy().drop(columns=['lowerbound', 'upperbound'])
             thisdf['Amount'] = lhd_full[:, i]
+
+            thisdf['ScenarioName'] = 'lhssample%04d' % i
 
             # # Apply Softmax to Animals
             # if tablename == 'animal':
@@ -56,5 +59,7 @@ class Population(Maker):
 
             dflist.append(thisdf)
 
-        return dflist
+        longdf = pd.concat(dflist)
+
+        return dflist, longdf
 

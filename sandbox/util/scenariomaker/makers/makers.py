@@ -24,6 +24,10 @@ class Maker(object):
         self.scenarios_land = []
         self.scenarios_manure = []
 
+        self.longdf_animal = None
+        self.longdf_land = None
+        self.longdf_manure = None
+
     def __iter__(self):
         """ Generator to return the scenario objects, e.g. in For loops """
         # self.scenarios = [self.scenarios_animal, self.scenarios_land, self.scenarios_manure]
@@ -33,13 +37,24 @@ class Maker(object):
 
     def write_to_tab_delimited_txt_file(self):
         # columns that are ids are translated to names, and scenarios are written to file.
-        for type_name, scenarios in self:
-            i = 0
-            for df in scenarios:
-                # df = self.reorder_headers(table=df, tablename=type_name)
-                df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_%s_%d.txt' % (type_name, i)),
-                          sep='\t', header=True, index=False, line_terminator='\r\n')
-                i += 1
+        # for type_name, scenarios in self:
+        #     i = 0
+        #     for df in scenarios:
+        #         # df = self.reorder_headers(table=df, tablename=type_name)
+        #         df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_%s_%d.txt' % (type_name, i)),
+        #                   sep='\t', header=True, index=False, line_terminator='\r\n')
+        #         i += 1
+
+        # Write concatenated scenario files with unique ScenarioNames
+        df = self.reorder_headers_with_scenarioname(self.longdf_animal, tablename='animal')
+        df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal'),
+                  sep='\t', header=True, index=False, line_terminator='\r\n')
+        df = self.reorder_headers_with_scenarioname(self.longdf_land, tablename='land')
+        df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land'),
+                  sep='\t', header=True, index=False, line_terminator='\r\n')
+        df = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
+        df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure'),
+                  sep='\t', header=True, index=False, line_terminator='\r\n')
 
     def add_bmptype_column(self, jeeves):
         for i in range(len(self.scenarios_animal)):
@@ -89,6 +104,26 @@ class Maker(object):
                                 'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']
         # Manure
         header_order['manure'] = ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                  'FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit']
+
+        return table[header_order[tablename]]
+
+    @staticmethod
+    def reorder_headers_with_scenarioname(table, tablename):
+        # TODO: rewrite this to pull the header order from the SQL Server Source Data
+        header_order = dict()
+        # Animal
+        header_order['animal'] = ['ScenarioName',
+                                  'StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                  'GeographyName', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit',
+                                  'NReductionFraction', 'PReductionFraction']
+        # Land
+        header_order['land'] = ['ScenarioName',
+                                'StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
+                                'GeographyName', 'LoadSourceGroup', 'Amount', 'Unit']
+        # Manure
+        header_order['manure'] = ['ScenarioName',
+                                  'StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation', 'BmpShortname',
                                   'FIPSFrom', 'FIPSTo', 'AnimalGroup', 'LoadSourceGroup', 'Amount', 'Unit']
 
         return table[header_order[tablename]]
