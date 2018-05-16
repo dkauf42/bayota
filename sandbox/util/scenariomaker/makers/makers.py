@@ -77,7 +77,7 @@ class Maker(object):
 
             # Try Reading
             print('makers.write_to_tab_delimited_txt_file():')
-            df = dd_manure.read_csv(os.path.join(_S3BUCKET, 'my-file_manure.txt'), sep='\t')
+            df = dd.read_csv(os.path.join(_S3BUCKET, 'my-file_manure.txt'), sep='\t')
             # with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='r') as f:
             #     # df = pd.read_csv(f, encoding='utf8', sep='\t')
             #     df = pd.read_csv(f, sep='\t')
