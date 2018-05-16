@@ -70,10 +70,10 @@ class Maker(object):
             s3_client = boto3.client('s3')
 
             # Upload the file to S3
-            s3_client.upload_file(animal_path, _S3BUCKET, 'animal_remote.txt')
+            s3_client.upload_file(animal_path, 'modeling-data.chesapeakebay.net', 'animal_remote.txt')
 
             # Download the file from S3
-            s3_client.download_file(_S3BUCKET, 'animal_remote.txt', 'hello2.txt')
+            s3_client.download_file('modeling-data.chesapeakebay.net', 'animal_remote.txt', 'hello2.txt')
             print(open('hello2.txt').read())
             # # bytes_to_write = df_animal.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
             # # with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='w') as f:
