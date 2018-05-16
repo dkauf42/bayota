@@ -5,6 +5,7 @@ Module for cast_opt_tests
 import os
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+_WORKINGDIR = os.getcwd()
 
 # Check if running on AWS
 inaws = False
@@ -35,7 +36,7 @@ def get_tempdir():
 
 
 def get_outputdir():
-    return os.path.join(_ROOT, 'output/')
+    return os.path.join(_WORKINGDIR, 'output/')
 
 
 def get_sqlsourcetabledir():
