@@ -55,25 +55,44 @@ class Maker(object):
         dd_land = dd.from_pandas(df_land, npartitions=3)
         df_manure = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
         dd_manure = dd.from_pandas(df_manure, npartitions=3)
+
+        animal_path = os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal')
+        df_animal.to_csv(animal_path, sep='\t', header=True, index=False, line_terminator='\r\n')
+
+        land_path = os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land')
+        df_land.to_csv(land_path, sep='\t', header=True, index=False, line_terminator='\r\n')
+
+        manure_path = os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure')
+        df_manure.to_csv(manure_path, sep='\t', header=True, index=False, line_terminator='\r\n')
+
         if inaws:
-            # bytes_to_write = df_animal.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
-            # with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='w') as f:
-            #     df_animal.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
+            import boto3
+            s3_client = boto3.client('s3')
+
+            # Upload the file to S3
+            s3_client.upload_file(animal_path, _S3BUCKET, 'animal_remote.txt')
+
+            # Download the file from S3
+            s3_client.download_file(_S3BUCKET, 'animal_remote.txt', 'hello2.txt')
+            print(open('hello2.txt').read())
+            # # bytes_to_write = df_animal.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
+            # # with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='w') as f:
+            # #     df_animal.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
+            # #     # f.write(bytes_to_write)
+            # dd_animal.to_csv(os.path.join(_S3BUCKET, 'my-file_animal.txt'),
+            #                  sep='\t', header=True, index=False, line_terminator='\r\n')
+            # # bytes_to_write = df_land.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
+            # # with s3.open(os.path.join(_S3BUCKET, 'my-file_land.txt'), mode='w') as f:
+            # #     df_land.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
             #     # f.write(bytes_to_write)
-            dd_animal.to_csv(os.path.join(_S3BUCKET, 'my-file_animal.txt'),
-                             sep='\t', header=True, index=False, line_terminator='\r\n')
-            # bytes_to_write = df_land.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
-            # with s3.open(os.path.join(_S3BUCKET, 'my-file_land.txt'), mode='w') as f:
-            #     df_land.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
-                # f.write(bytes_to_write)
-            dd_land.to_csv(os.path.join(_S3BUCKET, 'my-file_land.txt'),
-                             sep='\t', header=True, index=False, line_terminator='\r\n')
-            # bytes_to_write = df_manure.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
-            # with s3.open(os.path.join(_S3BUCKET, 'my-file_manure.txt'), mode='w') as f:
-            #     df_manure.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
-                # f.write(bytes_to_write)
-            dd_manure.to_csv(os.path.join(_S3BUCKET, 'my-file_manure.txt'),
-                             sep='\t', header=True, index=False, line_terminator='\r\n')
+            # dd_land.to_csv(os.path.join(_S3BUCKET, 'my-file_land.txt'),
+            #                  sep='\t', header=True, index=False, line_terminator='\r\n')
+            # # bytes_to_write = df_manure.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
+            # # with s3.open(os.path.join(_S3BUCKET, 'my-file_manure.txt'), mode='w') as f:
+            # #     df_manure.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
+            #     # f.write(bytes_to_write)
+            # dd_manure.to_csv(os.path.join(_S3BUCKET, 'my-file_manure.txt'),
+            #                  sep='\t', header=True, index=False, line_terminator='\r\n')
 
             # Try Reading
             print('makers.write_to_tab_delimited_txt_file():')
@@ -82,14 +101,6 @@ class Maker(object):
             #     # df = pd.read_csv(f, encoding='utf8', sep='\t')
             #     df = pd.read_csv(f, sep='\t')
             print(df.head())
-
-        else:
-            df_animal.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal'),
-                             sep='\t', header=True, index=False, line_terminator='\r\n')
-            df_land.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land'),
-                           sep='\t', header=True, index=False, line_terminator='\r\n')
-            df_manure.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure'),
-                             sep='\t', header=True, index=False, line_terminator='\r\n')
 
     def add_bmptype_column(self, jeeves):
         for i in range(len(self.scenarios_animal)):
