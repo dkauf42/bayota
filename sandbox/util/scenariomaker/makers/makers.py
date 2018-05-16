@@ -51,13 +51,13 @@ class Maker(object):
         df_land = self.reorder_headers_with_scenarioname(self.longdf_land, tablename='land')
         df_manure = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
         if inaws:
-            bytes_to_write = df_animal.to_csv(None).encode()
+            bytes_to_write = df_animal.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
             with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='wb') as f:
                 f.write(bytes_to_write)
-            bytes_to_write = df_land.to_csv(None).encode()
+            bytes_to_write = df_land.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
             with s3.open(os.path.join(_S3BUCKET, 'my-file_land.txt'), mode='wb') as f:
                 f.write(bytes_to_write)
-            bytes_to_write = df_manure.to_csv(None).encode()
+            bytes_to_write = df_manure.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
             with s3.open(os.path.join(_S3BUCKET, 'my-file_manure.txt'), mode='wb') as f:
                 f.write(bytes_to_write)
 
