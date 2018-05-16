@@ -64,7 +64,7 @@ class Maker(object):
             # Try Reading
             print('makers.write_to_tab_delimited_txt_file():')
             with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='rb') as f:
-                df = pd.read_csv(f, encoding='utf8')
+                df = pd.read_csv(f, encoding='utf8', sep='\t')
             print(df.head())
 
         else:
