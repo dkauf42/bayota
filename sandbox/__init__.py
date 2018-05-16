@@ -5,22 +5,13 @@ Module for cast_opt_tests
 import os
 
 # Check if running on AWS
-# import urllib
-from urllib.request import urlopen
-# html = urlopen("http://www.google.com/")
-
-meta = 'http://169.254.169.254/latest/meta-data/ami-id'
-# req = urllib.request(meta)
+import requests
 try:
-    response = urlopen(meta, timeout=5).read()
-    if 'ami' in response:
-        _msg = 'I am in AWS running on {}'.format(response)
-    else:
-        _msg = 'I am in dev - no AWS AMI'
-except Exception as nometa:
-    _msg = 'no metadata, not in AWS'
-
-print(_msg)
+    resp = requests.get('http://169.254.169.254', timeout=0.001)
+    print(resp)
+    print('In AWS')
+except:
+    print('Not In AWS')
 # import s3fs
 
 # s3 = s3fs.core.S3FileSystem(anon=False)
