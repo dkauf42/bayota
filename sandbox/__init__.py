@@ -9,7 +9,7 @@ import os
 from urllib.request import urlopen
 # html = urlopen("http://www.google.com/")
 
-meta = 'http://169.254.169.254/latest/meta-data' #/ami-id'
+meta = 'http://169.254.169.254/latest/meta-data/ami-id'
 # req = urllib.request(meta)
 try:
     response = urlopen(meta, timeout=5).read()
