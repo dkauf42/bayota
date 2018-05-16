@@ -60,6 +60,13 @@ class Maker(object):
             bytes_to_write = df_manure.to_csv(None).encode()
             with s3.open(os.path.join(_S3BUCKET, 'my-file_manure.txt'), mode='wb') as f:
                 f.write(bytes_to_write)
+
+            # Try Reading
+            print('makers.write_to_tab_delimited_txt_file():')
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='rb') as f:
+                df = pd.read_csv(f, encoding='utf8')
+            print(df.head())
+
         else:
             df_animal.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal'),
                              sep='\t', header=True, index=False, line_terminator='\r\n')
