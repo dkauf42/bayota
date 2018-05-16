@@ -58,14 +58,3 @@ class Population(Maker):
 
         return dflist
 
-    def add_bmptype_column(self, jeeves):
-        for i in range(len(self.scenarios_animal)):
-            self.scenarios_animal[i] = jeeves.bmp. \
-                appendBmpType_to_table_with_bmpshortnames(self.scenarios_animal[i])
-        for i in range(len(self.scenarios_land)):
-            self.scenarios_land[i] = jeeves.bmp. \
-                appendBmpType_to_table_with_bmpshortnames(self.scenarios_land[i])
-        for i in range(len(self.scenarios_manure)):
-            self.scenarios_manure[i] = jeeves.bmp. \
-                appendBmpType_to_table_with_bmpshortnames(self.scenarios_manure[i])
-
