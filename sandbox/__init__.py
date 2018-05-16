@@ -12,7 +12,7 @@ from urllib.request import urlopen
 meta = 'http://169.254.169.254/latest/meta-data' #/ami-id'
 # req = urllib.request(meta)
 try:
-    response = urlopen(meta).read()
+    response = urlopen(meta, timeout=5).read()
     if 'ami' in response:
         _msg = 'I am in AWS running on {}'.format(response)
     else:
