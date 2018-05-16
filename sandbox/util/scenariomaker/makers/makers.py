@@ -5,6 +5,7 @@ import pandas as pd
 from itertools import product
 
 from sandbox.__init__ import get_outputdir
+from sandbox.__init__ import inaws, s3
 
 writedir = get_outputdir()
 
@@ -46,15 +47,26 @@ class Maker(object):
         #         i += 1
 
         # Write concatenated scenario files with unique ScenarioNames
-        df = self.reorder_headers_with_scenarioname(self.longdf_animal, tablename='animal')
-        df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal'),
-                  sep='\t', header=True, index=False, line_terminator='\r\n')
-        df = self.reorder_headers_with_scenarioname(self.longdf_land, tablename='land')
-        df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land'),
-                  sep='\t', header=True, index=False, line_terminator='\r\n')
-        df = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
-        df.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure'),
-                  sep='\t', header=True, index=False, line_terminator='\r\n')
+        df_animal = self.reorder_headers_with_scenarioname(self.longdf_animal, tablename='animal')
+        df_land = self.reorder_headers_with_scenarioname(self.longdf_land, tablename='land')
+        df_manure = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
+        if inaws:
+            bytes_to_write = df_animal.to_csv(None).encode()
+            with s3.open('s3://modeling-data.chesapeakebay.net/my-file_animal.txt', mode='wb') as f:
+                f.write(bytes_to_write)
+            bytes_to_write = df_land.to_csv(None).encode()
+            with s3.open('s3://modeling-data.chesapeakebay.net/my-file_land.txt', mode='wb') as f:
+                f.write(bytes_to_write)
+            bytes_to_write = df_manure.to_csv(None).encode()
+            with s3.open('s3://modeling-data.chesapeakebay.net/my-file_manure.txt', mode='wb') as f:
+                f.write(bytes_to_write)
+        else:
+            df_animal.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal'),
+                             sep='\t', header=True, index=False, line_terminator='\r\n')
+            df_land.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land'),
+                           sep='\t', header=True, index=False, line_terminator='\r\n')
+            df_manure.to_csv(os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure'),
+                             sep='\t', header=True, index=False, line_terminator='\r\n')
 
     def add_bmptype_column(self, jeeves):
         for i in range(len(self.scenarios_animal)):

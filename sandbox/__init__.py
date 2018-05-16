@@ -4,20 +4,22 @@ Module for cast_opt_tests
 
 import os
 
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
 # Check if running on AWS
+inaws = False
+s3 = None
 import requests
 try:
     resp = requests.get('http://169.254.169.254', timeout=0.001)
-    print(resp)
     print('In AWS')
+    inaws = True
+
+    import s3fs
+    s3 = s3fs.core.S3FileSystem(anon=False)
+    _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 except:
     print('Not In AWS')
-# import s3fs
-
-# s3 = s3fs.core.S3FileSystem(anon=False)
-
-_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 
 def get_datadir(path=''):
