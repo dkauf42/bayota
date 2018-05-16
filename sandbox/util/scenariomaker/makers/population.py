@@ -19,11 +19,11 @@ class Population(Maker):
                                                                                          numsamples=numsamples,
                                                                                          tablename='land')
         self.scenarios_animal, self.longdf_animal = self._generate_latinhypercube_from_table(table=self.animalnametable,
-                                                                                         numsamples=numsamples,
-                                                                                         tablename='animal')
+                                                                                             numsamples=numsamples,
+                                                                                             tablename='animal')
         self.scenarios_manure, self.longdf_manure = self._generate_latinhypercube_from_table(table=self.manurenametable,
-                                                                                         numsamples=numsamples,
-                                                                                         tablename='manure')
+                                                                                             numsamples=numsamples,
+                                                                                             tablename='manure')
 
     def _generate_latinhypercube_from_table(self, table, numsamples, tablename):
         lhd = pyDOE.lhs(n=len(table.upperbound), samples=numsamples)
