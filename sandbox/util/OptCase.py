@@ -42,7 +42,12 @@ class OptCase(object):
 
         # Individual Components for metadata
         # self.baseconditionid = None
-        self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
+        print('OptCase.__init__():')
+        print(self.baseyear)
+        print(self.basecondname)
+        self.baseconditionid = self.decisionspace.set_baseconditionid_from_yearname(year=self.baseyear,
+                                                                                    name=self.basecondname)
+        # self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
         # TODO: use real baseconditionid instead of this^ temporary placeholder
 
         # Scenarios
@@ -157,7 +162,8 @@ class OptCase(object):
 
     # hooks for graphical interface get/put
     def generate_decision_space_using_case_geoagencysectorids(self):
-        self.decisionspace.set_baseconditionid_from_name(name=self.basecondname)
+        self.baseconditionid = self.decisionspace.set_baseconditionid_from_yearname(year=self.baseyear,
+                                                                                    name=self.basecondname)
         self.decisionspace.proceed_to_decision_space_from_geoagencysectorids()
 
     # Generating scenario(s) from the decision space
@@ -167,6 +173,10 @@ class OptCase(object):
         The scenario is created by randomly generating numbers for each variable in the decision space.
 
         """
+
+        print('OptCase.generate_scenarios_from_decisionspace():')
+        print(self.baseconditionid)
+
         if n == 'single':
             self.scenarios = ScenarioMaker(decisionspace=self.decisionspace).single
         elif n == 'population':

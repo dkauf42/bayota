@@ -153,10 +153,11 @@ class DecisionSpace(object):
             ds.sectorids = self.sectorids
 
     # Generation steps
-    def set_baseconditionid_from_name(self, name=''):
-        self.baseconditionid = self.jeeves.metadata.get_baseconditionid()
-        self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
+    def set_baseconditionid_from_yearname(self, year='', name=''):
+        self.baseconditionid = self.jeeves.metadata.get_baseconditionid(baseyear=year, baseconditionname=name)
+        # self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
         # TODO: replace this with a jeeves call to get a real ID number using a name argument
+        return self.baseconditionid
 
     @staticmethod
     def load_queries():
