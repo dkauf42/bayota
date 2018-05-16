@@ -52,21 +52,21 @@ class Maker(object):
         df_manure = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
         if inaws:
             # bytes_to_write = df_animal.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
-            with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='wb') as f:
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='w') as f:
                 df_animal.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
                 # f.write(bytes_to_write)
             # bytes_to_write = df_land.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
-            with s3.open(os.path.join(_S3BUCKET, 'my-file_land.txt'), mode='wb') as f:
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_land.txt'), mode='w') as f:
                 df_land.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
                 # f.write(bytes_to_write)
             # bytes_to_write = df_manure.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
-            with s3.open(os.path.join(_S3BUCKET, 'my-file_manure.txt'), mode='wb') as f:
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_manure.txt'), mode='w') as f:
                 df_manure.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
                 # f.write(bytes_to_write)
 
             # Try Reading
             print('makers.write_to_tab_delimited_txt_file():')
-            with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='rb') as f:
+            with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='r') as f:
                 # df = pd.read_csv(f, encoding='utf8', sep='\t')
                 df = pd.read_csv(f, sep='\t')
             print(df.head())
