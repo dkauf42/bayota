@@ -11,6 +11,7 @@ _WORKINGDIR = os.path.abspath(os.path.join(os.getcwd(), '..'))
 # Check if running on AWS
 inaws = False
 s3 = None
+_S3BUCKET = ''
 try:
     resp = requests.get('http://169.254.169.254', timeout=0.001)
     print('In AWS')
