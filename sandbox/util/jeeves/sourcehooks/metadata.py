@@ -26,7 +26,8 @@ class Metadata(SourceHook):
         TblLandChangeModelScenario = self.source.TblLandChangeModelScenario
 
         row = TblLandChangeModelScenario[(TblLandChangeModelScenario.landchangemodelscenarioname == baseconditionname)]
-
+        if row.empty:
+            raise ValueError('Base Condition (year or name) not found!')
         if type(baseyear) == str:
             baseyear = int(baseyear)
         row = TblBaseCondition[(TblBaseCondition.baseyear == baseyear) &
