@@ -47,6 +47,18 @@ class Animal(Space):
 
         removaltotal = 0
 
+        singlebmpstoremove = ['PoultRed',  # "Urban Stream Restoration Protocol"
+                              ]
+
+        for bmpnametoremove in singlebmpstoremove:
+            bmpid = self.jeeves.bmp.single_bmpid_from_shortname(bmpshortname=bmpnametoremove)
+            bmptypename = self.jeeves.bmp.single_bmptype_from_bmpid(bmpid=bmpid)
+            mask = pd.Series(newtable['bmpid'] == bmpid)
+            newtable = newtable[~mask]
+            removaltotal += mask.sum()
+            if settings.verbose:
+                print('removing %d for %s (type=%s)' % (mask.sum(), bmpnametoremove, bmptypename))
+
         # Remove "AllLoadSources" loadsourcegroup from the manure table
         loadsourcenametoremove = 'AllLoadSources'
         loadsourcegroupid = self.jeeves.loadsource.\
