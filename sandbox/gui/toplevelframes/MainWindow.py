@@ -73,7 +73,7 @@ class MainWindow(tk.Frame):
         
         self.parent.protocol("WM_DELETE_WINDOW", self.on_mainwindow_closing)
 
-        self.load_metadata_options()
+        self.metadataframe.load_options(self.optcase.jeeves)
 
     def __enter__(self):
         return self
@@ -134,9 +134,6 @@ class MainWindow(tk.Frame):
                 else:
                     # if the frame was opened before the toggle, then save the form data
                     self.save_constraints()
-
-    def load_metadata_options(self):
-        self.metadataframe.load_options(self.optcase.jeeves)
 
     def save_metadata(self):
         print('mainwindow:set_metadata: saving metadata...')
