@@ -49,7 +49,7 @@ def main(numinstances=1, testcase=None, scale='', areanames=None):
             oc = OptCase.loadcustom(scale=scale, areanames=areanames)
 
         elif not testcase:
-            oc = OptCase()
+            oc = OptCase.blank()
             # Run the GUI
             root = tk.Tk()  # Create a tkinter window
             mainwindow = MainWindow(root, optcase=oc)

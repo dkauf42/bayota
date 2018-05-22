@@ -26,11 +26,6 @@ class OptCase(object):
         self.logtostdout = False
         self.successful_creation_log = False
 
-        # Decision Space
-        self.decisionspace = DecisionSpace.blank()
-        # Queries to the source data
-        self.jeeves = self.decisionspace.jeeves
-
         self.name = name
         self.description = description
         self.baseyear = baseyear
@@ -41,14 +36,8 @@ class OptCase(object):
         self.geoareanames = geoareanames
 
         # Individual Components for metadata
-        # self.baseconditionid = None
-        print('OptCase.__init__():')
-        print(self.baseyear)
-        print(self.basecondname)
-        self.baseconditionid = self.decisionspace.set_baseconditionid_from_yearname(year=self.baseyear,
-                                                                                    name=self.basecondname)
+        self.baseconditionid = None
         # self.baseconditionid = pd.DataFrame(data=[3], columns=['baseconditionid'])
-        # TODO: use real baseconditionid instead of this^ temporary placeholder
 
         # Scenarios
         self.scenarios = None
@@ -86,6 +75,16 @@ class OptCase(object):
         return cls(name=ex.name, description=ex.description, baseyear=ex.baseyear, basecondname=ex.basecondname,
                    wastewatername=ex.wastewatername, costprofilename=ex.costprofilename,
                    geoscalename=scale, geoareanames=areanames)
+
+    @classmethod
+    def blank(cls):
+        """ Constructor to generate an empty OptCase
+        """
+        # Decision Space
+        cls.decisionspace = DecisionSpace.blank()
+        # Queries to the source data
+        cls.jeeves = cls.decisionspace.jeeves
+        return cls()
 
     def __repr__(self):
         """ Custom 'print' that displays the metadata defined for this OptCase.
@@ -146,16 +145,18 @@ class OptCase(object):
         self.geoareanames = geoareanames  # For Counties, this is in the form of "[County], [StateAbbeviation]"
 
         self.__generate_decisionspace_using_case_geography()
-        # self.set_decisionspace_geography()
-
-    # def set_decisionspace_geography(self):
-    #     self.decisionspace.set_geography_from_scale_and_areas(scale=self.geoscalename,
-    #                                                           areanames=self.geoareanames)
 
     def set_decisionspace_agencies_and_sectors(self, agencycodes=None, sectornames=None):
         self.decisionspace.set_freeparamgrps(agencycodes=agencycodes, sectornames=sectornames)
 
     def __generate_decisionspace_using_case_geography(self):
+        # Decision Space
+        self.decisionspace = DecisionSpace.blank()
+        # Queries to the source data
+        self.jeeves = self.decisionspace.jeeves
+        # Metadata Component
+        self.baseconditionid = self.decisionspace.set_baseconditionid_from_yearname(year=self.baseyear,
+                                                                                    name=self.basecondname)
         self.decisionspace = DecisionSpace.fromgeo(scale=self.geoscalename,
                                                    areanames=self.geoareanames,
                                                    baseconditionid=self.baseconditionid)
