@@ -77,9 +77,10 @@ class Maker(object):
             s3_client.upload_file(animal_path, 'modeling-data.chesapeakebay.net', 'animal_remote.txt')
 
             # Download the file from S3
+            downloaded_to_local_file_name = 'file_downloaded_from_s3.txt'
             s3_client.download_file('modeling-data.chesapeakebay.net',
-                                    'animal_remote.txt', 'file_downloaded_from_s3.txt')
-            print(open('hello2.txt').read())
+                                    'animal_remote.txt', downloaded_to_local_file_name)
+            print(open(downloaded_to_local_file_name).read())
             # # bytes_to_write = df_animal.to_csv(None, sep='\t', header=True, index=False, line_terminator='\r\n').encode()
             # # with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='w') as f:
             # #     df_animal.to_csv(f, sep='\t', header=True, index=False, line_terminator='\r\n')
@@ -101,7 +102,8 @@ class Maker(object):
 
             # Try Reading
             print('makers.write_to_tab_delimited_txt_file():')
-            df = dd.read_csv(os.path.join('modeling-data.chesapeakebay.net', 'file_downloaded_from_s3.txt'), sep='\t')
+            df = dd.read_csv(os.path.join('modeling-data.chesapeakebay.net',
+                                          downloaded_to_local_file_name), sep='\t')
             # with s3.open(os.path.join(_S3BUCKET, 'my-file_animal.txt'), mode='r') as f:
             #     # df = pd.read_csv(f, encoding='utf8', sep='\t')
             #     df = pd.read_csv(f, sep='\t')
