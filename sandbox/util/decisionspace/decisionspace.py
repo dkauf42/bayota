@@ -105,7 +105,8 @@ class DecisionSpace(object):
         for ds in [cls.animal, cls.land, cls.manure]:
             ds.generate_from_SourceGeoAgencytable()
 
-        return cls(jeeves=jeeves, animalds=cls.animal, landds=cls.land, manureds=cls.manure,
+        return cls(jeeves=jeeves, baseconditionid=baseconditionid,
+                   animalds=cls.animal, landds=cls.land, manureds=cls.manure,
                    lrsegids=lrsegids, countyids=countyids)
 
     def __iter__(self):
