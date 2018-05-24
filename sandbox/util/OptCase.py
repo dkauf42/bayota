@@ -1,4 +1,3 @@
-import pandas as pd
 from sandbox.util.decisionspace import DecisionSpace
 from sandbox.util.scenariomaker.scenariomaker import ScenarioMaker
 from sandbox.util.Examples import Examples

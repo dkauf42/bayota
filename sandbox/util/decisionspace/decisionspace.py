@@ -1,4 +1,3 @@
-import pandas as pd
 from sandbox.util.jeeves import Jeeves
 from .spaces.animal import Animal
 from .spaces.land import Land
