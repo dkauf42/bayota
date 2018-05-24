@@ -57,13 +57,17 @@ class Maker(object):
         dd_manure = dd.from_pandas(df_manure, npartitions=3)
 
         animal_path = os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal')
-        df_animal.to_csv(animal_path, sep='\t', header=True, index=False, line_terminator='\r\n')
-
         land_path = os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land')
-        df_land.to_csv(land_path, sep='\t', header=True, index=False, line_terminator='\r\n')
-
         manure_path = os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure')
-        df_manure.to_csv(manure_path, sep='\t', header=True, index=False, line_terminator='\r\n')
+        if os.name == 'nt':
+            print('<using windows line terminators>')
+            df_animal.to_csv(animal_path, sep='\t', header=True, index=False, line_terminator='\n')
+            df_land.to_csv(land_path, sep='\t', header=True, index=False, line_terminator='\n')
+            df_manure.to_csv(manure_path, sep='\t', header=True, index=False, line_terminator='\n')
+        else:
+            df_animal.to_csv(animal_path, sep='\t', header=True, index=False, line_terminator='\r\n')
+            df_land.to_csv(land_path, sep='\t', header=True, index=False, line_terminator='\r\n')
+            df_manure.to_csv(manure_path, sep='\t', header=True, index=False, line_terminator='\r\n')
 
         if inaws:
             import boto3
