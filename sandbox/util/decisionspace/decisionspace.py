@@ -54,7 +54,7 @@ class DecisionSpace(object):
         return cls(jeeves=jeeves, animalds=cls.animal, landds=cls.land, manureds=cls.manure)
 
     @classmethod
-    def fromgeo(cls, scale=None, areanames=None, baseconditionid=None):
+    def fromgeo(cls, scale=None, areanames=None, baseyear=None, basecondname=None):
         """ Constructor to generate a decision space from a geography (scale + area names)
 
         Note:
@@ -65,6 +65,10 @@ class DecisionSpace(object):
 
         # SourceHooks
         jeeves = cls.load_queries()
+
+        # Metadata
+        baseconditionid = jeeves.metadata.get_baseconditionid(baseyear=baseyear, baseconditionname=basecondname)
+
         # Get geography
         lrsegids = jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)
         countyids = jeeves.geo.countyids_from_lrsegids(lrsegids=lrsegids)
