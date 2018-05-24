@@ -160,6 +160,7 @@ class OptCase(object):
                                                    areanames=self.geoareanames,
                                                    baseyear=self.baseyear,
                                                    basecondname=self.basecondname)
+        self.jeeves = self.decisionspace.jeeves
         self.baseconditionid = self.decisionspace.baseconditionid
 
     # hooks for graphical interface get/put
