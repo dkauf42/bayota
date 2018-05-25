@@ -89,7 +89,8 @@ class Manure(Space):
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
-    def append_bounds(self):
+    def append_units_and_bounds(self):
+        self.idtable = self.jeeves.bmp.append_unitids_to_table_with_bmpids(bmpidtable=self.idtable)
         # Manure can't be submitted as percent, but rather must be in Dry Tons.
         # So, let's calculate the maximum Dry Tons per animal, per county for this basecondition
         self.idtable['lowerbound'] = 0

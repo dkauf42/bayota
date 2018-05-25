@@ -101,7 +101,12 @@ class Animal(Space):
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
-    def append_bounds(self):
+    def append_units_and_bounds(self):
+        self.idtable = self.jeeves.bmp.append_unitids_to_table_with_bmpids(bmpidtable=self.idtable)
+
+        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['lowerbound'] = 0
+        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['upperbound'] = 100
+
         self.idtable['lowerbound'] = 0
         self.idtable['upperbound'] = 100
         # For Animals: Add...?

@@ -109,9 +109,19 @@ class Land(Space):
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
-    def append_bounds(self):
+    def append_units_and_bounds(self):
+        self.idtable = self.jeeves.bmp.append_unitids_to_table_with_bmpids(bmpidtable=self.idtable)
+
+        # unitid_to_ranges = {'percent': [0, 100]}
+
+        # The bound columns are created with default values to be replaced.
         self.idtable['lowerbound'] = 0
         self.idtable['upperbound'] = 100
+
+        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['lowerbound'] = 0
+        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['upperbound'] = 100
+        self.idtable[self.idtable['bmpunitfullname'] == 'acres']['lowerbound'] = 0
+        self.idtable[self.idtable['bmpunitfullname'] == 'acres']['upperbound'] = 999999
         # For Acres: Add all of the acres (across LoadSources) from "TblLandUsePreBmp"
         return self.idtable.copy()
 
