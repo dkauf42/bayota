@@ -79,7 +79,7 @@ class Space(object):
 
         # QC BMPs
         self.qc_bmps()
-        self.append_bounds()
+        self.append_units_and_bounds()
         self.translate_ids_to_names()
 
         if settings.verbose:
@@ -96,7 +96,7 @@ class Space(object):
         """ Overridden by land, animal, manure subclasses """
         pass
 
-    def append_bounds(self):
+    def append_units_and_bounds(self):
         """ Overridden by land, animal, manure subclasses """
         pass
 
