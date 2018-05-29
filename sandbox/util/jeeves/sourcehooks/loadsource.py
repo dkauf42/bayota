@@ -66,6 +66,18 @@ class LoadSource(SourceHook):
         # get the intersection of these two loadsourceid tables
         tblsubset = tblloadsourceids1.merge(tblloadsourceids2, how='inner')
 
+        # ** LoadSources that are of the Ag or Septic sector only go on NONFED agency parcels **
+        # So, first, identify the LoadSources that are in the Ag or Septic sector
+        sectoridsToRemove = self.sector.ids_from_names(['Agriculture', 'Septic'])
+        loadsourceids = list(self.loadsourceids_from(sectorids=sectoridsToRemove)['loadsourceid'])
+        # Then, get the NONFED agencyid
+        agencyidsToRemove = list(self.agency.ids_from_names(['NONFED'])['agencyid'])
+        # Then, extract only the rows that aren't those loadsources and not NONFED
+        tblreturn = tblsubset[~((tblsubset['loadsourceid'].isin(loadsourceids)) &
+                                (~tblsubset['agencyid'].isin(agencyidsToRemove)))]
+
+        return tblreturn
+
         return tblsubset
 
     def sourceCountyAgencyIDtable_from_sourceLrsegAgencyIDtable(self, sourceAgencyLrsegIDtable=None):

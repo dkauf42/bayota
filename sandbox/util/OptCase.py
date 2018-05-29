@@ -1,4 +1,3 @@
-import pandas as pd
 from sandbox.util.decisionspace import DecisionSpace
 from sandbox.util.scenariomaker.scenariomaker import ScenarioMaker
 from sandbox.util.Examples import Examples
@@ -42,7 +41,7 @@ class OptCase(object):
         # Scenarios
         self.scenarios = None
 
-        if geoscalename is not None:
+        if self.geoscalename is not None:
             self.__generate_decisionspace_using_case_geography()
 
     @classmethod
@@ -151,15 +150,18 @@ class OptCase(object):
 
     def __generate_decisionspace_using_case_geography(self):
         # Decision Space
-        self.decisionspace = DecisionSpace.blank()
+        # self.decisionspace = DecisionSpace.blank()
         # Queries to the source data
-        self.jeeves = self.decisionspace.jeeves
+        # self.jeeves = self.decisionspace.jeeves
         # Metadata Component
-        self.baseconditionid = self.decisionspace.set_baseconditionid_from_yearname(year=self.baseyear,
-                                                                                    name=self.basecondname)
+        # self.baseconditionid = self.decisionspace.set_baseconditionid_from_yearname(year=self.baseyear,
+        #                                                                             name=self.basecondname)
         self.decisionspace = DecisionSpace.fromgeo(scale=self.geoscalename,
                                                    areanames=self.geoareanames,
-                                                   baseconditionid=self.baseconditionid)
+                                                   baseyear=self.baseyear,
+                                                   basecondname=self.basecondname)
+        self.jeeves = self.decisionspace.jeeves
+        self.baseconditionid = self.decisionspace.baseconditionid
 
     # hooks for graphical interface get/put
     def generate_decision_space_using_case_geoagencysectorids(self):

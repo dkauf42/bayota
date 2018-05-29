@@ -7,12 +7,16 @@ from setuptools import setup, Command
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
     user_options = []
+
+    @staticmethod
+    def run():
+        os.system('rm -vrf ./build ./dist ./*.egg-info')
+
     def initialize_options(self):
         pass
+
     def finalize_options(self):
         pass
-    def run(self):
-        os.system('rm -vrf ./build ./dist ./*.egg-info')
 
 
 with open('README.md') as f:
@@ -31,7 +35,8 @@ install_requires = ['numpy>=1.14.2',
                     'pyDOE>=0.3.8',
                     'requests',
                     's3fs',
-                    'dask'
+                    'dask',
+                    'boto3'
                     ]
 
 setup(name='OptSandbox',
