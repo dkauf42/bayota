@@ -14,7 +14,7 @@ class Population(Maker):
         """Conduct a latin hypercube sampling from within the lower/upper bounds
         """
         # Conduct a latin hypercube sampling from within the lower/upper bounds
-        numsamples = 20
+        numsamples = 1
         self.scenarios_land, self.longdf_land = self._generate_latinhypercube_from_table(table=self.landnametable,
                                                                                          numsamples=numsamples,
                                                                                          tablename='land')

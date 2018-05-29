@@ -8,7 +8,7 @@ Example:
 import sys
 import pyodbc
 import pandas as pd
-from sandbox.sqltables.metadata import Metadata
+from sandbox.sqltables.metadata import MetaData
 
 if len(sys.argv) < 5:
     raise ValueError("We need server, database name, username, password, output directory, and scenarioId value!")
@@ -24,7 +24,7 @@ cnxn = pyodbc.connect('DRIVER={SQL Server Native Client 11.0}' +
                       ';DATABASE=' + database +
                       ';Trusted_Connection=yes')
 
-metadata = Metadata()
+metadata = MetaData()
 for tblName in metadata.getTblList():
     print("extracting table:", tblName)
     query = "SELECT * from dbo."+tblName+" where ScenarioId="+scenarioId

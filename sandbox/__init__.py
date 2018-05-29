@@ -42,3 +42,7 @@ def get_outputdir():
 
 def get_sqlsourcetabledir():
     return os.path.join(_ROOT, 'data/test_source/')
+
+
+def get_sqlmetadatatabledir():
+    return os.path.join(_ROOT, 'data/test_metadata/')

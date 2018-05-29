@@ -47,18 +47,22 @@ a GUI appears that allows specifiation of geography and other metadata.
 
 # Usage
 
-###### A simple example (to run using GUI):
+##### A simple example (to run using GUI):
 
     > python sandboxer.py
 
-###### To specify a particular county, use '-t 99' along with the scale (county) and areanames, for example:
+##### To specify a particular county, use '-t 99' along with the scale (county) and areanames, for example:
 
     > python sandboxer.py -t 99 -s "County" -a "Anne Arundel, MD"
 ... To specify two counties, just pass extra string arguments, for example:
 
     > python sandboxer.py -t 99 -s "County" -a "Anne Arundel, MD" "Lancaster, PA"
 
-###### Example test cases (there are three) are available by using the "-t" parameter:
+... Likewise, to specify a single land river segment:
+
+    > python sandboxer.py -t 99 -s "Land River Segment indicating if in or out of CBWS" -a "N51133RL0_6450_0000 (CBWS)"
+
+##### Example test cases (there are three) are available by using the "-t" parameter:
 
     > python sandboxer.py -t 1
 

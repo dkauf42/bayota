@@ -7,7 +7,7 @@ import warnings
 
 
 class SourceHook:
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """Base Class for source data queries.
 
         Attributes:
@@ -21,6 +21,7 @@ class SourceHook:
 
         """
         self.source = sourcedata
+        self.meta = metadata
 
     def all_names(self):
         pass

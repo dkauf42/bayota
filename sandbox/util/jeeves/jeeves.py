@@ -6,7 +6,9 @@ from tqdm import tqdm
 
 from sandbox.__init__ import get_tempdir
 from sandbox.__init__ import get_sqlsourcetabledir
+from sandbox.__init__ import get_sqlmetadatatabledir
 from sandbox.sqltables.source_data import SourceData
+from sandbox.sqltables.metadata import MetaData
 
 from .sourcehooks.agency import Agency
 from .sourcehooks.animal import Animal
@@ -21,7 +23,7 @@ from .sourcehooks.translator import Translator
 
 class Jeeves:
     def __init__(self):
-        source = self.loadInSourceDataFromSQL()
+        source, meta = self.loadInSourceDataFromSQL()
 
         self.agency = Agency(sourcedata=source)
         self.animal = Animal(sourcedata=source)
@@ -29,21 +31,48 @@ class Jeeves:
         self.geo = Geo(sourcedata=source)
         self.loadsource = LoadSource(sourcedata=source)
         self.lrseg = Lrseg(sourcedata=source)
-        self.metadata = Metadata(sourcedata=source)
+        self.metadata = Metadata(sourcedata=source, metadata=meta)
         self.sector = Sector(sourcedata=source)
         self.translator = Translator(sourcedata=source)
 
     @classmethod
     def loadInSourceDataFromSQL(cls):
-        savename = get_tempdir() + 'SourceData.obj'
 
-        if os.path.exists(savename):
-            with open(savename, 'rb') as f:
+        # savenames = [get_tempdir() + 'SourceData.obj', get_tempdir() + 'MetaData.obj']
+        # Clses = [SourceData, MetaData]
+        # getdirs = [get_sqlsourcetabledir, get_sqlmetadatatabledir]
+        # for i, savename in enumerate(savenames):
+        #     if os.path.exists(savename):
+        #         with open(savename, 'rb') as f:
+        #             data = pickle.load(f)
+        #     else:
+        #         thiscls = Clses[i - 1]
+        #         getthisdir = getdirs[i - 1]
+        #         print('<%s object does not exist yet. Generating...>' % thiscls.__name__)
+        #         # Source tables are loaded.
+        #         data = thiscls()
+        #         tbllist = data.getTblList()
+        #         for tblName in tqdm(tbllist, total=len(tbllist)):
+        #             # for tblName in tbllist:
+        #             # print("loading source:", tblName)
+        #             df = cls.loadDataframe(tblName, getthisdir())
+        #             data.addTable(tblName, df)
+        #
+        #         with open(savename, 'wb') as f:
+        #             pickle.dump(data, f)
+
+        # SOURCEDATA
+        srcdata_savename = get_tempdir() + 'SourceData.obj'
+
+        if os.path.exists(srcdata_savename):
+            with open(srcdata_savename, 'rb') as f:
                 sourcedata = pickle.load(f)
+                print(sourcedata)
         else:
             print('<%s object does not exist yet. Generating...>' % SourceData.__name__)
             # Source tables are loaded.
             sourcedata = SourceData()
+            print(sourcedata)
             tbllist = sourcedata.getTblList()
             for tblName in tqdm(tbllist, total=len(tbllist)):
                 # for tblName in tbllist:
@@ -51,10 +80,31 @@ class Jeeves:
                 df = cls.loadDataframe(tblName, get_sqlsourcetabledir())
                 sourcedata.addTable(tblName, df)
 
-            with open(savename, 'wb') as f:
+            with open(srcdata_savename, 'wb') as f:
                 pickle.dump(sourcedata, f)
 
-        return sourcedata
+        # METADATA
+        metadata_savename = get_tempdir() + 'MetaData.obj'
+
+        if os.path.exists(metadata_savename):
+            with open(metadata_savename, 'rb') as f:
+                metadata = pickle.load(f)
+        else:
+            print('<%s object does not exist yet. Generating...>' % MetaData.__name__)
+            # MetaData tables are loaded.
+            metadata = MetaData()
+            print(metadata)
+            tbllist = metadata.getTblList()
+            for tblName in tqdm(tbllist, total=len(tbllist)):
+                # for tblName in tbllist:
+                # print("loading source:", tblName)
+                df = cls.loadDataframe(tblName, get_sqlmetadatatabledir())
+                metadata.addTable(tblName, df)
+
+            with open(metadata_savename, 'wb') as f:
+                pickle.dump(metadata, f)
+
+        return sourcedata, metadata
 
     @staticmethod
     def loadDataframe(tblName, loc):

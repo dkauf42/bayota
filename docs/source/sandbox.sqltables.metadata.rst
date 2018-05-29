@@ -6,7 +6,7 @@ Submodules
 
 .. toctree::
 
-   sandbox.sqltables.metadata.Metadata
+   sandbox.sqltables.metadata.MetaData
 
 Module contents
 ---------------

@@ -39,7 +39,7 @@ class MainWindow(tk.Frame):
         collapsible_frame = tk.Frame(self)
         collapsible_frame.pack(fill=None, expand=False)
         # Toggle Frame #1 (METADATA)
-        self.t = ToggledFrame(collapsible_frame, text='1. Instance Metadata',
+        self.t = ToggledFrame(collapsible_frame, text='1. Instance MetaData',
                               relief="raised", borderwidth=1, secondcommand=self.toggleframe_closed)
         self.t.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
         self.t.config(width=800, height=100)

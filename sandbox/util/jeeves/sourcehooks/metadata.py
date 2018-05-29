@@ -2,9 +2,9 @@ from sandbox.util.jeeves.sourcehooks.sourcehooks import SourceHook
 
 
 class Metadata(SourceHook):
-    def __init__(self, sourcedata=None):
-        """ Metadata Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+    def __init__(self, sourcedata=None, metadata=None):
+        """ MetaData Methods """
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Methods to get metadata options
     def all_base_year_names(self):
@@ -15,11 +15,16 @@ class Metadata(SourceHook):
         TblLandChangeModelScenario = self.source.TblLandChangeModelScenario  # get relevant source data
         return TblLandChangeModelScenario.loc[:, 'landchangemodelscenarioname']
 
+    def all_costprofile_names(self):
+        TblCostProfile = self.meta.TblCostProfile  # get relevant source data
+        tblsubset = TblCostProfile[TblCostProfile['masterprofile'] == True]
+        return tblsubset.loc[:, 'costprofilename']
+
     def wastewaterdata_names(self):
         return ['WasteWater0001', 'WasteWater0002', 'WasteWater0003', 'WasteWater0004']
 
-    def costprofile_names(self):
-        return ['CostProfile0001', 'CostProfile0002', 'CostProfile0003', 'CostProfile0004']
+    # def costprofile_names(self):
+    #     return ['CostProfile0001', 'CostProfile0002', 'CostProfile0003', 'CostProfile0004']
 
     def get_baseconditionid(self, baseyear=None, baseconditionname=None):
         TblBaseCondition = self.source.TblBaseCondition  # get relevant source data

@@ -1,3 +1,3 @@
-"""Metadata tables from the CBPO model"""
+"""MetaData tables from the CBPO model"""
 
-from .Metadata import Metadata
+from .MetaData import MetaData

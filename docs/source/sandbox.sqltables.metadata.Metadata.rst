@@ -1,7 +1,7 @@
-sandbox.sqltables.metadata.Metadata module
+sandbox.sqltables.metadata.MetaData module
 ==========================================
 
-.. automodule:: sandbox.sqltables.metadata.Metadata
+.. automodule:: sandbox.sqltables.metadata.MetaData
     :members:
     :undoc-members:
     :show-inheritance:

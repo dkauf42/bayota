@@ -100,7 +100,8 @@ class MetadataFrame(tk.Frame):
         self.dropdown_basecond.current(0)
         self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + jeeves.metadata.wastewaterdata_names()
         self.dropdown_wastewtr.current(0)
-        self.dropdown_costprofile['values'] = ['Select Cost Profile'] + jeeves.metadata.costprofile_names()
+        self.dropdown_costprofile['values'] = ['Select Cost Profile'] + \
+                                              jeeves.metadata.all_costprofile_names().tolist()
         self.dropdown_costprofile.current(0)
         self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + \
                                            jeeves.geo.all_geotypes().geographytypefullname.tolist()
