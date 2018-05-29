@@ -15,7 +15,7 @@ if len(sys.argv) < 4:
     raise ValueError("We need server, database name, and output directory value!")
 
 # else, let's extract
-server = sys.argv[1]  # 'localhost'
+server = sys.argv[1]  # 'SQL2D' or 'localhost'
 database = sys.argv[2]  # 'ScenarioBuilderV3Source'
 SOURCE_PATH = sys.argv[3]
 

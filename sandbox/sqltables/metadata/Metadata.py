@@ -1,15 +1,18 @@
 import importlib
 from ..TableLoader import TableLoader
 
-tblList = ["ImpBmpSubmittedAnimal",
-           "ImpBmpSubmittedCropAppRateReduction",
-           "ImpBmpSubmittedLand",
-           "ImpBmpSubmittedManureTransport",
-           "ImpBmpSubmittedRelatedMeasure",
-           "InvalidBmpSubmittedAnimal",
-           "InvalidBmpSubmittedCropAppRateReduction",
-           "InvalidBmpSubmittedLand",
-           "InvalidBmpSubmittedManureTransport",
+tblList = [# "ImpBmpSubmittedAnimal",
+           # "ImpBmpSubmittedCropAppRateReduction",
+           # "ImpBmpSubmittedLand",
+           # "ImpBmpSubmittedManureTransport",
+           # "ImpBmpSubmittedRelatedMeasure",
+           # "InvalidBmpSubmittedAnimal",
+           # "InvalidBmpSubmittedCropAppRateReduction",
+           # "InvalidBmpSubmittedLand",
+           # "InvalidBmpSubmittedManureTransport",
+           "TblCostBmpAnimal",
+           "TblCostBmpLand",
+           "TblCostProfile",
            "TblPointSourceDataSets",
            "TblScenario",
            "TblScenarioGeography"
