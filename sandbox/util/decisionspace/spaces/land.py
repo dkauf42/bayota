@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sandbox.util.decisionspace.spaces.spaces import Space
 from sandbox import settings
@@ -61,6 +62,10 @@ class Land(Space):
 
         singlebmpstoremove = ['UrbStrmRestPro',  # "Urban Stream Restoration Protocol"
                               'NonUrbStrmRestPro',  # "Non-Urban Stream Restoration Protocol"
+                              'ShoreAgNoVeg',  # Non Urban Shoreline Erosion Control Non-Vegetated
+                              'ShoreAgVeg',  # Non Urban Shoreline Erosion Control Vegetated
+                              'ShoreUrbNoVeg',  # Urban Shoreline Erosion Control Non-Vegetated
+                              'ShoreUrbVeg',  # Urban Shoreline Erosion Control Vegetated
                               ] + uplandbmpstoexclude['bmpshortname'].tolist()
 
         for bmpnametoremove in singlebmpstoremove:
@@ -115,20 +120,43 @@ class Land(Space):
         # unitid_to_ranges = {'percent': [0, 100]}
 
         # The bound columns are created with default values to be replaced.
-        self.idtable['lowerbound'] = 0
-        self.idtable['upperbound'] = 100
+        self.idtable['lowerbound'] = np.nan
+        self.idtable['upperbound'] = np.nan
 
         percentid = self.jeeves.bmp.unitid_from_name('percent')
         acresid = self.jeeves.bmp.unitid_from_name('acres')
         feetid = self.jeeves.bmp.unitid_from_name('feet')
+        impacresid = self.jeeves.bmp.unitid_from_name('impervious acres')
+        acrefeetid = self.jeeves.bmp.unitid_from_name('acre-feet')
+        nlbsid = self.jeeves.bmp.unitid_from_name('lbs TN')
+        plbsid = self.jeeves.bmp.unitid_from_name('lbs TP')
+        slbsid = self.jeeves.bmp.unitid_from_name('lbs TSS')
+        oysterid = self.jeeves.bmp.unitid_from_name('oysters')
 
         self.idtable.loc[self.idtable['unitid'] == percentid, ['lowerbound']] = 0
         self.idtable.loc[self.idtable['unitid'] == percentid, ['upperbound']] = 100
         self.idtable.loc[self.idtable['unitid'] == acresid, ['lowerbound']] = 0
-        self.idtable.loc[self.idtable['unitid'] == acresid, ['upperbound']] = 999999
+        self.idtable.loc[self.idtable['unitid'] == acresid, ['upperbound']] = 9999
         self.idtable.loc[self.idtable['unitid'] == feetid, ['lowerbound']] = 0
         self.idtable.loc[self.idtable['unitid'] == feetid, ['upperbound']] = 9999
+        self.idtable.loc[self.idtable['unitid'] == impacresid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == impacresid, ['upperbound']] = 9999
+        self.idtable.loc[self.idtable['unitid'] == acrefeetid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == acrefeetid, ['upperbound']] = 9999
+        self.idtable.loc[self.idtable['unitid'] == nlbsid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == nlbsid, ['upperbound']] = 10
+        self.idtable.loc[self.idtable['unitid'] == plbsid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == plbsid, ['upperbound']] = 10
+        self.idtable.loc[self.idtable['unitid'] == slbsid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == slbsid, ['upperbound']] = 10
+        self.idtable.loc[self.idtable['unitid'] == oysterid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == oysterid, ['upperbound']] = 500
         # For Acres: Add all of the acres (across LoadSources) from "TblLandUsePreBmp"
+
+        missingunits = self.idtable.loc[np.isnan(self.idtable['lowerbound'])]
+        if not missingunits.empty:
+            raise ValueError('we need an upper/lower bound for every bmp!')
+
         return self.idtable.copy()
 
         # self.land_decisionspace = self.queries. \
