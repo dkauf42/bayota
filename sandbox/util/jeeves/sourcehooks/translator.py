@@ -28,7 +28,7 @@ class Translator(SourceHook):
         columnmask = ['agencycode', 'agencyid']
         newtable = TblAgency.loc[:, columnmask].merge(newtable, how='inner')
         # Translate to LoadSource names
-        columnmask = ['loadsource', 'loadsourceid']
+        columnmask = ['loadsourceshortname', 'loadsourceid']
         newtable = TblLoadSource.loc[:, columnmask].merge(newtable, how='inner')
         # Translate to BMP names
         columnmask = ['bmpshortname', 'bmpid']
