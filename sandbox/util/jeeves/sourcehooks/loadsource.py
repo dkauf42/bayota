@@ -56,7 +56,7 @@ class LoadSource(SourceHook):
         TblLandRiverSegmentAgencyLoadSource = self.source.TblLandRiverSegmentAgencyLoadSource
 
         # use [lrseg, agency] to get loadsourceids
-        columnmask = ['lrsegid', 'agencyid', 'loadsourceid', 'unitid']
+        columnmask = ['lrsegid', 'agencyid', 'loadsourceid']
         tblloadsourceids1 = TblLandRiverSegmentAgencyLoadSource.loc[:, columnmask].merge(lrsegagencyidtable,
                                                                                          how='inner')
 
@@ -102,7 +102,7 @@ class LoadSource(SourceHook):
         combos = pd.DataFrame(combos, columns=['lrsegid', 'agencyid'])
 
         # use [lrseg, agency] to get loadsourceids
-        columnmask = ['lrsegid', 'agencyid', 'loadsourceid', 'unitid']
+        columnmask = ['lrsegid', 'agencyid', 'loadsourceid']
         tblloadsourceids1 = TblLandRiverSegmentAgencyLoadSource.loc[:, columnmask].merge(combos, how='inner')
 
         # use sectors/loadsourcegroups to get loadsourceids
@@ -132,7 +132,7 @@ class LoadSource(SourceHook):
         combos = pd.DataFrame(combos, columns=['lrsegid', 'agencyid'])
 
         # use [lrseg, agency] to get loadsourceids
-        columnmask = ['lrsegid', 'agencyid', 'loadsourceid', 'unitid']
+        columnmask = ['lrsegid', 'agencyid', 'loadsourceid']
         tblloadsourceids1 = TblLandRiverSegmentAgencyLoadSource.loc[:, columnmask].merge(combos, how='inner')
 
         # use sectors/loadsourcegroups to get loadsourceids

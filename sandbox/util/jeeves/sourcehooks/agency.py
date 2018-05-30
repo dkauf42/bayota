@@ -48,3 +48,23 @@ class Agency(SourceHook):
         tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
 
         return tblsubset.loc[:, ['lrsegid', 'agencyid']]
+
+    def bounds_for_lrsegagencyparcels(self, idtable):
+        TblUnit = self.source.TblUnit
+
+        # TODO: generate code that sets bounds depending on the lrseg-agency parcel and unitid type
+        # if unit==percent, then hard upper bound (HUB) is just 100
+        # if unit==acres, impervious acres, or acre-feet, then HUB is the total acreage in la-parcel
+        # if unit==feet, then HUB is the number of feet in the la-parcel
+        # if unit==Lbs (of anything), then HUB is 9e19
+        # if unit==oysters, then HUB is 9e19
+
+        percentid = TblUnit[TblUnit['unit'] == 'percent']['unitid'].values[0]
+        acresid = TblUnit[TblUnit['unit'] == 'acres']['unitid'].values[0]
+        feetid = TblUnit[TblUnit['unit'] == 'feet']['unitid'].values[0]
+
+        idtable[idtable['unitid'] == percentid]['upperbound'] = 100
+        idtable[idtable['unitid'] == acresid]['upperbound'] = 976
+        idtable[idtable['unitid'] == feetid]['upperbound'] = 33
+
+        pass
