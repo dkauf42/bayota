@@ -38,7 +38,7 @@ class Translator(SourceHook):
         newtable.rename(columns={'landriversegment': 'GeographyName',
                                  'stateabbreviation': 'StateAbbreviation',
                                  'agencycode': 'AgencyCode',
-                                 'loadsource': 'LoadSourceGroup',
+                                 'loadsourceshortname': 'LoadSourceGroup',
                                  'bmpshortname': 'BmpShortname'}, inplace=True)
 
         # newtable['Unit'] = 'Percent'
