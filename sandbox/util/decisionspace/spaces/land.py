@@ -118,10 +118,16 @@ class Land(Space):
         self.idtable['lowerbound'] = 0
         self.idtable['upperbound'] = 100
 
-        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['lowerbound'] = 0
-        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['upperbound'] = 100
-        self.idtable[self.idtable['bmpunitfullname'] == 'acres']['lowerbound'] = 0
-        self.idtable[self.idtable['bmpunitfullname'] == 'acres']['upperbound'] = 999999
+        percentid = self.jeeves.bmp.unitid_from_name('percent')
+        acresid = self.jeeves.bmp.unitid_from_name('acres')
+        feetid = self.jeeves.bmp.unitid_from_name('feet')
+
+        self.idtable.loc[self.idtable['unitid'] == percentid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == percentid, ['upperbound']] = 100
+        self.idtable.loc[self.idtable['unitid'] == acresid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == acresid, ['upperbound']] = 999999
+        self.idtable.loc[self.idtable['unitid'] == feetid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == feetid, ['upperbound']] = 9999
         # For Acres: Add all of the acres (across LoadSources) from "TblLandUsePreBmp"
         return self.idtable.copy()
 
