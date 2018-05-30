@@ -98,8 +98,9 @@ class Geo(SourceHook):
         if scale == 'County':
             tblsubset = self.lrsegids_from(countystatestrs=areanames)
             return tblsubset.loc[:, ['lrsegid']]
-        elif scale == "Land River Segment indicating if in or out of CBWS":
-            segstrlist = [x.split("-")[1].split("(")[0] for x in areanames]
+        elif (scale == "Land River Segment indicating if in or out of CBWS") | (scale == "Land River Segment"):
+            # segstrlist = [x.split("-")[1].split("(")[0] for x in areanames]
+            segstrlist = [x.split("(")[0].rstrip() for x in areanames]
             return self.singleconvert(sourcetbl='TblLandRiverSegment',
                                       toandfromheaders=['lrsegid', 'landriversegment'],
                                       fromtable=self.forceToSingleColumnDataFrame(segstrlist,
