@@ -246,7 +246,7 @@ class Bmp(SourceHook):
         # If a Bmp-unitrelationid group has 'percent' as one of the units, then we're going to drop the other units
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
         percentid = TblUnit[TblUnit['unit'] == 'percent']['unitid'].values[0]
-        grouped = BmpUnitsRequired.groupby(['bmpid', 'unitrelationid'])
+        grouped = BmpUnitsRequired.groupby(['bmpid', 'unitrelationid'], as_index=False)
         groupedAfterPercentPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, percentid))
         groupedAfterPercentPrecedence.head(10)
         bmpswithpercent = groupedAfterPercentPrecedence[groupedAfterPercentPrecedence['unitid'] == percentid]
@@ -255,7 +255,7 @@ class Bmp(SourceHook):
         # After having checked 'percent', we'll check if 'acres' is one of the units and drop the others
         acresid = TblUnit[TblUnit['unit'] == 'acres']['unitid'].values[0]
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
-        grouped = bmpswithoutpercent.groupby(['bmpid', 'unitrelationid'])
+        grouped = bmpswithoutpercent.groupby(['bmpid', 'unitrelationid'], as_index=False)
         groupedAfterAcresPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, acresid))
         groupedAfterAcresPrecedence.head(10)
         bmpswithacres = groupedAfterAcresPrecedence[groupedAfterAcresPrecedence['unitid'] == acresid]
@@ -264,7 +264,7 @@ class Bmp(SourceHook):
         # After having checked 'percent' and 'acres', we'll check if 'feet' is one of the units and drop the others
         feetid = TblUnit[TblUnit['unit'] == 'feet']['unitid'].values[0]
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
-        grouped = bmpswithoutacres.groupby(['bmpid', 'unitrelationid'])
+        grouped = bmpswithoutacres.groupby(['bmpid', 'unitrelationid'], as_index=False)
         groupedAfterFeetPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, feetid))
         groupedAfterFeetPrecedence.head(10)
         bmpswithfeet = groupedAfterFeetPrecedence[groupedAfterFeetPrecedence['unitid'] == feetid]
@@ -274,7 +274,7 @@ class Bmp(SourceHook):
         #   we'll check if 'dry tons' is one of the units and drop the others
         feetid = TblUnit[TblUnit['unit'] == 'wet tons']['unitid'].values[0]
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
-        grouped = bmpswithoutacres.groupby(['bmpid', 'unitrelationid'])
+        grouped = bmpswithoutacres.groupby(['bmpid', 'unitrelationid'], as_index=False)
         groupedAfterFeetPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, feetid))
         groupedAfterFeetPrecedence.head(10)
         bmpswithfeet = groupedAfterFeetPrecedence[groupedAfterFeetPrecedence['unitid'] == feetid]
