@@ -104,11 +104,14 @@ class Animal(Space):
     def append_units_and_bounds(self):
         self.idtable = self.jeeves.bmp.append_unitids_to_table_with_bmpids(bmpidtable=self.idtable)
 
-        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['lowerbound'] = 0
-        self.idtable[self.idtable['bmpunitfullname'] == 'percent']['upperbound'] = 100
-
+        # The bound columns are created with default values to be replaced.
         self.idtable['lowerbound'] = 0
         self.idtable['upperbound'] = 100
+
+        percentid = self.jeeves.bmp.unitid_from_name('percent')
+        self.idtable.loc[self.idtable['unitid'] == percentid, ['lowerbound']] = 0
+        self.idtable.loc[self.idtable['unitid'] == percentid, ['upperbound']] = 100
+
         # For Animals: Add...?
         return self.idtable.copy()
         # self.animal_decisionspace = self.queries.\
