@@ -273,7 +273,6 @@ class Bmp(SourceHook):
 
         # After having checked 'percent', 'acres', and 'feet',
         #   we'll check if 'dry tons' is one of the units and drop the others
-        # feetid = TblUnit[TblUnit['unit'] == 'wet tons']['unitid'].values[0]
         drytonsid = self.unitid_from_name('dry tons')
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
         grouped = bmpswithoutfeet.groupby(['bmpid', 'unitrelationid'], as_index=False)
