@@ -35,6 +35,10 @@ class Bmp(SourceHook):
         return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
                                   fromtable=categoryids, toname='bmpid')
 
+    def unitid_from_name(self, unitname):
+        TblUnit = self.source.TblUnit
+        return TblUnit[TblUnit['unit'] == unitname]['unitid'].values[0]
+
     # Methods to append BMPids to loadsource tables
     def append_animal_bmpids(self, SourceCountyAgencyIDtable=None, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation
@@ -245,46 +249,47 @@ class Bmp(SourceHook):
 
         # If a Bmp-unitrelationid group has 'percent' as one of the units, then we're going to drop the other units
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
-        percentid = TblUnit[TblUnit['unit'] == 'percent']['unitid'].values[0]
+        percentid = self.unitid_from_name('percent')
         grouped = BmpUnitsRequired.groupby(['bmpid', 'unitrelationid'], as_index=False)
         groupedAfterPercentPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, percentid))
-        groupedAfterPercentPrecedence.head(10)
         bmpswithpercent = groupedAfterPercentPrecedence[groupedAfterPercentPrecedence['unitid'] == percentid]
         bmpswithoutpercent = groupedAfterPercentPrecedence[~(groupedAfterPercentPrecedence['unitid'] == percentid)]
 
         # After having checked 'percent', we'll check if 'acres' is one of the units and drop the others
-        acresid = TblUnit[TblUnit['unit'] == 'acres']['unitid'].values[0]
+        acresid = self.unitid_from_name('acres')
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
         grouped = bmpswithoutpercent.groupby(['bmpid', 'unitrelationid'], as_index=False)
         groupedAfterAcresPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, acresid))
-        groupedAfterAcresPrecedence.head(10)
         bmpswithacres = groupedAfterAcresPrecedence[groupedAfterAcresPrecedence['unitid'] == acresid]
         bmpswithoutacres = groupedAfterAcresPrecedence[~(groupedAfterAcresPrecedence['unitid'] == acresid)]
 
         # After having checked 'percent' and 'acres', we'll check if 'feet' is one of the units and drop the others
-        feetid = TblUnit[TblUnit['unit'] == 'feet']['unitid'].values[0]
+        feetid = self.unitid_from_name('feet')
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
         grouped = bmpswithoutacres.groupby(['bmpid', 'unitrelationid'], as_index=False)
         groupedAfterFeetPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, feetid))
-        groupedAfterFeetPrecedence.head(10)
         bmpswithfeet = groupedAfterFeetPrecedence[groupedAfterFeetPrecedence['unitid'] == feetid]
         bmpswithoutfeet = groupedAfterFeetPrecedence[~(groupedAfterFeetPrecedence['unitid'] == feetid)]
 
         # After having checked 'percent', 'acres', and 'feet',
         #   we'll check if 'dry tons' is one of the units and drop the others
-        feetid = TblUnit[TblUnit['unit'] == 'wet tons']['unitid'].values[0]
+        # feetid = TblUnit[TblUnit['unit'] == 'wet tons']['unitid'].values[0]
+        drytonsid = self.unitid_from_name('dry tons')
         # Separate the parent units and the required supplemental units and keep 'percent' if it's there
-        grouped = bmpswithoutacres.groupby(['bmpid', 'unitrelationid'], as_index=False)
-        groupedAfterFeetPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, feetid))
-        groupedAfterFeetPrecedence.head(10)
-        bmpswithfeet = groupedAfterFeetPrecedence[groupedAfterFeetPrecedence['unitid'] == feetid]
-        bmpswithoutfeet = groupedAfterFeetPrecedence[~(groupedAfterFeetPrecedence['unitid'] == feetid)]
+        grouped = bmpswithoutfeet.groupby(['bmpid', 'unitrelationid'], as_index=False)
+        groupedAfterDryTonsPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, drytonsid))
+        bmpswithdrytons = groupedAfterDryTonsPrecedence[groupedAfterDryTonsPrecedence['unitid'] == drytonsid]
+        bmpswithoutdrytons = groupedAfterDryTonsPrecedence[~(groupedAfterDryTonsPrecedence['unitid'] == drytonsid)]
 
         # Get all the Bmps that have more than one required unit (^besides percent)
-        bmpswithmultipleunitentries = groupedAfterFeetPrecedence[groupedAfterFeetPrecedence.duplicated(['bmpid'],
+        bmpswithmultipleunitentries = groupedAfterDryTonsPrecedence[groupedAfterDryTonsPrecedence.duplicated(['bmpid'],
                                                                                                        keep=False)]
 
-        FilteredBmpUnits = pd.concat([bmpswithpercent, bmpswithacres, bmpswithfeet, bmpswithoutfeet]).sort_values(by=['bmpid'])
+        FilteredBmpUnits = pd.concat([bmpswithpercent,
+                                      bmpswithacres,
+                                      bmpswithfeet,
+                                      bmpswithdrytons,
+                                      bmpswithoutdrytons]).sort_values(by=['bmpid'])
 
         # Check to make sure:
         # there shoudn't be any rows with duplicate bmpids if they don't have
