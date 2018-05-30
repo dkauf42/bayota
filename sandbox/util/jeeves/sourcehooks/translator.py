@@ -39,7 +39,8 @@ class Translator(SourceHook):
                                  'stateabbreviation': 'StateAbbreviation',
                                  'agencycode': 'AgencyCode',
                                  'loadsourceshortname': 'LoadSourceGroup',
-                                 'bmpshortname': 'BmpShortname'}, inplace=True)
+                                 'bmpshortname': 'BmpShortname',
+                                 'bmpunitfullname': 'Unit'}, inplace=True)
 
         # newtable['Unit'] = 'Percent'
         newtable['StateUniqueIdentifier'] = np.nan
