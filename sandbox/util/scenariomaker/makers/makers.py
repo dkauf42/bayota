@@ -49,11 +49,17 @@ class Maker(object):
         #         i += 1
 
         # Write concatenated scenario files with unique ScenarioNames
-        df_animal = self.reorder_headers_with_scenarioname(self.longdf_animal, tablename='animal')
+        # df_animal = self.reorder_headers_with_scenarioname(self.longdf_animal, tablename='animal')
+        df_animal = self.reorder_headers(self.longdf_animal, tablename='animal')
+        # df_animal = self.longdf_animal
         dd_animal = dd.from_pandas(df_animal, npartitions=3)
-        df_land = self.reorder_headers_with_scenarioname(self.longdf_land, tablename='land')
+        # df_land = self.reorder_headers_with_scenarioname(self.longdf_land, tablename='land')
+        df_land = self.reorder_headers(self.longdf_land, tablename='land')
+        # df_land = self.longdf_land
         dd_land = dd.from_pandas(df_land, npartitions=3)
-        df_manure = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
+        # df_manure = self.reorder_headers_with_scenarioname(self.longdf_manure, tablename='manure')
+        df_manure = self.reorder_headers(self.longdf_manure, tablename='manure')
+        # df_manure = self.longdf_manure
         dd_manure = dd.from_pandas(df_manure, npartitions=3)
 
         animal_path = os.path.join(writedir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal')
@@ -119,6 +125,10 @@ class Maker(object):
         for i in range(len(self.scenarios_manure)):
             self.scenarios_manure[i] = jeeves.bmp. \
                 appendBmpType_to_table_with_bmpshortnames(self.scenarios_manure[i])
+
+        self.longdf_animal = jeeves.bmp.appendBmpType_to_table_with_bmpshortnames(self.longdf_animal)
+        self.longdf_land = jeeves.bmp.appendBmpType_to_table_with_bmpshortnames(self.longdf_land)
+        self.longdf_manure = jeeves.bmp.appendBmpType_to_table_with_bmpshortnames(self.longdf_manure)
 
     @staticmethod
     def softmax(x):
