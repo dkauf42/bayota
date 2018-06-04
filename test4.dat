@@ -1,0 +1,544 @@
+data;
+
+read 
+
+set PLTNTS := N P S;
+set LRSEGS := N51133RL0_6450_0000 ;
+set LOADSRCS =  ;
+
+set BMPS :=
+ConPlan
+AdvancedGI
+AgStormEff
+OSWnoFence
+PrecRotGrazing
+HorsePasMan
+WaterContStruc
+WetPondWetland
+DryPonds
+ExtDryPonds
+Infiltration
+InfiltWithSV
+Filter
+RR
+ST
+ImperviousDisconnection
+ForHarvestBMP
+CoverCropTradRED
+CoverCropTradREO
+CoverCropTradREA
+CoverCropTradRND
+CoverCropTradRNO
+CoverCropTradNutBREO
+CoverCropTradRLD
+CoverCropTradRLO
+CoverCropTradWED
+CoverCropTradWEO
+CoverCropTradWEA
+UrbFilterRR
+UrbFilterST
+BarnRunoffCont
+LoafLot
+CoverCropTradWND
+CoverCropTradWNO
+BioRetUDAB
+BioSwale
+PermPavSVUDAB
+PermPavNoSVUDAB
+VegOpChanNoUDAB
+Injection
+CoverCropTradWLD
+IncorpLowEarly
+IncorpHighEarly
+CoverCropTradWLO
+IncorpLowLate
+IncorpHighLate
+CoverCropTradBED
+CoverCropTradNutOHND
+CoverCropTradBEO
+CoverCropTradBEA
+CoverCropTradBND
+CoverCropTradBNO
+FTW1
+FTW2
+FTW3
+FTW4
+FTW5
+CoverCropTradNutOHNO
+CoverCropTradFED
+CoverCropTradFEO
+CaptureReuse
+CoverCropComEarly
+CoverCropComNormal
+CoverCropComLate
+CoverCropTradNutARNO
+CoverCropTradNutOHED
+CoverCropTradNutOHEO
+CoverCropTradFEA
+CoverCropTradFPED
+CoverCropTradFPEO
+CoverCropTradFPEA
+DitchFilter
+CoverCropTradFPND
+CoverCropTradFPNO
+CoverCropTradLED
+CoverCropTradLEO
+CoverCropTradLEA
+CoverCropTradLND
+LowResTill
+ConserveTill
+CoverCropTradNutBRED
+CoverCropTradLNO
+CoverCropTradLGLED
+NMCoreN
+NMCoreP
+CropIrrMgmt
+NMRateN
+NMRateP
+NMPlaceN
+NMPlaceP
+NMTimeN
+NMTimeP
+UrbanNMPlan
+UrbanNMPlanHR
+UrbanNMPlanLR
+UrbanNMMDCA
+UrbanNMMDDIY
+CoverCropTradLGLEO
+CoverCropTradLGLEA
+CoverCropTradLGLND
+CoverCropTradLGLNO
+CoverCropTradTED
+CoverCropTradTEO
+CoverCropTradTEA
+CoverCropTradTND
+CoverCropTradTNO
+CoverCropTradTLD
+CoverCropTradTLO
+CoverCropTradARED
+CoverCropTradAREO
+CoverCropTradAREA
+CoverCropTradARND
+CoverCropTradARNO
+CoverCropTradOHED
+CoverCropTradOHEO
+CoverCropTradOHEA
+HRTill
+VegOpChanNoUDCD
+PermPavNoSVNoUDAB
+PermPavNoSVUDCD
+PermPavSVNoUDAB
+PermPavSVUDCD
+BioRetNoUDAB
+BioRetUDCD
+SCP1
+SCP2
+SCP3
+SCP4
+SCP5
+SCP6
+SCP7
+SCP8
+SCP9
+SCP10
+SCP11
+EandS1
+EandS2
+EandS3
+CoverCropTradOHND
+CoverCropTradOHNO
+CoverCropTradOKED
+CoverCropTradOKEO
+CoverCropTradOKEA
+CoverCropTradBRED
+CoverCropTradBREO
+CoverCropTradBREA
+CoverCropTradLGHED
+CoverCropTradLGHEO
+CoverCropTradLGHEA
+CoverCropTradLGHND
+CoverCropTradLGHNO
+CoverCropTradNutRED
+CoverCropTradNutREO
+CoverCropTradNutRND
+CoverCropTradNutRNO
+CoverCropTradNutRLD
+CoverCropTradNutRLO
+CoverCropTradNutWED
+CoverCropTradNutWEO
+CoverCropTradNutWND
+CoverCropTradNutWNO
+CoverCropTradNutWLD
+CoverCropTradNutWLO
+CoverCropTradNutBED
+CoverCropTradNutBEO
+CoverCropTradNutBND
+CoverCropTradNutBNO
+CoverCropTradNutFPED
+CoverCropTradNutFPEO
+CoverCropTradNutFPND
+CoverCropTradNutFPNO
+CoverCropTradNutTED
+CoverCropTradNutTEO
+CoverCropTradNutTND
+CoverCropTradNutTNO
+CoverCropTradNutTLD
+CoverCropTradNutTLO
+CoverCropTradNutARED
+CoverCropTradNutAREO
+CoverCropTradNutARND
+GrassBuffExclEffN
+GrassBuffersEffN
+ForestBuffExclEffN
+ForestBuffersEffN
+ForestBuffersEffPS
+ForestBufUrbanEff
+ForestBuffExclEffPS
+GrassBuffersEffPS
+GrassBuffExclEffPS
+WetlandRestoreEff
+WetlandCreateEff
+WetlandEnhanceEff
+WetlandRehabilitateEff
+    
+set BMPGRPS :=
+ConservationPlans
+AgStormwaterManagement
+AgBuffersUplandEfficiencyN
+AgBuffersUplandEfficiencyPS
+UrbanForestBuffersUplandEfficiency
+NutrientManagementCoreN
+NutrientManagementCoreP
+NutrientManagementNRate
+NutrientManagementPRate
+NutrientManagementNPlacement
+NutrientManagementPPlacement
+NutrientManagementNTiming
+NutrientManagementPTiming
+PastureManagement
+OffStreamWateringwithoutFencing
+WaterControlStructures
+StormwaterManagement
+CoverCrops
+UrbanNutrientManagement
+ForestHarvestingPractices
+StreetSweeping
+FloatingTreatmentWetlands
+FeedingSpaceManagement
+DitchFilter
+ManureIncorporation
+CropIrrigationManagement
+ConservationTillage
+IrrigationWaterCaptureReuse
+ErosionandSedimentControl
+
+
+set BMPGRPING :=
+ConPlan                	ConservationPlans
+AdvancedGI             	StormwaterManagement
+AgStormEff             	AgStormwaterManagement
+OSWnoFence             	OffStreamWateringwithoutFencing
+PrecRotGrazing         	PastureManagement
+HorsePasMan            	PastureManagement
+WaterContStruc         	WaterControlStructures
+WetPondWetland         	StormwaterManagement
+DryPonds               	StormwaterManagement
+ExtDryPonds            	StormwaterManagement
+Infiltration           	StormwaterManagement
+InfiltWithSV           	StormwaterManagement
+Filter                 	StormwaterManagement
+RR                     	StormwaterManagement
+ST                     	StormwaterManagement
+ImperviousDisconnection	StormwaterManagement
+ForHarvestBMP          	ForestHarvestingPractices
+CoverCropTradRED       	CoverCrops
+CoverCropTradREO       	CoverCrops
+CoverCropTradREA       	CoverCrops
+CoverCropTradRND       	CoverCrops
+CoverCropTradRNO       	CoverCrops
+CoverCropTradNutBREO   	CoverCrops
+CoverCropTradRLD       	CoverCrops
+CoverCropTradRLO       	CoverCrops
+CoverCropTradWED       	CoverCrops
+CoverCropTradWEO       	CoverCrops
+CoverCropTradWEA       	CoverCrops
+UrbFilterRR            	StormwaterManagement
+UrbFilterST            	StormwaterManagement
+BarnRunoffCont         	FeedingSpaceManagement
+LoafLot                	FeedingSpaceManagement
+CoverCropTradWND       	CoverCrops
+CoverCropTradWNO       	CoverCrops
+BioRetUDAB             	StormwaterManagement
+BioSwale               	StormwaterManagement
+PermPavSVUDAB          	StormwaterManagement
+PermPavNoSVUDAB        	StormwaterManagement
+VegOpChanNoUDAB        	StormwaterManagement
+Injection              	ManureIncorporation
+CoverCropTradWLD       	CoverCrops
+IncorpLowEarly         	ManureIncorporation
+IncorpHighEarly        	ManureIncorporation
+CoverCropTradWLO       	CoverCrops
+IncorpLowLate          	ManureIncorporation
+IncorpHighLate         	ManureIncorporation
+CoverCropTradBED       	CoverCrops
+CoverCropTradNutOHND   	CoverCrops
+CoverCropTradBEO       	CoverCrops
+CoverCropTradBEA       	CoverCrops
+CoverCropTradBND       	CoverCrops
+CoverCropTradBNO       	CoverCrops
+FTW1                   	FloatingTreatmentWetlands
+FTW2                   	FloatingTreatmentWetlands
+FTW3                   	FloatingTreatmentWetlands
+FTW4                   	FloatingTreatmentWetlands
+FTW5                   	FloatingTreatmentWetlands
+CoverCropTradNutOHNO   	CoverCrops
+CoverCropTradFED       	CoverCrops
+CoverCropTradFEO       	CoverCrops
+CaptureReuse           	IrrigationWaterCaptureReuse
+CoverCropComEarly      	CoverCrops
+CoverCropComNormal     	CoverCrops
+CoverCropComLate       	CoverCrops
+CoverCropTradNutARNO   	CoverCrops
+CoverCropTradNutOHED   	CoverCrops
+CoverCropTradNutOHEO   	CoverCrops
+CoverCropTradFEA       	CoverCrops
+CoverCropTradFPED      	CoverCrops
+CoverCropTradFPEO      	CoverCrops
+CoverCropTradFPEA      	CoverCrops
+DitchFilter            	DitchFilter
+CoverCropTradFPND      	CoverCrops
+CoverCropTradFPNO      	CoverCrops
+CoverCropTradLED       	CoverCrops
+CoverCropTradLEO       	CoverCrops
+CoverCropTradLEA       	CoverCrops
+CoverCropTradLND       	CoverCrops
+LowResTill             	ConservationTillage
+ConserveTill           	ConservationTillage
+CoverCropTradNutBRED   	CoverCrops
+CoverCropTradLNO       	CoverCrops
+CoverCropTradLGLED     	CoverCrops
+NMCoreN                	NutrientManagementCoreN
+NMCoreP                	NutrientManagementCoreP
+CropIrrMgmt            	CropIrrigationManagement
+NMRateN                	NutrientManagementNRate
+NMRateP                	NutrientManagementPRate
+NMPlaceN               	NutrientManagementNPlacement
+NMPlaceP               	NutrientManagementPPlacement
+NMTimeN                	NutrientManagementNTiming
+NMTimeP                	NutrientManagementPTiming
+UrbanNMPlan            	UrbanNutrientManagement
+UrbanNMPlanHR          	UrbanNutrientManagement
+UrbanNMPlanLR          	UrbanNutrientManagement
+UrbanNMMDCA            	UrbanNutrientManagement
+UrbanNMMDDIY           	UrbanNutrientManagement
+CoverCropTradLGLEO     	CoverCrops
+CoverCropTradLGLEA     	CoverCrops
+CoverCropTradLGLND     	CoverCrops
+CoverCropTradLGLNO     	CoverCrops
+CoverCropTradTED       	CoverCrops
+CoverCropTradTEO       	CoverCrops
+CoverCropTradTEA       	CoverCrops
+CoverCropTradTND       	CoverCrops
+CoverCropTradTNO       	CoverCrops
+CoverCropTradTLD       	CoverCrops
+CoverCropTradTLO       	CoverCrops
+CoverCropTradARED      	CoverCrops
+CoverCropTradAREO      	CoverCrops
+CoverCropTradAREA      	CoverCrops
+CoverCropTradARND      	CoverCrops
+CoverCropTradARNO      	CoverCrops
+CoverCropTradOHED      	CoverCrops
+CoverCropTradOHEO      	CoverCrops
+CoverCropTradOHEA      	CoverCrops
+HRTill                 	ConservationTillage
+VegOpChanNoUDCD        	StormwaterManagement
+PermPavNoSVNoUDAB      	StormwaterManagement
+PermPavNoSVUDCD        	StormwaterManagement
+PermPavSVNoUDAB        	StormwaterManagement
+PermPavSVUDCD          	StormwaterManagement
+BioRetNoUDAB           	StormwaterManagement
+BioRetUDCD             	StormwaterManagement
+SCP1                   	StreetSweeping
+SCP2                   	StreetSweeping
+SCP3                   	StreetSweeping
+SCP4                   	StreetSweeping
+SCP5                   	StreetSweeping
+SCP6                   	StreetSweeping
+SCP7                   	StreetSweeping
+SCP8                   	StreetSweeping
+SCP9                   	StreetSweeping
+SCP10                  	StreetSweeping
+SCP11                  	StreetSweeping
+EandS1                 	ErosionandSedimentControl
+EandS2                 	ErosionandSedimentControl
+EandS3                 	ErosionandSedimentControl
+CoverCropTradOHND      	CoverCrops
+CoverCropTradOHNO      	CoverCrops
+CoverCropTradOKED      	CoverCrops
+CoverCropTradOKEO      	CoverCrops
+CoverCropTradOKEA      	CoverCrops
+CoverCropTradBRED      	CoverCrops
+CoverCropTradBREO      	CoverCrops
+CoverCropTradBREA      	CoverCrops
+CoverCropTradLGHED     	CoverCrops
+CoverCropTradLGHEO     	CoverCrops
+CoverCropTradLGHEA     	CoverCrops
+CoverCropTradLGHND     	CoverCrops
+CoverCropTradLGHNO     	CoverCrops
+CoverCropTradNutRED    	CoverCrops
+CoverCropTradNutREO    	CoverCrops
+CoverCropTradNutRND    	CoverCrops
+CoverCropTradNutRNO    	CoverCrops
+CoverCropTradNutRLD    	CoverCrops
+CoverCropTradNutRLO    	CoverCrops
+CoverCropTradNutWED    	CoverCrops
+CoverCropTradNutWEO    	CoverCrops
+CoverCropTradNutWND    	CoverCrops
+CoverCropTradNutWNO    	CoverCrops
+CoverCropTradNutWLD    	CoverCrops
+CoverCropTradNutWLO    	CoverCrops
+CoverCropTradNutBED    	CoverCrops
+CoverCropTradNutBEO    	CoverCrops
+CoverCropTradNutBND    	CoverCrops
+CoverCropTradNutBNO    	CoverCrops
+CoverCropTradNutFPED   	CoverCrops
+CoverCropTradNutFPEO   	CoverCrops
+CoverCropTradNutFPND   	CoverCrops
+CoverCropTradNutFPNO   	CoverCrops
+CoverCropTradNutTED    	CoverCrops
+CoverCropTradNutTEO    	CoverCrops
+CoverCropTradNutTND    	CoverCrops
+CoverCropTradNutTNO    	CoverCrops
+CoverCropTradNutTLD    	CoverCrops
+CoverCropTradNutTLO    	CoverCrops
+CoverCropTradNutARED   	CoverCrops
+CoverCropTradNutAREO   	CoverCrops
+CoverCropTradNutARND   	CoverCrops
+GrassBuffExclEffN      	AgBuffersUplandEfficiencyN
+GrassBuffersEffN       	AgBuffersUplandEfficiencyN
+ForestBuffExclEffN     	AgBuffersUplandEfficiencyN
+ForestBuffersEffN      	AgBuffersUplandEfficiencyN
+ForestBuffersEffPS     	AgBuffersUplandEfficiencyPS
+ForestBufUrbanEff      	UrbanForestBuffersUplandEfficiency
+ForestBuffExclEffPS    	AgBuffersUplandEfficiencyPS
+GrassBuffersEffPS      	AgBuffersUplandEfficiencyPS
+GrassBuffExclEffPS     	AgBuffersUplandEfficiencyPS
+WetlandRestoreEff      	AgBuffersUplandEfficiencyN
+WetlandCreateEff       	AgBuffersUplandEfficiencyN
+WetlandEnhanceEff      	AgBuffersUplandEfficiencyN
+WetlandRehabilitateEff 	AgBuffersUplandEfficiencyN
+
+param: LOADSRCS :=
+1,Ag Open Space
+2,Full Season Soybeans
+3,Grain with Manure
+4,Grain without Manure
+5,Legume Hay
+6,Silage with Manure
+7,Silage without Manure
+8,Small Grains and Grains
+9,Double Cropped Land
+10,Specialty Crop High
+11,Specialty Crop Low 
+12,Other Agronomic Crops
+13,Other Hay
+14,Pasture
+16,Riparian Pasture Deposition
+17,Permitted Feeding Space
+18,Non-Permitted Feeding Space
+20,Non-Regulated Roads
+21,Non-Regulated Buildings and Other
+22,Non-Regulated Tree Canopy over Impervious
+23,Non-Regulated Tree Canopy over Turf Grass
+25,Non-Regulated Turf Grass
+26,MS4 Roads
+27,MS4 Buildings and Other
+28,MS4 Tree Canopy over Impervious
+29,MS4 Tree Canopy over Turf Grass
+31,MS4 Turf Grass
+32,Regulated Construction
+33,CSS Roads
+34,CSS Buildings and Other
+35,CSS Tree Canopy over Impervious
+36,CSS Tree Canopy over Turf Grass
+38,CSS Turf Grass
+39,CSS Construction
+40,CSS Mixed Open
+41,CSS Forest
+43,Harvested Forest
+44,True Forest
+45,Non-tidal Floodplain Wetland
+46,Headwater or Isolated Wetland
+48,Mixed Open
+49,Water
+50,Stream Bed and Bank
+52,Shoreline
+60,Septic
+61,Rapid Infiltration Basin
+62,Industrial Wastewater Treatment Plant
+63,Municipal Wastewater Treatment Plant
+64,Combined Sewer Overflow
+
+param: cost :=
+
+
+param: availacres :=
+N51133RL0_6450_0000, 1,20.344587326049805
+N51133RL0_6450_0000, 2,1612.93115234375
+N51133RL0_6450_0000, 3,796.8779907226562
+N51133RL0_6450_0000, 4,3630.222412109375
+N51133RL0_6450_0000, 5,9.065044403076172
+N51133RL0_6450_0000, 6,3.7575430870056152
+N51133RL0_6450_0000, 7,0.6630958914756775
+N51133RL0_6450_0000, 8,98.2786865234375
+N51133RL0_6450_0000, 9,3391.011962890625
+N51133RL0_6450_0000, 10,15.571359634399414
+N51133RL0_6450_0000, 11,30.714366912841797
+N51133RL0_6450_0000, 12,229.6746368408203
+N51133RL0_6450_0000, 13,114.90924835205078
+N51133RL0_6450_0000, 14,449.5252990722656
+N51133RL0_6450_0000, 17,0
+N51133RL0_6450_0000, 18,0.41485556960105896
+N51133RL0_6450_0000, 20,597.0846557617188
+N51133RL0_6450_0000, 21,616.1898803710938
+N51133RL0_6450_0000, 22,498.1373291015625
+N51133RL0_6450_0000, 23,2073.472900390625
+N51133RL0_6450_0000, 25,2907.484130859375
+N51133RL0_6450_0000, 26,0
+N51133RL0_6450_0000, 27,0
+N51133RL0_6450_0000, 28,0
+N51133RL0_6450_0000, 29,0
+N51133RL0_6450_0000, 31,0
+N51133RL0_6450_0000, 32,0.10300470888614655
+N51133RL0_6450_0000, 33,0
+N51133RL0_6450_0000, 34,0
+N51133RL0_6450_0000, 35,0
+N51133RL0_6450_0000, 36,0
+N51133RL0_6450_0000, 38,0
+N51133RL0_6450_0000, 39,0
+N51133RL0_6450_0000, 40,0
+N51133RL0_6450_0000, 41,0
+N51133RL0_6450_0000, 43,591.0875854492188
+N51133RL0_6450_0000, 44,36501.7109375
+N51133RL0_6450_0000, 45,808.3856811523438
+N51133RL0_6450_0000, 46,815.658447265625
+N51133RL0_6450_0000, 48,818.258544921875
+N51133RL0_6450_0000, 49,1409.3690185546875
+
+
+    
+    
+#param BMP{BMPGRP} symbolic ;
+#param:
+#    V: BMP :=  # BMP group id numbers after comment
+#    1  ConPlan  # 3
+#    2  AgStormEff  # 16
+#    3  GrassBuffExclEffN  # 22
+#    4  GrassBuffersEffN
+#    5  ForestBuffExclEffN
+    
+#set Indices := 1 2 3 11 15 16 18 19 20 44 148 153 154 165 170 172 173 174 179 180 183 184 187;
+
+#print {i in Indices: i != last(Indices)}: {j in i .. next(i) - 1} BMPj];
+
+#param: cost :=
