@@ -1,11 +1,12 @@
 # Tests For LRSEGS N51133RL0_6450_0000 in Northumberland, VA (LRSEGSid=1677)
+# Land Segment (geographyid=6465) (with geographytypeid=17)
 # FIPS=51133
 # countyid=65
 # stateid=7
 # totalacres=58,040.90
 # totalacresincludingtidalwetlands=60,642.83
 #
-# Baseconditionid=32
+# BaseYear=2010 (Baseconditionid=29)
 #
 # Agencies present (Only one!) : agencyid=9 (NONFED), with 58,040.90 acres
 #   So, we're neglecting to include the AGENCY set for now
@@ -20,9 +21,13 @@
 #   The BMPS set elements (BMPS) are in source.TblBMPS
 #   The BMP-group set elements (BMPGRPS) are in source.TblBMPS
 #  
-#   The acresavail parameter data
 #   The cost parameter data (cost) is in metadata.TblCostBMPSLand
 #   The efficiency parameter data (e) is in source.TblBmpEfficiency
+#
+#   The target percent load reduction (tau)
+#   The total acres available come from 
+#
+#   The base nutrient loads come from a CAST report of EOS loads for a "No-Action scenario"
 # 
 # 2018
 
@@ -54,7 +59,6 @@ param E {b in BMPS, p in PLTNTS, l in LRSEGS, lambda in LOADSRCS};  # effectiven
 param tau {l in LRSEGS, p in PLTNTS};  # target percent load reduction
 param T {l in LRSEGS, lambda in LOADSRCS} >= 0;  # total acres available in an lrseg/load source
     # or should it be "acresavail {LRSEGS}"?
-
 
 #param r {l in LRSEGS} >= 0;  # total number of load sources in each LRSEG
 #param m {psi in LOADSRCGRPS} >= 0;  # total number of load sources in each LOADSRCGRP
