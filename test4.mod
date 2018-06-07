@@ -13,23 +13,24 @@
 #   So, we're neglecting to include the AGENCY set for now
 #
 # Data sources:
-#   The pollutant set elements (PLTNTS) are just {N, P, S}
-#   The land river segment set elements (LRSEGS) are in source.TblLandRiverSegment
+#   The (PLTNTS) pollutant set elements are just {N, P, S}
+#   The (LRSEGS) land river segment set elements are in source.TblLandRiverSegment
 #
-#   The load source set elements (LOADSRCS) are in source.TblLoadSource
-#   The load source group set elements (LOADSRCGRPS) are in source.TblLoadSourceGroup
+#   The (LOADSRCS) load source set elements are in source.TblLoadSource
+#   The (LOADSRCGRPS) load source group set elements are in source.TblLoadSourceGroup
 #
-#   The BMPS set elements (BMPS) are in source.TblBMPS
-#   The BMP-group set elements (BMPGRPS) are in source.TblBMPS
-#  
-#   The cost parameter data (cost) is in metadata.TblCostBMPSLand
-#   The efficiency parameter data (e) is in source.TblBmpEfficiency
+#   The (BMPs) BMPS set elements are in source.TblBMPS
+#   The (BMPGRPS) BMP-group set elements are in source.TblBMPS
 #
-#   The target percent load reduction (tau)
-#   The total acres available come from 
 #
-#   The base nutrient loads come from a CAST report of EOS loads for a "No-Action scenario"
-# 
+#   The (c) cost parameter data is in metadata.TblCostBMPSLand
+#   The (E) efficiency parameter data is in source.TblBmpEfficiency
+#
+#   The (tau) target percent load reduction (tau) are currently made-up values
+#   The (phi) base loading rate of pollutants (phi) come from a CAST report of EOS loads for a "No-Action scenario"
+#
+#   The (T) total acres available are in source.TblLandUsePreBmp
+#
 # 2018
 
 model;
@@ -46,13 +47,13 @@ set BMPS;
 set BMPGRPS;
 set BMPGRPING within {BMPS, BMPGRPS};  # BMPGRPING is one large set of pairs,
                                        # such that (b, gamma) is a member
-                                       # of GRPING if and only bmp b belongs 
+                                       # of GRPING if and only bmp b belongs
                                        # to group gamma.
 
 #  set GRPING {BMPGRPS} within BMPS
 # For each gamma in BMPGRPS,
 # there is a separate set GRPING[gamma],
-# which is the set of BMPSs belonging to bmp-group gamma. 
+# which is the set of BMPSs belonging to bmp-group gamma.
 
 # ---- Parameters ---- #
 param c {b in BMPS} >= 0;  # cost per acre of BMP b
@@ -61,7 +62,7 @@ param E {b in BMPS, p in PLTNTS, l in LRSEGS, lambda in LOADSRCS};  # effectiven
 param tau {l in LRSEGS, p in PLTNTS};  # target percent load reduction
 param phi {l in LRSEGS, lambda in LOADSRCS, p in PLTNTS};  # base nutrient load per load source
     # or should it be "acresavail {LRSEGS}"?
-    
+
 param T {l in LRSEGS, lambda in LOADSRCS} >= 0;  # total acres available in an lrseg/load source
 
 #param r {l in LRSEGS} >= 0;  # total number of load sources in each LRSEG
@@ -69,10 +70,10 @@ param T {l in LRSEGS, lambda in LOADSRCS} >= 0;  # total acres available in an l
 #param n {gamma in BMPGRPS} >= 0;  # total number of BMPs in each BMPGRP
 # ^ These parameters (r, m, n) might not be necessary
 
-param originalload {l in LRSEGS, p in PLTNTS} = 
+param originalload {l in LRSEGS, p in PLTNTS} =
     sum {lambda in LOADSRCS} phi[l, lambda, p] * T[l, lambda];
 param reducedload {l in LRSEGS, p in PLTNTS};  # will be calculated as a constraint
-    
+
 # for each group gamma, the sum should be over all BMPs b such that (b,gamma) is a valid pair
 # will be calculated as a constraint
 param F {gamma in BMPGRPS, l in LRSEGS, lambda in LOADSRCGRPS, p in PLTNTS};  # In-group Pass Through Factor
@@ -87,14 +88,14 @@ var x {BMPS, LRSEGS, LOADSRCS} >= 0;
     # Achieve the Target Load Reduction
     # (Intermediate Calculation) In-Group Pass Through Factor
 subject to InGroupFactor {gamma in BMPGRPS, l in LRSEGS, lambda in LOADSRCS, p in PLTNTS}:
-    F[gamma,l,lambda,p] = 
+    F[gamma,l,lambda,p] =
     1 - sum {b in BMPS: (b,gamma) in BMPGRPING} (x[b,l,lambda]/T[l,lambda]) * E[b,p,l,lambda];
     # (Intermediate Calculation) All-Group Pass Through Factor
 subject to AllGroupFactor {l in LRSEGS, lambda in LOADSRCGRPS, p in PLTNTS}:
     Fstar[l,lambda,p] = prod {gamma in BMPGRPS} F[gamma,l,lambda,p];
     # (Intermediate Calculation) Reduced Pollutant Load
 subject to ReducedLoadCalc {l in LRSEGS, p in PLTNTS}:
-    reducedload[l,p] = 
+    reducedload[l,p] =
     sum {lambda in LOADSRCS} phi[l,lambda,p] * T[l,lambda] * Fstar[l,lambda,p];
     # (main)
 subject to TargetReduction {l in LRSEGS, p in PLTNTS}:
@@ -107,11 +108,11 @@ subject to AdditiveBMPSAcreBound {gamma in BMPGRPS, l in LRSEGS, lambda in LOADS
 # ---- Objective ---- #
 minimize Total_Cost:
     sum {l in LRSEGS, lambda in LOADSRCS, b in BMPS} c[b] * x[b,l,lambda];
-    
-          
+
+
             #sum {j in 1..4} a[i,j]/x[j]<=b[i];
 
-# 
+#
 #let x[1] := 1;
 #let x[2] := 1;
 #let x[3] := 1;
