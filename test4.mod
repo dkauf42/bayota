@@ -7,6 +7,7 @@
 # totalacresincludingtidalwetlands=60,642.83
 #
 # BaseYear=2010 (Baseconditionid=29)
+# CostProfile=Watershed (costprofileid=4)
 #
 # Agencies present (Only one!) : agencyid=9 (NONFED), with 58,040.90 acres
 #   So, we're neglecting to include the AGENCY set for now
