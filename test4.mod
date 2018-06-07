@@ -76,8 +76,8 @@ param reducedload {l in LRSEGS, p in PLTNTS};  # will be calculated as a constra
 
 # for each group gamma, the sum should be over all BMPs b such that (b,gamma) is a valid pair
 # will be calculated as a constraint
-param F {gamma in BMPGRPS, l in LRSEGS, lambda in LOADSRCGRPS, p in PLTNTS};  # In-group Pass Through Factor
-param Fstar {l in LRSEGS, lambda in LOADSRCGRPS, p in PLTNTS};  # In-group Pass Through Factor
+param F {gamma in BMPGRPS, l in LRSEGS, lambda in LOADSRCS, p in PLTNTS};  # In-group Pass Through Factor
+param Fstar {l in LRSEGS, lambda in LOADSRCS, p in PLTNTS};  # In-group Pass Through Factor
 
 
 # ---- Variables ---- #
@@ -91,7 +91,7 @@ subject to InGroupFactor {gamma in BMPGRPS, l in LRSEGS, lambda in LOADSRCS, p i
     F[gamma,l,lambda,p] =
     1 - sum {b in BMPS: (b,gamma) in BMPGRPING} (x[b,l,lambda]/T[l,lambda]) * E[b,p,l,lambda];
     # (Intermediate Calculation) All-Group Pass Through Factor
-subject to AllGroupFactor {l in LRSEGS, lambda in LOADSRCGRPS, p in PLTNTS}:
+subject to AllGroupFactor {l in LRSEGS, lambda in LOADSRCS, p in PLTNTS}:
     Fstar[l,lambda,p] = prod {gamma in BMPGRPS} F[gamma,l,lambda,p];
     # (Intermediate Calculation) Reduced Pollutant Load
 subject to ReducedLoadCalc {l in LRSEGS, p in PLTNTS}:
