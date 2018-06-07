@@ -57,16 +57,17 @@ set BMPGRPING within {BMPS, BMPGRPS};  # BMPGRPING is one large set of pairs,
 # ---- Parameters ---- #
 param c {b in BMPS} >= 0;  # cost per acre of BMP b
 param E {b in BMPS, p in PLTNTS, l in LRSEGS, lambda in LOADSRCS};  # effectiveness per acre of BMP b
+
 param tau {l in LRSEGS, p in PLTNTS};  # target percent load reduction
-param T {l in LRSEGS, lambda in LOADSRCS} >= 0;  # total acres available in an lrseg/load source
+param phi {l in LRSEGS, lambda in LOADSRCS, p in PLTNTS};  # base nutrient load per load source
     # or should it be "acresavail {LRSEGS}"?
+    
+param T {l in LRSEGS, lambda in LOADSRCS} >= 0;  # total acres available in an lrseg/load source
 
 #param r {l in LRSEGS} >= 0;  # total number of load sources in each LRSEG
 #param m {psi in LOADSRCGRPS} >= 0;  # total number of load sources in each LOADSRCGRP
 #param n {gamma in BMPGRPS} >= 0;  # total number of BMPs in each BMPGRP
 # ^ These parameters (r, m, n) might not be necessary
-
-param phi {l in LRSEGS, lambda in LOADSRCS, p in PLTNTS};  # base nutrient load per load source
 
 param originalload {l in LRSEGS, p in PLTNTS} = 
     sum {lambda in LOADSRCS} phi[l, lambda, p] * T[l, lambda];
