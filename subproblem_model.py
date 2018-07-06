@@ -36,7 +36,8 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
     model.tau = oe.Param(model.LRSEGS,
                          model.PLTNTS,
                          initialize=tau,
-                         within=oe.NonNegativeReals)
+                         within=oe.NonNegativeReals,
+                         mutable=True)
     # base nutrient load per load source
     model.phi = oe.Param(model.LRSEGS,
                          model.LOADSRCS,
