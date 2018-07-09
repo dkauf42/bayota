@@ -1,8 +1,5 @@
 import os
-import csv
-import numpy as np
 import pandas as pd
-from itertools import islice
 
 
 class DataLoader:

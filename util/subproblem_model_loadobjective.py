@@ -1,5 +1,4 @@
 import pyomo.environ as oe
-from pyomo.opt import SolverFactory
 
 
 def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, bmpsrclinks, bmpgrpsrclinks,
