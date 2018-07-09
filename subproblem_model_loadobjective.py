@@ -8,7 +8,8 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
     model = oe.ConcreteModel()
 
     """ Sets """
-    model.PLTNTS = oe.Set(initialize=pltnts)
+    model.PLTNTS = oe.Set(initialize=pltnts,
+                          ordered=True)
     model.LRSEGS = oe.Set(initialize=lrsegs)
 
     model.BMPS = oe.Set(initialize=bmps)
@@ -104,7 +105,7 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
         return temp
     model.PercentReduction = oe.Objective(model.PLTNTS,
                                           rule=PercentReduction_rule,
-                                          sense=oe.minimize)
+                                          sense=oe.maximize)
 
     return model
 
