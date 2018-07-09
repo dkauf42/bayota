@@ -44,10 +44,12 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
                        initialize=t,
                        within=oe.NonNegativeReals)
     # loading before any new BMPs have been implemented
-    def originalload_rule(model, l, p):
-        return sum((model.phi[l, lmbda, p] * model.T[l, lmbda]) for lmbda in model.LOADSRCS)
-    model.originalload = oe.Param(model.LRSEGS,
-                                  model.PLTNTS,
+    def originalload_rule(model, p):
+        temp = sum([(model.phi[l, lmbda, p] * model.T[l, lmbda])
+                    for l in model.LRSEGS
+                    for lmbda in model.LOADSRCS])
+        return temp
+    model.originalload = oe.Param(model.PLTNTS,
                                   initialize=originalload_rule)
     # upper bound on total cost
     model.totalcostupperbound = oe.Param(initialize=totalcostupperbound,
@@ -85,7 +87,7 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
 
     """ Objective Function """
     # Relative load reductions
-    def PercentReduction_rule(model, l, p):
+    def PercentReduction_rule(model, p):
         newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
                        oe.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
                                           if ((model.T[l, lmbda] > 1e-6) &
@@ -96,11 +98,11 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
                                 if (gamma, lmbda) in model.BMPGRPSRCLINKS
                                 else 1
                                 for gamma in model.BMPGRPS])
+                       for l in model.LRSEGS
                        for lmbda in model.LOADSRCS])
-        temp = ((model.originalload[l, p] - newload) / model.originalload[l, p]) * 100
+        temp = ((model.originalload[p] - newload) / model.originalload[p]) * 100
         return temp
-    model.PercentReduction = oe.Objective(model.LRSEGS,
-                                          model.PLTNTS,
+    model.PercentReduction = oe.Objective(model.PLTNTS,
                                           rule=PercentReduction_rule,
                                           sense=oe.minimize)
 
