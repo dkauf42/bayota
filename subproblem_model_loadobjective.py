@@ -3,7 +3,7 @@ from pyomo.opt import SolverFactory
 
 
 def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, bmpsrclinks, bmpgrpsrclinks,
-                           c, e, tau, phi, t, totalcostupperbound):
+                           c, e, phi, t, totalcostupperbound):
 
     model = oe.ConcreteModel()
 
@@ -32,12 +32,6 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
                        model.LOADSRCS,
                        initialize=e,
                        within=oe.NonNegativeReals)
-    # target percent load reduction
-    model.tau = oe.Param(model.LRSEGS,
-                         model.PLTNTS,
-                         initialize=tau,
-                         within=oe.NonNegativeReals,
-                         mutable=True)
     # base nutrient load per load source
     model.phi = oe.Param(model.LRSEGS,
                          model.LOADSRCS,
@@ -90,7 +84,7 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
                                                 rule=AdditiveBMPSAcreBound_rule)
 
     """ Objective Function """
-    # Relative load reductions must be greater than the specified target percentages (tau)
+    # Relative load reductions
     def TargetPercentReduction_rule(model, l, p):
         newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
                        oe.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
