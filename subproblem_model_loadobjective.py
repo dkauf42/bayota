@@ -85,7 +85,7 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
 
     """ Objective Function """
     # Relative load reductions
-    def TargetPercentReduction_rule(model, l, p):
+    def PercentReduction_rule(model, l, p):
         newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
                        oe.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
                                           if ((model.T[l, lmbda] > 1e-6) &
@@ -99,10 +99,10 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
                        for lmbda in model.LOADSRCS])
         temp = ((model.originalload[l, p] - newload) / model.originalload[l, p]) * 100
         return temp
-    model.TargetPercentReduction = oe.Objective(model.LRSEGS,
-                                                model.PLTNTS,
-                                                rule=TargetPercentReduction_rule,
-                                                sense=oe.minimize)
+    model.PercentReduction = oe.Objective(model.LRSEGS,
+                                          model.PLTNTS,
+                                          rule=PercentReduction_rule,
+                                          sense=oe.minimize)
 
     return model
 
