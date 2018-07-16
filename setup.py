@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from setuptools import setup, Command
+from setuptools import setup, Command, find_packages
 
 
 class CleanCommand(Command):
@@ -27,29 +27,29 @@ with open('LICENSE') as f:
 
 install_requires = ['numpy>=1.14.2',
                     'pandas==0.22.0',  # there is currently an issue with pandas==0.23.0
-                    'Pmw>=2.0.1',
-                    'pytz>=2018.3',
-                    'six>=1.11.0',
+                    # 'Pmw>=2.0.1',
+                    # 'pytz>=2018.3',
+                    # 'six>=1.11.0',
                     'tqdm>=4.19.8',
-                    'xlrd>=1.1.0',
-                    'pyDOE>=0.3.8',
-                    'requests',
-                    's3fs',
-                    'dask',
-                    'boto3'
+                    # 'xlrd>=1.1.0',
+                    # 'pyDOE>=0.3.8',
+                    # 'requests',
+                    # 's3fs',
+                    # 'dask',
+                    # 'boto3'
                     ]
 
-setup(name='OptSandbox',
-      version='0.3.0',
+setup(name='CastJeeves',
+      version='0.0.1',
       description='Python package to create CAST scenarios for cost optimization',
       long_description=readme_text,
       author='Daniel Kaufman',
       author_email='dkaufman@chesapeakebay.net',
       url='https://gitlab.com/daka42',
       license=license_text,
-      packages=['sandbox', 'data', 'temp', 'output'],
+      packages=find_packages(),
       include_package_data=True,
       install_requires=install_requires,
-      test_suite="sandbox.tests",
+      test_suite="util.tests",
       cmdclass={'clean': CleanCommand}
       )
