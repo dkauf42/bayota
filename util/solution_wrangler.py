@@ -45,7 +45,9 @@ def get_nonzero_var_df(instance, addcosttbldata=None):
 
     return nonzerodf
 
+
 def get_lagrangemult_df(instance):
+    # Lower Bounds
     zL_df = pd.DataFrame([[k.index(), instance.ipopt_zL_out[k]]
                           for k in instance.ipopt_zL_out.keys()],
                           columns=['key', 'value'])
@@ -54,7 +56,21 @@ def get_lagrangemult_df(instance):
                                      'loadsource': x[2],
                                      'zL': y}
                                     for x, y in zip(zL_df.key, zL_df.value)])
-    return zL_df
+
+    # Upper Bounds
+    zU_df = pd.DataFrame([[k.index(), instance.ipopt_zU_out[k]]
+                          for k in instance.ipopt_zU_out.keys()],
+                          columns=['key', 'value'])
+    zU_df = pd.DataFrame.from_dict([{'bmpshortname': x[0],
+                                     'landriversegment': x[1],
+                                     'loadsource': x[2],
+                                     'zU': y}
+                                    for x, y in zip(zU_df.key, zU_df.value)])
+
+    merged_df = zL_df.merge(zU_df,
+                            on=['bmpshortname', 'landriversegment', 'loadsource'])
+
+    return merged_df
 
 # # Other ways to access the optimal values:
 # mdl.x['HRTill', 'N51133RL0_6450_0000', 'oac'].value

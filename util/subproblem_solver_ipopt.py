@@ -40,12 +40,12 @@ class SolveAndParse:
         # self.instance.display()
 
         # Parse out the Lagrange Multipliers
-        zL_df = get_lagrangemult_df(self.instance)
+        lagrange_df = get_lagrangemult_df(self.instance)
         # Parse out only the optimal variable values that are nonzero
         nzvnames, nzvvalues = get_nonzero_var_names_and_values(self.instance)
         nonzerodf = get_nonzero_var_df(self.instance, addcosttbldata=self.data.costsubtbl)
-        merged_df = zL_df.merge(nonzerodf,
-                                how='right',
-                                on=['bmpshortname', 'landriversegment', 'loadsource'])
+        merged_df = lagrange_df.merge(nonzerodf,
+                                      how='right',
+                                      on=['bmpshortname', 'landriversegment', 'loadsource'])
 
         return merged_df
