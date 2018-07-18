@@ -280,9 +280,9 @@ class DataLoader:
         """ Tau, """
         Taudict = {}
         for l in self.lrsegsetlist:
-            Taudict[(l, 'N')] = 7
-            Taudict[(l, 'P')] = 7
-            Taudict[(l, 'S')] = 7
+            Taudict[(l, 'N')] = 5
+            Taudict[(l, 'P')] = 5
+            Taudict[(l, 'S')] = 5
 
         tau_df = pd.DataFrame(list(Taudict.items()), columns=['LRSEGS', 'tau'])
         tau_df[['LRSEGS', 'PLTNTS']] = tau_df['LRSEGS'].apply(pd.Series)
@@ -307,7 +307,7 @@ class DataLoader:
         loadssubtbl = Tbl2010NoActionLoads[Tbl2010NoActionLoads['geography'].isin(lrsegfullnames)]
 
         # Go from load source table with geographyfullname to geographyid
-        includecols = ['geography', 'loadsource', '2010 no action_nloadeos', '2010 no action_ploadeos', '2010 no action_sloadeos']
+        includecols = ['geography', 'loadsource', '2010 no action_nloadeot', '2010 no action_ploadeot', '2010 no action_sloadeot']
         loadssubtbl = loadssubtbl.loc[:, includecols].merge(TblGeography, how='inner',
                                                             left_on='geography',
                                                             right_on='geographyfullname')
@@ -332,7 +332,7 @@ class DataLoader:
 
         # make the pollutant names into an index instead of separate columns
         listofdataframes = []
-        pcolnames = ['2010 no action_nloadeos', '2010 no action_ploadeos', '2010 no action_sloadeos']
+        pcolnames = ['2010 no action_nloadeot', '2010 no action_ploadeot', '2010 no action_sloadeot']
         pltntdict = {pcolnames[0]: 'N',
                      pcolnames[1]: 'P',
                      pcolnames[2]: 'S'}
