@@ -67,10 +67,15 @@ def get_lagrangemult_df(instance):
                                      'zU': y}
                                     for x, y in zip(zU_df.key, zU_df.value)])
 
-    merged_df = zL_df.merge(zU_df,
-                            on=['bmpshortname', 'landriversegment', 'loadsource'])
+    print(zL_df)
+    print(zU_df)
+    if zU_df.empty:
+        out_df = zL_df
+    else:
+        out_df = zL_df.merge(zU_df,
+                             on=['bmpshortname', 'landriversegment', 'loadsource'])
 
-    return merged_df
+    return out_df
 
 # # Other ways to access the optimal values:
 # mdl.x['HRTill', 'N51133RL0_6450_0000', 'oac'].value
