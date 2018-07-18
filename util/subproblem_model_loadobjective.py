@@ -53,7 +53,8 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
                                   initialize=originalload_rule)
     # upper bound on total cost
     model.totalcostupperbound = oe.Param(initialize=totalcostupperbound,
-                                         within=oe.NonNegativeReals)
+                                         within=oe.NonNegativeReals,
+                                         mutable=True)
 
     """ Variables """
     model.x = oe.Var(model.BMPS,
