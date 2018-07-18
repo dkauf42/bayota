@@ -67,8 +67,6 @@ def get_lagrangemult_df(instance):
                                      'zU': y}
                                     for x, y in zip(zU_df.key, zU_df.value)])
 
-    print(zL_df)
-    print(zU_df)
     if zU_df.empty:
         out_df = zL_df
     else:
@@ -76,6 +74,26 @@ def get_lagrangemult_df(instance):
                              on=['bmpshortname', 'landriversegment', 'loadsource'])
 
     return out_df
+
+
+def get_dual_df(instance):
+    # Lower Bounds
+    dual_df = pd.DataFrame([[k.index(), instance.dual[k]]
+                            for k in instance.dual.keys()],
+                           columns=['key', 'value'])
+    dual_df.dropna(inplace=True)
+
+    # print(dual_df)
+    # [print(instance.BMPS[x[0]]) for x in dual_df.key]
+
+    dual_df = pd.DataFrame.from_dict([{'bmpshortname': instance.BMPS[x[0]],
+                                       'landriversegment': x[1],
+                                       'loadsource': x[2],
+                                       'dual': y}
+                                      for x, y in zip(dual_df.key, dual_df.value)])
+
+    # print(dual_df)
+    return dual_df
 
 # # Other ways to access the optimal values:
 # mdl.x['HRTill', 'N51133RL0_6450_0000', 'oac'].value
