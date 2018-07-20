@@ -1,3 +1,4 @@
+import re
 import pyomo.environ as oe
 from pyomo.opt import SolverFactory, SolverManagerFactory
 
@@ -49,3 +50,95 @@ class SolveAndParse:
                                       on=['bmpshortname', 'landriversegment', 'loadsource'])
 
         return merged_df
+
+    def parse_output_file(self, filepath):
+        """
+        Parse text at given filepath
+
+        Parameters
+        ----------
+        filepath : str
+            Filepath for file_object to be parsed
+
+        Returns
+        -------
+        data : pd.DataFrame
+            Parsed data
+
+        """
+        # output_file_name = 'ipopt_output_file'  # defined in the ipopt.opt file
+        # output_file_name = 'test_ipopt_output_file.txt'
+        output_file_name = filepath
+
+        rx_vars = re.compile(r'''
+            ^
+            (?P<outputname>[a-zA-Z0-9_ ]*)
+            (?P<componentindex>\[[0-9 ]+\]){
+            (?P<varname>\w*)
+            (?P<varindex>\[\w+[\w,]+\])\}=
+            (?P<value>[\s-]?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?)
+        ''', re.MULTILINE | re.VERBOSE)
+
+        rx_sumiter = re.compile(r'''
+            ^
+            (?:\*+\s+Summary\sof\sIteration:\s)
+            (?P<iterate>\d+):
+        ''', re.MULTILINE | re.VERBOSE)
+
+        def _parse_line(string):
+            """
+            Do a regex search against all defined regexes and
+            return the key and match result of the first matching regex
+
+            """
+            iterator = rx_vars.finditer(string)
+
+            row = []
+            for match in iterator:
+                if match:
+                    row = {'outputname': match.group('outputname'),
+                           'varname': match.group('varname'),
+                           'componentindex': match.group('componentindex'),
+                           'varindex': match.group('varindex'),
+                           'value': match.group('value')
+                           }
+
+                elif match == '':
+                    print('empty string')
+                    return None
+                else:
+                    print('No match')
+                    return None
+
+            return row
+
+        iter_data_dict = {}
+        # open the file and read through it line by line
+        iternum = None
+        with open(output_file_name, 'r') as file_object:
+            #     for lines in range(500000):
+            # #         i+=1
+            #         line = file_object.readline()
+            for line in file_object:
+                # Check if it's a new iteration number
+                match = rx_sumiter.search(line)
+                if match:
+                    iternum = int(match.group('iterate'))  # set new iterate number
+                    if iternum is not None:
+                        iter_data_dict[iternum] = []  # reset data list
+
+                if iternum is not None:
+                    data_line = _parse_line(line)  # at each line check for a match with a regex
+                    if data_line:
+                        iter_data_dict[iternum].append(data_line)
+
+        iter_data_dfs = {}
+        for ii in iter_data_dict.keys():
+            df = pd.DataFrame(iter_data_dict[ii],
+                              columns=['outputname', 'varname', 'componentindex', 'varindex', 'value'])
+            df = df.set_index(['componentindex', 'varindex'])
+            iter_data_dfs[ii] = df
+            print('iterate #: %s' % ii)
+            print(df.head(5))
+
+        return iter_data_dfs
