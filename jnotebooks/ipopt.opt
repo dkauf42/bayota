@@ -1,0 +1,17 @@
+# This is a comment
+
+output_file ipopt_output_file
+file_print_level 8
+
+# Turn off the NLP scaling
+derivative_test first-order
+# derivative_test_perturbation 0.0000001
+derivative_test_tol 0.0000001
+
+point_perturbation_radius 0
+
+# Change the initial barrier parameter
+# mu_init 1e-2
+
+# Set the max number of iterations
+# max_iter 500
