@@ -11,7 +11,7 @@ def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, b
                           ordered=True)
     model.LRSEGS = oe.Set(initialize=lrsegs)
 
-    model.BMPS = oe.Set(initialize=bmps)
+    model.BMPS = oe.Set(initialize=bmps, ordered=True)
     model.BMPGRPS = oe.Set(initialize=bmpgrps)
     model.BMPGRPING = oe.Set(initialize=bmpgrping, dimen=2)
 
