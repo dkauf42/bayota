@@ -138,7 +138,7 @@ class SolveAndParse:
                               columns=['outputname', 'varname', 'componentindex', 'varindex', 'value'])
             df = df.set_index(['componentindex', 'varindex'])
             iter_data_dfs[ii] = df
-            print('iterate #: %s' % ii)
-            print(df.head(5))
+            # print('iterate #: %s' % ii)
+            # print(df.head(5))
 
         return iter_data_dfs
