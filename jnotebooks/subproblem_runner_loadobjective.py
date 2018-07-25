@@ -1,45 +1,22 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import sys
 sys.path.append('..')  # allow this notebook to find equal-level directories
-
-import os
-import pyomo.environ as oe
-import pandas as pd
-from pyomo.opt import SolverFactory, SolverManagerFactory
-from amplpy import AMPL, Environment
-
-from util.subproblem_model_loadobjective import build_subproblem_model
-from util.subproblem_dataloader import DataLoader
-from util.subproblem_solver_ipopt import SolveAndParse
-from util.gjh_wrapper import gjh_solve, make_df
-from vis.acres_bars import acres_bars
-from vis.zL_bars import zL_bars
-
+from importing_modules import *
+# pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
+# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 get_ipython().run_line_magic('pylab', 'inline')
-from datetime import datetime
-
-
-# In[2]:
-
-
-baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/'
-projectpath = os.path.join(baseexppath, 'ampl/OptEfficiencySubProblem/')
-amplappdir = os.path.join(baseexppath, 'ampl/amplide.macosx64/')
-ampl = AMPL(Environment(amplappdir))
 
 
 # In[3]:
 
 
 from sys import path as pylib #im naming it as pylib so that we won't get confused between os.path and sys.path 
-
 # pylib += [os.path.abspath(os.path.join(ROOT_DIR, '../castjeeves'))]
-
 pylib.append(os.path.abspath('/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/CastJeeves'))
 # print(pylib)
 from CastJeeves.jeeves import Jeeves
@@ -52,16 +29,26 @@ cj = Jeeves()
 # print(cj.geo.all_geotypes())
 
 
-# ## Load data for each set, parameter, etc. to define a problem instance
+# ## Create problem instance
 
-# In[5]:
+# In[3]:
 
 
-data = DataLoader(save2file=False)
 
-# ---- Cost bound ----
-data.totalcostupperbound = 2827702
+# Load data for each set, parameter, etc. to define a problem instance
+objwrapper = LoadObj()
+data = objwrapper.load_data(savedata2file=False)
+
+# Set the cost bound ----
+data.totalcostupperbound = 100000
 costboundstr = str(round(data.totalcostupperbound, 1))
+
+# Create concrete problem instance using the separately defined optimization model
+mdl = objwrapper.create_concrete(data=data)
+
+# Retain only the Nitrogen load objective, and deactivate the others
+mdl.PercentReduction['P'].deactivate()
+mdl.PercentReduction['S'].deactivate()
 
 # ---- Solver name ----
 localsolver = True
@@ -72,36 +59,7 @@ solvername = 'ipopt'
 # In[6]:
 
 
-data.phi
-
-
-# ### Create concrete problem instance using the separately defined optimization model
-
-# In[7]:
-
-
-# Note that there is no need to call create_instance on a ConcreteModel
-mdl = build_subproblem_model(pltnts=data.PLTNTS,
-                             lrsegs=data.LRSEGS,
-                             bmps=data.BMPS,
-                             bmpgrps=data.BMPGRPS,
-                             bmpgrping=data.BMPGRPING,
-                             loadsrcs=data.LOADSRCS,
-                             bmpsrclinks=data.BMPSRCLINKS,
-                             bmpgrpsrclinks=data.BMPGRPSRCLINKS,
-                             c=data.c,
-                             e=data.E,
-                             phi=data.phi,
-                             t=data.T,
-                             totalcostupperbound=data.totalcostupperbound)
-
-
-# In[8]:
-
-
-# Retain only the Nitrogen load objective, and deactivate the others
-mdl.PercentReduction['P'].deactivate()
-mdl.PercentReduction['S'].deactivate()
+# data.phi
 
 
 # ## Solve problem instance

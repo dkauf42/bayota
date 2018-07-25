@@ -4,36 +4,33 @@
 # In[1]:
 
 
-import os
-import pyomo.environ as oe
-import pandas as pd
-from pyomo.opt import SolverFactory, SolverManagerFactory
-from util.subproblem_model_loadobjective import build_subproblem_model
-from util.subproblem_dataloader import DataLoader
-from util.subproblem_solver_ipopt import SolveAndParse
-
-from amplpy import AMPL, Environment
+import sys
+sys.path.append('..')  # allow this notebook to find equal-level directories
+from importing_modules import *
+# pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
+# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 get_ipython().run_line_magic('pylab', 'inline')
-from datetime import datetime
 
 
-# In[2]:
-
-
-baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/'
-projectpath = os.path.join(baseexppath, 'ampl/OptEfficiencySubProblem/')
-
-
-# ## Load data for each set, parameter, etc. to define a problem instance
+# ## Create problem instance
 
 # In[3]:
 
 
-data = DataLoader(save2file=False)
+# Load data for each set, parameter, etc. to define a problem instance
+objwrapper = LoadObj()
+data = objwrapper.load_data(savedata2file=False)
 
-# ---- Cost bound ----
-data.totalcostupperbound = 159202.8992381379
+# Set the cost bound ----
+data.totalcostupperbound = 100000
 costboundstr = str(round(data.totalcostupperbound, 1))
+
+# Create concrete problem instance using the separately defined optimization model
+mdl = objwrapper.create_concrete(data=data)
+
+# Retain only the Nitrogen load objective, and deactivate the others
+mdl.PercentReduction['P'].deactivate()
+mdl.PercentReduction['S'].deactivate()
 
 # ---- Solver name ----
 localsolver = True
@@ -41,40 +38,15 @@ solvername = 'ipopt'
 # solvername = 'minos'
 
 
-# ### Create concrete problem instance using the separately defined optimization model
+# ## Solve problem instance
 
 # In[4]:
 
 
-# Note that there is no need to call create_instance on a ConcreteModel
-mdl = build_subproblem_model(pltnts=data.PLTNTS,
-                             lrsegs=data.LRSEGS,
-                             bmps=data.BMPS,
-                             bmpgrps=data.BMPGRPS,
-                             bmpgrping=data.BMPGRPING,
-                             loadsrcs=data.LOADSRCS,
-                             bmpsrclinks=data.BMPSRCLINKS,
-                             bmpgrpsrclinks=data.BMPGRPSRCLINKS,
-                             c=data.c,
-                             e=data.E,
-                             phi=data.phi,
-                             t=data.T,
-                             totalcostupperbound=data.totalcostupperbound)
+from collections import OrderedDict
 
-
-# In[5]:
-
-
-# Retain only the Nitrogen load objective, and deactivate the others
-mdl.PercentReduction['P'].deactivate()
-mdl.PercentReduction['S'].deactivate()
-
-
-# ## Solve problem instance
-
-# In[6]:
-
-
+df_list = []
+solution_objectives = OrderedDict()
 for ii in range(1, 10):
     print(ii)
     
@@ -89,6 +61,11 @@ for ii in range(1, 10):
     merged_df = myobj.solve()
     print('\nObjective is: %d' % oe.value(mdl.PercentReduction['N']))
     
+    # Label this run in the dataframe
+    merged_df['totalcostupperbound'] = mdl.totalcostupperbound.value
+    
+    # Save this run's objective value in a list
+    solution_objectives[mdl.totalcostupperbound.value] = oe.value(mdl.PercentReduction['N'])
     
     # ---- Make zL Figure ----
     # zL_df_filtered = merged_df.loc[abs(merged_df['zL'])>0.45,:].copy()
@@ -100,44 +77,104 @@ for ii in range(1, 10):
 
     ax.set_position([0.3,0.1,0.5,0.8])
 
-
     filenamestr = ''.join(['output/loadobj_zL_costbound', costboundstr, '_', solvername, '_',
                            datetime.now().strftime('%Y-%m-%d_%H%M%S'),
                            '.png'])
     plt.savefig(os.path.join(projectpath, filenamestr))
     
-    
-    
-    # ---- Make acres Figure ----
-    sorteddf = merged_df.sort_values(by='acres')
-    coststrs = ['(%.1f, %.1f)' % (round(x,1), round(y,1)) for x, y in zip(list(sorteddf['totalannualizedcostperunit']),
-                                                                          list(sorteddf['totalinstancecost']))]
-    keystrs = [str([x, y]) for x, y in zip(sorteddf['bmpshortname'], sorteddf['loadsource'])]
-    # Make Figure
-    fig = plt.figure(figsize=(10, 4))
-    rects = plt.barh(y=keystrs, width=sorteddf['acres'])
-    ax = plt.gca()
-
-    for rect, label in zip(rects, coststrs):
-        width = rect.get_width()
-        plt.text(width + 0.1, rect.get_y() + rect.get_height() / 2, label,
-                ha='left', va='center')
-
-    objstr = ''.join(['Objective is: ', str(round(oe.value(mdl.PercentReduction['N']),1))])
-    coststr = ''.join(['Total cost is: ', str(round(oe.value(mdl.Total_Cost.body),1))])
-    labelstr = 'labels are (cost per unit, total bmp instance cost)'
-    plt.title('\n'.join([objstr, coststr, labelstr]))
-
-    ax.set_position([0.3,0.1,0.5,0.8])
+    # ---- Acres Figure ----
+    sorteddf_byacres = merged_df.sort_values(by='acres')
 
     filenamestr = ''.join(['output/loadobj_x_costbound', costboundstr, '_', solvername, '_',
-                           datetime.now().strftime('%Y-%m-%d_%H%M%S'),
-                           '.png'])
-    plt.savefig(os.path.join(projectpath, filenamestr))
+                           datetime.now().strftime('%Y-%m-%d_%H%M%S'), '.png'])
+    savefilepathandname = os.path.join(projectpath, filenamestr)
+
+    objstr = ''.join(['Objective is: ', str(round(oe.value(mdl.PercentReduction['N']),2))])
+    coststr = ''.join(['Total cost is: ', str(round(oe.value(mdl.Total_Cost.body),1))])
+    titlestr = '\n'.join([objstr, coststr, 'labels are (cost per unit, total bmp instance cost)'])
+
+    acres_bars(df=sorteddf_byacres, instance=mdl, titlestr=titlestr,
+               savefig=True, savefilepathandname=savefilepathandname)
     
+    df_list.append(merged_df)
+    
+
+
+# In[5]:
+
+
+alldfs = pd.concat(df_list)
+print(type(alldfs))
+print(alldfs.shape)
+
+alldfs['x'] = list(zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource, alldfs.totalannualizedcostperunit))
+display(alldfs.head(2))
+
+df_piv = alldfs.pivot(index='totalcostupperbound', columns='x', values='acres')
+
+df_piv.reset_index(level=['totalcostupperbound'], inplace=True)  # make totalcostupperbound into a regular column
+display(df_piv.head(3))
+
+df_piv['range']=df_piv.drop('totalcostupperbound', axis=1).apply(lambda x : list((0, int(math.ceil(np.nanmax(x))+1))), 1)
+display(df_piv.tail(3))
+
+# get unique BMP-LRseg-Loadsource combinations:
+# ucombos = set(zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource))
+
+# solution_objectives
+df_piv['objective'] = df_piv['totalcostupperbound'].map(solution_objectives)
+df_piv.head(3)
+
+
+# In[6]:
+
+
+# plotly.plot(df_piv['totalcostupperbound'], df_piv['objective'])
+
+# Create a trace
+trace = go.Scatter(
+    x = df_piv['totalcostupperbound'],
+    y = df_piv['objective']
+)
+
+data = [trace]
+
+# Edit the layout
+layout = dict(title = 'Max Load Reduction vs. Total Cost Constraint',
+              xaxis = dict(title = 'Total Cost ($) Upper Bound Constraint'),
+              yaxis = dict(title = 'Maximal Load Reduction (%)'),
+              paper_bgcolor='rgba(0,0,0,0)',
+              plot_bgcolor='rgba(0,0,0,0)'
+              )
+
+fig = dict(data=data, layout=layout)
+py.iplot(fig, filename='styled-line')
+
+
+py.image.save_as(fig, filename='a-simple-plot_loadobj.png', scale=5)
 
 
 # In[7]:
+
+
+fig = plt.figure(figsize=(10, 12))
+ax = sns.heatmap(df_piv[df_piv.columns.difference(['totalcostupperbound', 'range', 'objective'])].T,
+                cmap='viridis',
+                cbar_kws={'label': 'acres'},
+                xticklabels=list( '%s\n(%.1f)' % ("${0:,.0f}".format(x),y)
+                                 for x,y in
+                                 zip(df_piv['totalcostupperbound'], round(df_piv['objective'],1))
+                                )
+                )
+plt.xlabel("totalcostupperbound (max % load reduction achieved)")
+
+filenamestr = ''.join(['output/loadobj_heatmap_costboundsequence_', solvername, '_',
+                           datetime.now().strftime('%Y-%m-%d_%H%M%S'), '.png'])
+savefilepathandname = os.path.join(projectpath, filenamestr)
+plt.savefig(savefilepathandname, bbox_inches='tight')
+
+
+# In[8]:
 
 
 # # Other ways to access the optimal values:
@@ -152,7 +189,7 @@ for ii in range(1, 10):
 #                 print('(%s, %s): %d' % (b, lmbda, bval))
 
 
-# In[8]:
+# In[9]:
 
 
 # from matplotlib import pyplot as plt

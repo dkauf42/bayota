@@ -6,45 +6,32 @@
 
 import sys
 sys.path.append('..')  # allow this notebook to find equal-level directories
-
-import os
-import pyomo.environ as oe
-import pandas as pd
-from pyomo.opt import SolverFactory, SolverManagerFactory
-from amplpy import AMPL, Environment
-
-from util.subproblem_model_costobjective import build_subproblem_model
-from util.subproblem_dataloader import DataLoader
-from util.subproblem_solver_ipopt import SolveAndParse
-from util.gjh_wrapper import gjh_solve, make_df
-from vis.acres_bars import acres_bars
-from vis.zL_bars import zL_bars
-
+from importing_modules import *
+# pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
+# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 get_ipython().run_line_magic('pylab', 'inline')
-from datetime import datetime
 
 
-# In[2]:
-
-
-baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/'
-projectpath = os.path.join(baseexppath, 'ampl/OptEfficiencySubProblem/')
-amplappdir = os.path.join(baseexppath, 'ampl/amplide.macosx64/')
-ampl = AMPL(Environment(amplappdir))
-
-
-# ## Load data for each set, parameter, etc. to define a problem instance
+# ## Create problem instance
 
 # In[3]:
 
 
-data = DataLoader(save2file=False)
+# Load data for each set, parameter, etc. to define a problem instance
+objwrapper = CostObj()
+data = objwrapper.load_data(savedata2file=False)
 
-# ---- tau target load ----
+# ---- Set the tau target load ----
 for k in data.tau:
     data.tau[k] = 12
-    print(data.tau[k])
     taustr = str(round(data.tau[k], 1))
+# Print the target load reduction values
+for l in mdl.LRSEGS:
+    for p in mdl.PLTNTS:
+        print('%s: %d' % (mdl.tau[l,p], mdl.tau[l,p].value))
+
+# Create concrete problem instance using the separately defined optimization model
+mdl = objwrapper.create_concrete(data=data)
 
 # ---- Solver name ----
 localsolver = True
@@ -52,39 +39,23 @@ solvername = 'ipopt'
 # solvername = 'minos'
 
 
-# ## Create concrete problem instance using the separately defined optimization model
-
-# In[4]:
+# In[47]:
 
 
-# Note that there is no need to call create_instance on a ConcreteModel
-mdl = build_subproblem_model(pltnts=data.PLTNTS,
-                             lrsegs=data.LRSEGS,
-                             bmps=data.BMPS,
-                             bmpgrps=data.BMPGRPS,
-                             bmpgrping=data.BMPGRPING,
-                             loadsrcs=data.LOADSRCS,
-                             bmpsrclinks=data.BMPSRCLINKS,
-                             bmpgrpsrclinks=data.BMPGRPSRCLINKS,
-                             c=data.c,
-                             e=data.E,
-                             tau=data.tau,
-                             phi=data.phi,
-                             t=data.T)
+for index in mdl.x:
+    mdl.x[index].value=-1
+#             x_value = oe.value(v[index])
 
 
-# In[5]:
+# In[40]:
 
 
-# Print the target load reduction values
-for l in mdl.LRSEGS:
-    for p in mdl.PLTNTS:
-        print('%s: %d' % (mdl.tau[l,p], mdl.tau[l,p].value))
+# mdl.x.pprint()
 
 
 # ## Solve problem instance
 
-# In[6]:
+# In[52]:
 
 
 myobj = SolveAndParse(instance=mdl, data=data, localsolver=localsolver, solvername=solvername)
@@ -92,7 +63,7 @@ merged_df = myobj.solve()
 print('\nObjective is: %d' % oe.value(mdl.Total_Cost))
 
 
-# In[8]:
+# In[49]:
 
 
 output_file_name = 'ipopt_output_file'  # defined in the ipopt.opt file
@@ -101,38 +72,66 @@ output_file_name = 'ipopt_output_file'  # defined in the ipopt.opt file
 dict_of_iterates = myobj.parse_output_file(output_file_name)
 
 
-# In[33]:
+# In[43]:
+
+
+dict_of_iterates.keys()
+
+
+# In[50]:
 
 
 varvals = {}
 varvals[0] = []
 for ii in dict_of_iterates.keys():
     df = dict_of_iterates[ii]
-    varvals[0].append(float(df.loc[(df.outputname=='curr_x') &
-                                   (df.varname=='x') & 
-                                   (df.index.get_level_values('varindex')=='[CoverCropTradRED,N51133RL0_6450_0000,gom]')]['value'][0]))
-print(varvals[0])
+#     display(df.head(5))
+    val = float(df.loc[(df.outputname=='curr_x') &
+                       (df.varname=='x') & 
+                       (df.index.get_level_values('varindex')=='[ConPlan,N42071SL2_2410_2700,pas]')]['value'][0])
+#     print(val)
+    varvals[0].append(val)
 
 varvals[1] = []
 for ii in dict_of_iterates.keys():
     df = dict_of_iterates[ii]
     varvals[1].append(float(df.loc[(df.outputname=='curr_x') &
                                    (df.varname=='x') & 
-                                   (df.index.get_level_values('varindex')=='[UrbanNMPlanHR,N51133RL0_6450_0000,ntg]')]['value'][0]))
-print(varvals[1])
+                                   (df.index.get_level_values('varindex')=='[UrbanNMPlanHR,N42071SL2_2410_2700,ntg]')]['value'][0]))
 
 
-# In[37]:
+# In[51]:
 
 
 # Make Figure
+
+fig = plt.figure(figsize=(10, 4))
+rects = plt.plot(range(len(varvals[0])), varvals[0])
+ax = plt.gca()
+plt.ylabel('varvals[0]')
+plt.xlabel('iteration')
+
+fig = plt.figure(figsize=(10, 4))
+rects = plt.plot(range(len(varvals[1])), varvals[1])
+ax = plt.gca()
+plt.ylabel('varvals[1]')
+plt.xlabel('iteration')
+
 fig = plt.figure(figsize=(10, 4))
 rects = plt.scatter(varvals[0], varvals[1], c=range(len(varvals[1])))
 ax = plt.gca()
 plt.colorbar()
+plt.xlabel('varvals[0]')
+plt.ylabel('varvals[1]')
 
 
 # ## Visualize
+
+# In[46]:
+
+
+merged_df.tail(50)
+
 
 # In[ ]:
 
@@ -165,7 +164,7 @@ filenamestr = ''.join(['output/costobj_x_tau', taustr, '_', solvername, '_',
                        datetime.now().strftime('%Y-%m-%d_%H%M%S'), '.png'])
 savefilepathandname = os.path.join(projectpath, filenamestr)
 
-objstr = ''.join(['Objective is: ', str(mdl.Total_Cost())])
+objstr = ''.join(['Objective is: ', str(round(mdl.Total_Cost(), 2))])
 titlestr = '\n'.join([objstr, 'labels are (cost per unit, total bmp instance cost)'])
 
 acres_bars(df=sorteddf_byacres, instance=mdl, titlestr=titlestr,
