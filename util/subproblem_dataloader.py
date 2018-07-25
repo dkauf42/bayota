@@ -98,7 +98,8 @@ class DataLoader:
         if save2file:
             PLTNTS_df.to_csv('data_PLTNTS.tab', sep=' ', index=False)
 
-        lrsegs_list = ['N51133RL0_6450_0000']
+        # lrsegs_list = ['N51133RL0_6450_0000']
+        lrsegs_list = ['N42071SL2_2410_2700']
         lrsegids = TblLandRiverSegment[TblLandRiverSegment['landriversegment'] == lrsegs_list[0]].lrsegid.tolist()
         self.lrsegsetlist = list([x for x in lrsegs_list])
         self.lrsegsetidlist = lrsegids
