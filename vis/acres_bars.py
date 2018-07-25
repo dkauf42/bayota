@@ -8,8 +8,10 @@ def acres_bars(df=None, instance=None, savefig=True, savefilepathandname=None, t
 
     # ---- Make acres Figure ----
     # sorteddf_byacres = merged_df.sort_values(by='acres')
-    coststrs = [str(x) for x in zip(list(df['totalannualizedcostperunit']),
-                                    list(df['totalinstancecost']))]
+    coststrs = ['(%.1f, %.1f)' %
+                (round(x, 1), round(y, 1))
+                if (y > 1e-6) else ''
+                for x, y in zip(list(df['totalannualizedcostperunit']), list(df['totalinstancecost']))]
     keystrs = [str([x, y]) for x, y in zip(df['bmpshortname'], df['loadsource'])]
 
     # Make Figure
