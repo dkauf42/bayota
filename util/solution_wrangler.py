@@ -1,7 +1,5 @@
 import numpy as np
 import pandas as pd
-import sys
-from contextlib import contextmanager
 
 tol = 1e-2
 
@@ -107,34 +105,3 @@ def get_dual_df(instance):
 #         if not not bval:
 #             if abs(bval)>tol:
 #                 print('(%s, %s): %d' % (b, lmbda, bval))
-
-
-@contextmanager
-def Redirect(filename, mode='w'):
-    """
-    Redirect output from stdout and stderr to a file
-
-    with Redirect('foo.txt', 'w'):
-        print 'Hello'
-        print 'World'
-
-    would yield the same results as
-
-    with open('foo.txt', 'w') as f:
-        f.write('Hello' + \\n)
-        f.write('World')
-
-    Most useful when some function call prints to stdout and doesn't give the
-    option to pipe to a file.
-
-    def foo():
-        print 'Hello World'
-
-    with Redirect('foo.txt', 'w'):
-        foo()
-    """
-    old_stdout, old_stderr = sys.stdout, sys.stderr
-    with open(filename, mode) as f:
-        sys.stdout, sys.stderr = f, f
-        yield
-    sys.stdout, sys.stderr = old_stdout, old_stderr
