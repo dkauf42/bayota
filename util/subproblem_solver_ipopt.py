@@ -82,7 +82,7 @@ class SolveAndParse:
             sys.stdout.write(line)
 
     @staticmethod
-    def parse_output_file(self, filepath):
+    def parse_output_file(filepath):
         """
         Parse text at given filepath
 
