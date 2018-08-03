@@ -1,4 +1,6 @@
 import re
+import sys
+import fileinput
 import pyomo.environ as oe
 from pyomo.opt import SolverFactory, SolverManagerFactory
 
@@ -13,7 +15,7 @@ class SolveAndParse:
         self.solvername = solvername
         self.localsolver = localsolver
 
-    def solve(self):
+    def solve(self, logfilename='logfile_loadobjective.log'):
         if self.localsolver:
             solver = SolverFactory(self.solvername)
 
@@ -21,20 +23,20 @@ class SolveAndParse:
             self.instance.ipopt_zL_out = oe.Suffix(direction=oe.Suffix.IMPORT)
             self.instance.ipopt_zU_out = oe.Suffix(direction=oe.Suffix.IMPORT)
 
-            results = solver.solve(self.instance, tee=True, symbolic_solver_labels=True, keepfiles=True,
-                                   logfile='logfile_loadobjective.log')
+            results = solver.solve(self.instance, tee=True, symbolic_solver_labels=True,
+                                   keepfiles=True, logfile=logfilename)
         else:
             opt = SolverFactory("cbc")
             solver_manager = SolverManagerFactory('neos')
 
-            # self.instance.dual = oe.Suffix(direction=oe.Suffi}x.IMPORT)
+            self.instance.dual = oe.Suffix(direction=oe.Suffix.IMPORT)
             self.instance.rc = oe.Suffix(direction=oe.Suffix.IMPORT)
             self.instance.dual = oe.Suffix(direction=oe.Suffix.IMPORT_EXPORT)
             # self.instance.slack = oe.Suffix(direction=oe.Suffix.IMPORT)
 
             opt.options["display_width"] = 170
             opt.options["display"] = '_varname, _var.rc, _var.lb, _var, _var.ub, _var.slack'
-            results = solver_manager.solve(self.instance, opt=opt, solver=self.solvername, logfile='logfile_loadobjective.log')
+            results = solver_manager.solve(self.instance, opt=opt, solver=self.solvername, logfile=logfilename)
 
             results.write()
 
@@ -51,6 +53,35 @@ class SolveAndParse:
 
         return merged_df
 
+    @staticmethod
+    def modify_ipopt_options(optionsfilepath='ipopt.opt', newoutputfilepath=''):
+        rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
+
+        def _parse_line(string):
+            """
+            Do a regex search against all defined regexes and
+            return the key and match result of the first matching regex
+
+            """
+            iterator = rx_kv.finditer(string)
+
+            row = None
+            for match in iterator:
+                if match:
+                    row = {'key': match.group('key'),
+                           'value': match.group('value')
+                           }
+
+            return row
+
+        for line in fileinput.FileInput(optionsfilepath, inplace=1):
+            parsed = _parse_line(line)
+            if parsed:
+                if parsed['key'] == 'output_file':
+                    line = line.replace(parsed['value'], newoutputfilepath)
+            sys.stdout.write(line)
+
+    @staticmethod
     def parse_output_file(self, filepath):
         """
         Parse text at given filepath
