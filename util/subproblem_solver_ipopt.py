@@ -1,6 +1,7 @@
 import re
 import sys
 import fileinput
+from collections import OrderedDict
 import pyomo.environ as oe
 from pyomo.opt import SolverFactory, SolverManagerFactory
 
@@ -116,6 +117,17 @@ class SolveAndParse:
             (?P<iterate>\d+):
         ''', re.MULTILINE | re.VERBOSE)
 
+        iterheader_words = ['iter', 'objective', 'inf_pr', 'inf_du', 'lg(mu)',
+                            '||d||', 'lg(rg)', 'alpha_du', 'alpha_pr', 'ls']
+        rx_iterheader = re.compile(r'''
+            iter\s+objective\s+inf_pr\s+inf_du\s+lg\(mu\)\s+\|\|d\|\|\s+lg\(rg\)\s+alpha_du\s+alpha_pr\s+ls
+            ''', re.MULTILINE | re.VERBOSE)
+
+        def _parse_headerline(string):
+            if rx_iterheader.match(string):
+                return True
+            return False
+
         def _parse_line(string):
             """
             Do a regex search against all defined regexes and
@@ -143,25 +155,44 @@ class SolveAndParse:
 
             return row
 
-        iter_data_dict = {}
+        iter_summary_data = OrderedDict()
+        iter_data_dict = OrderedDict()
         # open the file and read through it line by line
         iternum = None
         with open(output_file_name, 'r') as file_object:
-            #     for lines in range(500000):
-            # #         i+=1
-            #         line = file_object.readline()
-            for line in file_object:
-                # Check if it's a new iteration number
-                match = rx_sumiter.search(line)
-                if match:
-                    iternum = int(match.group('iterate'))  # set new iterate number
-                    if iternum is not None:
-                        iter_data_dict[iternum] = []  # reset data list
+            try:
+                while True:
+                    line = next(file_object)
 
-                if iternum is not None:
-                    data_line = _parse_line(line)  # at each line check for a match with a regex
-                    if data_line:
-                        iter_data_dict[iternum].append(data_line)
+                    # Check if it's a new iteration number
+                    match = rx_sumiter.search(line)
+                    if match:
+                        iternum = int(match.group('iterate'))  # set new iterate number
+                        if iternum is not None:
+                            iter_data_dict[iternum] = []  # reset data list
+                            iter_summary_data[iternum] = None
+
+                    if iternum is not None:
+                        if _parse_headerline(line):
+                            line = next(file_object)
+                            parts = line.split()
+                            if not not parts:
+                                if not parts[-1].isdigit():
+                                    iter_summary_data[iternum] = parts[:-1]
+                                else:
+                                    iter_summary_data[iternum] = parts
+                        else:
+                            data_line = _parse_line(line)  # at each line check for a match with a regex
+                            if data_line:
+                                iter_data_dict[iternum].append(data_line)
+            except StopIteration:
+                pass
+
+        iter_summ_lists = []
+        for ii in iter_summary_data.keys():
+            iter_summ_lists.append(iter_summary_data[ii])
+        print(iter_summ_lists[0])
+        summ_df = pd.DataFrame(iter_summ_lists, columns=iterheader_words)
 
         iter_data_dfs = {}
         for ii in iter_data_dict.keys():
@@ -169,7 +200,5 @@ class SolveAndParse:
                               columns=['outputname', 'varname', 'componentindex', 'varindex', 'value'])
             df = df.set_index(['componentindex', 'varindex'])
             iter_data_dfs[ii] = df
-            # print('iterate #: %s' % ii)
-            # print(df.head(5))
 
-        return iter_data_dfs
+        return iter_data_dfs, summ_df

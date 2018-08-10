@@ -3,7 +3,7 @@ import pandas as pd
 
 
 class DataLoader:
-    def __init__(self, save2file=True):
+    def __init__(self, save2file=True, lrsegs_list=None):
         # Save instance data to file?
         self.save2file = save2file
 
@@ -77,7 +77,7 @@ class DataLoader:
         self.loadsrcsetidlist = []
         self.load_sets(self.save2file, TblLandRiverSegment, TblBmp, TblBmpType, TblBmpEfficiency,
                        TblBmpGroup, TblBmpLoadSourceGroup, TblLoadSource, TblLandUsePreBmp,
-                       singlelsgrpdf, baseconditionid)
+                       singlelsgrpdf, baseconditionid, lrsegs_list=lrsegs_list)
 
         self.costsubtbl = pd.DataFrame()
         self.load_params(self.save2file, TblBmp, TblCostBmpLand, TblBmpEfficiency, TblLandRiverSegment,
@@ -87,7 +87,8 @@ class DataLoader:
 
     def load_sets(self, save2file, TblLandRiverSegment, TblBmp, TblBmpType, TblBmpEfficiency,
                   TblBmpGroup, TblBmpLoadSourceGroup, TblLoadSource, TblLandUsePreBmp,
-                  singlelsgrpdf, baseconditionid):
+                  singlelsgrpdf, baseconditionid,
+                  lrsegs_list=None):
         """ ****************** Sets Data ****************** """
 
         """ Pollutants and Landriversegments """
@@ -99,7 +100,8 @@ class DataLoader:
             PLTNTS_df.to_csv('data_PLTNTS.tab', sep=' ', index=False)
 
         # lrsegs_list = ['N51133RL0_6450_0000']
-        lrsegs_list = ['N42071SL2_2410_2700']
+        # lrsegs_list = ['N42071SL2_2410_2700']
+        lrsegs_list = lrsegs_list
         lrsegids = TblLandRiverSegment[TblLandRiverSegment['landriversegment'] == lrsegs_list[0]].lrsegid.tolist()
         self.lrsegsetlist = list([x for x in lrsegs_list])
         self.lrsegsetidlist = lrsegids
@@ -177,7 +179,7 @@ class DataLoader:
         # restrict membership to the land river segments in LRSEGS
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
 
-        # retain only the (b, lambda) pairs in the srcbmpsubtbl with effec tiveness values
+        # retain only the (b, lambda) pairs in the srcbmpsubtbl with effectiveness values
         bmpsrclinkssubtbl = srcbmpsubtbl.loc[:, :].merge(effsubtable.loc[:, ['bmpid', 'loadsourceid']],
                                                          on=['bmpid', 'loadsourceid'])
         #display('after filtering srcbmpsubtbl by effsubtable')

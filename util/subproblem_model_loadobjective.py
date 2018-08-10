@@ -8,8 +8,8 @@ class LoadObj:
                  instance=None, data=None, localsolver=False, solvername=''):
         pass
 
-    def load_data(self, savedata2file=False):
-        data = DataLoader(save2file=savedata2file)
+    def load_data(self, savedata2file=False, lrsegs_list=None):
+        data = DataLoader(save2file=savedata2file, lrsegs_list=lrsegs_list)
         return data
 
     def create_concrete(self, data):

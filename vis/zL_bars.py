@@ -1,10 +1,9 @@
-import os
 import matplotlib.pyplot as plt
 
 
 def zL_bars(df=None, instance=None, savefig=True, savefilepathandname=None):
     if not savefilepathandname:
-        raise(ValueError, 'Not savepath specified')
+        raise ValueError('Not savepath specified')
 
     # zL_df_filtered = merged_df.loc[abs(merged_df['zL'])>0.45,:].copy()
     keystrs = [str([x, y]) for x, y in zip(df['bmpshortname'], df['loadsource'])]

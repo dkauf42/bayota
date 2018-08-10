@@ -1,17 +1,3 @@
 # This is a comment
-
-output_file ipopt_output_file
+output_file /Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/ampl/OptEfficiencySubProblem/output/loadobj_startingpoint9_costbound100000_ipopt_2018-08-09_124427.iters
 file_print_level 10
-
-# Turn off the NLP scaling
-# derivative_test first-order
-# derivative_test_perturbation 0.0000001
-# derivative_test_tol 0.0000001
-
-# point_perturbation_radius 0
-
-# Change the initial barrier parameter
-# mu_init 1e-2
-
-# Set the max number of iterations
-# max_iter 500

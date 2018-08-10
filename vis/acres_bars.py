@@ -1,10 +1,9 @@
-import os
 import matplotlib.pyplot as plt
 
 
 def acres_bars(df=None, instance=None, savefig=True, savefilepathandname=None, titlestr=''):
     if not savefilepathandname:
-        raise(ValueError, 'Not savepath specified')
+        raise ValueError('Not savepath specified')
 
     # ---- Make acres Figure ----
     # sorteddf_byacres = merged_df.sort_values(by='acres')

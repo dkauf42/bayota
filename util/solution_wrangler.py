@@ -4,11 +4,14 @@ import pandas as pd
 tol = 1e-2
 
 
-def get_nonzero_var_names_and_values(instance):
+def get_nonzero_var_names_and_values(instance, onlynotstale=True):
     # Extract just the nonzero optimal variable values
     nzvarnames = []
     nzvarvalus = []
     for k in instance.x.keys():
+        if onlynotstale:
+            if instance.x[k].stale:
+                continue
         if not not instance.x[k].value:
             if abs(instance.x[k].value) > tol:
                 nzvarnames.append(instance.x[k].getname())
@@ -21,6 +24,7 @@ def get_nonzero_var_df(instance, addcosttbldata=None):
     # Repeat the same thing, but make a DataFrame
     nonzerokeyvals_df = pd.DataFrame([[k, instance.x[k].value]
                                       for k in instance.x.keys()
+                                      if not instance.x[k].stale
                                       if (not not instance.x[k].value)
                                       if abs(instance.x[k].value) > tol],
                                      columns=['key', 'value'])

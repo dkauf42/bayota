@@ -11,10 +11,21 @@ def gjh_solve(instance, keepfiles=True, amplenv=None, basegjhpath=''):
 
     # Get the output file name
     str1 = r2.Solver._list[0].Message
-    matches = re.findall('\w+\.pyomo\.gjh', str1)
+    # matches = re.findall('\w+\.pyomo\.gjh', str1)
+
+    rx = re.compile('\s*\"(?P<filepath>(?:[^\"])*)\"\s*written', re.MULTILINE)
+    match = rx.search(str1)
+    if match:
+        fpath = match.group('filepath')
+        print(fpath)
+    else:
+        fpath = None
+        print('NO MATCH')
+
     # print(all_same(matches))
-    gjh_filename = matches[0]
-    # print(gjh_filename)
+    gjh_filename = fpath
+    print(basegjhpath)
+    print(gjh_filename)
 
     r2dat = amplenv.read(os.path.join(basegjhpath, gjh_filename))
     g = amplenv.getParameter('g')
