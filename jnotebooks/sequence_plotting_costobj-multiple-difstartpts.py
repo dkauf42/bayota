@@ -249,7 +249,7 @@ clrhexdict = dict(zip(pc_df['run'].unique(), colorlist))
 clrhexsrs = pc_df['run'].map(clrhexdict).tolist()
 
 
-# In[139]:
+# In[155]:
 
 
 import re
@@ -288,7 +288,12 @@ plt.grid()
 
 #Call the function. Use only the 2 PCs.
 myplot(pc[:,0:2], np.transpose(pca.components_[0:2, :]))
-plt.show()
+# plt.show()
+
+filenamestr = ''.join(['output/costobj_iterates_pca2comp_difstartpts_', 'ipopt', '_',
+                           datetime.now().strftime('%Y-%m-%d_%H%M%S'), '.png'])
+savefilepathandname = os.path.join(projectpath, filenamestr)
+plt.savefig(savefilepathandname, transparent=True)
 
 
 # In[28]:
