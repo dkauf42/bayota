@@ -171,6 +171,58 @@ class DataLoader:
                                                                         sep=' ', index=False,
                                                                         header=['BMPGRPS', 'LOADSRCS'])
 
+    def load_set_BMPs(self, save2file, TblBmp, TblBmpType, TblBmpLoadSourceGroup, TblBmpGroup):
+        """ BMPs """
+        # Get efficiency type id, and then restrict BMPs by:
+        #  - Only include b if it's an 'efficiency' BMP
+        #  - Only include b if it has a load source group on which it can be implemented
+
+        efftypeid = TblBmpType[TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
+        bmpsdf = TblBmp[TblBmp['bmptypeid'] == efftypeid]
+        # bmpsdf = jeeves.bmp.efficiency_bmps()
+        bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
+
+        # Convert bmp names and ids into python lists
+        self.bmpsetlist = list([x for x in bmpsdf.bmpshortname.tolist()])
+        self.bmpsetidlist = bmpsdf.bmpid.tolist()
+        self.BMPS = list(self.bmpsetlist)
+        if save2file:
+            pd.DataFrame(self.bmpsetlist, columns=['BMPS']).to_csv('data_BMPS.tab', sep=' ', index=False)
+
+        # Get BMP group names (and group ids)
+        bmpgrpsdf = TblBmpGroup.loc[:, ['bmpgroupid', 'bmpgroupname']].merge(bmpsdf[['bmpgroupid', 'bmpshortname']])
+        bmpgrpsetlist = list([int(x) for x in set(bmpgrpsdf.bmpgroupid)])
+        self.BMPGRPS = bmpgrpsetlist
+        if save2file:
+            pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS']).to_csv('data_BMPGRPS.tab', sep=' ', index=False)
+
+        # Get correspondences between bmp names and group names (and group ids)
+        bmpgrpsdf['BMPGRPING'] = list(zip(bmpgrpsdf.bmpshortname, bmpgrpsdf.bmpgroupid))
+        self.BMPGRPING = list(bmpgrpsdf.BMPGRPING)
+        if save2file:
+            BMPGRPING_df_asseparatecolumns = bmpgrpsdf.loc[:, ['bmpshortname', 'bmpgroupid']].rename(
+                columns={'bmpshortname': 'BMPS',
+                         'bmpgroupid': 'BMPGRPS'})
+            BMPGRPING_df_asseparatecolumns.to_csv('data_BMPGRPING.tab', sep=' ', index=False,
+                                                  header=['BMPS', 'BMPGRPS'])
+
+    def load_set_LoadSources(self, save2file, TblLandUsePreBmp, singlelsgrpdf, baseconditionid):
+        """ Load Sources """
+        # Limit the available set of load sources to only those:
+        #  - that have base loading rates defined in the No Action data,
+        #  - that have an acreage defined in TblLandUsePreBmp
+        #  - "loadsource groups" that represent only a single load source
+        landusedf = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
+                                     (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
+        landusedf = singlelsgrpdf[singlelsgrpdf['loadsourceid'].isin(landusedf['loadsourceid'])]
+
+        # Get load sources list
+        loadsrcsetlist = list([x for x in landusedf.loadsourceshortname.tolist()])
+        self.loadsrcsetidlist = landusedf.loadsourceid.tolist()
+        self.LOADSRCS = loadsrcsetlist
+        if save2file:
+            pd.DataFrame(loadsrcsetlist, columns=['LOADSRCS']).to_csv('data_LOADSRCS.tab', sep=' ', index=False)
+
     def load_params(self, save2file, TblBmp, TblCostBmpLand, TblBmpEfficiency, TblLandRiverSegment,
                     TblGeography, TblGeographyType, TblGeographyLrSeg,
                     TblLoadSource, TblLandUsePreBmp, Tbl2010NoActionLoads,
@@ -340,58 +392,6 @@ class DataLoader:
         if save2file:
             T_df_asseparatecolumns.to_csv('data_T.tab', sep=' ', index=False,
                                           header=['LRSEGS', 'LOADSRCS', 'T'])
-
-    def load_set_BMPs(self, save2file, TblBmp, TblBmpType, TblBmpLoadSourceGroup, TblBmpGroup):
-        """ BMPs """
-        # Get efficiency type id, and then restrict BMPs by:
-        #  - Only include b if it's an 'efficiency' BMP
-        #  - Only include b if it has a load source group on which it can be implemented
-
-        efftypeid = TblBmpType[TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
-        bmpsdf = TblBmp[TblBmp['bmptypeid'] == efftypeid]
-        # bmpsdf = jeeves.bmp.efficiency_bmps()
-        bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
-
-        # Convert bmp names and ids into python lists
-        self.bmpsetlist = list([x for x in bmpsdf.bmpshortname.tolist()])
-        self.bmpsetidlist = bmpsdf.bmpid.tolist()
-        self.BMPS = list(self.bmpsetlist)
-        if save2file:
-            pd.DataFrame(self.bmpsetlist, columns=['BMPS']).to_csv('data_BMPS.tab', sep=' ', index=False)
-
-        # Get BMP group names (and group ids)
-        bmpgrpsdf = TblBmpGroup.loc[:, ['bmpgroupid', 'bmpgroupname']].merge(bmpsdf[['bmpgroupid', 'bmpshortname']])
-        bmpgrpsetlist = list([int(x) for x in set(bmpgrpsdf.bmpgroupid)])
-        self.BMPGRPS = bmpgrpsetlist
-        if save2file:
-            pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS']).to_csv('data_BMPGRPS.tab', sep=' ', index=False)
-
-        # Get correspondences between bmp names and group names (and group ids)
-        bmpgrpsdf['BMPGRPING'] = list(zip(bmpgrpsdf.bmpshortname, bmpgrpsdf.bmpgroupid))
-        self.BMPGRPING = list(bmpgrpsdf.BMPGRPING)
-        if save2file:
-            BMPGRPING_df_asseparatecolumns = bmpgrpsdf.loc[:, ['bmpshortname', 'bmpgroupid']].rename(
-                columns={'bmpshortname': 'BMPS',
-                         'bmpgroupid': 'BMPGRPS'})
-            BMPGRPING_df_asseparatecolumns.to_csv('data_BMPGRPING.tab', sep=' ', index=False,
-                                                  header=['BMPS', 'BMPGRPS'])
-
-    def load_set_LoadSources(self, save2file, TblLandUsePreBmp, singlelsgrpdf, baseconditionid):
-        """ Load Sources """
-        # Limit the available set of load sources to only those:
-        #  - that have base loading rates defined in the No Action data,
-        #  - that have an acreage defined in TblLandUsePreBmp
-        #  - "loadsource groups" that represent only a single load source
-        landusedf = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
-                                     (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
-        landusedf = singlelsgrpdf[singlelsgrpdf['loadsourceid'].isin(landusedf['loadsourceid'])]
-
-        # Get load sources list
-        loadsrcsetlist = list([x for x in landusedf.loadsourceshortname.tolist()])
-        self.loadsrcsetidlist = landusedf.loadsourceid.tolist()
-        self.LOADSRCS = loadsrcsetlist
-        if save2file:
-            pd.DataFrame(loadsrcsetlist, columns=['LOADSRCS']).to_csv('data_LOADSRCS.tab', sep=' ', index=False)
 
 
 dl = DataLoader()
