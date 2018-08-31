@@ -227,30 +227,27 @@ class DataLoader:
                     TblGeography, TblGeographyType, TblGeographyLrSeg,
                     TblLoadSource, TblLandUsePreBmp, Tbl2010NoActionLoads,
                     baseconditionid, costprofileid):
-        """ Costs per Unit of BMP """
+        """ ****************** Parameter Data ****************** """
+
+        """ (c) Cost per acre ($ ac^-1) of BMP b (for cost profile κ) """
+        # Get total annualized cost per unit data, and retain only:
+        #  - those costs pertaining to bmps in our set
         costsdf = TblCostBmpLand[TblCostBmpLand['costprofileid'] == costprofileid]
-        # Retain only those costs pertaining to bmps in our set
         costsdf = costsdf.merge(TblBmp[['bmpshortname', 'bmpid']])
         self.costsubtbl = costsdf
         costsdf = costsdf[costsdf['bmpshortname'].isin(self.bmpsetlist)]
-        #display(costsdf.head(5))
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = costsdf.groupby(['bmpshortname'])
-        cdict = grouped['totalannualizedcostperunit'].apply(lambda x: list(x)[0]).to_dict()
-        #display(cdict)
-        self.c = cdict
-
-        # costsdf['c'] = list(zip(costsdf.bmpshortname.tolist(),
-        #                         costsdf.totalannualizedcostperunit.tolist()))
-        # self.c = list(costsdf.c)
-        c_df_asseparatecolumns = costsdf.loc[:, ['bmpshortname', 'totalannualizedcostperunit']]
+        self.c = grouped['totalannualizedcostperunit'].apply(lambda x: list(x)[0]).to_dict()
         if save2file:
-            c_df_asseparatecolumns.to_csv('data_c.tab', sep=' ', index=False, header=['BMPS', 'c'])
+            costsdf.loc[:, ['bmpshortname',
+                            'totalannualizedcostperunit']].to_csv('data_c.tab', sep=' ',
+                                                                  index=False, header=['BMPS', 'c'])
 
-        """ Efficiency Values """
-        # Some pre-processing is necessary to build the parameter dictionary
-        #display(self.bmpsetidlist[:5])
+        """ (E) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
+        # Pre-processing is necessary to build the parameter dictionary
+        #  - get efficiency bmps that are in the landriversegments
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
         # make the pollutant names into an index instead of separate columns
         listofdataframes = []
@@ -262,48 +259,42 @@ class DataLoader:
             listofdataframes.append(bmpeff)
         df = pd.concat(listofdataframes)
 
-        # Retain only those effectivenesses pertaining to loadsources in our set
+        # Retain only those effectivenesses pertaining to:
+        #  - loadsources in our set
+        #  - bmps in our set
         df = df[df['loadsourceid'].isin(self.loadsrcsetidlist)]
-        # Retain only those costs pertaining to bmps in our set
         df = df[df['bmpid'].isin(self.bmpsetidlist)]
-        #display(df.head(5))
 
+        # Add names (of bmps, lrsegs, and loadsources) to the table
         df = TblBmp.loc[:, ['bmpid', 'bmpshortname']].merge(df)
         df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df)
         df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df)
-        #display(df.head(5))
         #display(df[df['bmpid'] == 48])
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['bmpshortname', 'pltnt', 'landriversegment', 'loadsourceshortname'])
-        Edict = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
-        #display(Edict)
-        self.E = Edict
-
-        E_df_asseparatecolumns = df.loc[:, ['bmpshortname', 'pltnt', 'landriversegment',
-                                            'loadsourceshortname', 'effvalue']]
+        self.E = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
         if save2file:
-            E_df_asseparatecolumns.to_csv('data_E.tab', sep=' ', index=False,
-                          header=['BMPS', 'PLTNTS', 'LRSEGS', 'LOADSRCS', 'E'])
+            df.loc[:, ['bmpshortname', 'pltnt', 'landriversegment',
+                       'loadsourceshortname', 'effvalue']].to_csv('data_E.tab', sep=' ', index=False,
+                                                                  header=['BMPS', 'PLTNTS', 'LRSEGS', 'LOADSRCS', 'E'])
 
-        """ Tau, """
+        """ (Tau) target percent load reductions (%) per pollutant p and land river segment l """
         Taudict = {}
         for l in self.lrsegsetlist:
             Taudict[(l, 'N')] = 5
             Taudict[(l, 'P')] = 5
             Taudict[(l, 'S')] = 5
-
-        tau_df = pd.DataFrame(list(Taudict.items()), columns=['LRSEGS', 'tau'])
-        tau_df[['LRSEGS', 'PLTNTS']] = tau_df['LRSEGS'].apply(pd.Series)
-        #display(tau_df)
         self.tau = Taudict
-        tau_df_asseparatecolumns = tau_df.loc[:, ['LRSEGS', 'PLTNTS', 'tau']]
         if save2file:
-            tau_df_asseparatecolumns.to_csv('data_tau.tab', sep=' ', index=False)
+            tau_df = pd.DataFrame(list(Taudict.items()), columns=['LRSEGS', 'tau'])
+            tau_df[['LRSEGS', 'PLTNTS']] = tau_df['LRSEGS'].apply(pd.Series)
+            tau_df.loc[:, ['LRSEGS', 'PLTNTS', 'tau']].to_csv('data_tau.tab', sep=' ', index=False)
 
-        """ Phi """
+        """ (Phi) base loading rate (lb. ac-1) of pollutant p per load source per land river segment (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary
-        # Unfortunately, the NoActionLoads table is from the website so doesn't have id numbers.  Let's translate this table to id numbers...
+        #   - Unfortunately, the NoActionLoads table is from the website so doesn't have id numbers.
+        #     - Let's translate this table to id numbers...
         # Let's make sure the columns are all lowercase
         Tbl2010NoActionLoads.columns = map(str.lower, Tbl2010NoActionLoads.columns)
 
@@ -334,7 +325,6 @@ class DataLoader:
         loadssubtbl = TblLoadSource.loc[:, includecols].merge(loadssubtbl, how='inner',
                                                               on='loadsource')
         loadssubtbl.drop(columns=['loadsource'], inplace=True)
-        #display(loadssubtbl.head(2))
 
         # only retain loadsources that are represented by a single-ls loadsource group.
         loadssubtbl = loadssubtbl[loadssubtbl['loadsourceid'].isin(self.loadsrcsetidlist)]
@@ -351,47 +341,37 @@ class DataLoader:
             llload.rename(columns={ps: 'loadratelbsperyear'}, inplace=True)
             listofdataframes.append(llload)
         df = pd.concat(listofdataframes)
-        #display(df.head(5))
 
         df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df)
         df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df)
-        #display(df.head(5))
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['landriversegment', 'loadsourceshortname', 'pltnt'])
-        Phidict = grouped['loadratelbsperyear'].apply(lambda x: list(x)[0]).to_dict()
-        #display(Phidict)
-        self.phi = Phidict
-
-        phi_df_asseparatecolumns = df.loc[:, ['landriversegment', 'loadsourceshortname',
-                                              'pltnt', 'loadratelbsperyear']]
+        self.phi = grouped['loadratelbsperyear'].apply(lambda x: list(x)[0]).to_dict()
         if save2file:
-            phi_df_asseparatecolumns.to_csv('data_phi.tab', sep=' ', index=False,
-                                            header=['LRSEGS', 'LOADSRCS', 'PLTNTS', 'phi'])
+            df.loc[:, ['landriversegment', 'loadsourceshortname',
+                       'pltnt', 'loadratelbsperyear']].to_csv('data_phi.tab', sep=' ', index=False,
+                                                              header=['LRSEGS', 'LOADSRCS', 'PLTNTS', 'phi'])
 
-        """ T """
+        """ (T) total acres (ac) available for load source λ on land-river segment l (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary
         df = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
                               (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
 
         df.drop(columns=['baseconditionid'], inplace=True)
-        # and drop agency (for now!)
-        df.drop(columns=['agencyid'], inplace=True)
-        #display(df.head(2))
+        df.drop(columns=['agencyid'], inplace=True)  # and drop agency (for now!)
 
         df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df)
         df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df)
-        #display(df.head(2))
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['landriversegment', 'loadsourceshortname'])
-        Tdict = grouped['acres'].apply(lambda x: list(x)[0]).to_dict()
-        #display(Tdict)
-        self.T = Tdict
-        T_df_asseparatecolumns = df.loc[:, ['landriversegment', 'loadsourceshortname', 'acres']]
+        self.T = grouped['acres'].apply(lambda x: list(x)[0]).to_dict()
         if save2file:
-            T_df_asseparatecolumns.to_csv('data_T.tab', sep=' ', index=False,
-                                          header=['LRSEGS', 'LOADSRCS', 'T'])
+            df.loc[:, ['landriversegment',
+                       'loadsourceshortname',
+                       'acres']].to_csv('data_T.tab', sep=' ', index=False,
+                                        header=['LRSEGS', 'LOADSRCS', 'T'])
 
 
 dl = DataLoader()
