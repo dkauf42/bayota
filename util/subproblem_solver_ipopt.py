@@ -23,6 +23,7 @@ class SolveAndParse:
             self.instance.dual = oe.Suffix(direction=oe.Suffix.IMPORT)
             self.instance.ipopt_zL_out = oe.Suffix(direction=oe.Suffix.IMPORT)
             self.instance.ipopt_zU_out = oe.Suffix(direction=oe.Suffix.IMPORT)
+            setattr(self.instance, 'lambda', oe.Suffix(direction=oe.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
             results = solver.solve(self.instance, tee=True, symbolic_solver_labels=True,
                                    keepfiles=True, logfile=logfilename)
@@ -55,7 +56,7 @@ class SolveAndParse:
         return merged_df
 
     @staticmethod
-    def modify_ipopt_options(optionsfilepath='ipopt.opt', newoutputfilepath=''):
+    def modify_ipopt_options(optionsfilepath='ipopt.opt', newoutputfilepath='', newfileprintlevel=''):
         rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
 
         def _parse_line(string):
@@ -79,7 +80,11 @@ class SolveAndParse:
             parsed = _parse_line(line)
             if parsed:
                 if parsed['key'] == 'output_file':
-                    line = line.replace(parsed['value'], newoutputfilepath)
+                    if not not newoutputfilepath:
+                        line = line.replace(parsed['value'], newoutputfilepath)
+                if parsed['key'] == 'file_print_level':
+                    if not not newfileprintlevel:
+                        line = line.replace(parsed['value'], newfileprintlevel)
             sys.stdout.write(line)
 
     @staticmethod
