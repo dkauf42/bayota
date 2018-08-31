@@ -113,29 +113,27 @@ class DataLoader:
             LRSEGS_df.to_csv('data_LRSEGS.tab', sep=' ', index=False)
 
         """ BMPs """
-        # Restrict BMPs to include:
+        # Get efficiency type id, and then restrict BMPs by:
         #  - Only include b if it's an 'efficiency' BMP
         #  - Only include b if it has a load source group on which it can be implemented
         efftypeid = TblBmpType[TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
         bmpsdf = TblBmp[TblBmp['bmptypeid'] == (efftypeid)]
         bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
 
+        # Convert bmp names and ids into python lists
         self.bmpsetlist = list([x for x in bmpsdf.bmpshortname.tolist()])
         self.bmpsetidlist = bmpsdf.bmpid.tolist()
-        #display(self.bmpsetlist[:5])
-        df = pd.DataFrame(self.bmpsetlist, columns=['BMPS'])
-        BMPS_df = df.loc[:, ['BMPS']]
-        self.BMPS = list(BMPS_df.BMPS)
+        self.BMPS = list(self.bmpsetlist)
         if save2file:
+            BMPS_df = pd.DataFrame(self.bmpsetlist, columns=['BMPS'])
             BMPS_df.to_csv('data_BMPS.tab', sep=' ', index=False)
 
+        # Get correspondences between bmp names and group names (and group ids)
         bmpgrpsdf = TblBmpGroup.loc[:, ['bmpgroupid', 'bmpgroupname']].merge(bmpsdf[['bmpgroupid', 'bmpshortname']])
         bmpgrpsetlist = list([int(x) for x in set(bmpgrpsdf.bmpgroupid)])
-        #display(bmpgrpsetlist[:5])
-        df = pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS'])
-        BMPGRPS_df = df.loc[:, ['BMPGRPS']]
-        self.BMPGRPS = list(BMPGRPS_df.BMPGRPS)
+        self.BMPGRPS = bmpgrpsetlist
         if save2file:
+            BMPGRPS_df = pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS'])
             BMPGRPS_df.to_csv('data_BMPGRPS.tab', sep=' ', index=False)
 
         bmpgrpingsetlist = list(zip(bmpgrpsdf.bmpshortname.tolist(),
