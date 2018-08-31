@@ -93,11 +93,9 @@ class DataLoader:
 
         """ Pollutants """
         p_list = ['N', 'P', 'S']
-        df = pd.DataFrame(p_list, columns=['PLTNTS'])
-        PLTNTS_df = df.loc[:, ['PLTNTS']]
-        self.PLTNTS = list(PLTNTS_df.PLTNTS)
+        self.PLTNTS = p_list
         if save2file:
-            PLTNTS_df.to_csv('data_PLTNTS.tab', sep=' ', index=False)
+            df = pd.DataFrame(p_list, columns=['PLTNTS']).to_csv('data_PLTNTS.tab', sep=' ', index=False)
 
         """ Land River Segments """
         # lrsegs_list = ['N51133RL0_6450_0000']
@@ -340,8 +338,10 @@ class DataLoader:
         # Get efficiency type id, and then restrict BMPs by:
         #  - Only include b if it's an 'efficiency' BMP
         #  - Only include b if it has a load source group on which it can be implemented
+
         efftypeid = TblBmpType[TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
-        bmpsdf = TblBmp[TblBmp['bmptypeid'] == (efftypeid)]
+        bmpsdf = TblBmp[TblBmp['bmptypeid'] == efftypeid]
+        # bmpsdf = jeeves.bmp.efficiency_bmps()
         bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
 
         # Convert bmp names and ids into python lists
@@ -387,4 +387,4 @@ class DataLoader:
 
 
 dl = DataLoader()
-dl.load_sets()
+print(dl.bmpsetlist)
