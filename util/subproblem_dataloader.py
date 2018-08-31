@@ -1,5 +1,13 @@
 import os
 import pandas as pd
+from sys import path as pylib  #im naming it as pylib so that we won't get confused between os.path and sys.path
+pylib += [os.path.abspath(r'/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/'
+                          r'CRC_ResearchScientist_Optimization/Optimization_Tool/'
+                          r'2_ExperimentFolder/CastJeeves')]
+from CastJeeves.jeeves import Jeeves
+
+jeeves = Jeeves()
+print(jeeves.agency.all_names())
 
 
 class DataLoader:
