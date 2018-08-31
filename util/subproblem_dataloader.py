@@ -176,10 +176,12 @@ class DataLoader:
         # Get efficiency type id, and then restrict BMPs by:
         #  - Only include b if it's an 'efficiency' BMP
         #  - Only include b if it has a load source group on which it can be implemented
+        # efftypeid = TblBmpType[TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
+        # bmpsdf = TblBmp[TblBmp['bmptypeid'] == efftypeid]
 
-        efftypeid = TblBmpType[TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
-        bmpsdf = TblBmp[TblBmp['bmptypeid'] == efftypeid]
-        # bmpsdf = jeeves.bmp.efficiency_bmps()
+        # Get efficiency bmps, and then restrict by:
+        #  - Only include b if it has a load source group on which it can be implemented
+        bmpsdf = jeeves.bmp.efficiency_bmps()
         bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
 
         # Convert bmp names and ids into python lists
@@ -189,7 +191,7 @@ class DataLoader:
         if save2file:
             pd.DataFrame(self.bmpsetlist, columns=['BMPS']).to_csv('data_BMPS.tab', sep=' ', index=False)
 
-        # Get BMP group names (and group ids)
+        # Get BMP group names (and group ids) for bmps in the set
         bmpgrpsdf = TblBmpGroup.loc[:, ['bmpgroupid', 'bmpgroupname']].merge(bmpsdf[['bmpgroupid', 'bmpshortname']])
         bmpgrpsetlist = list([int(x) for x in set(bmpgrpsdf.bmpgroupid)])
         self.BMPGRPS = bmpgrpsetlist
@@ -260,8 +262,7 @@ class DataLoader:
         df = pd.concat(listofdataframes)
 
         # Retain only those effectivenesses pertaining to:
-        #  - loadsources in our set
-        #  - bmps in our set
+        #  - loadsources in our set, and bmps in our set
         df = df[df['loadsourceid'].isin(self.loadsrcsetidlist)]
         df = df[df['bmpid'].isin(self.bmpsetidlist)]
 
@@ -298,7 +299,7 @@ class DataLoader:
         # Let's make sure the columns are all lowercase
         Tbl2010NoActionLoads.columns = map(str.lower, Tbl2010NoActionLoads.columns)
 
-        # First, let's translate our lrseg list to the fullnames so we can subset it before translating.
+        # First, let's translate our lrseg list to full names so we can subset it before translating.
         gtypeid = TblGeographyType[TblGeographyType['geographytypefullname'] == 'Land River Segment indicating if in or out of CBWS'].geographytypeid.tolist()[0]
         geolrsegsubtbl = TblGeographyLrSeg.loc[TblGeographyLrSeg['lrsegid'].isin(self.lrsegsetidlist)]
         geosubtbl = geolrsegsubtbl.merge(TblGeography, on='geographyid', how='inner')
