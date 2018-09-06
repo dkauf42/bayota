@@ -1,6 +1,6 @@
 import pyomo.environ as oe
 
-from src.subproblem_dataloader import DataLoader
+from src.dataloader import DataLoader
 
 
 class CostObj:
