@@ -7,7 +7,6 @@ pylib += [os.path.abspath(r'/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/'
 from CastJeeves.jeeves import Jeeves
 
 jeeves = Jeeves()
-print(jeeves.agency.all_names())
 
 
 class DataLoader:
@@ -23,7 +22,7 @@ class DataLoader:
         baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/'
         # amplappdir = os.path.join(baseexppath, 'ampl/amplide.macosx64/')
         projectpath = os.path.join(baseexppath, 'ampl/OptEfficiencySubProblem/')
-        datapath = os.path.join(baseexppath, 'ampl/OptEfficiencySubProblem/data/')
+        datapath = os.path.join(baseexppath, 'ampl/OptEfficiencySubProblem/raw/')
 
         # # Specify model and data files
         # # f_mod = os.path.join(baseexppath, 'ampl/example/steel3.mod')
@@ -373,7 +372,3 @@ class DataLoader:
                        'loadsourceshortname',
                        'acres']].to_csv('data_T.tab', sep=' ', index=False,
                                         header=['LRSEGS', 'LOADSRCS', 'T'])
-
-
-dl = DataLoader()
-print(dl.bmpsetlist)

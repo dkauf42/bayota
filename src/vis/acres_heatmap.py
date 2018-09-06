@@ -22,11 +22,11 @@ def heatmap_loadobj(df=None, savefig=True, savefilepathandname=None, xname='tota
         plt.savefig(savefilepathandname, bbox_inches='tight')
 
 
-def heatmap_costobj(df=None, savefig=True, savefilepathandname=None, xname='tau'):
+def heatmap_costobj(df=None, figsize=(10, 20), savefig=True, savefilepathandname=None, xname='tau'):
     if not savefilepathandname:
         savefig=False
 
-    fig = plt.figure(figsize=(10, 20))
+    fig = plt.figure(figsize=figsize)
     ax = sns.heatmap(df[df.columns.difference([xname, 'range', 'objective'])].T,
                      cmap='viridis',
                      cbar_kws={'label': 'acres'},
