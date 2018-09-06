@@ -11,6 +11,42 @@ is the Chesapeake Bay Program's (CBP) Phase 6 time-averaged watershed model
 This README will document the steps necessary to get the optimization model
 up and running.
 
+# Directory Structure
+
+```
+├── README.md          <- The top-level README for developers using this project.
+│
+├── data
+│   ├── instance_data  <- Intermediate data that has been transformed.
+│   └── raw            <- Original, immutable data.
+│
+├── jnotebooks         <- Notebooks for looking at model results and analyses
+│
+├── src                <- Source code for use in this project.
+│   ├── __init__.py    <- Makes src a Python module
+│   │
+│   ├── ipopt          <- Scripts specific to the Ipopt solver
+│   │   └── ipopt_parser.py
+│   │
+│   ├── model_runners  <- Scripts to solve specific model configurations
+│   │   └── singlerun.py
+│   │
+│   ├── models         <- Formulations of the optimization model
+│   │   ├── costobjective.py
+│   │   ├── costobjective_county.py
+│   │   ├── loadobjective.py
+│   │   └── loadobjective_county.py
+│   │
+│   └── vis            <- Scripts to create exploratory and results oriented visualizations
+│       ├── acres_bars.py
+│       ├── acres_heatmap.py
+│       ├── genericvis.py
+│       ├── sequence_plot.py
+│       └── zL_bars.py
+│
+└── LICENSE
+```
+
 # How do I get set up?
 
 ### Install
