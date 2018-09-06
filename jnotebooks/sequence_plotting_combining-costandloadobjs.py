@@ -9,7 +9,7 @@ sys.path.append('..')  # allow this notebook to find equal-level directories
 get_ipython().run_line_magic('pylab', 'inline')
 from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 
 
 # #### Load Solution Sequence

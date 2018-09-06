@@ -13,7 +13,7 @@ sys.path.append(pathtopynumero)
 
 from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 
 
 import pyomo.dae as dae
@@ -49,9 +49,9 @@ pyomo.__file__
 
 pathtopynumero = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/pyomo'
 
-# import importlib.util
-# spec = importlib.util.spec_from_file_location("pyomo", pathtopynumero)
-# foo = importlib.util.module_from_spec(spec)
+# import importlib.src
+# spec = importlib.src.spec_from_file_location("pyomo", pathtopynumero)
+# foo = importlib.src.module_from_spec(spec)
 # spec.loader.exec_module(foo)
 # # foo.MyClass()
 
@@ -70,8 +70,8 @@ pathtopynumero = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_Research
 
 
 # import matplotlib.pylab as plt
-# from util.subproblem_model_loadobjective import LoadObj
-# from util.subproblem_solver_ipopt import SolveAndParse
+# from src.subproblem_model_loadobjective import LoadObj
+# from src.subproblem_solver_ipopt import SolveAndParse
 # from vis.acres_bars import acres_bars
 # from vis.zL_bars import zL_bars
 

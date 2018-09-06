@@ -9,7 +9,7 @@ sys.path.append('..')  # allow this notebook to find equal-level directories
 get_ipython().run_line_magic('pylab', 'inline')
 from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 
 
 # In[2]:
@@ -104,7 +104,7 @@ print(temp_df.shape[0])
 # In[ ]:
 
 
-from util.solution_wrangler import get_dual_df
+from src.solution_wrangler import get_dual_df
 dual_df = get_dual_df(mdl)
 display(dual_df.tail(5))
 

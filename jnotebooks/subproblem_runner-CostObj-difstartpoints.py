@@ -9,7 +9,7 @@ sys.path.append('..')  # allow this notebook to find equal-level directories
 get_ipython().run_line_magic('pylab', 'inline')
 from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 
 
 # ## Create problem instance
@@ -169,7 +169,7 @@ print(i)
 # In[7]:
 
 
-from util.solution_wrangler import get_nonzero_var_names_and_values
+from src.solution_wrangler import get_nonzero_var_names_and_values
 nzvnames, nzvvalues = get_nonzero_var_names_and_values(mdl, onlynotstale=True)
 
 
@@ -183,7 +183,7 @@ nzvnames[1]
 # In[9]:
 
 
-from util.solution_wrangler import get_nonzero_var_df
+from src.solution_wrangler import get_nonzero_var_df
 nonzerodf = get_nonzero_var_df(mdl, addcosttbldata=data.costsubtbl)
 
 

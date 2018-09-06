@@ -9,21 +9,21 @@ sys.path.append('..')  # allow this notebook to find equal-level directories
 get_ipython().run_line_magic('pylab', 'inline')
 from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 
 
 # #### Load Solution Sequence
 
-# In[4]:
+# In[27]:
 
 
-filename = 'output/costobj_difstartpts_alldfs_ipopt_2018-08-06_150211.csv'
+filename = 'output/20180904-county-NorthumberlandVA_costobj-sequence/costobj_tausequence_alldfs_ipopt_2018-09-04_141616.csv'
 df = pd.read_csv(os.path.join(projectpath, filename))
 # display(df.head(2))
 df.shape
 
 
-# In[5]:
+# In[28]:
 
 
 grouped = df.groupby(by=['bmpshortname', 'loadsource'])
@@ -33,55 +33,47 @@ len(grouped)
 
 # #### Pivot table for acres
 
-# In[6]:
+# In[29]:
 
 
 # df['x'].head(5)
 df['x'].tail(5)
 
 
-# In[7]:
+# In[30]:
 
 
-# df_piv = df.pivot(index='tau', columns='x', values='acres')
-# df_piv.reset_index(level=['tau'], inplace=True)  # make tau into a regular column
-# df_piv['range']=df_piv.drop('tau', axis=1).apply(lambda x : list((0, int(math.ceil(np.nanmax(x))+1))), 1)
-# df_piv['objective'] = df_piv['tau'].map(dict(zip(df.tau,df.solution_objectives)))  # solution_objectives
-# # df_piv.head(2)
+df_piv = df.pivot(index='tau', columns='x', values='acres')
+df_piv.reset_index(level=['tau'], inplace=True)  # make tau into a regular column
+df_piv['range']=df_piv.drop('tau', axis=1).apply(lambda x : list((0, int(math.ceil(np.nanmax(x))+1))), 1)
+df_piv['objective'] = df_piv['tau'].map(dict(zip(df.tau,df.solution_objectives)))  # solution_objectives
+# df_piv.head(2)
 
-df_piv = df.pivot(index='startpointiterate', columns='x', values='acres')
-display(df_piv.head(2))
-df_piv.reset_index(level=['startpointiterate'], inplace=True)  # make tau into a regular column
-display(df_piv.head(2))
-df_piv['range']=df_piv.drop('startpointiterate', axis=1).apply(lambda x : list((0, int(math.ceil(np.nanmax(x))+1))), 1)
-display(df_piv.head(2))
-df_piv['objective'] = df_piv['startpointiterate'].map(dict(zip(df.startpointiterate,df.solution_objectives)))  # solution_objectives
-display(df_piv.head(2))
+# df_piv = df.pivot(index='startpointiterate', columns='x', values='acres')
+# display(df_piv.head(2))
+# df_piv.reset_index(level=['startpointiterate'], inplace=True)  # make tau into a regular column
+# display(df_piv.head(2))
+# df_piv['range']=df_piv.drop('startpointiterate', axis=1).apply(lambda x : list((0, int(math.ceil(np.nanmax(x))+1))), 1)
+# display(df_piv.head(2))
+# df_piv['objective'] = df_piv['startpointiterate'].map(dict(zip(df.startpointiterate,df.solution_objectives)))  # solution_objectives
+# display(df_piv.head(2))
 
-
-# In[8]:
-
-
-df_piv.shape
+display(df_piv.shape)
 
 
-# In[4]:
+# In[31]:
 
 
 # df_piv['objective'].isnan()
 # df['tau'].isnull().values.any()
 # print(dict(zip(df.tau,df.solution_objectives)))
 
-
-# In[9]:
-
-
-df_piv.head(10)
+display(df_piv.head(5))
 
 
 # #### Pivot table for gradient (g), if available
 
-# In[10]:
+# In[32]:
 
 
 if 'g' in df.columns:
@@ -94,37 +86,221 @@ else:
     print("skipping because no column 'g'")
 
 
+# In[19]:
+
+
+df[['bmpshortname','landriversegment','totalinstancecost']]
+
+
+# In[22]:
+
+
+grouped = df.groupby(['landriversegment', 'tau'])['totalinstancecost'].sum()
+display(grouped.head(20))
+
+
 # # Visualizations
 
-# In[11]:
+# In[8]:
 
 
-from vis.sequence_plot import plotly_costobj
-from vis.acres_heatmap import heatmap_costobj
+from src.vis.sequence_plot import plotly_costobj
+from src.vis.acres_heatmap import heatmap_costobj
 
 
-# In[12]:
+# In[9]:
 
 
-fig = plotly_costobj(df=df_piv, xname='startpointiterate')
+# fig = plotly_costobj(df=df_piv, xname='startpointiterate')
+fig = plotly_costobj(df=df_piv, xname='tau')
 py.iplot(fig, filename='styled-line')
 
 
-# In[13]:
+# In[49]:
+
+
+# Get costs of tau sequence for each lrseg
+grped = df.groupby(['landriversegment', 'tau'])['totalinstancecost'].sum()
+
+xname = 'tau'
+title='Minimal Total Cost vs. Load Constraint'
+xlabel='Load Reduction (%) Lower Bound Constraint'
+ylabel='Minimal Total Cost ($)'
+
+#Create a trace
+county_trace = go.Scatter(x=df_piv[xname],
+                   y=df_piv['objective'],
+                          name='County'
+                   )
+
+lrseglist = list(set(df.landriversegment))
+traces = [county_trace]
+for l in lrseglist:
+#     print(l)
+#     display(grped.loc[l].tolist())
+    
+    traces.append(go.Scatter(x=grped.index.get_level_values('tau'),
+                             y=grped.loc[l].tolist(), # marker={'color': 'blue', 'symbol': 'star', 'size': 10},
+                        mode='line', name=l)
+                 )
+# data = [trace, trace2]
+# data = [trace2]
+data = traces
+
+# Edit the layout
+layout = dict(title=title,
+              xaxis=dict(title=xlabel,
+                         tickformat='.2f'),
+              yaxis=dict(title=ylabel,
+                         tickformat='.2f'),
+              paper_bgcolor='rgba(0,0,0,0)',
+              plot_bgcolor='rgba(0,0,0,0)',
+              )
+
+fig = dict(data=data, layout=layout)
+# fig.append_trace(trace2, 1, 1)
+py.iplot(fig, filename='styled-line')
+
+
+# In[10]:
+
+
+asdkjhagsf
+
+
+# In[ ]:
 
 
 # Filepath to save to
 timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
-filenamestr = ''.join(['output/costobj_heatmap_difstartpoints_', 'ipopt', '_',
-                           timestamp, '.png'])
-# filenamestr = ''.join(['output/costobj_heatmap_tausequence_', 'ipopt', '_',
+# filenamestr = ''.join(['output/costobj_heatmap_difstartpoints_', 'ipopt', '_',
 #                            timestamp, '.png'])
+filenamestr = ''.join(['output/costobj_heatmap_tausequence_', 'ipopt', '_',
+                           timestamp, '.png'])
 savefilepathandname = os.path.join(projectpath, filenamestr)
 
-heatmap_costobj(df=df_piv, savefilepathandname=None, xname='startpointiterate')
+# heatmap_costobj(df=df_piv, savefilepathandname=None, xname='startpointiterate')
+heatmap_costobj(df=df_piv, figsize=(10,100),
+                savefilepathandname=savefilepathandname, xname='tau')
 
 
-# In[14]:
+# In[ ]:
+
+
+sns.set_style("whitegrid", {'axes.edgecolor': '.8',
+                            'axes.spines.right': False,
+                            'axes.spines.top': False,
+                            'grid.linestyle': ':'})
+
+# Calculate the maximum, so we can set the yaxis limit to it
+max_acres = 0
+all_bmps = set()
+for tauno in range(1, 10):
+    df2 = df[df['tau']==tauno].groupby(by=['landriversegment', 'bmpshortname'])[['acres']].sum().unstack('bmpshortname').fillna(0)
+    
+    # For stacked bar graph
+    currmax = df2.sum(axis=1).max()
+    # For non-stacked
+#     currmax = ceil(df2.values.max())
+    if currmax > max_acres:
+        max_acres = currmax
+        
+    [all_bmps.add(x) for x in df2.columns.get_level_values('bmpshortname')]
+print(all_bmps)
+# Use the nice tableau color palette
+flatui = ["#4e79a7", "#f28e2b", "#e15759", "#76b7b2", "#59a14f",
+          "#edc948", "#b07aa1", "#ff9da7", "#9c755f", "#bab0ac"]
+sns.set_palette(sns.color_palette(flatui))  # set the color palette
+
+        # Make the figures
+for tauno in range(1, 10):
+    df2 = df[df['tau']==tauno].groupby(by=['landriversegment', 'bmpshortname'])[['acres']].sum().unstack('bmpshortname').fillna(0)
+    
+    # reset the column indices as regular columns
+    levels = df2.columns.levels
+    labels = df2.columns.labels
+    df2.columns = levels[1][labels[1]]
+    
+    # add columns for bmps that are all zeros
+    for bmpname in all_bmps:
+        if bmpname not in df2:
+            df2[bmpname] = 0
+    df2 = df2[list(all_bmps)]  # reorder so that each tau is the same order
+    
+    fig = plt.figure(figsize=(12, 5))
+    ax=fig.gca()
+    p1 = df2.plot(ax=ax, kind='bar', stacked=True)
+    ax.set_ylabel('acres')
+    ax.set_title('Tau==%d' % tauno)
+    ax.set_ylim([0, max_acres])
+    ax.xaxis.grid(False)
+    
+#     print(ax.get_xlim()[1])
+#     p1.patches[1].set_facecolor('b')
+#     [rect.set_facecolor('b') for (i, rect) in enumerate(p1.patches) if (i%7==0)]
+
+    # Filepath to save to
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
+    filenamestr = ''.join(['output/costobj_aggbars_tauno', str(tauno),'_ipopt', '_',
+                               timestamp, '.png'])
+    savefilepathandname = os.path.join(projectpath, filenamestr)
+    plt.savefig(savefilepathandname, bbox_inches='tight')
+
+
+# In[ ]:
+
+
+import cufflinks as cf
+
+cf.set_config_file(offline=False, world_readable=True, theme='ggplot')
+
+df2 = df[df['tau']==1].groupby(by=['landriversegment', 'bmpshortname'])[['acres']].sum().unstack('bmpshortname').fillna(0)
+display(df2.head(2))
+df2.iplot(kind='bar', barmode='stack', filename='stacked-bar-chart.png')
+# py.image.save_as(fig, filename='a-simple-plot.png')
+
+
+# In[ ]:
+
+
+from matplotlib.animation import FuncAnimation
+heights = {}
+
+for tii in range(2, 10):
+#     grouped = df[df['tau']==tii].groupby(by=['bmpshortname', 'landriversegment'])[['acres', 'totalinstancecost']].sum()
+    df2 = df[df['tau']==tii].groupby(by=['landriversegment', 'bmpshortname'])[['acres']].sum().unstack('bmpshortname').fillna(0)
+    fig = plt.figure()
+    p2 = df2.plot(ax=fig.gca(), kind='bar', stacked=True)
+    heights[tii-1] = [p.get_height() for p in p2.patches]
+    plt.close(fig)
+
+
+fig=plt.figure()
+# grouped = df[df['tau']==1].groupby(by=['bmpshortname', 'landriversegment'])[['acres', 'totalinstancecost']].sum()
+df2 = df[df['tau']==1].groupby(by=['landriversegment', 'bmpshortname'])[['acres']].sum().unstack('bmpshortname').fillna(0)
+p1 = df2.plot(ax=fig.gca(), kind='bar', stacked=True)
+plt.show()
+heights[0] = [p.get_height() for p in p1.patches]
+
+def init():
+    return [p for p in p1.patches]
+
+def animate(i):
+    for rect, y in zip(p1.patches, heights[i]):
+        rect.set_height(y)
+    return rect,
+
+anim = FuncAnimation(fig,animate,init_func=init,frames=9,interval=500,blit=False)
+
+# Filepath to save to
+timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
+filenamestr = ''.join(['output/costobj_animation_tausequence_', 'ipopt', '_',
+                           timestamp, '.mp4'])
+savefilepathandname = os.path.join(projectpath, filenamestr)
+anim.save(savefilepathandname, fps=2, extra_args=['-vcodec', 'libx264'])
+
+
+# In[ ]:
 
 
 # function to return ordered unique values
@@ -145,6 +321,7 @@ def f5(seq, idfun=None):
    return result
 
 combospresent = f5(zip(df.bmpshortname, df.loadsource))
+unique_lrsegs = set(df.lrsegs)
 unique_bmpnames = set(df.bmpshortname)
 unique_lsnames = f5(df.loadsource)
 
@@ -159,7 +336,7 @@ unique_bmpnames = list(x[0] for x in sorted_keys)
 print(sorted_keys)
 
 
-# In[15]:
+# In[ ]:
 
 
 # We can ask for ALL THE AXES and put them into axes
@@ -190,6 +367,7 @@ i = {b:0 for b in unique_bmpnames}  # an empty dictionary of indices
 
 for varname in ordered_var_names:
     selection = grouped.get_group(varname)
+    display(selection.tail(5))
 
 #     ax = axes_list.pop(0)
     bidx = unique_bmpnames.index(varname[0])
@@ -219,6 +397,9 @@ for varname in ordered_var_names:
     ax.spines['right'].set_visible(False)
 
     max_constraint = selection['tau'].max()
+    
+    print(max_constraint)
+    print((selection.loc[df['tau'] == max_constraint]['acres']))
     acres_value = float(selection.loc[df['tau'] == max_constraint]['acres'])
     ax.set_ylim((0, max_acres))
     ax.scatter(x=[max_constraint], y=[acres_value], s=60, clip_on=False, linewidth=0)

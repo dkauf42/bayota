@@ -9,7 +9,9 @@ sys.path.append('..')  # allow this notebook to find equal-level directories
 get_ipython().run_line_magic('pylab', 'inline')
 from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+
+# from src.subproblem_model_costobjective_county import CostObj
 
 
 # ## Create problem instance
@@ -20,8 +22,11 @@ from importing_modules import *
 # Load data for each set, parameter, etc. to define a problem instance
 objwrapper = CostObj()
 # lrsegs = ['N42071SL2_2410_2700']
-lrsegs = ['N51133RL0_6450_0000']
+# lrsegs = ['N51133RL0_6450_0000']
+# lrsegs = ['N51133PL0_6270_0000']
+lrsegs = ['N51133PL0_6140_0000']
 data = objwrapper.load_data(savedata2file=False, lrsegs_list=lrsegs)
+# data = objwrapper.load_data(savedata2file=False, county_list=['Northumberland, VA'])
 
 # ---- Set the tau target load ----
 for k in data.tau:
@@ -32,8 +37,11 @@ for k in data.tau:
 mdl = objwrapper.create_concrete(data=data)
 # Print the target load reduction values
 for l in mdl.LRSEGS:
-    for p in mdl.PLTNTS:
-        print('%s: %d' % (mdl.tau[l,p], mdl.tau[l,p].value))
+    print('%s: %d' % (mdl.tau[l,'N'], mdl.tau[l,'N'].value))
+    mdl.TargetPercentReduction[l,'P'].deactivate()
+    mdl.TargetPercentReduction[l,'S'].deactivate()
+#     for p in mdl.PLTNTS:
+#         print('%s: %d' % (mdl.tau[l,p], mdl.tau[l,p].value))
 
 # ---- Solver name ----
 localsolver = True
@@ -67,6 +75,7 @@ for ii in range(1, 10):
         
     # Solve The Model
     myobj = SolveAndParse(instance=mdl, data=data, localsolver=localsolver, solvername=solvername)
+    IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt', newfileprintlevel='2')
     merged_df = myobj.solve()
     print('\nObjective is: %d' % oe.value(mdl.Total_Cost))
     
@@ -129,7 +138,7 @@ filenamestr = ''.join(['output/costobj_tausequence_alldfs', '_', solvername, '_'
 alldfs.to_csv(os.path.join(projectpath, filenamestr))
 
 
-# In[ ]:
+# In[4]:
 
 
 # # Other ways to access the optimal values:

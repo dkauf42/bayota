@@ -9,21 +9,21 @@ sys.path.append('..')  # allow this notebook to find equal-level directories
 get_ipython().run_line_magic('pylab', 'inline')
 from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 
 
 # #### Load Solution Sequence
 
-# In[3]:
+# In[2]:
 
 
 # Iterates during solving
-filename = 'output/costobj_startingpoint9_tau5_ipopt_2018-08-09_104951.iters'
-dict_of_iterates, iter_summary = SolveAndParse().parse_output_file(os.path.join(projectpath, filename))
+filename = 'output/single_CostObj_2018-09-04_133627.iters'
+dict_of_iterates, iter_summary = IpoptParser().parse_output_file(os.path.join(projectpath, filename))
 
-# to get the nonstale variables...
-filename = 'output/costobj_difstartpts_alldfs_ipopt_2018-08-09_105005.csv'
-df = pd.read_csv(os.path.join(projectpath, filename))
+# # to get the nonstale variables...
+# filename = 'output/costobj_difstartpts_alldfs_ipopt_2018-08-09_105005.csv'
+# df = pd.read_csv(os.path.join(projectpath, filename))
 # display(df.head(2))
 
 # display(iter_summary.head(65))
@@ -41,7 +41,7 @@ df = pd.read_csv(os.path.join(projectpath, filename))
 #         break
 
 
-# In[5]:
+# In[3]:
 
 
 fig = plt.figure(figsize=(10, 4))
@@ -54,7 +54,7 @@ ax.set_xlabel('iteration')
 # ax.set_xlim([0, 2])
 
 
-# In[6]:
+# In[4]:
 
 
 fig = plt.figure(figsize=(10, 4))
@@ -76,7 +76,7 @@ ax.set_ylabel('dual infeasibility')
 ax.set_xlabel('iteration')
 
 
-# In[9]:
+# In[5]:
 
 
 ordered_var_names = ['objective', 'inf_pr', 'inf_du']
@@ -147,7 +147,7 @@ savefilepathandname = os.path.join(projectpath, filenamestr)
 plt.savefig(savefilepathandname)
 
 
-# In[10]:
+# In[6]:
 
 
 startingptrunno = 1
@@ -357,8 +357,8 @@ else:
 # In[ ]:
 
 
-from vis.sequence_plot import plotly_loadobj
-from vis.acres_heatmap import heatmap_loadobj
+from src.vis.sequence_plot import plotly_loadobj
+from src.vis.acres_heatmap import heatmap_loadobj
 
 
 # In[ ]:
