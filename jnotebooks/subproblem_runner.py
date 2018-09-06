@@ -1,5 +1,5 @@
 from pyomo.opt import SolverFactory
-from src.subproblem_model_costobjective import build_subproblem_model
+from src.models.subproblem_model_costobjective import build_subproblem_model
 
 # Note that there is no need to call create_instance on a ConcreteModel
 mdl = build_subproblem_model(...)
