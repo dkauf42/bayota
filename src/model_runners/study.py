@@ -1,16 +1,17 @@
 from jnotebooks.importing_modules import *
 import time
 from datetime import datetime
+from collections import OrderedDict
 
 import pyomo.environ as oe
 
 from src.solver_ipopt import SolveAndParse
 from src.ipopt.ipopt_parser import IpoptParser
 
-from src.model_makers.costobjective_lrseg import CostObj as CostObj_lrseg
-from src.model_makers.costobjective_county import CostObj as CostObj_county
-from src.model_makers.loadobjective_lrseg import LoadObj as LoadObj_lrseg
-from src.model_makers.loadobjective_county import LoadObj as LoadObj_county
+from src.model_handlers.costobjective_lrseg import CostObj as CostObj_lrseg
+from src.model_handlers.costobjective_county import CostObj as CostObj_county
+from src.model_handlers.loadobjective_lrseg import LoadObj as LoadObj_lrseg
+from src.model_handlers.loadobjective_county import LoadObj as LoadObj_county
 
 class Study:
     def __init__(self, objectivetype='costmin',
@@ -59,13 +60,13 @@ class Study:
 
         starttime_modelinstantiation = time.time()
 
-        # Instantiate a modelmaker object, which itself generates the model and instance data
-        modelmaker = self._setup_modelmaker()
-        self.data = self._set_instance_data(modelmaker, geoentities)
+        # Instantiate a modelhandler object, which itself generates the model and instance data
+        modelhandler = self._setup_modelhandler()
+        self.data = self._set_instance_data(modelhandler, geoentities)
         self._setconstraint(self.data, baseconstraint)
 
-        # Tell the modelmaker to create a model instance
-        self.mdl = modelmaker.create_concrete(data=self.data)
+        # Tell the modelhandler to create a model instance
+        self.mdl = modelhandler.create_concrete(data=self.data)
 
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation
         print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
@@ -81,33 +82,31 @@ class Study:
 
     def go_constraintsequence(self, constraints=None):
         """ Perform multiple runs with different constraints """
-        if not not constraints:
-            for ii, newconstraint in enumerate(constraints):
-                # Solve problem for each new constraint
 
-                if self.objectivetype == 'costmin':
-                    # Reassign the target load values (tau)
-                    for k in self.data.tau:
-                        self.mdl.tau[k] = newconstraint
-                        self.constraintstr = str(round(self.mdl.tau[k].value, 1))
-                        print(self.constraintstr)
-                        loopname = ''.join(['output/', self.studystr,
-                                            'tausequence', str(ii),
-                                            '_tau', self.constraintstr])
+        df_list = []
+        solution_objectives = OrderedDict()
 
-                if self.objectivetype == 'loadreductionmax':
-                    # Reassign the cost bound values (C)
-                    self.data.totalcostupperbound = newconstraint
-                    self.mdl.totalcostupperbound = self.data.totalcostupperbound
-                    self.constraintstr = str(round(self.data.totalcostupperbound, 1))
+        # Solve problem for each new constraint
+        for ii, newconstraint in enumerate(constraints):
+            if self.objectivetype == 'costmin':
+                # Reassign the target load values (tau)
+                for k in self.data.tau:
+                    self.mdl.tau[k] = newconstraint
+                    self.constraintstr = str(round(self.mdl.tau[k].value, 1))
                     print(self.constraintstr)
                     loopname = ''.join(['output/', self.studystr,
-                                        'costboundsequence', str(ii),
-                                        '_costbound', self.constraintstr])
-
-                output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
-        else:
-            raise ValueError('No constraints given')
+                                        'tausequence', str(ii),
+                                        '_tau', self.constraintstr])
+            if self.objectivetype == 'loadreductionmax':
+                # Reassign the cost bound values (C)
+                self.data.totalcostupperbound = newconstraint
+                self.mdl.totalcostupperbound = self.data.totalcostupperbound
+                self.constraintstr = str(round(self.data.totalcostupperbound, 1))
+                print(self.constraintstr)
+                loopname = ''.join(['output/', self.studystr,
+                                    'costboundsequence', str(ii),
+                                    '_costbound', self.constraintstr])
+            output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
 
         return output_file_name, merged_df
 
@@ -126,18 +125,18 @@ class Study:
         localsolver = True
         solvername = 'ipopt'
 
-        looptimestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
-
         if randomstart:
             import random
             # reinitialize the variables
             for k in mdl.x:
                 mdl.x[k] = round(random.uniform(0, 6000), 2)
 
+        solvetimestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
+
         myobj = SolveAndParse(instance=mdl, data=data, localsolver=localsolver, solvername=solvername)
 
         # ---- Output File Name ----
-        output_file_name = os.path.join(projectpath, ''.join(['output/CostObj_', looptimestamp, '.iters']))
+        output_file_name = os.path.join(projectpath, ''.join(['output/output_', solvetimestamp, '.iters']))
         IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt',
                                            newoutputfilepath=output_file_name)
         # ---- Output Level-of-Detail ----
@@ -152,7 +151,7 @@ class Study:
         merged_df = myobj.solve(get_suffixes=False)
         print('\nObjective is: %d' % oe.value(mdl.Total_Cost))
 
-        return output_file_name, merged_df
+        return output_file_name, merged_df, solvetimestamp
 
     def _setconstraint(self, data, baseconstraint):
         if self.objectivetype == 'costmin':
@@ -173,7 +172,7 @@ class Study:
         else:
             return None
 
-    def _setup_modelmaker(self):
+    def _setup_modelhandler(self):
         if self.objectivetype == 'costmin':
             if self.geoscale == 'lrseg':
                 return CostObj_lrseg()
