@@ -57,23 +57,49 @@ class Study:
         self.mdl = None
         self.data = None
         self.geoscale = geoscale
+        self.geoentities = geoentities
         self.objectivetype = objectivetype
 
         starttime_modelinstantiation = time.time()
 
         # Instantiate a modelhandler object, which itself generates the model and instance data
         modelhandler = self._setup_modelhandler()
-        self.data = self._set_instance_data(modelhandler, geoentities)
+        self.data = self._set_instance_data(modelhandler)
         self._setconstraint(self.data, baseconstraint)
 
         # Tell the modelhandler to create a model instance
         self.mdl = modelhandler.create_concrete(data=self.data)
 
-        timefor_modelinstantiation = time.time() - starttime_modelinstantiation
+        self.endtime_modelinstantiation = time.time()
+        timefor_modelinstantiation = self.endtime_modelinstantiation - starttime_modelinstantiation
         print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
         self.studystr = ''.join(['study_', self.objectivetype, '_',
                                  self.geoscale])
+
+    def __str__(self):
+        """ Custom 'print' that displays the metadata defined for this OptCase.
+        """
+        d = self.__dict__
+
+        timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
+
+        formattedstr = "\n***** Study Details *****\n" \
+                       "objective:                %s\n" \
+                       "geographic scale:         %s\n" \
+                       "# of geographic entities: %s\n" \
+                       "current constraint level: %s\n" \
+                       "time of instantiation:    %s\n" \
+                       "***************************\n" %\
+                       tuple([str(i) for i in [d['objectivetype'],
+                                               d['geoscale'],
+                                               str(len(d['geoentities'])),
+                                               d['constraintstr'],
+                                               timestr
+                                               ]
+                              ])
+
+        return formattedstr
 
     def go(self, constraintlist=None):
         """ Perform a single run - Solve the problem instance """
@@ -186,11 +212,11 @@ class Study:
                 data.tau[k] = baseconstraint  # e.g. 12% reduction
                 self.constraintstr = str(round(data.tau[k], 1))
 
-    def _set_instance_data(self, modelmaker, geoentities):
+    def _set_instance_data(self, modelmaker):
         if self.geoscale == 'lrseg':
-            return modelmaker.load_data(savedata2file=False, lrsegs_list=geoentities)
+            return modelmaker.load_data(savedata2file=False, lrsegs_list=self.geoentities)
         elif self.geoscale == 'county':
-            return modelmaker.load_data(savedata2file=False, county_list=geoentities)
+            return modelmaker.load_data(savedata2file=False, county_list=self.geoentities)
         else:
             return None
 
