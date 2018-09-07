@@ -112,6 +112,7 @@ class Study:
 
         df_list = []
         solution_objectives = OrderedDict()
+        output_file_names = []
 
         # Solve problem for each new constraint
         for ii, newconstraint in enumerate(constraints):
@@ -122,10 +123,10 @@ class Study:
                     self.constraintstr = str(round(self.mdl.tau[k].value, 1))
                     print(self.constraintstr)
 
-                loopname = ''.join(['output/', self.studystr,
-                                    'tausequence', str(ii),
+                loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
-                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                                                                                           output_file_str=loopname)
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(self.mdl.Total_Cost)
                 merged_df['solution_objectives'] = oe.value(self.mdl.Total_Cost)
@@ -136,10 +137,10 @@ class Study:
                 self.mdl.totalcostupperbound = self.data.totalcostupperbound
                 self.constraintstr = str(round(self.data.totalcostupperbound, 1))
                 print(self.constraintstr)
-                loopname = ''.join(['output/', self.studystr,
-                                    'costboundsequence', str(ii),
+                loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
-                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                                                                                           output_file_str=loopname)
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(self.mdl.PercentReduction['N'])
                 merged_df['solution_objectives'] = oe.value(self.mdl.PercentReduction['N'])
@@ -148,17 +149,18 @@ class Study:
             sorteddf_byacres = merged_df.sort_values(by='acres')
             # Save all of the solutions in a list
             df_list.append(sorteddf_byacres)
+            output_file_names.append(output_file_name)
 
         # Save the results to a .csv file
         alldfs = pd.concat(df_list, ignore_index=True)
         alldfs['x'] = list(
             zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource, alldfs.totalannualizedcostperunit))
-        filenamestr = ''.join([loopname,'_',solvetimestamp,'.csv'])
+        filenamestr = ''.join(['output/output_', loopname, '_', solvetimestamp, '.csv'])
         alldfs.to_csv(os.path.join(projectpath, filenamestr))
 
-        return output_file_name, merged_df, solvetimestamp
+        return output_file_names, alldfs
 
-    def _solve_problem_instance(self, mdl, data, randomstart=False):
+    def _solve_problem_instance(self, mdl, data, randomstart=False, output_file_str=''):
         """
 
         Args:
@@ -184,7 +186,10 @@ class Study:
         myobj = SolveAndParse(instance=mdl, data=data, localsolver=localsolver, solvername=solvername)
 
         # ---- Output File Name ----
-        output_file_name = os.path.join(projectpath, ''.join(['output/output_', solvetimestamp, '.iters']))
+        if not output_file_str:
+            output_file_name = os.path.join(projectpath, ''.join(['output/output_', solvetimestamp, '.iters']))
+        else:
+            output_file_name = os.path.join(projectpath, ''.join(['output/output_', output_file_str, '_', solvetimestamp, '.iters']))
         IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt',
                                            newoutputfilepath=output_file_name)
         # ---- Output Level-of-Detail ----
