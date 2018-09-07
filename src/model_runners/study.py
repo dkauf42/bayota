@@ -13,14 +13,13 @@ from src.model_makers.loadobjective_lrseg import LoadObj as LoadObj_lrseg
 from src.model_makers.loadobjective_county import LoadObj as LoadObj_county
 
 class Study:
-    def __init__(self, n=1, objectivetype='costmin',
+    def __init__(self, objectivetype='costmin',
                  geoscale='lrseg', geoentities=None,
                  baseconstraint=0, saveData2file=False):
         """
         Perform a series of different optimization runs.
 
         Args:
-            n (int): Number of optimization runs to perform in this study
             objectivetype (str): Either 'costmin' or 'loadreductionmax'
             geoscale (str): Either 'county' or 'lrseg'
             geoentities (:obj:`list` of :obj:`str`): the specific lrsegs or counties to include in each run
@@ -31,7 +30,7 @@ class Study:
             Examples should be written in doctest format, and should illustrate how
             to use the function.
 
-            >>> print(Study(n=1, objectivetype='costmin', \
+            >>> print(Study(objectivetype='costmin', \
                             geoscale='county', \
                             geoentities=['Anne Arundel, MD'], \
                             baseconstraint=5, saveData2file=False))
