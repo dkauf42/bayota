@@ -14,30 +14,37 @@ up and running.
 # Directory Structure
 
 ```
-├── README.md          <- The top-level README for developers using this project.
+├── README.md              <- The top-level README for developers using this project.
 │
 ├── data
-│   ├── instance_data  <- Intermediate data that has been transformed.
-│   └── raw            <- Original, immutable data.
+│   ├── instance_data      <- Intermediate data that has been transformed.
+│   └── raw                <- Original, immutable data.
 │
-├── jnotebooks         <- Notebooks for looking at model results and analyses
+├── jnotebooks             <- Notebooks for looking at model results and analyses
 │
-├── src                <- Source code for use in this project.
-│   ├── __init__.py    <- Makes src a Python module
+├── src                    <- Source code for use in this project.
+│   ├── __init__.py        <- Makes src a Python module
+│   ├── study.py           <- Main class for setting up optimization runs
 │   │
-│   ├── ipopt          <- Scripts specific to the Ipopt solver
-│   │   └── ipopt_parser.py
+│   ├── data_handlers      <- Code to populate necessary source data
+│   │   ├── dataloader.py
+│   │   └── dataloader_county.py
 │   │
-│   ├── model_runners  <- Scripts to solve specific model configurations
-│   │   └── singlerun.py
-│   │
-│   ├── models         <- Formulations of the optimization model
-│   │   ├── costobjective.py
+│   ├── model_handlers     <- Formulations of the optimization model
 │   │   ├── costobjective_county.py
-│   │   ├── loadobjective.py
-│   │   └── loadobjective_county.py
+│   │   ├── costobjective_lrseg.py
+│   │   ├── loadobjective_county.py
+│   │   └── loadobjective_lrseg.py
 │   │
-│   └── vis            <- Scripts to create exploratory and results oriented visualizations
+│   ├── solution_handlers  <- Code to parse and manipulate run solutions
+│   │   ├── ipopt_parser.py
+│   │   └── solution_wrangler.py
+│   │
+│   ├── solver_handlers    <- Scripts to send commands to solver
+│   │   ├── gjh_wrapper.py
+│   │   └── solve_triggerer.py
+│   │
+│   └── vis                <- Scripts to create exploratory and results oriented visualizations
 │       ├── acres_bars.py
 │       ├── acres_heatmap.py
 │       ├── genericvis.py
