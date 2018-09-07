@@ -1,5 +1,6 @@
 from jnotebooks.importing_modules import *
 import time
+import pandas as pd
 from datetime import datetime
 from collections import OrderedDict
 
@@ -39,11 +40,11 @@ class Study:
 
         Definitions
         -----------
-            A Trial [from the Google Vizier paper (Golovin et al. 2017)]
-        is a list of parameter values, 𝑥, that will lead to a
+            A Trial is a list of parameter values, 𝑥, that will lead to a
         single evaluation of 𝑓(𝑥). A trial can be “Completed”, which
         means that it has been evaluated and the objective value
         𝑓(𝑥) has been assigned to it, otherwise it is “Pending”.
+        [from the Google Vizier paper (Golovin et al. 2017)]
         [In other words, each iteration of the solver that calculates a
         single objective value is a trial]
             A Run is a single optimization over a feasible space. Each Run
@@ -76,7 +77,7 @@ class Study:
 
     def go(self, constraintlist=None):
         """ Perform a single run - Solve the problem instance """
-        output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
+        output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
 
         return output_file_name, merged_df
 
@@ -94,9 +95,15 @@ class Study:
                     self.mdl.tau[k] = newconstraint
                     self.constraintstr = str(round(self.mdl.tau[k].value, 1))
                     print(self.constraintstr)
-                    loopname = ''.join(['output/', self.studystr,
-                                        'tausequence', str(ii),
-                                        '_tau', self.constraintstr])
+
+                loopname = ''.join(['output/', self.studystr,
+                                    'tausequence', str(ii),
+                                    '_tau', self.constraintstr])
+                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+                # Save this run's objective value in a list
+                solution_objectives[newconstraint] = oe.value(self.mdl.Total_Cost)
+                merged_df['solution_objectives'] = oe.value(self.mdl.Total_Cost)
+                merged_df['tau'] = newconstraint  # Label this run in the dataframe
             if self.objectivetype == 'loadreductionmax':
                 # Reassign the cost bound values (C)
                 self.data.totalcostupperbound = newconstraint
@@ -106,9 +113,24 @@ class Study:
                 loopname = ''.join(['output/', self.studystr,
                                     'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
-            output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
+                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+                # Save this run's objective value in a list
+                solution_objectives[newconstraint] = oe.value(self.mdl.PercentReduction['N'])
+                merged_df['solution_objectives'] = oe.value(self.mdl.PercentReduction['N'])
+                merged_df['totalcostupperbound'] = newconstraint  # Label this run in the dataframe
 
-        return output_file_name, merged_df
+            sorteddf_byacres = merged_df.sort_values(by='acres')
+            # Save all of the solutions in a list
+            df_list.append(sorteddf_byacres)
+
+        # Save the results to a .csv file
+        alldfs = pd.concat(df_list, ignore_index=True)
+        alldfs['x'] = list(
+            zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource, alldfs.totalannualizedcostperunit))
+        filenamestr = ''.join([loopname,'_',solvetimestamp,'.csv'])
+        alldfs.to_csv(os.path.join(projectpath, filenamestr))
+
+        return output_file_name, merged_df, solvetimestamp
 
     def _solve_problem_instance(self, mdl, data, randomstart=False):
         """
