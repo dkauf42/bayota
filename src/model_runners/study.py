@@ -54,13 +54,15 @@ class Study:
         self.constraintstr = ''
         self.mdl = None
         self.data = None
+        self.geoscale = geoscale
+        self.objectivetype = objectivetype
 
         starttime_modelinstantiation = time.time()
 
         # Instantiate a modelmaker object, which itself generates the model and instance data
-        modelmaker = self._setup_modelmaker(objectivetype, geoscale)
-        self.data = self._set_instance_data(modelmaker, geoscale, geoentities)
-        self._setconstraint(self.data, objectivetype, baseconstraint)
+        modelmaker = self._setup_modelmaker()
+        self.data = self._set_instance_data(modelmaker, geoentities)
+        self._setconstraint(self.data, baseconstraint)
 
         # Tell the modelmaker to create a model instance
         self.mdl = modelmaker.create_concrete(data=self.data)
@@ -68,20 +70,36 @@ class Study:
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation
         print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
-    def go(self):
-        """ Perform a single run - Solve the problem instance """
-        self._solve_problem_instance(self.mdl, self.data)
+    def go(self, constraintlist=None):
+        """ Solve the problem instance(s) """
+        """ Perform a single run """
+        if not constraintlist:
+            output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
+            return None
+
+        """ Perform multiple runs with different constraints """
+        if not not constraintlist:
+            for newconstraint in constraintlist:
+                # Solve problem for each new constraint
+
+                if self.objectivetype == 'costmin':
+                    # Reassign the target load values (tau)
+                    for k in self.data.tau:
+                        self.mdl.tau[k] = newconstraint
+                        self.constraintstr = str(round(self.mdl.tau[k].value, 1))
+                        print(self.constraintstr)
+
+                if self.objectivetype == 'loadreductionmax':
+                    # Reassign the cost bound values (C)
+                    self.data.totalcostupperbound = newconstraint
+                    self.mdl.totalcostupperbound = self.data.totalcostupperbound
+                    self.constraintstr = str(round(self.data.totalcostupperbound, 1))
+                    print(self.constraintstr)
+
+                output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
+            return None
 
     def _solve_problem_instance(self, mdl, data):
-        """
-
-        Args:
-            mdl:
-            data:
-
-        Returns:
-
-        """
         # ---- Solver details ----
         localsolver = True
         solvername = 'ipopt'
@@ -106,35 +124,37 @@ class Study:
         merged_df = myobj.solve(get_suffixes=False)
         print('\nObjective is: %d' % oe.value(mdl.Total_Cost))
 
-    def _setconstraint(self, data, objectivetype, baseconstraint):
-        if objectivetype == 'costmin':
+        return output_file_name, merged_df
+
+    def _setconstraint(self, data, baseconstraint):
+        if self.objectivetype == 'costmin':
             # ---- Set the total capital available ----
             data.totalcostupperbound = baseconstraint  # e.g. $100,000
             self.constraintstr = str(round(data.totalcostupperbound, 1))
-        elif objectivetype == 'loadreductionmax':
+        elif self.objectivetype == 'loadreductionmax':
             # ---- Set the tau target load ----
             for k in data.tau:
                 data.tau[k] = baseconstraint  # e.g. 12% reduction
                 self.constraintstr = str(round(data.tau[k], 1))
 
-    def _set_instance_data(self, modelmaker, geoscale, geoentities):
-        if geoscale == 'lrseg':
+    def _set_instance_data(self, modelmaker, geoentities):
+        if self.geoscale == 'lrseg':
             return modelmaker.load_data(savedata2file=False, lrsegs_list=geoentities)
-        elif geoscale == 'county':
+        elif self.geoscale == 'county':
             return modelmaker.load_data(savedata2file=False, county_list=geoentities)
         else:
             return None
 
-    def _setup_modelmaker(self, objectivetype, geoscale):
-        if objectivetype == 'costmin':
-            if geoscale == 'lrseg':
+    def _setup_modelmaker(self):
+        if self.objectivetype == 'costmin':
+            if self.geoscale == 'lrseg':
                 return CostObj_lrseg()
-            elif geoscale == 'county':
+            elif self.geoscale == 'county':
                 return CostObj_county()
-        if objectivetype == 'loadreductionmax':
-            if geoscale == 'lrseg':
+        if self.objectivetype == 'loadreductionmax':
+            if self.geoscale == 'lrseg':
                 return LoadObj_lrseg()
-            elif geoscale == 'county':
+            elif self.geoscale == 'county':
                 return LoadObj_county()
         else:
             return None
