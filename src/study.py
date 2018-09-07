@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 import pyomo.environ as oe
 
-from src.solve_triggerer import SolveAndParse
+from src.solver_handlers.solve_triggerer import SolveAndParse
 from src.solution_handlers.ipopt_parser import IpoptParser
 
 from src.model_handlers.costobjective_lrseg import CostObj as CostObj_lrseg
