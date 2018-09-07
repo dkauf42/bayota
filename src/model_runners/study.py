@@ -70,16 +70,19 @@ class Study:
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation
         print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
-    def go(self, constraintlist=None):
-        """ Solve the problem instance(s) """
-        """ Perform a single run """
-        if not constraintlist:
-            output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
-            return None
+        self.studystr = ''.join(['study_', self.objectivetype, '_',
+                                 self.geoscale])
 
+    def go(self, constraintlist=None):
+        """ Perform a single run - Solve the problem instance """
+        output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
+
+        return output_file_name, merged_df
+
+    def go_constraintsequence(self, constraints=None):
         """ Perform multiple runs with different constraints """
-        if not not constraintlist:
-            for newconstraint in constraintlist:
+        if not not constraints:
+            for ii, newconstraint in enumerate(constraints):
                 # Solve problem for each new constraint
 
                 if self.objectivetype == 'costmin':
@@ -88,6 +91,9 @@ class Study:
                         self.mdl.tau[k] = newconstraint
                         self.constraintstr = str(round(self.mdl.tau[k].value, 1))
                         print(self.constraintstr)
+                        loopname = ''.join(['output/', self.studystr,
+                                            'tausequence', str(ii),
+                                            '_tau', self.constraintstr])
 
                 if self.objectivetype == 'loadreductionmax':
                     # Reassign the cost bound values (C)
@@ -95,21 +101,43 @@ class Study:
                     self.mdl.totalcostupperbound = self.data.totalcostupperbound
                     self.constraintstr = str(round(self.data.totalcostupperbound, 1))
                     print(self.constraintstr)
+                    loopname = ''.join(['output/', self.studystr,
+                                        'costboundsequence', str(ii),
+                                        '_costbound', self.constraintstr])
 
                 output_file_name, merged_df = self._solve_problem_instance(self.mdl, self.data)
-            return None
+        else:
+            raise ValueError('No constraints given')
 
-    def _solve_problem_instance(self, mdl, data):
+        return output_file_name, merged_df
+
+    def _solve_problem_instance(self, mdl, data, randomstart=False):
+        """
+
+        Args:
+            mdl:
+            data:
+            randomstart: If False, than the ipopt default is used.. zero for each variable
+
+        Returns:
+
+        """
         # ---- Solver details ----
         localsolver = True
         solvername = 'ipopt'
 
         looptimestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
 
+        if randomstart:
+            import random
+            # reinitialize the variables
+            for k in mdl.x:
+                mdl.x[k] = round(random.uniform(0, 6000), 2)
+
         myobj = SolveAndParse(instance=mdl, data=data, localsolver=localsolver, solvername=solvername)
 
         # ---- Output File Name ----
-        output_file_name = os.path.join(projectpath, ''.join(['output/single_CostObj_', looptimestamp, '.iters']))
+        output_file_name = os.path.join(projectpath, ''.join(['output/CostObj_', looptimestamp, '.iters']))
         IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt',
                                            newoutputfilepath=output_file_name)
         # ---- Output Level-of-Detail ----
