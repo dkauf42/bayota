@@ -78,7 +78,7 @@ class Study:
                                  self.geoscale])
 
     def __str__(self):
-        """ Custom 'print' that displays the metadata defined for this OptCase.
+        """ Custom 'print' that displays the attributes of this Study.
         """
         d = self.__dict__
 
