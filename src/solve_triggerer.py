@@ -1,7 +1,7 @@
 import pyomo.environ as oe
 from pyomo.opt import SolverFactory, SolverManagerFactory
 
-from src.solution_wrangler import *
+from src.solution_handlers.solution_wrangler import *
 
 
 class SolveAndParse:
