@@ -28,6 +28,10 @@ class LoadObj:
                                           t=data.T,
                                           totalcostupperbound=data.totalcostupperbound)
 
+        # Retain only the Nitrogen load objective, and deactivate the others
+        mdl.PercentReduction['P'].deactivate()
+        mdl.PercentReduction['S'].deactivate()
+
         return mdl
 
     @staticmethod

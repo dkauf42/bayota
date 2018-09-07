@@ -28,6 +28,11 @@ class CostObj:
                                           phi=data.phi,
                                           t=data.T)
 
+        # Retain only the Nitrogen load constraints, and deactivate the others
+        for l in mdl.LRSEGS:
+            mdl.TargetPercentReduction[l, 'P'].deactivate()
+            mdl.TargetPercentReduction[l, 'S'].deactivate()
+
         return mdl
 
     @staticmethod
