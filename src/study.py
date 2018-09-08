@@ -101,7 +101,7 @@ class Study:
 
         return formattedstr
 
-    def go(self, constraintlist=None):
+    def go(self):
         """ Perform a single run - Solve the problem instance """
         output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
 
