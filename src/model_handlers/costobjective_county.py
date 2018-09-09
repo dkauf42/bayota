@@ -1,6 +1,6 @@
 import pyomo.environ as oe
 
-from src.data_handlers.dataloader_county import DataLoader
+from src.data_handlers.county import County
 
 
 class CostObj:
@@ -9,7 +9,7 @@ class CostObj:
         pass
 
     def load_data(self, savedata2file=False, county_list=None):
-        data = DataLoader(save2file=savedata2file, geoscale='county', geolist=county_list)
+        data = County(save2file=savedata2file, geolist=county_list)
         return data
 
     def create_concrete(self, data):

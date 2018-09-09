@@ -16,8 +16,8 @@ from src.model_handlers.loadobjective_county import LoadObj as LoadObj_county
 
 class Study:
     def __init__(self, objectivetype='costmin',
-                 geoscale='lrseg', geoentities=None,
-                 baseconstraint=0, saveData2file=False):
+                 geoscale='county', geoentities=None,
+                 baseconstraint=12, saveData2file=False):
         """
         Perform a series of different optimization runs.
 
@@ -64,7 +64,14 @@ class Study:
 
         # Instantiate a modelhandler object, which itself generates the model and instance data
         modelhandler = self._setup_modelhandler()
-        self.data = self._set_instance_data(modelhandler)
+        # Set instance Data
+        if self.geoscale == 'lrseg':
+            self.data = modelhandler.load_data(savedata2file=False, lrsegs_list=self.geoentities)
+        elif self.geoscale == 'county':
+            self.data = modelhandler.load_data(savedata2file=False, county_list=self.geoentities)
+        else:
+            raise ValueError('unrecognized "geoscale"')
+        # Set the base constraint level
         self._setconstraint(self.data, baseconstraint)
 
         # Tell the modelhandler to create a model instance
@@ -76,6 +83,8 @@ class Study:
 
         self.studystr = ''.join(['study_', self.objectivetype, '_',
                                  self.geoscale])
+
+        self.numberofrunscompleted = 0
 
     def __str__(self):
         """ Custom 'print' that displays the attributes of this Study.
@@ -216,14 +225,6 @@ class Study:
             for k in data.tau:
                 data.tau[k] = baseconstraint  # e.g. 12% reduction
                 self.constraintstr = str(round(data.tau[k], 1))
-
-    def _set_instance_data(self, modelmaker):
-        if self.geoscale == 'lrseg':
-            return modelmaker.load_data(savedata2file=False, lrsegs_list=self.geoentities)
-        elif self.geoscale == 'county':
-            return modelmaker.load_data(savedata2file=False, county_list=self.geoentities)
-        else:
-            return None
 
     def _setup_modelhandler(self):
         if self.objectivetype == 'costmin':
