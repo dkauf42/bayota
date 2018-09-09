@@ -27,8 +27,9 @@ up and running.
 │   ├── study.py           <- Main class for setting up optimization runs
 │   │
 │   ├── data_handlers      <- Code to populate necessary source data
+│   │   ├── county.py
 │   │   ├── dataloader.py
-│   │   └── dataloader_county.py
+│   │   └── lrseg.py
 │   │
 │   ├── model_handlers     <- Formulations of the optimization model
 │   │   ├── costobjective_county.py
@@ -43,6 +44,9 @@ up and running.
 │   ├── solver_handlers    <- Scripts to send commands to solver
 │   │   ├── gjh_wrapper.py
 │   │   └── solve_triggerer.py
+│   │
+│   ├── tests              <- Scripts to test and validate code using pytest
+│   │   └── test_study.py
 │   │
 │   └── vis                <- Scripts to create exploratory and results oriented visualizations
 │       ├── acres_bars.py
