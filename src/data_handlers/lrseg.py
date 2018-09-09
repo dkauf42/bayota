@@ -1,4 +1,4 @@
-from .dataloaders import DataLoader
+from .dataloader import DataLoader
 
 
 class Lrseg(DataLoader):
