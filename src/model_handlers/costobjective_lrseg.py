@@ -9,7 +9,7 @@ class CostObj:
         pass
 
     def load_data(self, savedata2file=False, lrsegs_list=None):
-        data = Lrseg(save2file=savedata2file, lrsegs_list=lrsegs_list)
+        data = Lrseg(save2file=savedata2file, geolist=lrsegs_list)
         return data
 
     def create_concrete(self, data):
