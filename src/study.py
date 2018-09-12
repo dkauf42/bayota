@@ -17,7 +17,7 @@ from src.model_handlers.loadobjective_county import LoadObj as LoadObj_county
 class Study:
     def __init__(self, objectivetype='costmin',
                  geoscale='county', geoentities=None,
-                 baseconstraint=12, saveData2file=False):
+                 baseconstraint=5, saveData2file=False):
         """
         Perform a series of different optimization runs.
 
@@ -53,6 +53,9 @@ class Study:
         course of a Run.
             A Study represents a series of runs, with different configurations.
         """
+        if not geoentities:
+            raise ValueError('Geoentities must be specified')
+
         self.constraintstr = ''
         self.mdl = None
         self.data = None
