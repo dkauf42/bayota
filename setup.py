@@ -26,7 +26,9 @@ with open('LICENSE') as f:
     license_text = f.read()
 
 install_requires = ['pytest',
-                    'amplpy'
+                    'amplpy',
+                    'pandas',
+                    'pyomo'
                     ]
 
 setup(name='OptEfficiencySubProblem',
