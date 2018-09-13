@@ -1,2 +1,1 @@
-include output/empty.txt
-recursive-include castjeeves *.*
+recursive-include castjeeves *
