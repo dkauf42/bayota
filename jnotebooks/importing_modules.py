@@ -7,4 +7,4 @@ baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchSci
 projectpath = os.path.join(baseexppath, 'OptEfficiencySubProblem/')
 amplappdir = os.path.join(baseexppath, 'ampl/amplide.macosx64/')
 
-ampl = AMPL(Environment(amplappdir))
+# ampl = AMPL(Environment(amplappdir))
