@@ -38,7 +38,7 @@ with open('LICENSE') as f:
 install_requires = ['pytest',
                     'amplpy',
                     'pandas',
-                    'pyomo==5.5.1'
+                    'pyomo'
                     ]
 
 setup(name='OptEfficiencySubProblem',
