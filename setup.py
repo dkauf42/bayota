@@ -25,7 +25,8 @@ with open('README.md') as f:
 with open('LICENSE') as f:
     license_text = f.read()
 
-install_requires = ['pytest'
+install_requires = ['pytest',
+                    'amplpy'
                     ]
 
 setup(name='OptEfficiencySubProblem',
