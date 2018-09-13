@@ -169,7 +169,7 @@ print(i)
 # In[7]:
 
 
-from src.solution_wrangler import get_nonzero_var_names_and_values
+from src.solution_handlers.solution_wrangler import get_nonzero_var_names_and_values
 nzvnames, nzvvalues = get_nonzero_var_names_and_values(mdl, onlynotstale=True)
 
 
@@ -183,7 +183,7 @@ nzvnames[1]
 # In[9]:
 
 
-from src.solution_wrangler import get_nonzero_var_df
+from src.solution_handlers.solution_wrangler import get_nonzero_var_df
 nonzerodf = get_nonzero_var_df(mdl, addcosttbldata=data.costsubtbl)
 
 
