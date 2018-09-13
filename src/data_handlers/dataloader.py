@@ -5,7 +5,7 @@ print(sys.path)
 import castjeeves
 print(castjeeves.__path__)
 print(dir(castjeeves))
-print(os.listdir(castjeeves.__path__))
+print(os.listdir(castjeeves.__file__))
 from castjeeves.CastJeeves.jeeves import Jeeves
 
 class DataLoader:
