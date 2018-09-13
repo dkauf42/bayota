@@ -11,7 +11,7 @@ Script to generate the installer for OptEfficiencySubProblem.
 """
 
 import os
-from setuptools import setup, Command
+from setuptools import setup, Command, find_packages
 
 
 class CleanCommand(Command):
@@ -49,7 +49,7 @@ setup(name='OptEfficiencySubProblem',
       author_email='dkaufman@chesapeakebay.net',
       url='https://gitlab.com/daka42',
       license=license_text,
-      packages=['src', 'jnotebooks', 'castjeeves'],
+      packages=find_packages(),  #['src', 'jnotebooks', 'castjeeves'],
       include_package_data=True,
       install_requires=install_requires,
       test_suite="src.tests",
