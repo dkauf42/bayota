@@ -4,7 +4,8 @@ import sys
 print(sys.path)
 import castjeeves
 print(castjeeves.__path__)
-print(dir(castjeeves))
+sys.path.insert(0, castjeeves.__path__)
+print(sys.path)
 # print(os.listdir(castjeeves.__file__))
 # print(os.listdir(castjeeves.__path__))
 from castjeeves.CastJeeves.jeeves import Jeeves
