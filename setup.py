@@ -1,4 +1,14 @@
+#  ___________________________________________________________________________
+#
+#  OptEfficiencySubProblem: NLP for Efficiency BMPs in CAST
+#  Developed under a grant awarded to the Chesapeake Research Consortium, Inc.
+#  and work occurring at U.S. EPA Chesapeake Bay Program Office, Annapolis, MD
+#  ___________________________________________________________________________
 # -*- coding: utf-8 -*-
+
+"""
+Script to generate the installer for OptEfficiencySubProblem.
+"""
 
 import os
 from setuptools import setup, Command
@@ -28,7 +38,7 @@ with open('LICENSE') as f:
 install_requires = ['pytest',
                     'amplpy',
                     'pandas',
-                    'pyomo'
+                    'pyomo=5.5.1'
                     ]
 
 setup(name='OptEfficiencySubProblem',
