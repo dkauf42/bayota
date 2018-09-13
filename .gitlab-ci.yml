@@ -25,6 +25,8 @@ before_script:
   - virtualenv venv
   - source venv/bin/activate
   - ls
+  - python import sys
+  - python print(sys.path)
 
 test:
   script:
