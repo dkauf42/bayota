@@ -2,6 +2,9 @@ import os
 import pandas as pd
 import sys
 print(sys.path)
+import castjeeves
+print(castjeeves.__path__)
+print(dir(castjeeves))
 from castjeeves.CastJeeves.jeeves import Jeeves
 
 class DataLoader:
