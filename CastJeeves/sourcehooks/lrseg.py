@@ -25,6 +25,14 @@ class Lrseg(SourceHook):
         return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
                                   fromtable=ids, toname='landriversegment')
 
+    def append_lrsegs_to_counties(self, tablewithcountyids):
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+
+        columnmask = ['countyid', 'lrsegid', 'landriversegment']
+        tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tablewithcountyids, how='inner')
+
+        return tblsubset
+
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
         kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]

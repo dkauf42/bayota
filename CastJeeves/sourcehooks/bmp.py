@@ -35,6 +35,11 @@ class Bmp(SourceHook):
         return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
                                   fromtable=categoryids, toname='bmpid')
 
+    def efficiency_bmps(self):
+        efftypeid = self.source.TblBmpType[self.source.TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
+
+        return self.source.TblBmp[self.source.TblBmp['bmptypeid'] == efftypeid]
+
     # Methods to append BMPids to loadsource tables
     def append_animal_bmpids(self, SourceCountyAgencyIDtable=None, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation

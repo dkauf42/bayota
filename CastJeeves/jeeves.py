@@ -12,6 +12,7 @@ from .sqltables.source_data import SourceData
 from .sourcehooks.agency import Agency
 from .sourcehooks.animal import Animal
 from .sourcehooks.bmp import Bmp
+from .sourcehooks.county import County
 from .sourcehooks.geo import Geo
 from .sourcehooks.loadsource import LoadSource
 from .sourcehooks.lrseg import Lrseg
@@ -27,6 +28,7 @@ class Jeeves:
         self.agency = Agency(sourcedata=source)
         self.animal = Animal(sourcedata=source)
         self.bmp = Bmp(sourcedata=source)
+        self.county = County(sourcedata=source)
         self.geo = Geo(sourcedata=source)
         self.loadsource = LoadSource(sourcedata=source)
         self.lrseg = Lrseg(sourcedata=source)
