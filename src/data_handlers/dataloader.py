@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+import sys
+print(sys.path)
 from castjeeves.CastJeeves.jeeves import Jeeves
 
 class DataLoader:
