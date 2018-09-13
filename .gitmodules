@@ -1,0 +1,3 @@
+[submodule "castjeeves"]
+	path = castjeeves
+	url = git@gitlab.com:daka42/castjeeves.git
