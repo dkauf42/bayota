@@ -25,11 +25,13 @@ before_script:
   - virtualenv venv
   - source venv/bin/activate
   - ls
+  - ls castjeeves/
 #  - python -c "import sys; print(sys.path)"
 
 test:
   script:
   - python setup.py test
+  - ls castjeeves/
   - python -m pip install coverage
   - python -m coverage run -m src/tests/ discover
   - python -m coverage report -m
