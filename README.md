@@ -22,6 +22,8 @@ up and running.
 │
 ├── jnotebooks             <- Notebooks for looking at model results and analyses
 │
+├── castjeeves             <- Submodule to query source data
+│
 ├── src                    <- Source code for use in this project.
 │   ├── __init__.py        <- Makes src a Python module
 │   ├── study.py           <- Main class for setting up optimization runs
