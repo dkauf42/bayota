@@ -22,18 +22,18 @@ from .sourcehooks.translator import Translator
 
 class Jeeves:
     def __init__(self):
-        source = self.loadInSourceDataFromSQL()
+        self.source = self.loadInSourceDataFromSQL()
 
-        self.agency = Agency(sourcedata=source)
-        self.animal = Animal(sourcedata=source)
-        self.bmp = Bmp(sourcedata=source)
-        self.county = County(sourcedata=source)
-        self.geo = Geo(sourcedata=source)
-        self.loadsource = LoadSource(sourcedata=source)
-        self.lrseg = Lrseg(sourcedata=source)
-        self.metadata = Metadata(sourcedata=source)
-        self.sector = Sector(sourcedata=source)
-        self.translator = Translator(sourcedata=source)
+        self.agency = Agency(sourcedata=self.source)
+        self.animal = Animal(sourcedata=self.source)
+        self.bmp = Bmp(sourcedata=self.source)
+        self.county = County(sourcedata=self.source)
+        self.geo = Geo(sourcedata=self.source)
+        self.loadsource = LoadSource(sourcedata=self.source)
+        self.lrseg = Lrseg(sourcedata=self.source)
+        self.metadata = Metadata(sourcedata=self.source)
+        self.sector = Sector(sourcedata=self.source)
+        self.translator = Translator(sourcedata=self.source)
 
     @classmethod
     def loadInSourceDataFromSQL(cls):
