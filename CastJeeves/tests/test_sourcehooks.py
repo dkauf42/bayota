@@ -1,7 +1,7 @@
 import unittest
 
-from CastJeeves.jeeves import Jeeves
-from CastJeeves.sourcehooks.sourcehooks import SourceHook
+from ..jeeves import Jeeves
+from ..sourcehooks.sourcehooks import SourceHook
 
 
 class TddForSourceHook(unittest.TestCase):

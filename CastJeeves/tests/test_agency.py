@@ -1,7 +1,7 @@
 import unittest
 
-from CastJeeves.jeeves import Jeeves
-from CastJeeves.sourcehooks.agency import Agency
+from ..jeeves import Jeeves
+from ..sourcehooks.agency import Agency
 
 
 class TddForAgency(unittest.TestCase):

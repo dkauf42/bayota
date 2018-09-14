@@ -1,7 +1,7 @@
 import unittest
 
-from CastJeeves.jeeves import Jeeves
-from CastJeeves.sourcehooks.bmp import Bmp
+from ..jeeves import Jeeves
+from ..sourcehooks.bmp import Bmp
 
 
 class TddForBmp(unittest.TestCase):

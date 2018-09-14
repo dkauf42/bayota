@@ -1,7 +1,7 @@
 import unittest
 
-from CastJeeves.jeeves import Jeeves
-from CastJeeves.sourcehooks.loadsource import LoadSource
+from ..jeeves import Jeeves
+from ..sourcehooks.loadsource import LoadSource
 
 
 class TddForLoadSource(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest
 
-from CastJeeves.jeeves import Jeeves
-from CastJeeves.sourcehooks.geo import Geo
+from ..jeeves import Jeeves
+from ..sourcehooks.geo import Geo
 
 
 class TddForGeo(unittest.TestCase):
