@@ -32,10 +32,10 @@ before_script:
 test:
   script:
   - python setup.py test
-  - python -m pip install coverage
-  - python -m coverage run -m src/tests/ discover
-  - python -m coverage report -m
-  - python -m coverage html
+#  - python -m pip install coverage
+#  - python -m coverage run -m src/tests/ discover
+#  - python -m coverage report -m
+#  - python -m coverage html
   artifacts:
     paths:
       - htmlcov/

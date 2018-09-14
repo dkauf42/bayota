@@ -53,6 +53,7 @@ setup(name='CastJeeves',
       install_requires=install_requires,
       test_suite="src.tests",
       setup_requires=['pytest-runner'],
-      tests_require=['pytest'],
+      tests_require=['pytest',
+                     'pytest-cov'],
       cmdclass={'clean': CleanCommand}
       )
