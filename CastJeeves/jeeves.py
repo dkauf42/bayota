@@ -2,7 +2,6 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 
 from . import get_tempdir
 from . import get_sqlsourcetabledir
@@ -48,7 +47,7 @@ class Jeeves:
             # Source tables are loaded.
             sourcedata = SourceData()
             tbllist = sourcedata.getTblList()
-            for tblName in tqdm(tbllist, total=len(tbllist)):
+            for tblName in tbllist:
                 # for tblName in tbllist:
                 # print("loading source:", tblName)
                 df = cls.loadDataframe(tblName, get_sqlsourcetabledir())
