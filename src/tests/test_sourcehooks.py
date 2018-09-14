@@ -3,10 +3,6 @@ import pytest
 from ..jeeves import Jeeves
 from ..sourcehooks.sourcehooks import SourceHook
 
-# # Load the Source Data and Base Condition tables
-# source = Jeeves.loadInSourceDataFromSQL()
-# sourcehook = SourceHook(sourcedata=source)
-
 
 @pytest.fixture(scope='module')
 def resource_a(request):
