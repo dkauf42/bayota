@@ -4,7 +4,7 @@
 accessing, querying, and parsing source data from
 the Chesapeake Bay Assessement Scenario Tool (CAST)
 
-* Version 0.0.1
+* Version 0.0.2
 * This release initializes the repository
     (from code originally in the "OptSandbox" project)
 
