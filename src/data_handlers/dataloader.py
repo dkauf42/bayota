@@ -51,8 +51,8 @@ class DataLoader:
         metadatadir = os.path.join(baseexppath, 'OptSandbox/data/test_metadata/')
 
         """ Data tables for the set definitions """
-        TblBmp = pd.read_csv(os.path.join(sourcedatadir, 'TblBmp.csv'))
-        TblBmpGroup = pd.read_csv(os.path.join(sourcedatadir, 'TblBmpGroup.csv'))
+        TblBmp = self.jeeves.bmp.source.TblBmp  #  pd.read_csv(os.path.join(sourcedatadir, 'TblBmp.csv'))
+        TblBmpGroup = self.jeeves.bmp.source.TblBmpGroup  # pd.read_csv(os.path.join(sourcedatadir, 'TblBmpGroup.csv'))
         TblBmpLoadSourceGroup = pd.read_csv(os.path.join(sourcedatadir, 'TblBmpLoadSourceGroup.csv'))
         TblBmpType = pd.read_csv(os.path.join(sourcedatadir, 'TblBmpType.csv'))
 
