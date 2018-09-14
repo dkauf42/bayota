@@ -3,12 +3,18 @@ import pytest
 from ..jeeves import Jeeves
 from ..sourcehooks.agency import Agency
 
-# Load the Source Data and Base Condition tables
-source = Jeeves.loadInSourceDataFromSQL()
-agency = Agency(sourcedata=source)
+# # Load the Source Data and Base Condition tables
+# source = Jeeves.loadInSourceDataFromSQL()
+# agency = Agency(sourcedata=source)
 
-def test_agency_names_query():
-    assert 'NONFED' in agency.all_names().tolist()
+@pytest.fixture(scope='module')
+def resource_a(request):
+    # Load the Source Data and Base Condition tables
+    source = Jeeves.loadInSourceDataFromSQL()
+    return Agency(sourcedata=source)
 
-def test_agencies_query_from_lrsegs():
-    assert 'NONFED' in agency.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist()
+def test_agency_names_query(resource_a):
+    assert 'NONFED' in resource_a.all_names().tolist()
+
+def test_agencies_query_from_lrsegs(resource_a):
+    assert 'NONFED' in resource_a.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist()
