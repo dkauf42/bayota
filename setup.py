@@ -27,6 +27,7 @@ with open('LICENSE') as f:
 
 install_requires = ['numpy>=1.14.2',
                     'pandas==0.22.0',  # there is currently an issue with pandas==0.23.0
+                    'pytest'
                     # 'Pmw>=2.0.1',
                     # 'pytz>=2018.3',
                     # 'six>=1.11.0',
@@ -51,5 +52,7 @@ setup(name='CastJeeves',
       include_package_data=True,
       install_requires=install_requires,
       test_suite="util.tests",
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest'],
       cmdclass={'clean': CleanCommand}
       )
