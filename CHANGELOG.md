@@ -26,6 +26,7 @@ Each version should:
 
 #### Changed
 - switched testing utility to pytest
+- changed license to GNUGPLv3.0
 
 #### Removed
 - removed use/dependency of 'tqdm' package
