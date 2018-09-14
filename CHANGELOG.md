@@ -30,7 +30,7 @@ Each version should:
 - changed license to GNUGPLv3.0
 
 #### Removed
-- removed use/dependency of 'tqdm' package
+- removed usage/dependency of 'tqdm' package
 
 
 ## [0.0.1] - 2018-01-05
