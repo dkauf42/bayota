@@ -22,7 +22,8 @@ Each version should:
 
 ## [0.0.2] - 2018-09-14
 #### Added
-- now includes yaml file for Gitlab CI testing
+- included yaml file for Gitlab CI testing
+- added pytest-cov to test runner to generate coverage report
 
 #### Changed
 - switched testing utility to pytest
