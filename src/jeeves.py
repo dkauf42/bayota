@@ -38,8 +38,6 @@ class Jeeves:
     @classmethod
     def loadInSourceDataFromSQL(cls):
         savename = get_tempdir() + 'SourceData.obj'
-        print(get_tempdir())
-        print(os.listdir(get_tempdir()))
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
                 sourcedata = pickle.load(f)
