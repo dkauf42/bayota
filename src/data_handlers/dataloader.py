@@ -53,7 +53,7 @@ class DataLoader:
         """ Data tables for the set definitions """
         TblBmp = self.jeeves.bmp.source.TblBmp  #  pd.read_csv(os.path.join(sourcedatadir, 'TblBmp.csv'))
         TblBmpGroup = self.jeeves.bmp.source.TblBmpGroup  # pd.read_csv(os.path.join(sourcedatadir, 'TblBmpGroup.csv'))
-        TblBmpLoadSourceGroup = pd.read_csv(os.path.join(sourcedatadir, 'TblBmpLoadSourceGroup.csv'))
+        TblBmpLoadSourceGroup = self.jeeves.bmp.source.TblBmpLoadSourceGroup  # pd.read_csv(os.path.join(sourcedatadir, 'TblBmpLoadSourceGroup.csv'))
         TblBmpType = pd.read_csv(os.path.join(sourcedatadir, 'TblBmpType.csv'))
 
         TblLoadSource = pd.read_csv(os.path.join(sourcedatadir, 'TblLoadSource.csv'), skipinitialspace=True)
