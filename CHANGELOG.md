@@ -13,13 +13,21 @@ Each version should:
 *Fixed* for any bug fixes.
 *Security* to invite users to upgrade in case of vulnerabilities.
 
-## [Unreleased]
-### Added
+### [Unreleased]
+#### Added
 
-### Changed
+#### Changed
 
-### Fixed
+#### Fixed
 
-## [0.1.0] - 2018-01-05
-### Added
+## [0.0.2] - 2018-09-14
+#### Changed
+- switched testing utility to pytest
+
+#### Removed
+- removed use/dependency of 'tqdm' package
+
+
+## [0.0.1] - 2018-01-05
+#### Added
 - git source control to this project
