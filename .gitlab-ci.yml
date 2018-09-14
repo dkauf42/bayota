@@ -29,7 +29,7 @@ before_script:
   - git submodule update --recursive
   - ls
   - ls castjeeves/
-  - ls castjeeves/CastJeeves/
+  - ls castjeeves/src/
 #  - ls src/
 #  - python -c "import sys; print(sys.path)"
 
