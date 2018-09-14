@@ -8,7 +8,7 @@ import pandas as pd
 # print(sys.path)
 # print(os.listdir(castjeeves.__file__))
 # print(os.listdir(castjeeves.__path__))
-from castjeeves.CastJeeves.jeeves import Jeeves
+from castjeeves.src.jeeves import Jeeves
 
 class DataLoader:
     def __init__(self, save2file=True, geolist=None):
