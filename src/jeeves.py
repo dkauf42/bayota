@@ -5,8 +5,10 @@ import pandas as pd
 
 from . import get_tempdir
 from . import get_sqlsourcetabledir
+from . import get_sqlmetadatatabledir
 
 from .sqltables.source_data import SourceData
+from .sqltables.metadata import Metadata as sqlMetaData
 
 from .sourcehooks.agency import Agency
 from .sourcehooks.animal import Animal
@@ -23,6 +25,7 @@ from .sourcehooks.translator import Translator
 class Jeeves:
     def __init__(self):
         self.source = self.loadInSourceDataFromSQL()
+        self.meta = self.loadInMetaDataFromSQL()
 
         self.agency = Agency(sourcedata=self.source)
         self.animal = Animal(sourcedata=self.source)
@@ -56,6 +59,30 @@ class Jeeves:
                 pickle.dump(sourcedata, f)
 
         return sourcedata
+
+
+
+    @classmethod
+    def loadInMetaDataFromSQL(cls):
+        savename = get_tempdir() + 'MetaData.obj'
+        if os.path.exists(savename):
+            with open(savename, 'rb') as f:
+                metadata = pickle.load(f)
+        else:
+            print('<%s object does not exist yet. Generating...>' % SourceData.__name__)
+            # Source tables are loaded.
+            metadata = sqlMetaData()
+            tbllist = metadata.getTblList()
+            for tblName in tbllist:
+                # for tblName in tbllist:
+                # print("loading source:", tblName)
+                df = cls.loadDataframe(tblName, get_sqlmetadatatabledir())
+                metadata.addTable(tblName, df)
+
+            with open(savename, 'wb') as f:
+                pickle.dump(metadata, f)
+
+        return metadata
 
     @staticmethod
     def loadDataframe(tblName, loc):
