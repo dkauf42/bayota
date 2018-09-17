@@ -35,8 +35,8 @@ the python environment with necessary dependencies
 
 unittests are located in the subdirectory 'test', and test the following units:
 * sandboxer.main()
-* sandbox.util.OptCase
-* sandbox.tables.TblJeeves
+* src.util.OptCase
+* src.tables.TblJeeves
 
 #### Run custom optimization experiments
 

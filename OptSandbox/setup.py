@@ -47,9 +47,9 @@ setup(name='OptSandbox',
       author_email='dkaufman@chesapeakebay.net',
       url='https://gitlab.com/daka42',
       license=license_text,
-      packages=['sandbox', 'data', 'temp', 'output'],
+      packages=['src', 'data', 'temp', 'output'],
       include_package_data=True,
       install_requires=install_requires,
-      test_suite="sandbox.tests",
+      test_suite="src.tests",
       cmdclass={'clean': CleanCommand}
       )
