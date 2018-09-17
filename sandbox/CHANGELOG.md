@@ -20,6 +20,7 @@ Each version should:
 - Add ScenarioName column to CAST-input tables when lhs sampling
 
 ### Changed
+- renamed top folder from 'OptSandbox' to 'sandbox'
 - Use Dry Tons as units for manure transport instead of percent
 
 ### Fixed
