@@ -13,17 +13,24 @@ class Population(Maker):
     def generate_latinhypercube(self):
         """Conduct a latin hypercube sampling from within the lower/upper bounds
         """
+
+        nvariables = 0
         # Conduct a latin hypercube sampling from within the lower/upper bounds
         numsamples = 1
         self.scenarios_land, self.longdf_land = self._generate_latinhypercube_from_table(table=self.landnametable,
                                                                                          numsamples=numsamples,
                                                                                          tablename='land')
+        nvariables += len(self.landnametable.upperbound)
         self.scenarios_animal, self.longdf_animal = self._generate_latinhypercube_from_table(table=self.animalnametable,
                                                                                              numsamples=numsamples,
                                                                                              tablename='animal')
+        nvariables += len(self.animalnametable.upperbound)
         self.scenarios_manure, self.longdf_manure = self._generate_latinhypercube_from_table(table=self.manurenametable,
                                                                                              numsamples=numsamples,
                                                                                              tablename='manure')
+        nvariables += len(self.manurenametable.upperbound)
+        print('population._generate_latinhypercube_from_table():\n'
+              '\tTotal number of variables = %d' % nvariables)
 
     def _generate_latinhypercube_from_table(self, table, numsamples, tablename):
         lhd = pyDOE.lhs(n=len(table.upperbound), samples=numsamples)
