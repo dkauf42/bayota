@@ -1,6 +1,6 @@
 # Overview
 
-"BayOTA" (Bay Optimization Tool for Analysis)
+"BayOTA" (Bay Optimization Tools for Analysis)
 is the repository of optimization and analysis tools
 created to serve the Chesapeake Bay Program Partners
 and to help users of the Chesapeake Bay Assessement Scenario Tool (CAST)
