@@ -17,7 +17,7 @@ from .sourcehooks.county import County
 from .sourcehooks.geo import Geo
 from .sourcehooks.loadsource import LoadSource
 from .sourcehooks.lrseg import Lrseg
-from .sourcehooks.metadata import Metadata
+from .sourcehooks.meta import Metadata
 from .sourcehooks.sector import Sector
 from .sourcehooks.translator import Translator
 

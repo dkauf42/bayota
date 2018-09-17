@@ -2,9 +2,9 @@ from .sourcehooks import SourceHook
 
 
 class Metadata(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ Metadata Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Methods to get metadata options
     def all_base_year_names(self):
@@ -19,7 +19,8 @@ class Metadata(SourceHook):
         return ['WasteWater0001', 'WasteWater0002', 'WasteWater0003', 'WasteWater0004']
 
     def costprofile_names(self):
-        return ['CostProfile0001', 'CostProfile0002', 'CostProfile0003', 'CostProfile0004']
+        TblCostProfile = self.meta.TblCostProfile  # get relevant source data
+        return TblCostProfile.loc[:, 'costprofilename']
 
     def get_baseconditionid(self, baseyear=None, baseconditionname=None):
         TblBaseCondition = self.source.TblBaseCondition  # get relevant source data
