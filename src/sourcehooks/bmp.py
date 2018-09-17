@@ -6,9 +6,9 @@ from .sourcehooks import SourceHook
 
 
 class Bmp(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ BMP Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self):
         TblBmp = self.source.TblBmp  # get relevant source data]

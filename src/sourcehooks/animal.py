@@ -7,9 +7,9 @@ from .sourcehooks import SourceHook
 
 
 class Animal(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ Load Source Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
         # self.agency = Agency(sourcedata=sourcedata)
         # self.lrseg = Lrseg(sourcedata=sourcedata)

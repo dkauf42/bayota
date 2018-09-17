@@ -7,12 +7,12 @@ from .county import County
 
 
 class Geo(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ Geography Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
-        self.lrseg = Lrseg(sourcedata=sourcedata)
-        self.county = County(sourcedata=sourcedata)
+        self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
+        self.county = County(sourcedata=sourcedata, metadata=metadata)
 
     def all_geotypes(self):
         TblGeoType = self.source.TblGeographyType  # get relevant source data

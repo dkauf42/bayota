@@ -4,9 +4,9 @@ from .sourcehooks import SourceHook
 
 
 class Translator(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ Sector Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Translation methods (from IDs to NAMEs)
     def translate_slabidtable_to_slabnametable(self, slabidtable=None):

@@ -6,11 +6,11 @@ from .lrseg import Lrseg
 
 
 class County(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ County Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
-        self.lrseg = Lrseg(sourcedata=sourcedata)
+        self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self):
         pass

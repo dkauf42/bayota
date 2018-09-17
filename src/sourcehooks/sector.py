@@ -2,9 +2,9 @@ from .sourcehooks import SourceHook
 
 
 class Sector(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ Sector Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Sector Methods
     def all_names(self):

@@ -5,9 +5,9 @@ from .sourcehooks import SourceHook
 
 
 class Lrseg(SourceHook):
-    def __init__(self, sourcedata=None):
+    def __init__(self, sourcedata=None, metadata=None):
         """ Geography Methods """
-        SourceHook.__init__(self, sourcedata=sourcedata)
+        SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self):
         pass
