@@ -6,7 +6,7 @@ the Chesapeake Bay Assessement Scenario Tool (CAST)
 
 * Version 0.0.2
 * This release initializes the repository
-    (from code originally in the "OptSandbox" project)
+    (from code originally in the "sandbox" project)
 
 This README documents the steps necessary to get the "CastJeeves"
 application up and running.

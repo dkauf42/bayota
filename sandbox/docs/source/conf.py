@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# OptSandbox documentation build configuration file, created by
+# sandbox documentation build configuration file, created by
 # sphinx-quickstart on Wed Apr 18 17:32:31 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'OptSandbox'
+project = 'sandbox'
 copyright = '2018, Daniel E Kaufman'
 author = 'Daniel E Kaufman'
 
@@ -126,7 +126,7 @@ html_theme = 'sphinxdoc'
 
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
-#html_title = 'OptSandbox v0.2.0'
+#html_title = 'sandbox v0.2.0'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -230,7 +230,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'OptSandbox.tex', 'OptSandbox Documentation',
+    (master_doc, 'sandbox.tex', 'sandbox Documentation',
      'Daniel E Kaufman', 'manual'),
 ]
 
@@ -260,7 +260,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'optsandbox', 'OptSandbox Documentation',
+    (master_doc, 'optsandbox', 'sandbox Documentation',
      [author], 1)
 ]
 
@@ -274,8 +274,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'OptSandbox', 'OptSandbox Documentation',
-     author, 'OptSandbox', 'One line description of project.',
+    (master_doc, 'sandbox', 'sandbox Documentation',
+     author, 'sandbox', 'One line description of project.',
      'Miscellaneous'),
 ]
 

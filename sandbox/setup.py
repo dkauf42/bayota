@@ -39,7 +39,7 @@ install_requires = ['numpy>=1.14.2',
                     'boto3'
                     ]
 
-setup(name='OptSandbox',
+setup(name='sandbox',
       version='0.3.0',
       description='Python package to create CAST scenarios for cost optimization',
       long_description=readme_text,

@@ -50,8 +50,8 @@ class DataLoader:
         # f_dat = os.path.join(projectpath, 'test6.dat')
 
         # Data table directories
-        # sourcedatadir = os.path.join(baseexppath, 'OptSandbox/data/test_source/')
-        # metadatadir = os.path.join(baseexppath, 'OptSandbox/data/test_metadata/')
+        # sourcedatadir = os.path.join(baseexppath, 'sandbox/data/test_source/')
+        # metadatadir = os.path.join(baseexppath, 'sandbox/data/test_metadata/')
 
         """ Data tables for the set definitions """
         TblBmp = self.jeeves.source.TblBmp.copy()  #  pd.read_csv(os.path.join(sourcedatadir, 'TblBmp.csv'))

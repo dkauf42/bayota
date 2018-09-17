@@ -9,7 +9,7 @@ as part of the Optimization Tool Development Project
 
 * Version 0.0.1
 * This release initializes the repository
-    (merging code originally generated in the "OptSandbox",
+    (merging code originally generated in the "sandbox",
      "OptEfficiencySubProblem", and "CastJeeves" project repositories)
 
 This README documents the steps necessary to get the
