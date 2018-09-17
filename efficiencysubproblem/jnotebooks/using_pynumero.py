@@ -83,7 +83,7 @@ pathtopynumero = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_Research
 
 
 baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/'
-projectpath = os.path.join(baseexppath, 'ampl/EfficiencySubProblem/')
+projectpath = os.path.join(baseexppath, 'ampl/efficiencysubproblem/')
 
 
 # ## Create a problem instance
