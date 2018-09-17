@@ -40,8 +40,8 @@ class DataLoader:
         """ Data File Paths """
         # baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/'
         # amplappdir = os.path.join(baseexppath, 'ampl/amplide.macosx64/')
-        # projectpath = os.path.join(baseexppath, 'OptEfficiencySubProblem/')
-        # datapath = os.path.join(baseexppath, 'OptEfficiencySubProblem/data/raw/')
+        # projectpath = os.path.join(baseexppath, 'EfficiencySubProblem/')
+        # datapath = os.path.join(baseexppath, 'EfficiencySubProblem/data/raw/')
 
         # # Specify model and data files
         # # f_mod = os.path.join(baseexppath, 'ampl/example/steel3.mod')
