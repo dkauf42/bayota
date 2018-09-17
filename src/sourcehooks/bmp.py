@@ -40,6 +40,9 @@ class Bmp(SourceHook):
 
         return self.source.TblBmp[self.source.TblBmp['bmptypeid'] == efftypeid]
 
+    def bmp_efficiencies(self):
+        return self.source.TblBmpEfficiency
+
     # Methods to append BMPids to loadsource tables
     def append_animal_bmpids(self, SourceCountyAgencyIDtable=None, baseconditionid=None):
         TblAnimalPopulation = self.source.TblAnimalPopulation

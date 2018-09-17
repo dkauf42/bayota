@@ -12,3 +12,6 @@ def resource_a(request):
 
 def test_names_query_contains_GRASSBUFFERS(resource_a):
     assert 'GrassBuffers' in resource_a.all_names().tolist()
+
+def test_efficiency_table_has_bmp_column(resource_a):
+    assert 'bmpid' in resource_a.bmp_efficiencies().columns.tolist()
