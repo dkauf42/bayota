@@ -1,0 +1,4 @@
+include data/test_source/*.csv
+include data/test_metadata/*.csv
+include temp/empty.obj
+include output/empty.txt
