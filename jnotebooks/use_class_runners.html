@@ -11811,12 +11811,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>DataLoader.init(): LRsegs: [&#39;N51059PL7_4960_0000&#39;]
-ERROR: Rule failed when generating expression for constraint
-    TargetPercentReduction with index (&#39;N51059PL7_4960_0000&#39;, &#39;P&#39;):
-    ZeroDivisionError: division by zero
-ERROR: Constructing component &#39;TargetPercentReduction&#39; from data=None failed:
-    ZeroDivisionError: division by zero
+<pre>&lt;SourceData object does not exist yet. Generating...&gt;
+MetaData.__get_state__(): I&#39;m being pickled
 </pre>
 </div>
 </div>
@@ -11829,69 +11825,41 @@ ERROR: Constructing component &#39;TargetPercentReduction&#39; from data=None fa
 <div class="output_subarea output_text output_error">
 <pre>
 <span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ZeroDivisionError</span>                         Traceback (most recent call last)
+<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
 <span class="ansi-green-fg">&lt;ipython-input-2-8bea31cd0a9c&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
 <span class="ansi-green-intense-fg ansi-bold">      1</span> s = Study(objectivetype=&#39;costmin&#39;,
 <span class="ansi-green-intense-fg ansi-bold">      2</span>           geoscale<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;lrseg&#39;</span><span class="ansi-blue-fg">,</span> geoentities<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;N51059PL7_4960_0000&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span>
 <span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg">           baseconstraint=3)
 </span>
 <span class="ansi-green-fg">~/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/OptEfficiencySubProblem/src/study.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, objectivetype, geoscale, geoentities, baseconstraint, saveData2file)</span>
-<span class="ansi-green-intense-fg ansi-bold">     76</span> 
-<span class="ansi-green-intense-fg ansi-bold">     77</span>         <span class="ansi-red-fg"># Tell the modelhandler to create a model instance</span>
-<span class="ansi-green-fg">---&gt; 78</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>mdl <span class="ansi-blue-fg">=</span> modelhandler<span class="ansi-blue-fg">.</span>create_concrete<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>data<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     79</span> 
-<span class="ansi-green-intense-fg ansi-bold">     80</span>         self<span class="ansi-blue-fg">.</span>endtime_modelinstantiation <span class="ansi-blue-fg">=</span> time<span class="ansi-blue-fg">.</span>time<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     70</span>         <span class="ansi-red-fg"># Set instance Data</span>
+<span class="ansi-green-intense-fg ansi-bold">     71</span>         <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>geoscale <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;lrseg&#39;</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">---&gt; 72</span><span class="ansi-red-fg">             </span>self<span class="ansi-blue-fg">.</span>data <span class="ansi-blue-fg">=</span> modelhandler<span class="ansi-blue-fg">.</span>load_data<span class="ansi-blue-fg">(</span>savedata2file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span> lrsegs_list<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>geoentities<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     73</span>         <span class="ansi-green-fg">elif</span> self<span class="ansi-blue-fg">.</span>geoscale <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;county&#39;</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     74</span>             self<span class="ansi-blue-fg">.</span>data <span class="ansi-blue-fg">=</span> modelhandler<span class="ansi-blue-fg">.</span>load_data<span class="ansi-blue-fg">(</span>savedata2file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span> county_list<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>geoentities<span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-fg">~/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/OptEfficiencySubProblem/src/model_handlers/costobjective_lrseg.py</span> in <span class="ansi-cyan-fg">create_concrete</span><span class="ansi-blue-fg">(self, data)</span>
-<span class="ansi-green-intense-fg ansi-bold">     27</span>                                           tau<span class="ansi-blue-fg">=</span>data<span class="ansi-blue-fg">.</span>tau<span class="ansi-blue-fg">,</span>
-<span class="ansi-green-intense-fg ansi-bold">     28</span>                                           phi<span class="ansi-blue-fg">=</span>data<span class="ansi-blue-fg">.</span>phi<span class="ansi-blue-fg">,</span>
-<span class="ansi-green-fg">---&gt; 29</span><span class="ansi-red-fg">                                           t=data.T)
-</span><span class="ansi-green-intense-fg ansi-bold">     30</span> 
-<span class="ansi-green-intense-fg ansi-bold">     31</span>         <span class="ansi-red-fg"># Retain only the Nitrogen load constraints, and deactivate the others</span>
+<span class="ansi-green-fg">~/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/OptEfficiencySubProblem/src/model_handlers/costobjective_lrseg.py</span> in <span class="ansi-cyan-fg">load_data</span><span class="ansi-blue-fg">(self, savedata2file, lrsegs_list)</span>
+<span class="ansi-green-intense-fg ansi-bold">     10</span> 
+<span class="ansi-green-intense-fg ansi-bold">     11</span>     <span class="ansi-green-fg">def</span> load_data<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> savedata2file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span> lrsegs_list<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">---&gt; 12</span><span class="ansi-red-fg">         </span>data <span class="ansi-blue-fg">=</span> Lrseg<span class="ansi-blue-fg">(</span>save2file<span class="ansi-blue-fg">=</span>savedata2file<span class="ansi-blue-fg">,</span> geolist<span class="ansi-blue-fg">=</span>lrsegs_list<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     13</span>         <span class="ansi-green-fg">return</span> data
+<span class="ansi-green-intense-fg ansi-bold">     14</span> 
 
-<span class="ansi-green-fg">~/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/OptEfficiencySubProblem/src/model_handlers/costobjective_lrseg.py</span> in <span class="ansi-cyan-fg">build_subproblem_model</span><span class="ansi-blue-fg">(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, bmpsrclinks, bmpgrpsrclinks, c, e, tau, phi, t)</span>
-<span class="ansi-green-intense-fg ansi-bold">    117</span>         model.TargetPercentReduction = oe.Constraint(model.LRSEGS,
-<span class="ansi-green-intense-fg ansi-bold">    118</span>                                                      model<span class="ansi-blue-fg">.</span>PLTNTS<span class="ansi-blue-fg">,</span>
-<span class="ansi-green-fg">--&gt; 119</span><span class="ansi-red-fg">                                                      rule=TargetPercentReduction_rule)
-</span><span class="ansi-green-intense-fg ansi-bold">    120</span> 
-<span class="ansi-green-intense-fg ansi-bold">    121</span>         <span class="ansi-red-fg"># BMPs within a BMPGRP cannot use more than the acres in a LRSEG,LOADSRC</span>
+<span class="ansi-green-fg">~/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/OptEfficiencySubProblem/src/data_handlers/lrseg.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, save2file, geolist)</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span>     <span class="ansi-green-fg">def</span> __init__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> save2file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span> geolist<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">      6</span>         <span class="ansi-red-fg"># super constructor</span>
+<span class="ansi-green-fg">----&gt; 7</span><span class="ansi-red-fg">         </span>DataLoader<span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> save2file<span class="ansi-blue-fg">=</span>save2file<span class="ansi-blue-fg">,</span> geolist<span class="ansi-blue-fg">=</span>geolist<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      8</span> 
+<span class="ansi-green-intense-fg ansi-bold">      9</span>     <span class="ansi-green-fg">def</span> _load_set_geographies<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> TblLandRiverSegment<span class="ansi-blue-fg">,</span> geolist<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
 
-<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pyomo/core/base/block.py</span> in <span class="ansi-cyan-fg">__setattr__</span><span class="ansi-blue-fg">(self, name, val)</span>
-<span class="ansi-green-intense-fg ansi-bold">    536</span>                 <span class="ansi-red-fg"># Pyomo components are added with the add_component method.</span>
-<span class="ansi-green-intense-fg ansi-bold">    537</span>                 <span class="ansi-red-fg">#</span>
-<span class="ansi-green-fg">--&gt; 538</span><span class="ansi-red-fg">                 </span>self<span class="ansi-blue-fg">.</span>add_component<span class="ansi-blue-fg">(</span>name<span class="ansi-blue-fg">,</span> val<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    539</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    540</span>                 <span class="ansi-red-fg">#</span>
+<span class="ansi-green-fg">~/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/OptEfficiencySubProblem/src/data_handlers/dataloader.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, save2file, geolist)</span>
+<span class="ansi-green-intense-fg ansi-bold">     76</span>         <span class="ansi-red-fg"># Target load reductions ???  (set this ourselves??)</span>
+<span class="ansi-green-intense-fg ansi-bold">     77</span>         TblLandUsePreBmp <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>jeeves<span class="ansi-blue-fg">.</span>bmp<span class="ansi-blue-fg">.</span>source<span class="ansi-blue-fg">.</span>TblLandUsePreBmp<span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>  <span class="ansi-red-fg"># pd.read_csv(os.path.join(sourcedatadir, &#39;TblLandUsePreBmp.csv&#39;))</span>
+<span class="ansi-green-fg">---&gt; 78</span><span class="ansi-red-fg">         </span>TblCostBmpLand <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>jeeves<span class="ansi-blue-fg">.</span>bmp<span class="ansi-blue-fg">.</span>meta<span class="ansi-blue-fg">.</span>TblCostBmpLand<span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>  <span class="ansi-red-fg"># pd.read_csv(os.path.join(metadatadir, &#39;TblCostBmpLand.csv&#39;))</span>
+<span class="ansi-green-intense-fg ansi-bold">     79</span>         Tbl2010NoActionLoads <span class="ansi-blue-fg">=</span> pd<span class="ansi-blue-fg">.</span>read_csv<span class="ansi-blue-fg">(</span>os<span class="ansi-blue-fg">.</span>path<span class="ansi-blue-fg">.</span>join<span class="ansi-blue-fg">(</span>get_datadir<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;2010NoActionLoads.csv&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     80</span> 
 
-<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pyomo/core/base/block.py</span> in <span class="ansi-cyan-fg">add_component</span><span class="ansi-blue-fg">(self, name, val)</span>
-<span class="ansi-green-intense-fg ansi-bold">    976</span>                              _blockName, str(data))
-<span class="ansi-green-intense-fg ansi-bold">    977</span>             <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 978</span><span class="ansi-red-fg">                 </span>val<span class="ansi-blue-fg">.</span>construct<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    979</span>             <span class="ansi-green-fg">except</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    980</span>                 err <span class="ansi-blue-fg">=</span> sys<span class="ansi-blue-fg">.</span>exc_info<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span>
-
-<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pyomo/core/base/constraint.py</span> in <span class="ansi-cyan-fg">construct</span><span class="ansi-blue-fg">(self, data)</span>
-<span class="ansi-green-intense-fg ansi-bold">    764</span>                                              _init_rule<span class="ansi-blue-fg">,</span>
-<span class="ansi-green-intense-fg ansi-bold">    765</span>                                              _self_parent<span class="ansi-blue-fg">,</span>
-<span class="ansi-green-fg">--&gt; 766</span><span class="ansi-red-fg">                                              ndx)
-</span><span class="ansi-green-intense-fg ansi-bold">    767</span>                 <span class="ansi-green-fg">except</span> Exception<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    768</span>                     err <span class="ansi-blue-fg">=</span> sys<span class="ansi-blue-fg">.</span>exc_info<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span>
-
-<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pyomo/core/base/misc.py</span> in <span class="ansi-cyan-fg">apply_indexed_rule</span><span class="ansi-blue-fg">(obj, rule, model, index, options)</span>
-<span class="ansi-green-intense-fg ansi-bold">     55</span>         <span class="ansi-green-fg">if</span> options <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     56</span>             <span class="ansi-green-fg">if</span> index<span class="ansi-blue-fg">.</span>__class__ <span class="ansi-green-fg">is</span> tuple<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">---&gt; 57</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">return</span> rule<span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">*</span>index<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     58</span>             <span class="ansi-green-fg">elif</span> index <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span> <span class="ansi-green-fg">and</span> <span class="ansi-green-fg">not</span> obj<span class="ansi-blue-fg">.</span>is_indexed<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     59</span>                 <span class="ansi-green-fg">return</span> rule<span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/OptEfficiencySubProblem/src/model_handlers/costobjective_lrseg.py</span> in <span class="ansi-cyan-fg">TargetPercentReduction_rule</span><span class="ansi-blue-fg">(model, l, p)</span>
-<span class="ansi-green-intense-fg ansi-bold">    113</span>                            for lmbda in model.LOADSRCS])
-<span class="ansi-green-intense-fg ansi-bold">    114</span> 
-<span class="ansi-green-fg">--&gt; 115</span><span class="ansi-red-fg">             </span>temp <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">.</span>originalload<span class="ansi-blue-fg">[</span>l<span class="ansi-blue-fg">,</span> p<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">-</span> newload<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">/</span> model<span class="ansi-blue-fg">.</span>originalload<span class="ansi-blue-fg">[</span>l<span class="ansi-blue-fg">,</span> p<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">*</span> <span class="ansi-cyan-fg">100</span>
-<span class="ansi-green-intense-fg ansi-bold">    116</span>             <span class="ansi-green-fg">return</span> <span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">.</span>tau<span class="ansi-blue-fg">[</span>l<span class="ansi-blue-fg">,</span> p<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> temp<span class="ansi-blue-fg">,</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    117</span>         model.TargetPercentReduction = oe.Constraint(model.LRSEGS,
-
-<span class="ansi-red-fg">ZeroDivisionError</span>: division by zero</pre>
+<span class="ansi-red-fg">AttributeError</span>: &#39;NoneType&#39; object has no attribute &#39;TblCostBmpLand&#39;</pre>
 </div>
 </div>
 
