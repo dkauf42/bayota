@@ -132,7 +132,7 @@ class Translator(SourceHook):
         # Also because there are NaNs, the merge converts the data type to float instead of integer.
         # So let's remove the NaNs and then remove the unnecessary decimal points
         newtable['FIPSTo'] = newtable['FIPSTo'].replace(np.nan, '', regex=True)
-        newtable['FIPSTo'] = newtable['FIPSTo'].astype(dtype=str).replace('\.0', '', regex=True)
+        newtable['FIPSTo'] = newtable['FIPSTo'].astype(dtype=str).replace(r'\.0', '', regex=True)
 
         # Translate to Agency codes
         columnmask = ['agencycode', 'agencyid']
