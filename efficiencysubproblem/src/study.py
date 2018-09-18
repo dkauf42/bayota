@@ -6,13 +6,13 @@ from collections import OrderedDict
 
 import pyomo.environ as oe
 
-from src.solver_handlers.solve_triggerer import SolveAndParse
-from src.solution_handlers.ipopt_parser import IpoptParser
+from efficiencysubproblem.src.solver_handlers.solve_triggerer import SolveAndParse
+from efficiencysubproblem.src.solution_handlers.ipopt_parser import IpoptParser
 
-from src.model_handlers.costobjective_lrseg import CostObj as CostObj_lrseg
-from src.model_handlers.costobjective_county import CostObj as CostObj_county
-from src.model_handlers.loadobjective_lrseg import LoadObj as LoadObj_lrseg
-from src.model_handlers.loadobjective_county import LoadObj as LoadObj_county
+from efficiencysubproblem.src.model_handlers.costobjective_lrseg import CostObj as CostObj_lrseg
+from efficiencysubproblem.src.model_handlers.costobjective_county import CostObj as CostObj_county
+from efficiencysubproblem.src.model_handlers.loadobjective_lrseg import LoadObj as LoadObj_lrseg
+from efficiencysubproblem.src.model_handlers.loadobjective_county import LoadObj as LoadObj_county
 
 class Study:
     def __init__(self, objectivetype='costmin',
