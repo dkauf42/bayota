@@ -1,1 +1,2 @@
 include data/raw/*.csv
+include output/empty.txt
