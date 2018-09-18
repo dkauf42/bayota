@@ -33,6 +33,7 @@ def gjh_solve(instance, keepfiles=True, amplenv=None, basegjhpath=''):
 
     return gjh_filename, g
 
+
 def make_df(instance=None, filterbydf=None, g=None):
     dict_for_df = {}
 
