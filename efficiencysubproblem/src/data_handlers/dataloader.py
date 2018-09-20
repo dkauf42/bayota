@@ -1,13 +1,5 @@
 import os
 import pandas as pd
-# import sys
-# print(sys.path)
-# import castjeeves
-# print(castjeeves.__path__)
-# sys.path.insert(0, castjeeves.__path__)
-# print(sys.path)
-# print(os.listdir(castjeeves.__file__))
-# print(os.listdir(castjeeves.__path__))
 
 from .. import get_datadir
 
