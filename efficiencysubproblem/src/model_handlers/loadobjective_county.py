@@ -1,6 +1,6 @@
 import pyomo.environ as oe
 
-from src.data_handlers.county import County
+from efficiencysubproblem.src.data_handlers.county import County
 
 
 class LoadObj:

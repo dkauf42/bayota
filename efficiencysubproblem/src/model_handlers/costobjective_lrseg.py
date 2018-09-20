@@ -1,6 +1,6 @@
 import pyomo.environ as oe
 
-from src.data_handlers.lrseg import Lrseg
+from efficiencysubproblem.src.data_handlers.lrseg import Lrseg
 
 
 class CostObj:
