@@ -85,13 +85,13 @@ for ii in range(10):
     sorteddf_byacres = merged_df.sort_values(by='acres')
     
 #     # ---- Make zL Figure ----
-#     savefilepathandname = os.path.join(projectpath, ''.join([loopname, '_zL', .png']))
+#     savefilepathandname = os.path.join(PROJECT_DIR, ''.join([loopname, '_zL', .png']))
 
 #     zL_bars(df=merged_df, instance=mdl,
 #             savefig=True, savefilepathandname=savefilepathandname)
     
 #     # ---- Acres Figure ----
-#     savefilepathandname = os.path.join(projectpath, ''.join([loopname, '_x', .png']))
+#     savefilepathandname = os.path.join(PROJECT_DIR, ''.join([loopname, '_x', .png']))
 
 #     objstr = ''.join(['Objective is: ', str(round(oe.value(mdl.PercentReduction['N']),2))])
 #     coststr = ''.join(['Total cost is: ', str(round(oe.value(mdl.Total_Cost.body),1))])
@@ -121,7 +121,7 @@ for ii in range(10):
 
 #     ax.set_position([0.3,0.1,0.5,0.8])
 
-#     plt.savefig(os.path.join(projectpath, ''.join([loopname, '_g', .png'])))
+#     plt.savefig(os.path.join(PROJECT_DIR, ''.join([loopname, '_g', .png'])))
     
     
     

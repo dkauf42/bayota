@@ -23,7 +23,7 @@ dict_of_iterates, iter_summary = IpoptParser().parse_output_file(os.path.join(pr
 
 # # to get the nonstale variables...
 # filename = 'output/costobj_difstartpts_alldfs_ipopt_2018-08-09_105005.csv'
-# df = pd.read_csv(os.path.join(projectpath, filename))
+# df = pd.read_csv(os.path.join(PROJECT_DIR, filename))
 # display(df.head(2))
 
 # display(iter_summary.head(65))
@@ -520,7 +520,7 @@ plt.xlabel("totalcostupperbound (max % load reduction achieved)")
 
 # filenamestr = ''.join(['output/loadobj_Gheatmap_costboundsequence_', solvername, '_',
 #                            datetime.now().strftime('%Y-%m-%d_%H%M%S'), '.png'])
-# savefilepathandname = os.path.join(projectpath, filenamestr)
+# savefilepathandname = os.path.join(PROJECT_DIR, filenamestr)
 # plt.savefig(savefilepathandname, bbox_inches='tight')
 
 

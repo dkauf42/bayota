@@ -89,14 +89,14 @@ for ii in range(1, 10):
     
     
 #     # ---- Make zL Figure ----
-#     savefilepathandname = os.path.join(projectpath, ''.join([loopname, '_zL', .png']))
+#     savefilepathandname = os.path.join(PROJECT_DIR, ''.join([loopname, '_zL', .png']))
 
 #     zL_bars(df=merged_df, instance=mdl,
 #             savefig=True, savefilepathandname=savefilepathandname)
     
     
 #     # ---- Make Acres Figure ----
-#     savefilepathandname = os.path.join(projectpath, ''.join([loopname, '_x', .png']))
+#     savefilepathandname = os.path.join(PROJECT_DIR, ''.join([loopname, '_x', .png']))
 
 #     objstr = ''.join(['Objective is: ', str(round(mdl.Total_Cost(), 2))])
 #     titlestr = '\n'.join([objstr, 'labels are (cost per unit, total bmp instance cost)'])
@@ -125,7 +125,7 @@ for ii in range(1, 10):
 #     ax = plt.gca()
 
 #     ax.set_position([0.3,0.1,0.5,0.8])
-#     plt.savefig(os.path.join(projectpath, ''.join([loopname, '_g', .png']))))
+#     plt.savefig(os.path.join(PROJECT_DIR, ''.join([loopname, '_g', .png']))))
     
     # Save all of the solutions in a list
     df_list.append(sorteddf_byacres)

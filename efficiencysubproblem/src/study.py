@@ -1,3 +1,4 @@
+import os
 import time
 import pandas as pd
 from datetime import datetime
@@ -5,7 +6,8 @@ from collections import OrderedDict
 
 import pyomo.environ as oe
 
-from efficiencysubproblem.jnotebooks.importing_modules import *
+from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR
+# amplappdir = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
 
 from efficiencysubproblem.src.solver_handlers.solve_triggerer import SolveAndParse
 from efficiencysubproblem.src.solution_handlers.ipopt_parser import IpoptParser
@@ -14,6 +16,7 @@ from efficiencysubproblem.src.model_handlers.costobjective_lrseg import CostObj 
 from efficiencysubproblem.src.model_handlers.costobjective_county import CostObj as CostObj_county
 from efficiencysubproblem.src.model_handlers.loadobjective_lrseg import LoadObj as LoadObj_lrseg
 from efficiencysubproblem.src.model_handlers.loadobjective_county import LoadObj as LoadObj_county
+
 
 class Study:
     def __init__(self, objectivetype='costmin',
@@ -169,7 +172,7 @@ class Study:
         alldfs['x'] = list(
             zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource, alldfs.totalannualizedcostperunit))
         filenamestr = ''.join(['output/output_', loopname, '_', solvetimestamp, '.csv'])
-        alldfs.to_csv(os.path.join(projectpath, filenamestr))
+        alldfs.to_csv(os.path.join(PROJECT_DIR, filenamestr))
 
         return output_file_names, alldfs
 
@@ -200,9 +203,9 @@ class Study:
 
         # ---- Output File Name ----
         if not output_file_str:
-            output_file_name = os.path.join(projectpath, ''.join(['output/output_', solvetimestamp, '.iters']))
+            output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', solvetimestamp, '.iters']))
         else:
-            output_file_name = os.path.join(projectpath, ''.join(['output/output_', output_file_str, '_', solvetimestamp, '.iters']))
+            output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', output_file_str, '_', solvetimestamp, '.iters']))
         IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt',
                                            newoutputfilepath=output_file_name)
         # ---- Output Level-of-Detail ----

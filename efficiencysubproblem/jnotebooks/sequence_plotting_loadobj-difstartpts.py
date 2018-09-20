@@ -226,7 +226,7 @@ plt.xlabel("totalcostupperbound (max % load reduction achieved)")
 
 # filenamestr = ''.join(['output/loadobj_Gheatmap_costboundsequence_', solvername, '_',
 #                            datetime.now().strftime('%Y-%m-%d_%H%M%S'), '.png'])
-# savefilepathandname = os.path.join(projectpath, filenamestr)
+# savefilepathandname = os.path.join(PROJECT_DIR, filenamestr)
 # plt.savefig(savefilepathandname, bbox_inches='tight')
 
 

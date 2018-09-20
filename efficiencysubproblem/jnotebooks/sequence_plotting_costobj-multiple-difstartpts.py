@@ -27,7 +27,7 @@ iterfilenames = ['costobj_startingpoint9_tau5_ipopt_2018-08-09_104951.iters',
                  'costobj_startingpoint2_tau5_ipopt_2018-08-09_104811.iters',
                  'costobj_startingpoint1_tau5_ipopt_2018-08-09_104800.iters']
 
-# result = [SolveAndParse().parse_output_file(os.path.join(projectpath, 'output/', fn)) 
+# result = [SolveAndParse().parse_output_file(os.path.join(PROJECT_DIR, 'output/', fn))
 #           for fn in iterfilenames]
 # dict_of_iterates_list, iter_summary_list = zip(*result)
 
@@ -695,11 +695,11 @@ plt.show()
 
 # # Iterates during solving
 # filename = 'output/costobj_startingpoint9_tau5_ipopt_2018-08-09_104951.iters'
-# dict_of_iterates, iter_summary = SolveAndParse().parse_output_file(os.path.join(projectpath, 'output/', filename))
+# dict_of_iterates, iter_summary = SolveAndParse().parse_output_file(os.path.join(PROJECT_DIR, 'output/', filename))
 
 # # to get the nonstale variables...
 # filename = 'output/costobj_difstartpts_alldfs_ipopt_2018-08-09_105005.csv'
-# df = pd.read_csv(os.path.join(projectpath, filename))
+# df = pd.read_csv(os.path.join(PROJECT_DIR, filename))
 # # display(df.head(2))
 
 # display(iter_summary.head(65))
