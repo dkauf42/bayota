@@ -1,12 +1,13 @@
 import pyomo.environ as oe
 
+from .efficiencymodel import EfficiencyModel
 from efficiencysubproblem.src.data_handlers.county import County
 
 
-class CostObj:
-    def __init__(self, saveData2file=False, tau=12,
-                 instance=None, data=None, localsolver=False, solvername=''):
-        pass
+class CostObj(EfficiencyModel):
+    def __init__(self):
+        # super constructor
+        EfficiencyModel.__init__(self)
 
     def load_data(self, savedata2file=False, county_list=None):
         data = County(save2file=savedata2file, geolist=county_list)

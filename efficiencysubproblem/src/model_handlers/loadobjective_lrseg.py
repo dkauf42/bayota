@@ -1,12 +1,13 @@
 import pyomo.environ as oe
 
+from .efficiencymodel import EfficiencyModel
 from efficiencysubproblem.src.data_handlers.lrseg import Lrseg
 
 
-class LoadObj:
-    def __init__(self, saveData2file=False, tau=12,
-                 instance=None, data=None, localsolver=False, solvername=''):
-        pass
+class LoadObj(EfficiencyModel):
+    def __init__(self):
+        # super constructor
+        EfficiencyModel.__init__(self)
 
     def load_data(self, savedata2file=False, lrsegs_list=None):
         data = Lrseg(save2file=savedata2file, lrsegs_list=lrsegs_list)
