@@ -1,6 +1,6 @@
 import pytest
-from src.data_handlers.lrseg import Lrseg
-from src.data_handlers.county import County
+from efficiencysubproblem.src.data_handlers.lrseg import Lrseg
+from efficiencysubproblem.src.data_handlers.county import County
 
 
 def test_default_lrseg_instantiation():

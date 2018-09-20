@@ -1,5 +1,5 @@
 import pytest
-from src.study import Study
+from efficiencysubproblem.src.study import Study
 
 
 def test_default_study_instantiation():
