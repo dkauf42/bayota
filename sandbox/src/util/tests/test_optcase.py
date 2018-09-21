@@ -4,9 +4,6 @@ import numpy as np
 import pandas as pd
 
 from sandbox.src.util.OptCase import OptCase
-from sandbox.config import get_outputdir
-
-writedir = get_outputdir()
 
 
 class TddForOptCase(unittest.TestCase):
