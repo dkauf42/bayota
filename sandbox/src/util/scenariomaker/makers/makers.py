@@ -6,8 +6,8 @@ from itertools import product
 
 import dask.dataframe as dd
 
-from sandbox.__init__ import get_outputdir
-from sandbox.__init__ import inaws, s3, _S3BUCKET
+from sandbox.src.__init__ import get_outputdir
+from sandbox.src.__init__ import inaws, s3, _S3BUCKET
 
 writedir = get_outputdir()
 

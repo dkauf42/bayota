@@ -1,4 +1,4 @@
-from sandbox.util.scenariomaker.makers.makers import Maker
+from .makers import Maker
 
 
 class Single(Maker):

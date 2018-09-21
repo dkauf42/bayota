@@ -3,7 +3,7 @@ import pandas as pd
 
 import pyDOE
 
-from sandbox.util.scenariomaker.makers.makers import Maker
+from .makers import Maker
 
 
 class Population(Maker):
