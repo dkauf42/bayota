@@ -1,6 +1,6 @@
 #  ___________________________________________________________________________
 #
-#  efficiencysubproblem: NLP for Efficiency BMPs in CAST
+#  efficiencysubproblem: NLP for Efficiency BMPs in CAST.
 #  Developed under a grant awarded to the Chesapeake Research Consortium, Inc.
 #  and work occurring at U.S. EPA Chesapeake Bay Program Office, Annapolis, MD
 #  ___________________________________________________________________________

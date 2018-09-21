@@ -1,3 +1,9 @@
+#  ___________________________________________________________________________
+#
+#  castjeeves: Utility package for querying csv formatted CAST source data.
+#  Developed under a grant awarded to the Chesapeake Research Consortium, Inc.
+#  and work occurring at U.S. EPA Chesapeake Bay Program Office, Annapolis, MD
+#  ___________________________________________________________________________
 # -*- coding: utf-8 -*-
 
 import os
