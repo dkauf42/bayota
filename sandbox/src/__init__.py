@@ -24,10 +24,6 @@ except:
     print('Not In AWS')
 
 
-def get_tempdir():
-    return os.path.join(_ROOT, 'temp/')
-
-
 def get_outputdir():
     return os.path.join(_WORKINGDIR, 'output/')
 
