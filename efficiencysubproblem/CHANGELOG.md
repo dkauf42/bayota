@@ -17,6 +17,7 @@ Each version should:
 ### Added
 
 ### Changed
+- merged into a monorepo with 'castjeeves' and 'sandbox'
 
 ### Fixed
 
