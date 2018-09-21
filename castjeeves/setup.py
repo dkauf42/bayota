@@ -36,7 +36,7 @@ install_requires = ['numpy>=1.14.2',
                     'pytest'
                     ]
 
-setup(name='CastJeeves',
+setup(name='castjeeves',
       version='0.0.2',
       description='Python package to create CAST scenarios for cost optimization',
       long_description=readme_text,
