@@ -28,16 +28,6 @@ with open('LICENSE') as f:
 install_requires = ['numpy>=1.14.2',
                     'pandas==0.22.0',  # there is currently an issue with pandas==0.23.0
                     'pytest'
-                    # 'Pmw>=2.0.1',
-                    # 'pytz>=2018.3',
-                    # 'six>=1.11.0',
-                    # 'tqdm>=4.19.8',
-                    # 'xlrd>=1.1.0',
-                    # 'pyDOE>=0.3.8',
-                    # 'requests',
-                    # 's3fs',
-                    # 'dask',
-                    # 'boto3'
                     ]
 
 setup(name='CastJeeves',
