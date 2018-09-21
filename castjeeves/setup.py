@@ -55,7 +55,7 @@ with open('LICENSE') as f:
     license_text = f.read()
 
 install_requires = ['numpy>=1.14.2',
-                    'pandas==0.22.0',  # there is currently an issue with pandas==0.23.0
+                    'pandas>=0.22.0',  # there is currently an issue with pandas==0.23.0
                     'pytest'
                     ]
 

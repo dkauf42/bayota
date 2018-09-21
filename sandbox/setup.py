@@ -7,7 +7,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 from setuptools import setup, Command, find_packages
+import setuptools.command.test
 
 
 class CleanCommand(Command):
@@ -23,6 +25,27 @@ class CleanCommand(Command):
 
     def finalize_options(self):
         pass
+
+
+class TestCommand(setuptools.command.test.test):
+
+    def run_tests(self):
+        """Customized run"""
+        # deferred import, because outside the eggs aren't loaded
+        import shlex
+        import pytest
+
+        this_project_dir = os.path.dirname(os.path.abspath(__file__))
+
+        pytest_args = '--rootdir=%s' % this_project_dir +\
+                      ' --cov=%s' % os.path.join(this_project_dir, 'src') +\
+                      ' --cov-report=term-missing' +\
+                      ' --cov-report=html:%s' % os.path.join(this_project_dir, 'htmlcov') +\
+                      ' %s' % os.path.join(this_project_dir, 'src/tests')
+        #  other tests here...
+        print('pytest args :\n %s' % pytest_args)
+        errno = pytest.main(shlex.split(pytest_args))
+        sys.exit(errno)
 
 
 with open('README.md') as f:
@@ -42,7 +65,8 @@ install_requires = ['numpy>=1.14.2',
                     'requests',
                     's3fs',
                     'dask',
-                    'boto3'
+                    'boto3',
+                    'pytest'
                     ]
 
 setup(name='sandbox',
@@ -56,6 +80,10 @@ setup(name='sandbox',
       packages=find_packages(),  #['src', 'data', 'temp', 'output'],
       include_package_data=True,
       install_requires=install_requires,
-      test_suite="src.tests",
-      cmdclass={'clean': CleanCommand}
+      # test_suite="src.tests",
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest',
+                     'pytest-cov'],
+      cmdclass={'clean': CleanCommand,
+                'test': TestCommand}
       )
