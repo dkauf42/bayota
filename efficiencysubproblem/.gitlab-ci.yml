@@ -24,23 +24,23 @@ before_script:
   - pip install virtualenv
   - virtualenv venv
   - source venv/bin/activate
-  - git submodule sync --recursive
-  - git submodule update --init --recursive
-  - git submodule update --recursive
-  - ls
-  - ls castjeeves/
-  - ls castjeeves/src/
+#  - git submodule sync --recursive
+#  - git submodule update --init --recursive
+#  - git submodule update --recursive
+#  - ls
+#  - ls castjeeves/
+#  - ls castjeeves/src/
 #  - ls src/
 #  - python -c "import sys; print(sys.path)"
 
 test:
   script:
   - python setup.py test
-  - ls castjeeves/
-  - python -m pip install coverage
-  - python -m coverage run -m src/tests/ discover
-  - python -m coverage report -m
-  - python -m coverage html
+#  - ls castjeeves/
+#  - python -m pip install coverage
+#  - python -m coverage run -m src/tests/ discover
+#  - python -m coverage report -m
+#  - python -m coverage html
   artifacts:
     paths:
       - htmlcov/
