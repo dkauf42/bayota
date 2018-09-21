@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from itertools import product
 from itertools import permutations
@@ -139,7 +140,7 @@ class Bmp(SourceHook):
 
         # For Manure, calculate all of the From-To permutations
         allbetweencountyperms = list(permutations(countylist, 2))
-        alloutofwatersheds = list(product(countylist, ['']))  # a blank represents transport out of the watershed
+        alloutofwatersheds = list(product(countylist, [np.nan]))  # a blank represents transport out of the watershed
         zser = pd.Series(allbetweencountyperms + alloutofwatersheds)
         sfta_table = zser.apply(pd.Series)
         sfta_table.columns = ['countyidFrom', 'countyidTo']
