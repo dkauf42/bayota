@@ -42,7 +42,6 @@ class TestCommand(setuptools.command.test.test):
                       ' --cov-report=term-missing' +\
                       ' --cov-report=html:%s' % os.path.join(this_project_dir, 'htmlcov') +\
                       ' %s' % os.path.join(this_project_dir, 'src/tests')
-        # '--cov=castjeeves.src',
         #  other tests here...
         print('pytest args :\n %s' % pytest_args)
         errno = pytest.main(shlex.split(pytest_args))
