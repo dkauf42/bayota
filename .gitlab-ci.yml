@@ -36,6 +36,7 @@ before_script:
 # build each monorepo subcomponent separately
 test:
   script:
+  - python print('hey')
 #  - .monorepo.gitlab/build_if_changed.sh castjeeves build castjeeves
 #  - .monorepo.gitlab/build_if_changed.sh efficiencysubproblem build efficiencysubproblem
 #  - .monorepo.gitlab/build_if_changed.sh sandbox build sandbox
