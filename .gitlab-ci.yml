@@ -1,0 +1,95 @@
+
+# BEGIN job-specific configuration
+.test: &test
+  stage: test
+  script:
+    - cd $PROJECT_NAME
+    - echo "hello from $(basename $PWD)"
+    - echo "testing ..."
+
+.compile: &compile
+  stage: build
+  script:
+    - cd $PROJECT_NAME
+    - echo "hello from $(basename $PWD)"
+    - echo "compiling ..."
+
+#
+# END job-specific configuration
+
+# BEGIN project-specific configuration
+
+.efficiencysubproblem: &efficiencysubproblem
+  script:
+  variables:
+    PROJECT_NAME: efficiencysubproblem
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*efficiencysubproblem.*\]/i
+      - $RUN_JOBS_ALL == "true"
+      - $RUN_JOBS_EFFICIENCYSUBPROBLEM == "true"
+
+.castjeeves: &castjeeves
+  script:
+  variables:
+    PROJECT_NAME: castjeeves
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*castjeeves.*\]/i
+      - $RUN_JOBS_ALL == "true"
+      - $RUN_JOBS_CASTJEEVES == "true"
+
+.sandbox: &sandbox
+  script:
+  variables:
+    PROJECT_NAME: sandbox
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*sandbox.*\]/i
+      - $RUN_JOBS_ALL == "true"
+      - $RUN_JOBS_SANDBOX == "true"
+
+#
+# END project-specific configuration
+
+# BEGIN actual pipeline definition
+
+#image: ubuntu
+image: python:3.6
+
+before_script:
+  - cd bayota
+
+stages:
+    - test
+    - build
+
+test efficiencysubproblem:
+  script:
+  - *efficiencysubproblem
+  - *test
+
+test castjeeves:
+  script:
+  - *castjeeves
+  - *test
+
+test sandbox:
+  script:
+  - *sandbox
+  - *test
+
+#compile customer-dashboard:
+#  <<: *customer-dashboard
+#  <<: *compile
+#
+#compile payment-api:
+#  <<: *payment-api
+#  <<: *compile
+#
+#compile accounting-service:
+#  <<: *accounting-service
+#  <<: *compile
+
+#
+# END actual pipeline definition
