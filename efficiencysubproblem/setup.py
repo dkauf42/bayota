@@ -6,10 +6,6 @@
 #  ___________________________________________________________________________
 # -*- coding: utf-8 -*-
 
-"""
-Script to generate the installer for efficiencysubproblem.
-"""
-
 import os
 from setuptools import setup, Command, find_packages
 
