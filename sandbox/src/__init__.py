@@ -24,14 +24,6 @@ except:
     print('Not In AWS')
 
 
-def get_datadir(path=''):
-    if not path:
-        retval = os.path.join(_ROOT, 'data/')
-    else:
-        retval = os.path.join(_ROOT, 'data/', path)
-    return retval
-
-
 def get_tempdir():
     return os.path.join(_ROOT, 'temp/')
 
