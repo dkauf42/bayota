@@ -1,3 +1,9 @@
+#  ___________________________________________________________________________
+#
+#  sandbox: Generator of randomized BMP-input-files to be used with CAST.
+#  Developed under a grant awarded to the Chesapeake Research Consortium, Inc.
+#  and work occurring at U.S. EPA Chesapeake Bay Program Office, Annapolis, MD
+#  ___________________________________________________________________________
 # -*- coding: utf-8 -*-
 
 import os
