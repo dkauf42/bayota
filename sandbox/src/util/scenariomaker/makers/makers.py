@@ -74,6 +74,7 @@ class Maker(object):
             df_manure.to_csv(manure_path, sep='\t', header=True, index=False, line_terminator='\r\n')
 
         if inaws:
+            print('makers(): in AWS')
             import boto3
             s3_client = boto3.client('s3')
 
