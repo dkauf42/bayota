@@ -15,8 +15,12 @@ s3 = None
 _S3BUCKET = ''
 try:
     resp = requests.get('http://169.254.169.254', timeout=0.001)
-    print('In AWS')
-    inaws = True
+    print('AWS url response: %s' % resp)
+    if 'ami' in resp:
+        print('In AWS')
+        inaws = True
+    else:
+        raise ConnectionError
 
     import s3fs
     s3 = s3fs.core.S3FileSystem(anon=False)

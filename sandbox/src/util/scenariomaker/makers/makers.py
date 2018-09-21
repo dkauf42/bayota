@@ -73,7 +73,7 @@ class Maker(object):
             df_land.to_csv(land_path, sep='\t', header=True, index=False, line_terminator='\r\n')
             df_manure.to_csv(manure_path, sep='\t', header=True, index=False, line_terminator='\r\n')
 
-        if inaws:
+        if inaws is True:
             print('makers(): in AWS')
             import boto3
             s3_client = boto3.client('s3')
