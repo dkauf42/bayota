@@ -1,6 +1,6 @@
 import pandas as pd
 
-from sandbox import settings
+from sandbox.src import settings
 
 
 class Space(object):

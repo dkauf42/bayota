@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from sandbox.util.decisionspace.spaces.spaces import Space
-from sandbox import settings
+from .spaces import Space
+from sandbox.src import settings
 
 
 class Land(Space):

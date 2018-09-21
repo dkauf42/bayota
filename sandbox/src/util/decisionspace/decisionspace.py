@@ -1,9 +1,10 @@
-from sandbox.util.jeeves import Jeeves
+from castjeeves.src.jeeves import Jeeves
+
 from .spaces.animal import Animal
 from .spaces.land import Land
 from .spaces.manure import Manure
 
-from sandbox import settings
+from sandbox.src import settings
 
 
 class DecisionSpace(object):

@@ -1,6 +1,6 @@
 import unittest
 
-from sandbox.util.decisionspace.decisionspace import DecisionSpace
+from sandbox.src.util.decisionspace.decisionspace import DecisionSpace
 
 
 class TddForDecisionSpace(unittest.TestCase):
