@@ -28,20 +28,21 @@ class Translator(SourceHook):
         columnmask = ['agencycode', 'agencyid']
         newtable = TblAgency.loc[:, columnmask].merge(newtable, how='inner')
         # Translate to LoadSource names
-        columnmask = ['loadsource', 'loadsourceid']
+        columnmask = ['loadsourceshortname', 'loadsourceid']
         newtable = TblLoadSource.loc[:, columnmask].merge(newtable, how='inner')
         # Translate to BMP names
         columnmask = ['bmpshortname', 'bmpid']
         newtable = TblBmp.loc[:, columnmask].merge(newtable, how='inner')
 
-        newtable.drop(['lrsegid', 'stateid', 'agencyid', 'loadsourceid', 'bmpid', 'unitid'], axis=1, inplace=True)
+        newtable.drop(['lrsegid', 'stateid', 'agencyid', 'loadsourceid', 'bmpid'], axis=1, inplace=True)
         newtable.rename(columns={'landriversegment': 'GeographyName',
                                  'stateabbreviation': 'StateAbbreviation',
                                  'agencycode': 'AgencyCode',
-                                 'loadsource': 'LoadSourceGroup',
-                                 'bmpshortname': 'BmpShortname'}, inplace=True)
+                                 'loadsourceshortname': 'LoadSourceGroup',
+                                 'bmpshortname': 'BmpShortname',
+                                 'bmpunitfullname': 'Unit'}, inplace=True)
 
-        newtable['Unit'] = 'Percent'
+        # newtable['Unit'] = 'Percent'
         newtable['StateUniqueIdentifier'] = np.nan
 
         if 'Amount' in newtable.columns:

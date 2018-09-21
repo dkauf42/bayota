@@ -20,7 +20,8 @@ class Metadata(SourceHook):
 
     def costprofile_names(self):
         TblCostProfile = self.meta.TblCostProfile  # get relevant source data
-        return TblCostProfile.loc[:, 'costprofilename']
+        tblsubset = TblCostProfile[TblCostProfile['masterprofile'] == True]
+        return tblsubset.loc[:, 'costprofilename']
 
     def get_baseconditionid(self, baseyear=None, baseconditionname=None):
         TblBaseCondition = self.source.TblBaseCondition  # get relevant source data

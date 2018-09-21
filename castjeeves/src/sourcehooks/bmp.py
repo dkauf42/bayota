@@ -30,6 +30,10 @@ class Bmp(SourceHook):
         typeid = TblBmp['bmptypeid'][TblBmp['bmpid'] == bmpid].tolist()
         return TblBmpType['bmptype'][TblBmpType['bmptypeid'] == typeid].tolist()
 
+    def unitid_from_name(self, unitname):
+        TblUnit = self.source.TblUnit
+        return TblUnit[TblUnit['unit'] == unitname]['unitid'].values[0]
+
     def bmpids_from_categoryids(self, categoryids):
         categoryids = self.forceToSingleColumnDataFrame(categoryids, colname='bmpcategoryid')
         return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
@@ -228,3 +232,83 @@ class Bmp(SourceHook):
 
     def appendBmpGroup_to_table_with_bmpid(self):
         pass
+
+    def append_unitids_to_table_with_bmpids(self, bmpidtable):
+        TblBmpUnit = self.source.TblBmpUnit
+        TblUnitRelation = self.source.TblUnitRelation
+        TblUnit = self.source.TblUnit
+
+        tblsubset = bmpidtable
+
+        # Some bmp units are only optional.
+        # Let's get their ids, and then exclude them
+        urid = TblUnitRelation[TblUnitRelation['unitrelation'] == 'Supplemental Optional']['unitrelationid']
+        RequiredRelations = TblUnitRelation[~TblUnitRelation['unitrelationid'].isin(list(urid))]
+        columnmask = ['bmpid', 'unitid', 'unitrelationid', 'bmpunitfullname']
+        BmpUnitsRequired = TblBmpUnit.loc[:, columnmask].merge(RequiredRelations, how='inner')
+
+        # This is a helper function for the following code to filter by different units
+        def filter_for_specificunit(grp, unitid):
+            filtered = grp[grp['unitid'] == unitid]
+            if filtered.empty:
+                return grp
+            else:
+                return filtered
+
+        # If a Bmp-unitrelationid group has 'percent' as one of the units, then we're going to drop the other units
+        # Separate the parent units and the required supplemental units and keep 'percent' if it's there
+        percentid = self.unitid_from_name('percent')
+        grouped = BmpUnitsRequired.groupby(['bmpid', 'unitrelationid'], as_index=False)
+        groupedAfterPercentPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, percentid))
+        bmpswithpercent = groupedAfterPercentPrecedence[groupedAfterPercentPrecedence['unitid'] == percentid]
+        bmpswithoutpercent = groupedAfterPercentPrecedence[~(groupedAfterPercentPrecedence['unitid'] == percentid)]
+
+        # After having checked 'percent', we'll check if 'acres' is one of the units and drop the others
+        acresid = self.unitid_from_name('acres')
+        # Separate the parent units and the required supplemental units and keep 'percent' if it's there
+        grouped = bmpswithoutpercent.groupby(['bmpid', 'unitrelationid'], as_index=False)
+        groupedAfterAcresPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, acresid))
+        bmpswithacres = groupedAfterAcresPrecedence[groupedAfterAcresPrecedence['unitid'] == acresid]
+        bmpswithoutacres = groupedAfterAcresPrecedence[~(groupedAfterAcresPrecedence['unitid'] == acresid)]
+
+        # After having checked 'percent' and 'acres', we'll check if 'feet' is one of the units and drop the others
+        feetid = self.unitid_from_name('feet')
+        # Separate the parent units and the required supplemental units and keep 'percent' if it's there
+        grouped = bmpswithoutacres.groupby(['bmpid', 'unitrelationid'], as_index=False)
+        groupedAfterFeetPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, feetid))
+        bmpswithfeet = groupedAfterFeetPrecedence[groupedAfterFeetPrecedence['unitid'] == feetid]
+        bmpswithoutfeet = groupedAfterFeetPrecedence[~(groupedAfterFeetPrecedence['unitid'] == feetid)]
+
+        # After having checked 'percent', 'acres', and 'feet',
+        #   we'll check if 'dry tons' is one of the units and drop the others
+        drytonsid = self.unitid_from_name('dry tons')
+        # Separate the parent units and the required supplemental units and keep 'percent' if it's there
+        grouped = bmpswithoutfeet.groupby(['bmpid', 'unitrelationid'], as_index=False)
+        groupedAfterDryTonsPrecedence = grouped.apply(lambda x: filter_for_specificunit(x, drytonsid))
+        bmpswithdrytons = groupedAfterDryTonsPrecedence[groupedAfterDryTonsPrecedence['unitid'] == drytonsid]
+        bmpswithoutdrytons = groupedAfterDryTonsPrecedence[~(groupedAfterDryTonsPrecedence['unitid'] == drytonsid)]
+
+        # Get all the Bmps that have more than one required unit (^besides percent)
+        bmpswithmultipleunitentries = groupedAfterDryTonsPrecedence[groupedAfterDryTonsPrecedence.duplicated(['bmpid'],
+                                                                                                       keep=False)]
+
+        FilteredBmpUnits = pd.concat([bmpswithpercent,
+                                      bmpswithacres,
+                                      bmpswithfeet,
+                                      bmpswithdrytons,
+                                      bmpswithoutdrytons]).sort_values(by=['bmpid'])
+
+        # Check to make sure:
+        # there shoudn't be any rows with duplicate bmpids if they don't have
+        #   a required supplemental unit (unitrelationid==2)
+        checktbl = FilteredBmpUnits[FilteredBmpUnits.duplicated(['bmpid'], keep=False)].copy()
+        # Add column with frequency of each unitrelationid for each bmpid.
+        checktbl['howmany'] = checktbl.groupby(['bmpid', 'unitrelationid'])['unitrelationid'].transform('count')
+        uhoh = checktbl[(checktbl['unitrelationid'] == 1) & (checktbl['howmany'] > 1)]
+        if not uhoh.empty:
+            raise ValueError("there shouldn't be any duplicate required units")
+
+        columnmask = ['bmpid', 'unitid', 'unitrelationid', 'bmpunitfullname']
+        newtable = FilteredBmpUnits.loc[:, columnmask].merge(tblsubset, how='inner')
+
+        return newtable
