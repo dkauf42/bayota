@@ -10,8 +10,8 @@ import argparse
 import textwrap
 import tkinter as tk
 
-from sandbox.util.OptCase import OptCase
-from sandbox.gui.toplevelframes.MainWindow import MainWindow
+from sandbox.src.util.OptCase import OptCase
+from sandbox.src.gui.toplevelframes.MainWindow import MainWindow
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)

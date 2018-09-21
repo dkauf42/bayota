@@ -1,5 +1,5 @@
 import tkinter as tk
-from sandbox.gui.useframes.BmpComboSlider import BmpComboSlider
+from sandbox.src.gui.useframes.BmpComboSlider import BmpComboSlider
 
 
 class AdditionalConstraintsFrame(tk.Frame):

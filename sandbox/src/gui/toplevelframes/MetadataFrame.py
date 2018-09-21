@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from collections import namedtuple
 import pandas as pd
 
-from sandbox.gui.useframes.DualBox import DualBox
+from sandbox.src.gui.useframes.DualBox import DualBox
 
 
 class MetadataFrame(tk.Frame):

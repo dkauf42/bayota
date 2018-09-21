@@ -3,7 +3,7 @@ RangeSlider Demo class
 - Creates the window and grid bags the widgets
 """
 from tkinter import *
-from sandbox.gui.useframes.RangeSlider import RangeSlider
+from sandbox.src.gui.useframes.RangeSlider import RangeSlider
 
 
 class RangeSliderFrame(Frame):

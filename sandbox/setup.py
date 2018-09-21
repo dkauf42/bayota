@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from setuptools import setup, Command
+from setuptools import setup, Command, find_packages
 
 
 class CleanCommand(Command):
@@ -47,7 +47,7 @@ setup(name='sandbox',
       author_email='dkaufman@chesapeakebay.net',
       url='https://gitlab.com/daka42',
       license=license_text,
-      packages=['src', 'data', 'temp', 'output'],
+      packages=find_packages(),  #['src', 'data', 'temp', 'output'],
       include_package_data=True,
       install_requires=install_requires,
       test_suite="src.tests",

@@ -1,6 +1,6 @@
 import unittest
 
-from sandbox.sandboxer import main
+from sandbox.src.sandboxer import main
 
 
 class TddForMain(unittest.TestCase):

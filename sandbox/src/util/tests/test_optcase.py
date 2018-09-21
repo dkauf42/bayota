@@ -3,8 +3,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from sandbox.util.OptCase import OptCase
-from sandbox.__init__ import get_outputdir
+from sandbox.src.util.OptCase import OptCase
+from sandbox.src.__init__ import get_outputdir
 
 writedir = get_outputdir()
 

@@ -1,8 +1,8 @@
-from sandbox.util.decisionspace import DecisionSpace
-from sandbox.util.scenariomaker.scenariomaker import ScenarioMaker
-from sandbox.util.Examples import Examples
-from sandbox.__init__ import get_outputdir
-from sandbox import settings
+from sandbox.src.util.decisionspace import DecisionSpace
+from sandbox.src.util.scenariomaker.scenariomaker import ScenarioMaker
+from sandbox.src.util.Examples import Examples
+from sandbox.src.__init__ import get_outputdir
+from sandbox.src import settings
 
 writedir = get_outputdir()
 

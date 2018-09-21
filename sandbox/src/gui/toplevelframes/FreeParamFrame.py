@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from collections import namedtuple
 
-from sandbox.gui.useframes.DualBox import DualBox
+from sandbox.src.gui.useframes.DualBox import DualBox
 
 
 class FreeParamFrame(tk.Frame):

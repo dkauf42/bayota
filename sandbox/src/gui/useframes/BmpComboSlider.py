@@ -2,7 +2,7 @@ import numpy as np
 import tkinter as tk
 import tkinter.ttk as ttk
 from copy import deepcopy
-from sandbox.gui.useframes.RangeSliderFrame import RangeSliderFrame
+from sandbox.src.gui.useframes.RangeSliderFrame import RangeSliderFrame
 
 
 class BmpComboSlider(tk.Frame):
