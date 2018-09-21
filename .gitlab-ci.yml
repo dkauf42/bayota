@@ -36,9 +36,9 @@ before_script:
 # build each monorepo subcomponent separately
 test:
   script:
-  - .monorepo.gitlab/build_if_changed.sh castjeeves python castjeeves/setup.py test
-  - .monorepo.gitlab/build_if_changed.sh efficiencysubproblem python efficiencysubproblem/setup.py test
-  - .monorepo.gitlab/build_if_changed.sh sandbox python sandbox/setup.py test
+  - .monorepo.gitlab/build_if_changed.sh castjeeves cd castjeeves; python castjeeves/setup.py test; cd ..;
+  - .monorepo.gitlab/build_if_changed.sh efficiencysubproblem cd efficiencysubproblem; python efficiencysubproblem/setup.py test; cd ..;
+  - .monorepo.gitlab/build_if_changed.sh sandbox cd sandbox; python sandbox/setup.py test; cd ..;
 #  - python setup.py test
 #  - python -m pip install coverage
 #  - python -m coverage run -m src/tests/ discover
