@@ -1,95 +1,49 @@
-
-# BEGIN job-specific configuration
-.test: &test
-  stage: test
-  script:
-    - cd $PROJECT_NAME
-    - echo "hello from $(basename $PWD)"
-    - echo "testing ..."
-
-.compile: &compile
-  stage: build
-  script:
-    - cd $PROJECT_NAME
-    - echo "hello from $(basename $PWD)"
-    - echo "compiling ..."
-
-#
-# END job-specific configuration
-
-# BEGIN project-specific configuration
-
-.efficiencysubproblem: &efficiencysubproblem
-  script:
-  variables:
-    PROJECT_NAME: efficiencysubproblem
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*efficiencysubproblem.*\]/i
-      - $RUN_JOBS_ALL == "true"
-      - $RUN_JOBS_EFFICIENCYSUBPROBLEM == "true"
-
-.castjeeves: &castjeeves
-  script:
-  variables:
-    PROJECT_NAME: castjeeves
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*castjeeves.*\]/i
-      - $RUN_JOBS_ALL == "true"
-      - $RUN_JOBS_CASTJEEVES == "true"
-
-.sandbox: &sandbox
-  script:
-  variables:
-    PROJECT_NAME: sandbox
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*sandbox.*\]/i
-      - $RUN_JOBS_ALL == "true"
-      - $RUN_JOBS_SANDBOX == "true"
-
-#
-# END project-specific configuration
-
-# BEGIN actual pipeline definition
-
-#image: ubuntu
+# This file is a template, and might need editing before it works on your project.
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+#image: python:latest
 image: python:3.6
 
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+  GIT_SUBMODULE_STRATEGY: recursive
+  CI_SERVER_URL: https://gitlab.com
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
 before_script:
-  - cd bayota
+  - .monorepo.gitlab/last_green_commit.sh
+  - python -V               # Print out python version for debugging
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+#  - ls
+#  - ls src/
+#  - ls src/
+#  - python -c "import sys; print(sys.path)"
 
-stages:
-    - test
-    - build
-
-test efficiencysubproblem:
+# use submodule https://github.com/awesome-inc/monorepo.gitlab.git to
+# build each monorepo subcomponent separately
+test:
   script:
-  - *efficiencysubproblem
-  - *test
-
-test castjeeves:
-  script:
-  - *castjeeves
-  - *test
-
-test sandbox:
-  script:
-  - *sandbox
-  - *test
-
-#compile customer-dashboard:
-#  <<: *customer-dashboard
-#  <<: *compile
-#
-#compile payment-api:
-#  <<: *payment-api
-#  <<: *compile
-#
-#compile accounting-service:
-#  <<: *accounting-service
-#  <<: *compile
-
-#
-# END actual pipeline definition
+  - .monorepo.gitlab/build_if_changed.sh castjeeves build castjeeves
+  - .monorepo.gitlab/build_if_changed.sh efficiencysubproblem build efficiencysubproblem
+  - .monorepo.gitlab/build_if_changed.sh sandbox build sandbox
+#  - python setup.py test
+#  - python -m pip install coverage
+#  - python -m coverage run -m src/tests/ discover
+#  - python -m coverage report -m
+#  - python -m coverage html
+  artifacts:
+    paths:
+      - htmlcov/
