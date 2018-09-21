@@ -38,7 +38,7 @@ install_requires = ['numpy>=1.14.2',
 
 setup(name='castjeeves',
       version='0.0.2',
-      description='Python package to create CAST scenarios for cost optimization',
+      description='Python package to query csv formatted CAST source data',
       long_description=readme_text,
       author='Daniel Kaufman',
       author_email='dkaufman@chesapeakebay.net',
