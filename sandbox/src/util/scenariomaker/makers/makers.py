@@ -7,7 +7,7 @@ from itertools import product
 import dask.dataframe as dd
 
 from sandbox.config import OUTPUT_DIR
-from sandbox.src.__init__ import inaws, s3, _S3BUCKET
+from sandbox.config import inaws, s3, _S3BUCKET
 
 
 class Maker(object):
