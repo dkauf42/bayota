@@ -16,6 +16,12 @@ def test_study_lrseg_instantiation():
                   baseconstraint=5, saveData2file=False)
     assert study.numberofrunscompleted == 0
 
+def test_study_lrseg_instantiation_multirun_check():
+    study = Study(objectivetype='costmin',
+                  geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
+                  baseconstraint=[3, 5], saveData2file=False)
+    assert study.multirun == True
+
 def test_study_county_instantiation():
     study = Study(objectivetype='costmin',
                   geoscale='county', geoentities=['Northumberland, VA'],

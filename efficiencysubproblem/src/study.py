@@ -40,7 +40,13 @@ class Study:
                             geoscale='county', \
                             geoentities=['Anne Arundel, MD'], \
                             baseconstraint=5, saveData2file=False))
-            [0, 1, 2, 3]
+            ***** Study Details *****
+            objective:                costmin
+            geographic scale:         county
+            # of geographic entities: 1
+            current constraint level: 5
+            time of instantiation:    2018-09-21 10:28:19.950398
+            ***************************
 
         Definitions
         -----------
@@ -66,10 +72,7 @@ class Study:
         self.geoscale = geoscale
         self.geoentities = geoentities
         self.objectivetype = objectivetype
-
-        # Check whether multiple runs are required
-        if len(baseconstraint) > 1:
-            multirun = True
+        self.multirun = False
 
         # Keep track of wall time
         starttime_modelinstantiation = time.time()
@@ -223,14 +226,27 @@ class Study:
         return output_file_name, merged_df, solvetimestamp
 
     def _setconstraint(self, data, baseconstraint):
+        # Check whether multiple runs are required
+        if isinstance(baseconstraint, list):
+            if len(baseconstraint) > 1:
+                self.multirun = True
+            else:
+                baseconstraint = baseconstraint[0]
+
         if self.objectivetype == 'costmin':
-            # ---- Set the total capital available ----
-            data.totalcostupperbound = baseconstraint  # e.g. $100,000
+            # ---- Set the total capital available, e.g. $100,000 ----
+            if self.multirun:
+                data.totalcostupperbound = baseconstraint[0]
+            else:
+                data.totalcostupperbound = baseconstraint
             self.constraintstr = str(round(data.totalcostupperbound, 1))
         elif self.objectivetype == 'loadreductionmax':
-            # ---- Set the tau target load ----
+            # ---- Set the tau target load, e.g. 12% reduction ----
             for k in data.tau:
-                data.tau[k] = baseconstraint  # e.g. 12% reduction
+                if self.multirun:
+                    data.tau[k] = baseconstraint[0]
+                else:
+                    data.tau[k] = baseconstraint
                 self.constraintstr = str(round(data.tau[k], 1))
 
     def _setup_modelhandler_and_load_instance_data(self):
@@ -256,3 +272,5 @@ class Study:
             self.data = modelhandler.load_data(savedata2file=False, lrsegs_list=self.geoentities)
         elif self.geoscale == 'county':
             self.data = modelhandler.load_data(savedata2file=False, county_list=self.geoentities)
+
+        return modelhandler
