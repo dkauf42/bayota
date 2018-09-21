@@ -24,10 +24,6 @@ except:
     print('Not In AWS')
 
 
-def get_outputdir():
-    return os.path.join(_WORKINGDIR, 'output/')
-
-
 def get_sqlsourcetabledir():
     return os.path.join(_ROOT, 'data/test_source/')
 

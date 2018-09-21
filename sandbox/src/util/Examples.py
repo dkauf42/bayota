@@ -1,4 +1,4 @@
-from sandbox.src.__init__ import get_outputdir
+from sandbox.config import get_outputdir
 
 writedir = get_outputdir()
 
