@@ -1,6 +1,6 @@
 import pandas as pd
 
-from sandbox.src import settings
+from sandbox import config
 
 
 class Space(object):
@@ -65,13 +65,13 @@ class Space(object):
         return formattedstr
 
     def generate_from_SourceGeoAgencytable(self):
-        if settings.verbose:
+        if config.verbose:
             print('** %s space being populated from lrseg_agency_table **  '
                   '{Space.generate_from_SourceGeoAgencytable()}' % type(self).__name__)
 
         # Populate BMPs
         self.append_bmps_to_SourceGeoAgencytable()
-        if settings.verbose:
+        if config.verbose:
             print('\t-- idtable has  set to the Source,Geo,Agency table, which looks like:')
             print(self.idtable.head())
             print('\t^shape is %s' % str(self.idtable.shape))
@@ -82,7 +82,7 @@ class Space(object):
         self.append_units_and_bounds()
         self.translate_ids_to_names()
 
-        if settings.verbose:
+        if config.verbose:
             print('\t-- after qc_bmps and translation, the idtable looks like')
             print(self.idtable.head())
             print('\t^shape is %s' % str(self.idtable.shape))

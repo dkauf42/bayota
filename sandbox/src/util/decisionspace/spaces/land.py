@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from .spaces import Space
-from sandbox.src import settings
+from sandbox import config
 
 
 class Land(Space):
@@ -39,7 +39,7 @@ class Land(Space):
         - Land policy BMPs
 
         """
-        if settings.verbose:
+        if config.verbose:
             print('\t-- QC\'ing the idtable { in land.qc_bmps() }, which looks like:')
             print(self.idtable.head())
             print('^shape is %s' % (self.idtable.shape, ))
@@ -74,7 +74,7 @@ class Land(Space):
             mask = pd.Series(newtable['bmpid'] == bmpid)
             newtable = newtable[~mask]
             removaltotal += mask.sum()
-            if settings.verbose:
+            if config.verbose:
                 print('removing %d for %s (type=%s)' % (mask.sum(), bmpnametoremove, bmptypename))
 
         """
@@ -105,12 +105,12 @@ class Land(Space):
         # TODO: replace the above '4' with a call that gets the number from a string such as 'Land Policy BMPs'
         newtable = newtable[~newtable['bmpid'].isin(bmpids.bmpid.tolist())]
         removaltotal += mask.sum()
-        if settings.verbose:
+        if config.verbose:
             print('removing %d for %s' % (mask.sum(), 'Land Policy BMPs'))
 
         self.idtable = newtable
         newrowcnt, newcolcnt = self.idtable.shape
-        if settings.verbose:
+        if config.verbose:
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 

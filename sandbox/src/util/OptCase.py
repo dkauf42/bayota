@@ -2,7 +2,7 @@ from sandbox.src.util.decisionspace import DecisionSpace
 from sandbox.src.util.scenariomaker.scenariomaker import ScenarioMaker
 from sandbox.src.util.Examples import Examples
 from sandbox.src.__init__ import get_outputdir
-from sandbox.src import settings
+from sandbox import config
 
 writedir = get_outputdir()
 
@@ -52,7 +52,7 @@ class OptCase(object):
         Parameters:
             name (str):  this is the name of the example to load.
         """
-        if settings.verbose:
+        if config.verbose:
             print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
 
         ex = Examples(name)
@@ -123,7 +123,7 @@ class OptCase(object):
             name (str):  this is the name of the example to load.
 
         """
-        if settings.verbose:
+        if config.verbose:
             print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
 
         ex = Examples(name)

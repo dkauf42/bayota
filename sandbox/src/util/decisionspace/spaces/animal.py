@@ -1,6 +1,6 @@
 import pandas as pd
 from .spaces import Space
-from sandbox.src import settings
+from sandbox import config
 
 
 class Animal(Space):
@@ -37,7 +37,7 @@ class Animal(Space):
         - "FEEDPermitted" and "FEEDNonPermitted" are removed; replaced by "FEED"
 
         """
-        if settings.verbose:
+        if config.verbose:
             print('\t-- QC\'ing the idtable { in animal.qc_bmps() }, which looks like:')
             print(self.idtable.head())
             print('^shape is %s' % (self.idtable.shape, ))
@@ -56,7 +56,7 @@ class Animal(Space):
             mask = pd.Series(newtable['bmpid'] == bmpid)
             newtable = newtable[~mask]
             removaltotal += mask.sum()
-            if settings.verbose:
+            if config.verbose:
                 print('removing %d for %s (type=%s)' % (mask.sum(), bmpnametoremove, bmptypename))
 
         # Remove "AllLoadSources" loadsourcegroup from the manure table
@@ -66,7 +66,7 @@ class Animal(Space):
         mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
         newtable = newtable[~mask]
         removaltotal += mask.sum()
-        if settings.verbose:
+        if config.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove "FEEDPermitted" and "FEEDNonPermitted" loadsourcegroups from the manure table,
@@ -77,7 +77,7 @@ class Animal(Space):
         mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
         newtable = newtable[~mask]
         removaltotal += mask.sum()
-        if settings.verbose:
+        if config.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
         loadsourcenametoremove = 'FEEDNonPermitted'
         loadsourcegroupid = self.jeeves.loadsource. \
@@ -85,7 +85,7 @@ class Animal(Space):
         mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
         newtable = newtable[~mask]
         removaltotal += mask.sum()
-        if settings.verbose:
+        if config.verbose:
             print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Add together the AnimalUnits and AnimalCount for Permitted and NonPermitted
@@ -97,7 +97,7 @@ class Animal(Space):
 
         self.idtable = newtable
         newrowcnt, newcolcnt = self.idtable.shape
-        if settings.verbose:
+        if config.verbose:
             print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 

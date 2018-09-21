@@ -4,7 +4,7 @@ from .spaces.animal import Animal
 from .spaces.land import Land
 from .spaces.manure import Manure
 
-from sandbox.src import settings
+from sandbox import config
 
 
 class DecisionSpace(object):
@@ -41,7 +41,7 @@ class DecisionSpace(object):
         Note:
             This will include all agencies, all loadsources, and all bmps.
         """
-        if settings.verbose:
+        if config.verbose:
             print('** An Empty DecisionSpace is being generated ** {DecisionSpace.blank()}')
 
         # SourceHooks
@@ -61,7 +61,7 @@ class DecisionSpace(object):
         Note:
             This will include all agencies, all loadsources, and all bmps.
         """
-        if settings.verbose:
+        if config.verbose:
             print('** DecisionSpaces are being generated from geography ** {DecisionSpace.fromgeo()}')
 
         # SourceHooks
@@ -119,7 +119,7 @@ class DecisionSpace(object):
     def proceed_to_decision_space_from_geoagencysectorids(self):
         """ Generate a decision space from pre-defined geography (scale + area names), agency, and sector ids.
         """
-        if settings.verbose:
+        if config.verbose:
             print('** DecisionSpace being generated from geography, agencies, sectors **')
 
         # make la_table when agencyids have already been populated """
