@@ -61,7 +61,6 @@ class Jeeves:
         return sourcedata
 
 
-
     @classmethod
     def loadInMetaDataFromSQL(cls):
         savename = get_tempdir() + 'MetaData.obj'
