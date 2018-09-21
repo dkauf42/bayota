@@ -2,9 +2,13 @@ import pytest
 from efficiencysubproblem.src.study import Study
 
 
-def test_default_study_instantiation():
+def test_study_instantiation_noargs():
     with pytest.raises(ValueError):
         Study()
+
+def test_study_instantiation_badobjective():
+    with pytest.raises(ValueError):
+        Study(objectivetype='Dennis Nedry')
 
 def test_study_lrseg_instantiation():
     study = Study(objectivetype='costmin',

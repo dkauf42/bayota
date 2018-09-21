@@ -29,7 +29,7 @@ class Study:
             objectivetype (str): Either 'costmin' or 'loadreductionmax'
             geoscale (str): Either 'county' or 'lrseg'
             geoentities (:obj:`list` of :obj:`str`): the specific lrsegs or counties to include in each run
-            baseconstraint (float): Tau or Total_Cost
+            baseconstraint (float or :obj:`list` of :obj:`float`): Tau or Total_Cost
             saveData2file (bool):
 
         Examples:
@@ -67,23 +67,23 @@ class Study:
         self.geoentities = geoentities
         self.objectivetype = objectivetype
 
+        # Check whether multiple runs are required
+        if len(baseconstraint) > 1:
+            multirun = True
+
+        # Keep track of wall time
         starttime_modelinstantiation = time.time()
 
-        # Instantiate a modelhandler object, which itself generates the model and instance data
-        modelhandler = self._setup_modelhandler()
-        # Set instance Data
-        if self.geoscale == 'lrseg':
-            self.data = modelhandler.load_data(savedata2file=False, lrsegs_list=self.geoentities)
-        elif self.geoscale == 'county':
-            self.data = modelhandler.load_data(savedata2file=False, county_list=self.geoentities)
-        else:
-            raise ValueError('unrecognized "geoscale"')
+        # Instantiate a modelhandler object, which itself generates the model and sets the instance data
+        modelhandler = self._setup_modelhandler_and_load_instance_data()
+
         # Set the base constraint level
         self._setconstraint(self.data, baseconstraint)
 
         # Tell the modelhandler to create a model instance
         self.mdl = modelhandler.create_concrete(data=self.data)
 
+        # Print the wall time
         self.endtime_modelinstantiation = time.time()
         timefor_modelinstantiation = self.endtime_modelinstantiation - starttime_modelinstantiation
         print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
@@ -233,16 +233,26 @@ class Study:
                 data.tau[k] = baseconstraint  # e.g. 12% reduction
                 self.constraintstr = str(round(data.tau[k], 1))
 
-    def _setup_modelhandler(self):
+    def _setup_modelhandler_and_load_instance_data(self):
         if self.objectivetype == 'costmin':
             if self.geoscale == 'lrseg':
-                return CostObj_lrseg()
+                modelhandler = CostObj_lrseg()
             elif self.geoscale == 'county':
-                return CostObj_county()
-        if self.objectivetype == 'loadreductionmax':
+                modelhandler = CostObj_county()
+            else:
+                raise ValueError('unrecognized "geoscale"')
+        elif self.objectivetype == 'loadreductionmax':
             if self.geoscale == 'lrseg':
-                return LoadObj_lrseg()
+                modelhandler = LoadObj_lrseg()
             elif self.geoscale == 'county':
-                return LoadObj_county()
+                modelhandler = LoadObj_county()
+            else:
+                raise ValueError('unrecognized "geoscale"')
         else:
-            return None
+            raise ValueError('unrecognized objectivetype')
+
+        # Set instance Data
+        if self.geoscale == 'lrseg':
+            self.data = modelhandler.load_data(savedata2file=False, lrsegs_list=self.geoentities)
+        elif self.geoscale == 'county':
+            self.data = modelhandler.load_data(savedata2file=False, county_list=self.geoentities)
