@@ -1,7 +1,7 @@
 from .sourcehooks import SourceHook
 
 
-class Metadata(SourceHook):
+class Meta(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
         """ Metadata Methods """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)

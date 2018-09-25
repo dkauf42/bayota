@@ -17,7 +17,7 @@ from .sourcehooks.county import County
 from .sourcehooks.geo import Geo
 from .sourcehooks.loadsource import LoadSource
 from .sourcehooks.lrseg import Lrseg
-from .sourcehooks.meta import Metadata
+from .sourcehooks.meta import Meta
 from .sourcehooks.sector import Sector
 from .sourcehooks.translator import Translator
 
@@ -34,7 +34,7 @@ class Jeeves:
         self.geo = Geo(sourcedata=self.source)
         self.loadsource = LoadSource(sourcedata=self.source)
         self.lrseg = Lrseg(sourcedata=self.source)
-        self.metadata = Metadata(sourcedata=self.source)
+        self.metadata = Meta(sourcedata=self.source)
         self.sector = Sector(sourcedata=self.source)
         self.translator = Translator(sourcedata=self.source)
 
