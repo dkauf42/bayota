@@ -37,12 +37,12 @@ class TestCommand(setuptools.command.test.test):
 
         this_project_dir = os.path.dirname(os.path.abspath(__file__))
 
-        pytest_args = '--rootdir=%s' % this_project_dir +\
+        pytest_args = '%s' % os.path.join(this_project_dir, 'src') +\
+                      ' --rootdir=%s' % this_project_dir +\
                       ' --cov=%s' % os.path.join(this_project_dir, 'src') +\
                       ' --cov-report=term-missing' +\
-                      ' --cov-report=html:%s' % os.path.join(this_project_dir, 'htmlcov') +\
-                      ' %s' % os.path.join(this_project_dir, 'src/tests')
-        #  other tests here...
+                      ' --cov-report=html:%s' % os.path.join(this_project_dir, 'htmlcov')
+
         print('pytest args :\n %s' % pytest_args)
         errno = pytest.main(shlex.split(pytest_args))
         sys.exit(errno)
