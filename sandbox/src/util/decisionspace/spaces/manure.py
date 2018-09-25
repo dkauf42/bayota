@@ -90,8 +90,10 @@ class Manure(Space):
 
         # Add together the AnimalUnits and AnimalCount for Permitted and NonPermitted
         keycols = ['loadsourcegroupid', 'bmpid', 'baseconditionid', 'countyidFrom', 'countyidTo', 'animalid', 'agencyid']
-        newtable = newtable.groupby(keycols)['animalcount', 'animalunits'].sum().reset_index()
-
+        # use fillna(-1) because out-of-the-watershed manure transport is represented by countyidTo==np.nan
+        newtable = newtable.fillna(-1).groupby(keycols)['animalcount', 'animalunits'].sum().reset_index()
+        # replace all of the -1 's in countyidTo column with np.nan again (by reassigning the previous values >=0)
+        newtable = newtable.assign(countyidTo=newtable.countyidTo.where(newtable.countyidTo.ge(0)))
         # Remove any duplicate rows. (these are created when loadsourceids are matched to loadsourcegroupids
         newtable.drop_duplicates()
 
