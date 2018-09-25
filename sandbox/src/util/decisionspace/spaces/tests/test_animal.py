@@ -1,7 +1,7 @@
 import unittest
 
-from sandbox.util.decisionspace import DecisionSpace
-from sandbox.util.decisionspace.spaces.animal import Animal
+from sandbox.src.util.decisionspace import DecisionSpace
+from sandbox.src.util.decisionspace.spaces.animal import Animal
 
 
 class TddForAnimal(unittest.TestCase):
