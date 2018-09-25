@@ -1,26 +1,26 @@
-import unittest
+import pytest
 
 from sandbox.src.util.decisionspace.decisionspace import DecisionSpace
 
 
-class TddForDecisionSpace(unittest.TestCase):
+@pytest.fixture(scope='module')
+def resource_a(request):
+    # Load a decision space for one county
+    decisionspace = DecisionSpace.fromgeo(scale='County', areanames=['Adams, PA'],
+                                          baseyear='2013', basecondname='Historic Trends')
+    return decisionspace
 
-    @classmethod
-    def setUpClass(cls):
-        # Load the Source Data and Base Condition tables
-        cls.decisionspace = DecisionSpace.fromgeo(scale='County', areanames=['Adams, PA'])
 
-        # cls.dataDf = pd.DataFrame({'date': cls.dates,
-        #     'count': np.array([3, 7, 4, 66, 9])})
+def test_lrsegids_populated_correctly_in_decisionspace(resource_a):
+    assert 745 in resource_a.land.lrsegids.loc[:, 'lrsegid'].tolist()
+    # self.decisionspace.__generate_decisionspace_using_case_geography(scale='County', areanames=['Adams, PA'])
 
-    def test_lrsegids_populated_correctly_in_decisionspace(self):
-        # self.decisionspace.__generate_decisionspace_using_case_geography(scale='County', areanames=['Adams, PA'])
-        self.assertIn(745, self.decisionspace.land.lrsegids.loc[:, 'lrsegid'].tolist())
 
-    def test_animaldecisionspace_only_includes_FEED_loadsource(self):
-        # self.decisionspace.__generate_decisionspace_using_case_geography(scale='County', areanames=['Adams, PA'])
-        self.assertEqual('Feed', self.decisionspace.animal.nametable.loc[:, 'LoadSourceGroup'].unique()[0])
+def test_animaldecisionspace_only_includes_FEED_loadsource(resource_a):
+    assert 'Feed' == resource_a.animal.nametable.loc[:, 'LoadSourceGroup'].unique()[0]
+    # self.decisionspace.__generate_decisionspace_using_case_geography(scale='County', areanames=['Adams, PA'])
 
-    def test_manuredecisionspace_only_includes_FEED_loadsource(self):
-        # self.decisionspace.__generate_decisionspace_using_case_geography(scale='County', areanames=['Adams, PA'])
-        self.assertEqual('Feed', self.decisionspace.manure.nametable.loc[:, 'LoadSourceGroup'].unique()[0])
+
+def test_manuredecisionspace_only_includes_FEED_loadsource(resource_a):
+    assert 'Feed' == resource_a.manure.nametable.loc[:, 'LoadSourceGroup'].unique()[0]
+    # self.decisionspace.__generate_decisionspace_using_case_geography(scale='County', areanames=['Adams, PA'])
