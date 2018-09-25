@@ -93,15 +93,15 @@ class MetadataFrame(tk.Frame):
     def load_options(self, jeeves=None):
         self.jeeves = jeeves
 
-        self.dropdown_baseyr['values'] = ['Select Base Year'] + jeeves.metadata.all_base_year_names().tolist()
+        self.dropdown_baseyr['values'] = ['Select Base Year'] + jeeves.meta.all_base_year_names().tolist()
         self.dropdown_baseyr.current(0)
         self.dropdown_basecond['values'] = ['Select Base Condition'] + \
-                                           jeeves.metadata.all_base_condition_names().tolist()
+                                           jeeves.meta.all_base_condition_names().tolist()
         self.dropdown_basecond.current(0)
-        self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + jeeves.metadata.wastewaterdata_names()
+        self.dropdown_wastewtr['values'] = ['Select Wastewater Data Set'] + jeeves.meta.wastewaterdata_names()
         self.dropdown_wastewtr.current(0)
         self.dropdown_costprofile['values'] = ['Select Cost Profile'] + \
-                                              jeeves.metadata.costprofile_names().tolist()
+                                              jeeves.meta.costprofile_names().tolist()
         self.dropdown_costprofile.current(0)
         self.dropdown_geoscale['values'] = ['Select Geographic Scale'] + \
                                            jeeves.geo.all_geotypes().geographytypefullname.tolist()

@@ -68,7 +68,7 @@ class DecisionSpace(object):
         jeeves = cls.load_queries()
 
         # Metadata
-        baseconditionid = jeeves.metadata.get_baseconditionid(baseyear=baseyear, baseconditionname=basecondname)
+        baseconditionid = jeeves.meta.get_baseconditionid(baseyear=baseyear, baseconditionname=basecondname)
 
         # Get geography
         lrsegids = jeeves.geo.lrsegids_from_geoscale_with_names(scale=scale, areanames=areanames)

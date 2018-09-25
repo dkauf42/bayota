@@ -25,7 +25,7 @@ from .sourcehooks.translator import Translator
 class Jeeves:
     def __init__(self):
         self.source = self.loadInSourceDataFromSQL()
-        self.meta = self.loadInMetaDataFromSQL()
+        self.metadata_tables = self.loadInMetaDataFromSQL()
 
         self.agency = Agency(sourcedata=self.source)
         self.animal = Animal(sourcedata=self.source)
@@ -34,7 +34,7 @@ class Jeeves:
         self.geo = Geo(sourcedata=self.source)
         self.loadsource = LoadSource(sourcedata=self.source)
         self.lrseg = Lrseg(sourcedata=self.source)
-        self.metadata = Meta(sourcedata=self.source)
+        self.meta = Meta(sourcedata=self.source, metadata=self.metadata_tables)
         self.sector = Sector(sourcedata=self.source)
         self.translator = Translator(sourcedata=self.source)
 

@@ -19,7 +19,7 @@ class Meta(SourceHook):
         return ['WasteWater0001', 'WasteWater0002', 'WasteWater0003', 'WasteWater0004']
 
     def costprofile_names(self):
-        TblCostProfile = self.meta.TblCostProfile  # get relevant source data
+        TblCostProfile = self.metadata_tables.TblCostProfile  # get relevant source data
         tblsubset = TblCostProfile[TblCostProfile['masterprofile'] == True]
         return tblsubset.loc[:, 'costprofilename']
 

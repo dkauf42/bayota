@@ -21,7 +21,7 @@ class SourceHook:
 
         """
         self.source = sourcedata
-        self.meta = metadata
+        self.metadata_tables = metadata
 
     def all_names(self):
         pass
