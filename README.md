@@ -11,7 +11,7 @@ as part of the Optimization Tool Development Project
 
 * Version 0.0.1
 
-This README documents the steps necessary to get the
+This README documents steps necessary to get the
 application up and running.
 
 # Directory Structure
