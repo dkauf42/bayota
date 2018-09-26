@@ -41,6 +41,12 @@ application up and running.
 
 # How do I get set up?
 
+**Each project is located in its own subdir:**
+'castjeeves', 'efficiencysubproblem', 'sandbox'
+
+Set up should be done for each project individually...
+
+
 ### Install
 
 * Summary of set up
@@ -49,17 +55,17 @@ application up and running.
 * Database configuration
 * Deployment instructions
 
-#### Run the unittests
+#### Run the tests
+
+    > python <subdir>/setup.py test
 
 # Usage
-
-###### A simple example (to run using GUI):
 
 # How do I uninstall?
 
 ##### 1. To remove only the files created by "python setup.py install":
 
-    > python setup.py clean
+    > python <subdir>/setup.py clean
 
 ##### 2. To remove everything, delete the directory.
 
