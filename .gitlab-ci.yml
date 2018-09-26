@@ -22,11 +22,11 @@ variables:
 #    - venv/
 
 before_script:
-  - .monorepo.gitlab/last_green_commit.sh
   - python -V               # Print out python version for debugging
   - pip install virtualenv
   - virtualenv venv
   - source venv/bin/activate
+  - .monorepo.gitlab/last_green_commit.sh
 #  - ls
 #  - ls src/
 #  - ls src/
