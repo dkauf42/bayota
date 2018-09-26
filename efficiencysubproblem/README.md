@@ -64,6 +64,11 @@ up and running.
 
 ### Install
 
+###### Note: The Ipopt solver must be installed/compiled separately in order to solve Efficiency BMP optimization problems.
+- Instructions can be found at https://www.coin-or.org/Ipopt/documentation/node14.html
+- After installation, the Ipopt executable location must be added to the environment $PATH variable
+
+
 To be determined...
 * Commands
 * Summary of set up
