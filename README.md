@@ -7,7 +7,7 @@ Specifically, these tools are designed to help users of CAST
 (the Chesapeake Bay Assessement Scenario Tool), which
 is the CBP Phase 6 time-averaged watershed model,
 as part of the Optimization Tool Development Project
-(EPA-R3-CBP-16-03)
+(EPA-R3-CBP-16-03).
 
 * Version 0.0.1
 
