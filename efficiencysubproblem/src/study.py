@@ -74,6 +74,8 @@ class Study:
         self.objectivetype = objectivetype
         self.multirun = False
 
+        # TODO: could add a check here to make sure the PATH variable includes the location of the ipopt solver.
+
         # Keep track of wall time
         starttime_modelinstantiation = time.time()
 
