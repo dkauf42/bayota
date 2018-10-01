@@ -106,8 +106,6 @@ class Study:
         """
         d = self.__dict__
 
-        timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
-
         formattedstr = "***** Study Details *****\n" \
                        "objective:                %s\n" \
                        "geographic scale:         %s\n" \
