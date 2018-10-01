@@ -2,6 +2,7 @@ import os
 import pandas as pd
 
 from .. import get_datadir
+from efficiencysubproblem import config
 
 from castjeeves.src.jeeves import Jeeves
 
@@ -111,8 +112,8 @@ class DataLoader:
                          TblGeography, TblGeographyType, TblGeographyLrSeg,
                          TblLoadSource, TblLandUsePreBmp, Tbl2010NoActionLoads,
                          baseconditionid, costprofileid)
-
-        print('DataLoader.init(): LRsegs: %s' % self.lrsegsetlist)
+        if config.verbose:
+            print('DataLoader.init(): LRsegs: %s' % self.lrsegsetlist)
 
     def _load_set_pollutants(self):
         """ Pollutants """

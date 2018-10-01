@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 import pyomo.environ as oe
 
-from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR
+from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR, verbose
 # amplappdir = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
 
 from efficiencysubproblem.src.solver_handlers.solve_triggerer import SolveAndParse
@@ -45,7 +45,6 @@ class Study:
             geographic scale:         county
             # of geographic entities: 1
             current constraint level: 5
-            time of instantiation:    2018-09-21 10:28:19.950398
             ***************************
 
         Definitions
@@ -91,7 +90,9 @@ class Study:
         # Print the wall time
         self.endtime_modelinstantiation = time.time()
         timefor_modelinstantiation = self.endtime_modelinstantiation - starttime_modelinstantiation
-        print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
+
+        if verbose:
+            print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
         self.studystr = ''.join(['study_', self.objectivetype, '_',
                                  self.geoscale])
