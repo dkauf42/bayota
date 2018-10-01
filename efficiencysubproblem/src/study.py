@@ -66,13 +66,13 @@ class Study:
         if not geoentities:
             raise ValueError('Geoentities must be specified')
 
-        self.constraintstr = ''
         self.mdl = None
         self.data = None
         self.geoscale = geoscale
         self.geoentities = geoentities
         self.objectivetype = objectivetype
         self.multirun = False
+        self.constraintstr = ''
 
         # TODO: could add a check here to make sure the PATH variable includes the location of the ipopt solver.
 
