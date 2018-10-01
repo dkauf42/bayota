@@ -60,7 +60,8 @@ class Study:
         contains a configuration describing the feasible space, as well as
         a set of Trials. It is assumed that 𝑓(𝑥) does not change in the
         course of a Run.
-            A Study represents a series of runs, with different configurations.
+            A Study represents a series of one (or multiple) run(s),
+        with different configurations.
         """
         if not geoentities:
             raise ValueError('Geoentities must be specified')
@@ -99,6 +100,15 @@ class Study:
 
         self.numberofrunscompleted = 0
 
+    def timestr(self):
+        """ Return the time of instantation for a Study object as a formatted string """
+        d = self.__dict__
+        timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
+        formattedstr = "time of instantiation:    %s\n" %\
+                        str(timestr)
+        return formattedstr
+
+
     def __str__(self):
         """ Custom 'print' that displays the attributes of this Study.
         """
@@ -106,18 +116,16 @@ class Study:
 
         timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
 
-        formattedstr = "\n***** Study Details *****\n" \
+        formattedstr = "***** Study Details *****\n" \
                        "objective:                %s\n" \
                        "geographic scale:         %s\n" \
                        "# of geographic entities: %s\n" \
                        "current constraint level: %s\n" \
-                       "time of instantiation:    %s\n" \
-                       "***************************\n" %\
+                       "***************************" %\
                        tuple([str(i) for i in [d['objectivetype'],
                                                d['geoscale'],
                                                str(len(d['geoentities'])),
-                                               d['constraintstr'],
-                                               timestr
+                                               d['constraintstr']
                                                ]
                               ])
 
