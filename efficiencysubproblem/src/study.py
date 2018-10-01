@@ -89,8 +89,8 @@ class Study:
         self.mdl = modelhandler.create_concrete(data=self.data)
 
         # Print the wall time
-        self.endtime_modelinstantiation = time.time()
-        timefor_modelinstantiation = self.endtime_modelinstantiation - starttime_modelinstantiation
+        self._endtime_modelinstantiation = time.time()
+        timefor_modelinstantiation = self._endtime_modelinstantiation - starttime_modelinstantiation
 
         if verbose:
             print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
@@ -126,7 +126,7 @@ class Study:
     def timestr(self):
         """ Return the time of instantation for a Study object as a formatted string """
         d = self.__dict__
-        timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
+        timestr = str(datetime.fromtimestamp(d['_endtime_modelinstantiation']))
         formattedstr = "time of instantiation:    %s" % str(timestr)
         return formattedstr
 
