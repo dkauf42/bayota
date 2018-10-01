@@ -83,7 +83,7 @@ class Study:
         modelhandler = self._setup_modelhandler_and_load_instance_data()
 
         # Set the base constraint level
-        self._setconstraint(self.data, baseconstraint)
+        self.setconstraint(self.data, baseconstraint)
 
         # Tell the modelhandler to create a model instance
         self.mdl = modelhandler.create_concrete(data=self.data)
@@ -233,7 +233,7 @@ class Study:
 
         return output_file_name, merged_df, solvetimestamp
 
-    def _setconstraint(self, data, baseconstraint):
+    def setconstraint(self, data, baseconstraint):
         # Check whether multiple runs are required
         if isinstance(baseconstraint, list):
             if len(baseconstraint) > 1:
