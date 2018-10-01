@@ -104,8 +104,7 @@ class Study:
         """ Return the time of instantation for a Study object as a formatted string """
         d = self.__dict__
         timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
-        formattedstr = "time of instantiation:    %s\n" %\
-                        str(timestr)
+        formattedstr = "time of instantiation:    %s" % str(timestr)
         return formattedstr
 
 
