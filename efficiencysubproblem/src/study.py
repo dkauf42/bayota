@@ -126,6 +126,8 @@ class Study:
         """ Perform a single run - Solve the problem instance """
         output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
 
+        self._iterate_numberofruns()
+
         return output_file_name, merged_df
 
     def go_constraintsequence(self, constraints=None):
@@ -148,6 +150,8 @@ class Study:
                                     '_tau', self.constraintstr])
                 output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                            output_file_str=loopname)
+                self._iterate_numberofruns()
+
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(self.mdl.Total_Cost)
                 merged_df['solution_objectives'] = oe.value(self.mdl.Total_Cost)
@@ -162,6 +166,8 @@ class Study:
                                     '_costbound', self.constraintstr])
                 output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                            output_file_str=loopname)
+                self._iterate_numberofruns()
+
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(self.mdl.PercentReduction['N'])
                 merged_df['solution_objectives'] = oe.value(self.mdl.PercentReduction['N'])
@@ -276,3 +282,6 @@ class Study:
             self.data = modelhandler.load_data(savedata2file=False, county_list=self.geoentities)
 
         return modelhandler
+
+    def _iterate_numberofruns(self):
+        self.numberofrunscompleted += 1
