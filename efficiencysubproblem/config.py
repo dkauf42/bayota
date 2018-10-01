@@ -4,3 +4,5 @@ from definitions import ROOT_DIR
 
 PROJECT_DIR = os.path.join(ROOT_DIR, 'efficiencysubproblem/')
 AMPLAPP_DIR = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
+
+verbose = False
