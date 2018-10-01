@@ -32,6 +32,16 @@ class Study:
             baseconstraint (float or :obj:`list` of :obj:`float`): Tau or Total_Cost
             saveData2file (bool):
 
+        Attributes:
+            mdl (obj): A particular model instance.
+            data (obj): A data loader object, containing sets, parameters, etc.
+            geoscale (str): 'county' or 'lrseg'.
+            geoentities (:obj:`list` of :obj:`str`): Specific lrsegs or counties to include in each run.
+            objectivetype (str): Either 'costmin' or 'loadreductionmax'
+            multirun (bool): Whether or not a single run or multiple runs are to be performed in this Study object.
+            constraintstr (str): String representation of the constraint level specified.
+            numberofrunscompleted (int): Counter for how many runs have been performed so far by this Study object.
+
         Examples:
             Examples should be written in doctest format, and should illustrate how
             to use the function.
