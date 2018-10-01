@@ -100,13 +100,6 @@ class Study:
 
         self.numberofrunscompleted = 0
 
-    def timestr(self):
-        """ Return the time of instantation for a Study object as a formatted string """
-        d = self.__dict__
-        timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
-        formattedstr = "time of instantiation:    %s" % str(timestr)
-        return formattedstr
-
 
     def __str__(self):
         """ Custom 'print' that displays the attributes of this Study.
@@ -128,6 +121,13 @@ class Study:
                                                ]
                               ])
 
+        return formattedstr
+
+    def timestr(self):
+        """ Return the time of instantation for a Study object as a formatted string """
+        d = self.__dict__
+        timestr = str(datetime.fromtimestamp(d['endtime_modelinstantiation']))
+        formattedstr = "time of instantiation:    %s" % str(timestr)
         return formattedstr
 
     def go(self):
