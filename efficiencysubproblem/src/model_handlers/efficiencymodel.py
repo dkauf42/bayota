@@ -1,7 +1,5 @@
 import pyomo.environ as oe
 
-from efficiencysubproblem.src.data_handlers.county import County
-
 
 class EfficiencyModel:
     def __init__(self, saveData2file=False, tau=12,
