@@ -13,15 +13,23 @@ Each version should:
 *Fixed* for any bug fixes.
 *Security* to invite users to upgrade in case of vulnerabilities.
 
-## [Current Development]
+## Current Development
 ### Added
+- top-level definitions file to specify root directory paths
+- error raised for unrecognized objective type passed to Study class
+- test cases for load reduction objective problem
+- included file print level keyword parameter for Study class
 
 ### Changed
 - merged into a monorepo with 'castjeeves' and 'sandbox'
+- reorganized data handler classes for more flexible inheritance of new types
+- updated the the return of Study.go methods to include solution objective value
 
 ### Fixed
+- updated import paths
+- resolved filenotfound error with ouput directory
 
-## [0.0.1] - 2018-09-17
+## v0.0.1 - 2018-09-17
 ### Added
 - git source control to this project under 'BayOTA'
 - renamed top folder from 'OptSandbox' to 'sandbox'
