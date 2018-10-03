@@ -43,7 +43,7 @@ class IpoptParser:
                         line = line.replace(parsed['value'], newoutputfilepath)
                 if parsed['key'] == 'file_print_level':
                     if not not newfileprintlevel:
-                        line = line.replace(parsed['value'], newfileprintlevel)
+                        line = line.replace(parsed['value'], str(newfileprintlevel))
             sys.stdout.write(line)
 
     @staticmethod
