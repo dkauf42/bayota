@@ -16,6 +16,13 @@ def test_study_lrseg_costmin_instantiation():
                   baseconstraint=5, saveData2file=False)
     assert study.numberofrunscompleted == 0
 
+# def test_study_lrseg_costmin_solutionobjectivevalue():
+#     study = Study(objectivetype='costmin',
+#                   geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
+#                   baseconstraint=5, saveData2file=False)
+#     output_file_name, merged_df, solution_objective = study.go()
+#     assert 20675 == round(solution_objective)
+
 def test_study_lrseg_costmin_instantiation_multirun_check():
     study = Study(objectivetype='costmin',
                   geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
