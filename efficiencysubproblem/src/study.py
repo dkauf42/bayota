@@ -146,11 +146,13 @@ class Study:
         solution_objective = None
 
         if self.objectivetype == 'costmin':
-            output_file_name, merged_df, solution_total_cost, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
             solution_objective = oe.value(self.mdl.Total_Cost)
         if self.objectivetype == 'loadreductionmax':
-            output_file_name, merged_df, solution_total_cost, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
             solution_objective = oe.value(self.mdl.PercentReduction['N'])
+
+        print('\nObjective is: %d' % solution_objective)
 
         self._iterate_numberofruns()
 
@@ -174,7 +176,7 @@ class Study:
 
                 loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
-                output_file_name, merged_df, solution_total_cost, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                            output_file_str=loopname)
                 self._iterate_numberofruns()
 
@@ -190,7 +192,7 @@ class Study:
                 print(self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
-                output_file_name, merged_df, solution_total_cost, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                            output_file_str=loopname)
                 self._iterate_numberofruns()
 
@@ -255,10 +257,8 @@ class Study:
 
         # ---- SOLVE ----
         merged_df = myobj.solve(get_suffixes=False)
-        solution_total_cost = oe.value(mdl.Total_Cost)
-        print('\nObjective is: %d' % solution_total_cost)
 
-        return output_file_name, merged_df, solution_total_cost, solvetimestamp
+        return output_file_name, merged_df, solvetimestamp
 
     def setconstraint(self, data, baseconstraint):
         # Check whether multiple runs are required
