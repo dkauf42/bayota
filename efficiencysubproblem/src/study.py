@@ -141,31 +141,48 @@ class Study:
     def go(self, fileprintlevel=4):
         """ Perform a single run - Solve the problem instance """
 
-        output_file_name = None
+        solver_output_filepath = None
         merged_df = None
         solution_objective = None
+        solvetimestamp = ''
 
         if self.objectivetype == 'costmin':
-            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                        fileprintlevel=fileprintlevel)
             solution_objective = oe.value(self.mdl.Total_Cost)
+            merged_df['solution_objectives'] = oe.value(self.mdl.Total_Cost)
+            merged_df['tau'] = self.data.tau['N']  # Label this run in the dataframe
         if self.objectivetype == 'loadreductionmax':
-            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                        fileprintlevel=fileprintlevel)
             solution_objective = oe.value(self.mdl.PercentReduction['N'])
+            merged_df['solution_objectives'] = oe.value(self.mdl.PercentReduction['N'])
+            merged_df['totalcostupperbound'] = self.data.totalcostupperbound  # Label this run in the dataframe
 
         print('\nObjective is: %d' % solution_objective)
 
         self._iterate_numberofruns()
+        sorteddf_byacres = merged_df.sort_values(by='acres')
+        sorteddf_byacres['x'] = list(
+            zip(sorteddf_byacres.bmpshortname, sorteddf_byacres.landriversegment,
+                sorteddf_byacres.loadsource, sorteddf_byacres.totalannualizedcostperunit))
 
-        return output_file_name, merged_df, solution_objective
+        filenamestr = ''.join(['output/output_', solvetimestamp, '.csv'])
+        solution_csv_filepath = os.path.join(PROJECT_DIR, filenamestr)
+        sorteddf_byacres.to_csv(solution_csv_filepath)
+
+        return solver_output_filepath, solution_csv_filepath, merged_df, solution_objective
 
     def go_constraintsequence(self, constraints=None, fileprintlevel=4):
         """ Perform multiple runs with different constraints """
 
         df_list = []
         solution_objectives = OrderedDict()
-        output_file_names = []
+        solver_output_filepath = ''
+        solver_output_filepaths = []
+        merged_df = None
+        solvetimestamp = ''
+        loopname = ''
 
         # Solve problem for each new constraint
         for ii, newconstraint in enumerate(constraints):
@@ -178,10 +195,9 @@ class Study:
 
                 loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
-                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                            output_file_str=loopname,
                                                                                            fileprintlevel=fileprintlevel)
-                self._iterate_numberofruns()
 
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(self.mdl.Total_Cost)
@@ -195,29 +211,32 @@ class Study:
                 print(self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
-                output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
                                                                                            output_file_str=loopname,
                                                                                            fileprintlevel=fileprintlevel)
-                self._iterate_numberofruns()
 
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(self.mdl.PercentReduction['N'])
                 merged_df['solution_objectives'] = oe.value(self.mdl.PercentReduction['N'])
                 merged_df['totalcostupperbound'] = newconstraint  # Label this run in the dataframe
 
+            self._iterate_numberofruns()
+
             sorteddf_byacres = merged_df.sort_values(by='acres')
             # Save all of the solutions in a list
             df_list.append(sorteddf_byacres)
-            output_file_names.append(output_file_name)
+            solver_output_filepaths.append(solver_output_filepath)
 
         # Save the results to a .csv file
         alldfs = pd.concat(df_list, ignore_index=True)
         alldfs['x'] = list(
             zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource, alldfs.totalannualizedcostperunit))
-        filenamestr = ''.join(['output/output_', loopname, '_', solvetimestamp, '.csv'])
-        alldfs.to_csv(os.path.join(PROJECT_DIR, filenamestr))
 
-        return output_file_names, alldfs, solution_objectives
+        filenamestr = ''.join(['output/output_', loopname, '_', solvetimestamp, '.csv'])
+        solution_csv_filepath = os.path.join(PROJECT_DIR, filenamestr)
+        alldfs.to_csv(solution_csv_filepath)
+
+        return solver_output_filepaths, solution_csv_filepath, alldfs, solution_objectives
 
     def _solve_problem_instance(self, mdl, data, randomstart=False, output_file_str='',
                                 fileprintlevel=4):
