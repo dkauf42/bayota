@@ -138,7 +138,7 @@ class Study:
         formattedstr = "time of instantiation:    %s" % str(timestr)
         return formattedstr
 
-    def go(self):
+    def go(self, fileprintlevel=4):
         """ Perform a single run - Solve the problem instance """
 
         output_file_name = None
@@ -146,10 +146,12 @@ class Study:
         solution_objective = None
 
         if self.objectivetype == 'costmin':
-            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                                                                                       fileprintlevel=fileprintlevel)
             solution_objective = oe.value(self.mdl.Total_Cost)
         if self.objectivetype == 'loadreductionmax':
-            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data)
+            output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
+                                                                                       fileprintlevel=fileprintlevel)
             solution_objective = oe.value(self.mdl.PercentReduction['N'])
 
         print('\nObjective is: %d' % solution_objective)
@@ -158,7 +160,7 @@ class Study:
 
         return output_file_name, merged_df, solution_objective
 
-    def go_constraintsequence(self, constraints=None):
+    def go_constraintsequence(self, constraints=None, fileprintlevel=4):
         """ Perform multiple runs with different constraints """
 
         df_list = []
@@ -177,7 +179,8 @@ class Study:
                 loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
                 output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
-                                                                                           output_file_str=loopname)
+                                                                                           output_file_str=loopname,
+                                                                                           fileprintlevel=fileprintlevel)
                 self._iterate_numberofruns()
 
                 # Save this run's objective value in a list
@@ -193,7 +196,8 @@ class Study:
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
                 output_file_name, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
-                                                                                           output_file_str=loopname)
+                                                                                           output_file_str=loopname,
+                                                                                           fileprintlevel=fileprintlevel)
                 self._iterate_numberofruns()
 
                 # Save this run's objective value in a list
@@ -215,7 +219,8 @@ class Study:
 
         return output_file_names, alldfs, solution_objectives
 
-    def _solve_problem_instance(self, mdl, data, randomstart=False, output_file_str=''):
+    def _solve_problem_instance(self, mdl, data, randomstart=False, output_file_str='',
+                                fileprintlevel=4):
         """
 
         Args:
@@ -253,7 +258,7 @@ class Study:
         #   6 for summary information about all iterations, but not variable values
         #   8 for variable values at all iterations
         #   10 for all iterations
-        IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt', newfileprintlevel='8')
+        IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt', newfileprintlevel=fileprintlevel)
 
         # ---- SOLVE ----
         merged_df = myobj.solve(get_suffixes=False)
