@@ -1,18 +1,8 @@
-from .dataloader import DataLoader
 
 
-class County(DataLoader):
-    def __init__(self, save2file=True, geolist=None):
-        # Additional attributes for County
-        self.countysetlist = []
-        self.countysetidlist = []
-        self.COUNTIES = []
-        self.CNTYLRSEGLINKS = []
-
-        # super constructor
-        DataLoader.__init__(self, save2file=save2file, geolist=geolist)
-
+class CountyMixin(object):
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
+        print('CountyMixin._load_set_geographies()')
         """ """
         """ Counties and Land River Segments """
         geodf = self.jeeves.county.add_lrsegs_to_counties(countystatestrs=geolist)

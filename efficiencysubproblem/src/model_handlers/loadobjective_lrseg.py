@@ -1,7 +1,7 @@
 import pyomo.environ as oe
 
 from .efficiencymodel import EfficiencyModel
-from efficiencysubproblem.src.data_handlers.lrseg import Lrseg
+from efficiencysubproblem.src.data_handlers.dataloader_types import LrsegWithCostConstraint
 
 
 class LoadObj(EfficiencyModel):
@@ -10,7 +10,7 @@ class LoadObj(EfficiencyModel):
         EfficiencyModel.__init__(self)
 
     def load_data(self, savedata2file=False, lrsegs_list=None):
-        data = Lrseg(save2file=savedata2file, geolist=lrsegs_list)
+        data = LrsegWithCostConstraint(save2file=savedata2file, geolist=lrsegs_list)
         return data
 
     def create_concrete(self, data):

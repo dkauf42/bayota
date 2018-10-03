@@ -1,7 +1,7 @@
 import pyomo.environ as oe
 
 from .efficiencymodel import EfficiencyModel
-from efficiencysubproblem.src.data_handlers.county import County
+from efficiencysubproblem.src.data_handlers.dataloader_types import CountyWithLoadReductionConstraint
 
 
 class CostObj(EfficiencyModel):
@@ -10,7 +10,7 @@ class CostObj(EfficiencyModel):
         EfficiencyModel.__init__(self)
 
     def load_data(self, savedata2file=False, county_list=None):
-        data = County(save2file=savedata2file, geolist=county_list)
+        data = CountyWithLoadReductionConstraint(save2file=savedata2file, geolist=county_list)
         return data
 
     def create_concrete(self, data):

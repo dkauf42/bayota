@@ -6,7 +6,8 @@ from efficiencysubproblem import config
 
 from castjeeves.src.jeeves import Jeeves
 
-class DataLoader:
+
+class DataLoaderBase:
     def __init__(self, save2file=True, geolist=None):
         """Base Class for data loader classes.
 
@@ -31,16 +32,7 @@ class DataLoader:
         costprofileid = 4
 
         """ Data File Paths """
-        # baseexppath = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/'
-        # amplappdir = os.path.join(baseexppath, 'ampl/amplide.macosx64/')
-        # PROJECT_DIR = os.path.join(baseexppath, 'efficiencysubproblem/')
         datapath = os.path.join(get_datadir(), 'raw/')
-
-        # # Specify model and data files
-        # # f_mod = os.path.join(baseexppath, 'ampl/example/steel3.mod')
-        # f_mod = os.path.join(PROJECT_DIR, 'test7.mod')
-        # # f_dat = os.path.join(baseexppath, 'ampl/example/steel3.dat')
-        # f_dat = os.path.join(PROJECT_DIR, 'test6.dat')
 
         # Data table directories
         # sourcedatadir = os.path.join(baseexppath, 'sandbox/data/test_source/')
@@ -89,6 +81,8 @@ class DataLoader:
         self.E = pd.DataFrame()
         self.tau = pd.DataFrame()
         self.phi = pd.DataFrame()
+        self.tau = pd.DataFrame()
+        self.totalcostupperbound = pd.DataFrame()
         self.T = pd.DataFrame()
 
         # lists that will be populated by loading the Set data
@@ -99,7 +93,7 @@ class DataLoader:
         self.bmpsetidlist = []
         self.loadsrcsetidlist = []
 
-        # Populate the data
+        # Populate the data - SETS
         self._load_set_pollutants()
         self._load_set_geographies(TblLandRiverSegment, geolist=geolist)
         self._load_set_BMPs(TblBmp, TblBmpType, TblBmpLoadSourceGroup, TblBmpGroup)
@@ -108,12 +102,24 @@ class DataLoader:
                                                  TblBmpLoadSourceGroup, TblLoadSource, singlelsgrpdf)
 
         self.costsubtbl = pd.DataFrame()
-        self._load_params(TblBmp, TblCostBmpLand, TblBmpEfficiency, TblLandRiverSegment,
-                         TblGeography, TblGeographyType, TblGeographyLrSeg,
-                         TblLoadSource, TblLandUsePreBmp, Tbl2010NoActionLoads,
-                         baseconditionid, costprofileid)
+
+        # Populate the data - PARAMETERS
+        self._load_param_CostPerAcreOfBmps(TblBmp, TblCostBmpLand, costprofileid)
+        self._load_param_EffectivenessOfBmps(TblBmp, TblBmpEfficiency, TblLandRiverSegment, TblLoadSource)
+
+        self._load_constraint()
+
+        self._load_param_PhiBaseLoadingRates(TblLandRiverSegment, TblGeography, TblGeographyType,
+                                             TblGeographyLrSeg, TblLoadSource, Tbl2010NoActionLoads)
+        self._load_param_TotalAcresAvailableForLoadSources(TblLandRiverSegment, TblLoadSource,
+                                                           TblLandUsePreBmp, baseconditionid)
+
         if config.verbose:
-            print('DataLoader.init(): LRsegs: %s' % self.lrsegsetlist)
+            print('DataLoaderBase.init(): LRsegs: %s' % self.lrsegsetlist)
+
+    def _load_constraint(self):
+        """ overridden in the Mixins """
+        pass
 
     def _load_set_pollutants(self):
         """ Pollutants """
@@ -123,7 +129,7 @@ class DataLoader:
             df = pd.DataFrame(p_list, columns=['PLTNTS']).to_csv('data_PLTNTS.tab', sep=' ', index=False)
 
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
-        """ overridden in the children classed """
+        """ overridden in the Mixins """
         pass
 
     def _load_set_lrsegs_from_lrseg_list(self, TblLandRiverSegment, lrsegs_list):
@@ -247,10 +253,7 @@ class DataLoader:
                                                                         sep=' ', index=False,
                                                                         header=['BMPGRPS', 'LOADSRCS'])
 
-    def _load_params(self, TblBmp, TblCostBmpLand, TblBmpEfficiency, TblLandRiverSegment,
-                    TblGeography, TblGeographyType, TblGeographyLrSeg,
-                    TblLoadSource, TblLandUsePreBmp, Tbl2010NoActionLoads,
-                    baseconditionid, costprofileid):
+    def _load_param_CostPerAcreOfBmps(self, TblBmp, TblCostBmpLand, costprofileid):
         """ ****************** Parameter Data ****************** """
 
         """ (c) Cost per acre ($ ac^-1) of BMP b (for cost profile κ) """
@@ -269,6 +272,8 @@ class DataLoader:
                             'totalannualizedcostperunit']].to_csv('data_c.tab', sep=' ',
                                                                   index=False, header=['BMPS', 'c'])
 
+    def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment,
+                    TblLoadSource):
         """ (E) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
         # Pre-processing is necessary to build the parameter dictionary
         #  - get efficiency bmps that are in the landriversegments
@@ -303,18 +308,9 @@ class DataLoader:
                                                                   header=['BMPS', 'PLTNTS', 'LRSEGS', 'LOADSRCS',
                                                                           'E'])
 
-        """ (Tau) target percent load reductions (%) per pollutant p and land river segment l """
-        Taudict = {}
-        for l in self.lrsegsetlist:
-            Taudict[(l, 'N')] = 5
-            Taudict[(l, 'P')] = 5
-            Taudict[(l, 'S')] = 5
-        self.tau = Taudict
-        if self.save2file:
-            tau_df = pd.DataFrame(list(Taudict.items()), columns=['LRSEGS', 'tau'])
-            tau_df[['LRSEGS', 'PLTNTS']] = tau_df['LRSEGS'].apply(pd.Series)
-            tau_df.loc[:, ['LRSEGS', 'PLTNTS', 'tau']].to_csv('data_tau.tab', sep=' ', index=False)
-
+    def _load_param_PhiBaseLoadingRates(self, TblLandRiverSegment,
+                    TblGeography, TblGeographyType, TblGeographyLrSeg,
+                    TblLoadSource, Tbl2010NoActionLoads):
         """ (Phi) base loading rate (lb. ac-1) of pollutant p per load source per land river segment (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary
         #   - Unfortunately, the NoActionLoads table is from the website so doesn't have id numbers.
@@ -379,6 +375,9 @@ class DataLoader:
             df.loc[:, ['landriversegment', 'loadsourceshortname',
                        'pltnt', 'loadratelbsperyear']].to_csv('data_phi.tab', sep=' ', index=False,
                                                               header=['LRSEGS', 'LOADSRCS', 'PLTNTS', 'phi'])
+
+    def _load_param_TotalAcresAvailableForLoadSources(self, TblLandRiverSegment, TblLoadSource,
+                                                      TblLandUsePreBmp, baseconditionid):
 
         """ (T) total acres (ac) available for load source λ on land-river segment l (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary

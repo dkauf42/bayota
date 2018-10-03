@@ -45,7 +45,7 @@ def test_study_lrseg_loadreductionmax_instantiation_multirun_check():
     study = Study(objectivetype='loadreductionmax',
                   geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
                   baseconstraint=[100000, 200000], saveData2file=False)
-    assert study.multirun == True
+    assert study.multirun is True
 
 def test_study_county_loadreductionmax_instantiation():
     study = Study(objectivetype='loadreductionmax',
