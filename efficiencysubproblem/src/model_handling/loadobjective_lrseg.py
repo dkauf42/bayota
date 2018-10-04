@@ -1,27 +1,49 @@
 import pyomo.environ as oe
 
+from .efficiencymodel_base import EfficiencyModelBase
+from efficiencysubproblem.src.data_handling.dataloader_types import LrsegWithCostConstraint
 
-class EfficiencyModelBase:
+
+class LoadObj(EfficiencyModelBase):
     def __init__(self):
-        pass
+        # super constructor
+        EfficiencyModelBase.__init__(self)
 
-    def load_data(self):
-        pass
+    def load_data(self, savedata2file=False, lrsegs_list=None):
+        data = LrsegWithCostConstraint(save2file=savedata2file, geolist=lrsegs_list)
+        return data
 
     def create_concrete(self, data):
-        pass
+        # Note that there is no need to call create_instance on a ConcreteModel
+        mdl = self.build_subproblem_model(pltnts=data.PLTNTS,
+                                          lrsegs=data.LRSEGS,
+                                          bmps=data.BMPS,
+                                          bmpgrps=data.BMPGRPS,
+                                          bmpgrping=data.BMPGRPING,
+                                          loadsrcs=data.LOADSRCS,
+                                          bmpsrclinks=data.BMPSRCLINKS,
+                                          bmpgrpsrclinks=data.BMPGRPSRCLINKS,
+                                          c=data.c,
+                                          e=data.E,
+                                          phi=data.phi,
+                                          t=data.T,
+                                          totalcostupperbound=data.totalcostupperbound)
+
+        # Retain only the Nitrogen load objective, and deactivate the others
+        mdl.PercentReduction['P'].deactivate()
+        mdl.PercentReduction['S'].deactivate()
+
+        return mdl
 
     @staticmethod
-    def build_subproblem_model(pltnts, counties, lrsegs, cntylrseglinks,
-                               bmps, bmpgrps, bmpgrping,
-                               loadsrcs, bmpsrclinks, bmpgrpsrclinks,
+    def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, bmpsrclinks, bmpgrpsrclinks,
                                c, e, phi, t, totalcostupperbound):
+
         model = oe.ConcreteModel()
 
         """ Sets """
         model.PLTNTS = oe.Set(initialize=pltnts,
                               ordered=True)
-
         model.LRSEGS = oe.Set(initialize=lrsegs)
 
         model.BMPS = oe.Set(initialize=bmps, ordered=True)
@@ -56,14 +78,12 @@ class EfficiencyModelBase:
                            model.LOADSRCS,
                            initialize=t,
                            within=oe.NonNegativeReals)
-
         # loading before any new BMPs have been implemented
         def originalload_rule(model, p):
             temp = sum([(model.phi[l, lmbda, p] * model.T[l, lmbda])
                         for l in model.LRSEGS
                         for lmbda in model.LOADSRCS])
             return temp
-
         model.originalload = oe.Param(model.PLTNTS,
                                       initialize=originalload_rule)
         # upper bound on total cost
@@ -79,7 +99,6 @@ class EfficiencyModelBase:
                          domain=oe.NonNegativeReals)
 
         """ Constraints """
-
         def Cost_rule(model):
             temp = sum([(model.c[b] * model.x[b, l, lmbda])
                         if ((b, lmbda) in model.BMPSRCLINKS)
@@ -88,7 +107,6 @@ class EfficiencyModelBase:
                         for lmbda in model.LOADSRCS
                         for b in model.BMPS])
             return (None, temp, model.totalcostupperbound)
-
         model.Total_Cost = oe.Constraint(rule=Cost_rule)
 
         # BMPs within a BMPGRP cannot use more than the acres in a LRSEG,LOADSRC
@@ -98,14 +116,12 @@ class EfficiencyModelBase:
                         else 0
                         for b in model.BMPS])
             return (None, temp, model.T[l, lmbda])
-
         model.AdditiveBMPSAcreBound = oe.Constraint(model.BMPGRPS,
                                                     model.LRSEGS,
                                                     model.LOADSRCS,
                                                     rule=AdditiveBMPSAcreBound_rule)
 
         """ Objective Function """
-
         # Relative load reductions
         def PercentReduction_rule(model, p):
             newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
@@ -122,9 +138,9 @@ class EfficiencyModelBase:
                            for lmbda in model.LOADSRCS])
             temp = ((model.originalload[p] - newload) / model.originalload[p]) * 100
             return temp
-
         model.PercentReduction = oe.Objective(model.PLTNTS,
                                               rule=PercentReduction_rule,
                                               sense=oe.maximize)
 
         return model
+

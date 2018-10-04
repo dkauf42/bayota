@@ -1,7 +1,7 @@
 import pyomo.environ as oe
 
 from .efficiencymodel_base import EfficiencyModelBase
-from efficiencysubproblem.src.data_handlers.dataloader_types import CountyWithCostConstraint
+from efficiencysubproblem.src.data_handling.dataloader_types import CountyWithCostConstraint
 
 
 class LoadObj(EfficiencyModelBase):

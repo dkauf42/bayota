@@ -1,7 +1,7 @@
 import pyomo.environ as oe
 
 from .efficiencymodel_base import EfficiencyModelBase
-from efficiencysubproblem.src.data_handlers.dataloader_types import LrsegWithLoadReductionConstraint
+from efficiencysubproblem.src.data_handling.dataloader_types import CountyWithLoadReductionConstraint
 
 
 class CostObj(EfficiencyModelBase):
@@ -9,14 +9,16 @@ class CostObj(EfficiencyModelBase):
         # super constructor
         EfficiencyModelBase.__init__(self)
 
-    def load_data(self, savedata2file=False, lrsegs_list=None):
-        data = LrsegWithLoadReductionConstraint(save2file=savedata2file, geolist=lrsegs_list)
+    def load_data(self, savedata2file=False, county_list=None):
+        data = CountyWithLoadReductionConstraint(save2file=savedata2file, geolist=county_list)
         return data
 
     def create_concrete(self, data):
         # Note that there is no need to call create_instance on a ConcreteModel
         mdl = self.build_subproblem_model(pltnts=data.PLTNTS,
+                                          counties=data.COUNTIES,
                                           lrsegs=data.LRSEGS,
+                                          cntylrseglinks=data.CNTYLRSEGLINKS,
                                           bmps=data.BMPS,
                                           bmpgrps=data.BMPGRPS,
                                           bmpgrping=data.BMPGRPING,
@@ -37,14 +39,19 @@ class CostObj(EfficiencyModelBase):
         return mdl
 
     @staticmethod
-    def build_subproblem_model(pltnts, lrsegs, bmps, bmpgrps, bmpgrping, loadsrcs, bmpsrclinks, bmpgrpsrclinks,
+    def build_subproblem_model(pltnts, counties, lrsegs, cntylrseglinks,
+                               bmps, bmpgrps, bmpgrping,
+                               loadsrcs, bmpsrclinks, bmpgrpsrclinks,
                                c, e, tau, phi, t):
 
         model = oe.ConcreteModel()
 
         """ Sets """
         model.PLTNTS = oe.Set(initialize=pltnts)
+
+        model.COUNTIES = oe.Set(initialize=counties)
         model.LRSEGS = oe.Set(initialize=lrsegs)
+        model.CNTYLRSEGLINKS = oe.Set(initialize=cntylrseglinks, dimen=2)
 
         model.BMPS = oe.Set(initialize=bmps)
         model.BMPGRPS = oe.Set(initialize=bmpgrps)
