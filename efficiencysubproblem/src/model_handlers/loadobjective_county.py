@@ -1,6 +1,6 @@
 import pyomo.environ as oe
 
-from .efficiencymodel import EfficiencyModel
+from .efficiencymodel_base import EfficiencyModel
 from efficiencysubproblem.src.data_handlers.dataloader_types import CountyWithCostConstraint
 
 
