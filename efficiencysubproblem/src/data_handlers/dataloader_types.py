@@ -1,6 +1,5 @@
 from .dataloader_base import DataLoaderBase
-from .dataloader_costconstraint_mixin import CostConstraintMixin
-from .dataloader_loadconstraint_mixin import LoadConstraintMixin
+from .dataloader_constraint_mixins import CostConstraintMixin, LoadConstraintMixin
 from .dataloader_county_mixin import DataCountyMixin
 from .dataloader_lrseg_mixin import DataLrsegMixin
 
