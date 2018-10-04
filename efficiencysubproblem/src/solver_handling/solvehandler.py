@@ -4,7 +4,7 @@ from pyomo.opt import SolverFactory, SolverManagerFactory
 from efficiencysubproblem.src.solution_handling.solution_wrangler import *
 
 
-class SolveAndParse:
+class SolveHandler:
     def __init__(self, instance=None, data=None, localsolver=False, solvername=''):
 
         self.instance = instance
