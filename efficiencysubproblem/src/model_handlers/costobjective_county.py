@@ -48,6 +48,7 @@ class CostObj(EfficiencyModelBase):
 
         """ Sets """
         model.PLTNTS = oe.Set(initialize=pltnts)
+
         model.COUNTIES = oe.Set(initialize=counties)
         model.LRSEGS = oe.Set(initialize=lrsegs)
         model.CNTYLRSEGLINKS = oe.Set(initialize=cntylrseglinks, dimen=2)
