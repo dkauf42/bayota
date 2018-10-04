@@ -15,13 +15,19 @@ Each version should:
 
 ### [Current Development]
 #### Added
+- include config file in castjeeves directory
 
 #### Changed
 - merged into a monorepo with 'efficiencysubproblem' and 'sandbox'
+- renamed Metadata sourcehook class name to 'Meta'
+- renamed sourcehook to 'meta' and jeeves attribute to 'metadata_tables'
 
 #### Fixed
+- brought sourcehooks up-to-date w/changes missed during merges
+- replaced '' with np.nan for out-of-the-watershed transport
+- removed docs folder in castjeeves that was a duplicate of sandbox docs
 
-## [0.0.2] - 2018-09-14
+## v0.0.2 - 2018-09-14
 #### Added
 - included yaml file for Gitlab CI testing
 - added pytest-cov to test runner to generate coverage report
@@ -34,6 +40,6 @@ Each version should:
 - removed usage/dependency of 'tqdm' package
 
 
-## [0.0.1] - 2018-01-05
+## v0.0.1 - 2018-01-05
 #### Added
 - git source control to this project

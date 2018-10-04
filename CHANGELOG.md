@@ -13,14 +13,16 @@ Each version should:
 *Fixed* for any bug fixes.
 *Security* to invite users to upgrade in case of vulnerabilities.
 
-## [Current Development]
+## Current Development
 ### Added
 
 ### Changed
+- moved jupyter notebook up from the efficiencysubproblem folder
+to the root level
 
 ### Fixed
 
-## [0.0.1] - 2018-09-17
+## v0.0.1 - 2018-09-17
 - This release initializes the repository
 (merging code originally generated in the "OptSandbox",
      "OptEfficiencySubProblem", and "CastJeeves" project repositories)
