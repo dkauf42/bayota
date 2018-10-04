@@ -1,8 +1,6 @@
-from .dataloader_base import DataLoaderBase
+from .datahandler_base import DataLoaderBase
 from .dataloader_constraint_mixins import CostConstraintMixin, LoadConstraintMixin
 from .dataloader_geography_mixins import DataCountyMixin, DataLrsegMixin
-
-from efficiencysubproblem.config import verbose
 
 
 def get_loaded_data_handler(objectivetype, geoscale, geoentities, savedata2file=False):
