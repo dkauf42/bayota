@@ -1,14 +1,13 @@
 import pyomo.environ as oe
 from pyomo.opt import SolverFactory, SolverManagerFactory
 
-from efficiencysubproblem.src.solution_handling.solution_wrangler import *
+from efficiencysubproblem.src.solution_handling.solutionhandler import *
 
 
 class SolveHandler:
     def __init__(self, instance=None, data=None, localsolver=False, solvername=''):
 
         self.instance = instance
-        self.data = data
         self.solvername = solvername
         self.localsolver = localsolver
 
