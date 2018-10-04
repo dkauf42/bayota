@@ -77,8 +77,8 @@ class DataLoaderBase:
         self.E = pd.DataFrame()
         self.tau = pd.DataFrame()
         self.phi = pd.DataFrame()
-        self.tau = pd.DataFrame()
-        self.totalcostupperbound = pd.DataFrame()
+        # self.tau = pd.DataFrame()
+        # self.totalcostupperbound = pd.DataFrame()
         self.T = pd.DataFrame()
 
         # lists that will be populated by loading the Set data
