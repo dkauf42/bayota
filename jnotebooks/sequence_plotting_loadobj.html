@@ -11778,8 +11778,25 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>  <span class="c1"># allow this notebook to find equal-level directories</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="k">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="k">as</span> <span class="nn">go</span>
+
+<span class="kn">from</span>
+
 <span class="o">%</span><span class="k">pylab</span> inline
-<span class="kn">from</span> <span class="nn">importing_modules</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># from importing_modules import *</span>
+<span class="c1"># pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go</span>
+<span class="c1"># from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars</span>
+
+<span class="n">_project_root</span> <span class="o">=</span> <span class="s1">&#39;/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/&#39;</span> \
+        <span class="s1">&#39;CRC_ResearchScientist_Optimization/Optimization_Tool/&#39;</span> \
+        <span class="s1">&#39;2_ExperimentFolder/bayota/&#39;</span>
+<span class="n">_package_root</span> <span class="o">=</span> <span class="s1">&#39;/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/&#39;</span> \
+        <span class="s1">&#39;CRC_ResearchScientist_Optimization/Optimization_Tool/&#39;</span> \
+        <span class="s1">&#39;2_ExperimentFolder/bayota/efficiencysubproblem/&#39;</span>
 <span class="c1"># pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go</span>
 <span class="c1"># from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars</span>
 </pre></div>
@@ -11817,11 +11834,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;output/loadobj_costboundsequence_N51133RL0_6450_0000_alldfs_ipopt_2018-07-30_171201.csv&#39;</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projectpath</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;output/output_study_loadreductionmax_lrsegcostboundsequence8_costbound9_2018-10-03_115212.csv&#39;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_package_root</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
 <span class="c1"># display(df.head(2))</span>
 </pre></div>
 
@@ -11840,7 +11857,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_piv</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;totalcostupperbound&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;acres&#39;</span><span class="p">)</span>
@@ -11865,7 +11882,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="s1">&#39;g&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -11911,11 +11928,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">vis.sequence_plot</span> <span class="k">import</span> <span class="n">plotly_loadobj</span>
-<span class="kn">from</span> <span class="nn">vis.acres_heatmap</span> <span class="k">import</span> <span class="n">heatmap_loadobj</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">efficiencysubproblem.src.vis.sequence_plot</span> <span class="k">import</span> <span class="n">plotly_loadobj</span>
+<span class="kn">from</span> <span class="nn">efficiencysubproblem.src.vis.acres_heatmap</span> <span class="k">import</span> <span class="n">heatmap_loadobj</span>
 </pre></div>
 
 </div>
@@ -11925,7 +11942,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plotly_loadobj</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df_piv</span><span class="p">,</span> <span class="n">xname</span><span class="o">=</span><span class="s1">&#39;totalcostupperbound&#39;</span><span class="p">)</span>
@@ -11942,7 +11959,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[6]:</div>
+<div class="prompt output_prompt">Out[10]:</div>
 
 
 

@@ -11778,10 +11778,24 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>  <span class="c1"># allow this notebook to find equal-level directories</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="k">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="k">as</span> <span class="nn">go</span>
+
 <span class="o">%</span><span class="k">pylab</span> inline
-<span class="kn">from</span> <span class="nn">importing_modules</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># from importing_modules import *</span>
 <span class="c1"># pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go</span>
 <span class="c1"># from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars</span>
+
+<span class="n">_project_root</span> <span class="o">=</span> <span class="s1">&#39;/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/&#39;</span> \
+        <span class="s1">&#39;CRC_ResearchScientist_Optimization/Optimization_Tool/&#39;</span> \
+        <span class="s1">&#39;2_ExperimentFolder/bayota/&#39;</span>
+<span class="n">_package_root</span> <span class="o">=</span> <span class="s1">&#39;/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/&#39;</span> \
+        <span class="s1">&#39;CRC_ResearchScientist_Optimization/Optimization_Tool/&#39;</span> \
+        <span class="s1">&#39;2_ExperimentFolder/bayota/efficiencysubproblem/&#39;</span>
 </pre></div>
 
 </div>
@@ -11817,11 +11831,12 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;output/20180904-county-NorthumberlandVA_costobj-sequence/costobj_tausequence_alldfs_ipopt_2018-09-04_141616.csv&#39;</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projectpath</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># filename = &#39;output/20180904-county-NorthumberlandVA_costobj-sequence/costobj_tausequence_alldfs_ipopt_2018-09-04_141616.csv&#39;</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;output/output_study_costmin_countytausequence8_tau9_2018-10-03_113849.csv&#39;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_package_root</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
 <span class="c1"># display(df.head(2))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
@@ -11836,13 +11851,13 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[27]:</div>
+<div class="prompt output_prompt">Out[2]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(2170, 11)</pre>
+<pre>(141, 10)</pre>
 </div>
 
 </div>
@@ -11853,7 +11868,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bmpshortname&#39;</span><span class="p">,</span> <span class="s1">&#39;loadsource&#39;</span><span class="p">])</span>
@@ -11871,13 +11886,13 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[28]:</div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>48</pre>
+<pre>16</pre>
 </div>
 
 </div>
@@ -11896,7 +11911,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># df[&#39;x&#39;].head(5)</span>
@@ -11913,17 +11928,17 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[29]:</div>
+<div class="prompt output_prompt">Out[4]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>2165    (&#39;UrbanNMPlanHR&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;ntg&#39;...
-2166        (&#39;HRTill&#39;, &#39;N51133PL0_6270_0000&#39;, &#39;dbl&#39;, 0.0)
-2167        (&#39;HRTill&#39;, &#39;N51133PL0_6270_0000&#39;, &#39;gom&#39;, 0.0)
-2168        (&#39;HRTill&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;dbl&#39;, 0.0)
-2169        (&#39;HRTill&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;gom&#39;, 0.0)
+<pre>136        (&#39;HRTill&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;soy&#39;, 0.0)
+137    (&#39;UrbanNMPlanHR&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;nch&#39;...
+138    (&#39;UrbanNMPlanHR&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;ntg&#39;...
+139        (&#39;HRTill&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;dbl&#39;, 0.0)
+140        (&#39;HRTill&#39;, &#39;N51133RL0_6450_0000&#39;, &#39;gom&#39;, 0.0)
 Name: x, dtype: object</pre>
 </div>
 
@@ -11935,7 +11950,7 @@ Name: x, dtype: object</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_piv</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;acres&#39;</span><span class="p">)</span>
@@ -11969,12 +11984,94 @@ Name: x, dtype: object</pre>
 <div class="prompt"></div>
 
 
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyError</span>                                  Traceback (most recent call last)
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/indexes/base.py</span> in <span class="ansi-cyan-fg">get_loc</span><span class="ansi-blue-fg">(self, key, method, tolerance)</span>
+<span class="ansi-green-intense-fg ansi-bold">   3063</span>             <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 3064</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_engine<span class="ansi-blue-fg">.</span>get_loc<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   3065</span>             <span class="ansi-green-fg">except</span> KeyError<span class="ansi-blue-fg">:</span>
 
+<span class="ansi-green-fg">pandas/_libs/index.pyx</span> in <span class="ansi-cyan-fg">pandas._libs.index.IndexEngine.get_loc</span><span class="ansi-blue-fg">()</span>
 
-<div class="output_text output_subarea ">
-<pre>(9, 294)</pre>
+<span class="ansi-green-fg">pandas/_libs/index.pyx</span> in <span class="ansi-cyan-fg">pandas._libs.index.IndexEngine.get_loc</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/_libs/hashtable_class_helper.pxi</span> in <span class="ansi-cyan-fg">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/_libs/hashtable_class_helper.pxi</span> in <span class="ansi-cyan-fg">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-red-fg">KeyError</span>: &#39;tau&#39;
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-fg">KeyError</span>                                  Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-6-04de8059e590&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>df_piv <span class="ansi-blue-fg">=</span> df<span class="ansi-blue-fg">.</span>pivot<span class="ansi-blue-fg">(</span>index<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;tau&#39;</span><span class="ansi-blue-fg">,</span> columns<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;x&#39;</span><span class="ansi-blue-fg">,</span> values<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;acres&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> df_piv<span class="ansi-blue-fg">.</span>reset_index<span class="ansi-blue-fg">(</span>level<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;tau&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> inplace<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>  <span class="ansi-red-fg"># make tau into a regular column</span>
+<span class="ansi-green-intense-fg ansi-bold">      3</span> df_piv<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;range&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">=</span>df_piv<span class="ansi-blue-fg">.</span>drop<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;tau&#39;</span><span class="ansi-blue-fg">,</span> axis<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>apply<span class="ansi-blue-fg">(</span><span class="ansi-green-fg">lambda</span> x <span class="ansi-blue-fg">:</span> list<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> int<span class="ansi-blue-fg">(</span>math<span class="ansi-blue-fg">.</span>ceil<span class="ansi-blue-fg">(</span>np<span class="ansi-blue-fg">.</span>nanmax<span class="ansi-blue-fg">(</span>x<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">+</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      4</span> df_piv<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;objective&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> df_piv<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;tau&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>map<span class="ansi-blue-fg">(</span>dict<span class="ansi-blue-fg">(</span>zip<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">.</span>tau<span class="ansi-blue-fg">,</span>df<span class="ansi-blue-fg">.</span>solution_objectives<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>  <span class="ansi-red-fg"># solution_objectives</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span> <span class="ansi-red-fg"># df_piv.head(2)</span>
+
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/frame.py</span> in <span class="ansi-cyan-fg">pivot</span><span class="ansi-blue-fg">(self, index, columns, values)</span>
+<span class="ansi-green-intense-fg ansi-bold">   5192</span>         &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">   5193</span>         <span class="ansi-green-fg">from</span> pandas<span class="ansi-blue-fg">.</span>core<span class="ansi-blue-fg">.</span>reshape<span class="ansi-blue-fg">.</span>reshape <span class="ansi-green-fg">import</span> pivot
+<span class="ansi-green-fg">-&gt; 5194</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> pivot<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> index<span class="ansi-blue-fg">=</span>index<span class="ansi-blue-fg">,</span> columns<span class="ansi-blue-fg">=</span>columns<span class="ansi-blue-fg">,</span> values<span class="ansi-blue-fg">=</span>values<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   5195</span> 
+<span class="ansi-green-intense-fg ansi-bold">   5196</span>     _shared_docs[&#39;pivot_table&#39;] = &#34;&#34;&#34;
+
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/reshape/reshape.py</span> in <span class="ansi-cyan-fg">pivot</span><span class="ansi-blue-fg">(self, index, columns, values)</span>
+<span class="ansi-green-intense-fg ansi-bold">    397</span>             index <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>index
+<span class="ansi-green-intense-fg ansi-bold">    398</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 399</span><span class="ansi-red-fg">             </span>index <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">[</span>index<span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    400</span>         index <span class="ansi-blue-fg">=</span> MultiIndex<span class="ansi-blue-fg">.</span>from_arrays<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span>index<span class="ansi-blue-fg">,</span> self<span class="ansi-blue-fg">[</span>columns<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    401</span> 
+
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/frame.py</span> in <span class="ansi-cyan-fg">__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2686</span>             <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_getitem_multilevel<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2687</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 2688</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_getitem_column<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2689</span> 
+<span class="ansi-green-intense-fg ansi-bold">   2690</span>     <span class="ansi-green-fg">def</span> _getitem_column<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> key<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/frame.py</span> in <span class="ansi-cyan-fg">_getitem_column</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2693</span>         <span class="ansi-red-fg"># get column</span>
+<span class="ansi-green-intense-fg ansi-bold">   2694</span>         <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>columns<span class="ansi-blue-fg">.</span>is_unique<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 2695</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_get_item_cache<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2696</span> 
+<span class="ansi-green-intense-fg ansi-bold">   2697</span>         <span class="ansi-red-fg"># duplicate columns &amp; possible reduce dimensionality</span>
+
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/generic.py</span> in <span class="ansi-cyan-fg">_get_item_cache</span><span class="ansi-blue-fg">(self, item)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2484</span>         res <span class="ansi-blue-fg">=</span> cache<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2485</span>         <span class="ansi-green-fg">if</span> res <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 2486</span><span class="ansi-red-fg">             </span>values <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_data<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2487</span>             res <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_box_item_values<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">,</span> values<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2488</span>             cache<span class="ansi-blue-fg">[</span>item<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> res
+
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/internals.py</span> in <span class="ansi-cyan-fg">get</span><span class="ansi-blue-fg">(self, item, fastpath)</span>
+<span class="ansi-green-intense-fg ansi-bold">   4113</span> 
+<span class="ansi-green-intense-fg ansi-bold">   4114</span>             <span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> isna<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 4115</span><span class="ansi-red-fg">                 </span>loc <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">.</span>get_loc<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   4116</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   4117</span>                 indexer <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>arange<span class="ansi-blue-fg">(</span>len<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span>isna<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">]</span>
+
+<span class="ansi-green-fg">~/anaconda3/envs/OptSubProblem/lib/python3.6/site-packages/pandas/core/indexes/base.py</span> in <span class="ansi-cyan-fg">get_loc</span><span class="ansi-blue-fg">(self, key, method, tolerance)</span>
+<span class="ansi-green-intense-fg ansi-bold">   3064</span>                 <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_engine<span class="ansi-blue-fg">.</span>get_loc<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   3065</span>             <span class="ansi-green-fg">except</span> KeyError<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 3066</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_engine<span class="ansi-blue-fg">.</span>get_loc<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>_maybe_cast_indexer<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   3067</span> 
+<span class="ansi-green-intense-fg ansi-bold">   3068</span>         indexer <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>get_indexer<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span>key<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> method<span class="ansi-blue-fg">=</span>method<span class="ansi-blue-fg">,</span> tolerance<span class="ansi-blue-fg">=</span>tolerance<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">pandas/_libs/index.pyx</span> in <span class="ansi-cyan-fg">pandas._libs.index.IndexEngine.get_loc</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/_libs/index.pyx</span> in <span class="ansi-cyan-fg">pandas._libs.index.IndexEngine.get_loc</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/_libs/hashtable_class_helper.pxi</span> in <span class="ansi-cyan-fg">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/_libs/hashtable_class_helper.pxi</span> in <span class="ansi-cyan-fg">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-red-fg">KeyError</span>: &#39;tau&#39;</pre>
 </div>
-
 </div>
 
 </div>
@@ -11983,7 +12080,7 @@ Name: x, dtype: object</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># df_piv[&#39;objective&#39;].isnan()</span>
@@ -11994,190 +12091,6 @@ Name: x, dtype: object</pre>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>x</th>
-      <th>tau</th>
-      <th>('BioSwale', 'N51133RL0_6530_0000', 'nir', 989.19)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'dbl', 0.0)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'gom', 0.0)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'gwm', 0.0)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'oac', 0.0)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'sch', 0.0)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'scl', 0.0)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'sgg', 0.0)</th>
-      <th>('ConserveTill', 'N51133PL0_6140_0000', 'som', 0.0)</th>
-      <th>...</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6450_0000', 'nch', 0.0)</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6450_0000', 'ntg', 0.0)</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6501_0000', 'mcn', 0.0)</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6501_0000', 'nch', 0.0)</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6501_0000', 'ntg', 0.0)</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6530_0000', 'mcn', 0.0)</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6530_0000', 'nch', 0.0)</th>
-      <th>('UrbanNMPlanLR', 'N51133RL0_6530_0000', 'ntg', 0.0)</th>
-      <th>range</th>
-      <th>objective</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1</td>
-      <td>NaN</td>
-      <td>426.526086</td>
-      <td>438.425426</td>
-      <td>99.298057</td>
-      <td>32.431989</td>
-      <td>1.669981</td>
-      <td>2.304278</td>
-      <td>18.688844</td>
-      <td>0.095974</td>
-      <td>...</td>
-      <td>403.730272</td>
-      <td>562.630900</td>
-      <td>0.078633</td>
-      <td>2.027713</td>
-      <td>8.789369</td>
-      <td>0.027641</td>
-      <td>0.824402</td>
-      <td>0.947643</td>
-      <td>[0, 1216]</td>
-      <td>0.000056</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2</td>
-      <td>NaN</td>
-      <td>417.266892</td>
-      <td>428.249037</td>
-      <td>99.251539</td>
-      <td>32.431534</td>
-      <td>1.669981</td>
-      <td>2.304278</td>
-      <td>18.688690</td>
-      <td>0.095974</td>
-      <td>...</td>
-      <td>401.849256</td>
-      <td>552.558350</td>
-      <td>0.078633</td>
-      <td>2.027726</td>
-      <td>8.790839</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>[0, 1750]</td>
-      <td>80.919766</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>3</td>
-      <td>NaN</td>
-      <td>396.369795</td>
-      <td>405.347245</td>
-      <td>99.165034</td>
-      <td>32.430749</td>
-      <td>1.669981</td>
-      <td>2.304278</td>
-      <td>18.688424</td>
-      <td>0.095974</td>
-      <td>...</td>
-      <td>394.092071</td>
-      <td>502.008639</td>
-      <td>0.078633</td>
-      <td>2.027698</td>
-      <td>8.787533</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>[0, 2652]</td>
-      <td>338.967579</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>4</td>
-      <td>NaN</td>
-      <td>355.120606</td>
-      <td>360.727193</td>
-      <td>99.010567</td>
-      <td>32.429469</td>
-      <td>1.669980</td>
-      <td>2.304278</td>
-      <td>18.687986</td>
-      <td>0.095974</td>
-      <td>...</td>
-      <td>286.215437</td>
-      <td>199.520460</td>
-      <td>0.078633</td>
-      <td>2.027677</td>
-      <td>8.785034</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>[0, 3407]</td>
-      <td>599.100939</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>5</td>
-      <td>1.065163</td>
-      <td>291.499822</td>
-      <td>293.666502</td>
-      <td>98.732216</td>
-      <td>32.427480</td>
-      <td>1.669980</td>
-      <td>2.304277</td>
-      <td>18.687308</td>
-      <td>0.095974</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.078633</td>
-      <td>2.027525</td>
-      <td>8.764075</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>[0, 3631]</td>
-      <td>22642.523280</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 294 columns</p>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -12192,7 +12105,7 @@ Name: x, dtype: object</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="s1">&#39;g&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -12209,28 +12122,10 @@ Name: x, dtype: object</pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>skipping because no column &#39;g&#39;
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;bmpshortname&#39;</span><span class="p">,</span><span class="s1">&#39;landriversegment&#39;</span><span class="p">,</span><span class="s1">&#39;totalinstancecost&#39;</span><span class="p">]]</span>
@@ -12240,422 +12135,10 @@ Name: x, dtype: object</pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[19]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>bmpshortname</th>
-      <th>landriversegment</th>
-      <th>totalinstancecost</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>LowResTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>ConserveTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>UrbanNMMDDIY</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>UrbanNMPlanLR</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>UrbanNMPlan</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>LowResTill</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>ConserveTill</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>LowResTill</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>ConserveTill</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>LowResTill</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>ConserveTill</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>LowResTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>ConserveTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>UrbanNMMDDIY</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>UrbanNMPlanLR</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>UrbanNMPlan</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>LowResTill</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>ConserveTill</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6530_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>LowResTill</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>ConserveTill</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>LowResTill</td>
-      <td>N51133RL0_6501_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>2140</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2141</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2142</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6272_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2143</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2144</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2145</th>
-      <td>CoverCropTradRED</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>19077.155810</td>
-    </tr>
-    <tr>
-      <th>2146</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2147</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2148</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2149</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2150</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2151</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2152</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2153</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2154</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2155</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6271_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2156</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2157</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2158</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2159</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2160</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2161</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2162</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6140_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2163</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2164</th>
-      <td>CoverCropTradRED</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>195333.791892</td>
-    </tr>
-    <tr>
-      <th>2165</th>
-      <td>UrbanNMPlanHR</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2166</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2167</th>
-      <td>HRTill</td>
-      <td>N51133PL0_6270_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2168</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2169</th>
-      <td>HRTill</td>
-      <td>N51133RL0_6450_0000</td>
-      <td>0.000000</td>
-    </tr>
-  </tbody>
-</table>
-<p>2170 rows × 3 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;landriversegment&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">])[</span><span class="s1">&#39;totalinstancecost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -12663,47 +12146,6 @@ Name: x, dtype: object</pre>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_text output_subarea ">
-<pre>landriversegment     tau
-N51133PL0_6140_0000  1          0.00000
-                     2          0.00000
-                     3          0.00000
-                     4          0.00000
-                     5          0.00000
-                     6          0.00000
-                     7          0.00000
-                     8          0.00000
-                     9          0.00000
-N51133PL0_6270_0000  1          0.00000
-                     2          0.00000
-                     3          0.00000
-                     4          0.00000
-                     5          0.00000
-                     6          0.00000
-                     7          0.00000
-                     8          0.00000
-                     9      19077.15581
-N51133PL0_6271_0000  1          0.00000
-                     2          0.00000
-Name: totalinstancecost, dtype: float64</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -12718,11 +12160,11 @@ Name: totalinstancecost, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">vis.sequence_plot</span> <span class="k">import</span> <span class="n">plotly_costobj</span>
-<span class="kn">from</span> <span class="nn">vis.acres_heatmap</span> <span class="k">import</span> <span class="n">heatmap_costobj</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">efficiencysubproblem.src.vis.sequence_plot</span> <span class="k">import</span> <span class="n">plotly_costobj</span>
+<span class="kn">from</span> <span class="nn">efficiencysubproblem.src.vis.acres_heatmap</span> <span class="k">import</span> <span class="n">heatmap_costobj</span>
 </pre></div>
 
 </div>
@@ -12732,7 +12174,7 @@ Name: totalinstancecost, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># fig = plotly_costobj(df=df_piv, xname=&#39;startpointiterate&#39;)</span>
@@ -12744,29 +12186,10 @@ Name: totalinstancecost, dtype: float64</pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[9]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~daka9/166.embed" height="525px" width="100%"></iframe>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get costs of tau sequence for each lrseg</span>
@@ -12816,58 +12239,16 @@ Name: totalinstancecost, dtype: float64</pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[49]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~daka9/166.embed" height="525px" width="100%"></iframe>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">asdkjhagsf</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-10-15799d6786fc&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>asdkjhagsf
-
-<span class="ansi-red-fg">NameError</span>: name &#39;asdkjhagsf&#39; is not defined</pre>
-</div>
-</div>
-
 </div>
 </div>
 

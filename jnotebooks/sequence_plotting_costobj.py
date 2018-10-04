@@ -6,24 +6,35 @@
 
 import sys
 sys.path.append('..')  # allow this notebook to find equal-level directories
+
+import os
+import pandas as pd
+import seaborn as sns
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 get_ipython().run_line_magic('pylab', 'inline')
-from importing_modules import *
+# from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+
+_project_root = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/'         'CRC_ResearchScientist_Optimization/Optimization_Tool/'         '2_ExperimentFolder/bayota/'
+_package_root = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/'         'CRC_ResearchScientist_Optimization/Optimization_Tool/'         '2_ExperimentFolder/bayota/efficiencysubproblem/'
 
 
 # #### Load Solution Sequence
 
-# In[27]:
+# In[2]:
 
 
-filename = 'output/20180904-county-NorthumberlandVA_costobj-sequence/costobj_tausequence_alldfs_ipopt_2018-09-04_141616.csv'
-df = pd.read_csv(os.path.join(projectpath, filename))
+# filename = 'output/20180904-county-NorthumberlandVA_costobj-sequence/costobj_tausequence_alldfs_ipopt_2018-09-04_141616.csv'
+filename = 'output/output_study_costmin_countytausequence8_tau9_2018-10-03_113849.csv'
+df = pd.read_csv(os.path.join(_package_root, filename))
 # display(df.head(2))
 df.shape
 
 
-# In[28]:
+# In[3]:
 
 
 grouped = df.groupby(by=['bmpshortname', 'loadsource'])
@@ -33,14 +44,14 @@ len(grouped)
 
 # #### Pivot table for acres
 
-# In[29]:
+# In[4]:
 
 
 # df['x'].head(5)
 df['x'].tail(5)
 
 
-# In[30]:
+# In[6]:
 
 
 df_piv = df.pivot(index='tau', columns='x', values='acres')
@@ -61,7 +72,7 @@ df_piv['objective'] = df_piv['tau'].map(dict(zip(df.tau,df.solution_objectives))
 display(df_piv.shape)
 
 
-# In[31]:
+# In[ ]:
 
 
 # df_piv['objective'].isnan()
@@ -73,7 +84,7 @@ display(df_piv.head(5))
 
 # #### Pivot table for gradient (g), if available
 
-# In[32]:
+# In[ ]:
 
 
 if 'g' in df.columns:
@@ -86,13 +97,13 @@ else:
     print("skipping because no column 'g'")
 
 
-# In[19]:
+# In[ ]:
 
 
 df[['bmpshortname','landriversegment','totalinstancecost']]
 
 
-# In[22]:
+# In[ ]:
 
 
 grouped = df.groupby(['landriversegment', 'tau'])['totalinstancecost'].sum()
@@ -101,14 +112,14 @@ display(grouped.head(20))
 
 # # Visualizations
 
-# In[8]:
+# In[ ]:
 
 
-from src.vis.sequence_plot import plotly_costobj
-from src.vis.acres_heatmap import heatmap_costobj
+from efficiencysubproblem.src.vis.sequence_plot import plotly_costobj
+from efficiencysubproblem.src.vis.acres_heatmap import heatmap_costobj
 
 
-# In[9]:
+# In[ ]:
 
 
 # fig = plotly_costobj(df=df_piv, xname='startpointiterate')
@@ -116,7 +127,7 @@ fig = plotly_costobj(df=df_piv, xname='tau')
 py.iplot(fig, filename='styled-line')
 
 
-# In[49]:
+# In[ ]:
 
 
 # Get costs of tau sequence for each lrseg
@@ -162,7 +173,7 @@ fig = dict(data=data, layout=layout)
 py.iplot(fig, filename='styled-line')
 
 
-# In[10]:
+# In[ ]:
 
 
 asdkjhagsf
@@ -250,6 +261,7 @@ for tauno in range(1, 10):
 # In[ ]:
 
 
+from plotly.offline import iplot
 import cufflinks as cf
 
 cf.set_config_file(offline=False, world_readable=True, theme='ggplot')

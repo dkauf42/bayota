@@ -1,13 +1,13 @@
 import pyomo.environ as oe
 
-from .efficiencymodel_base import EfficiencyModel
+from .efficiencymodel_base import EfficiencyModelBase
 from efficiencysubproblem.src.data_handlers.dataloader_types import CountyWithLoadReductionConstraint
 
 
-class CostObj(EfficiencyModel):
+class CostObj(EfficiencyModelBase):
     def __init__(self):
         # super constructor
-        EfficiencyModel.__init__(self)
+        EfficiencyModelBase.__init__(self)
 
     def load_data(self, savedata2file=False, county_list=None):
         data = CountyWithLoadReductionConstraint(save2file=savedata2file, geolist=county_list)
@@ -37,6 +37,11 @@ class CostObj(EfficiencyModel):
             mdl.TargetPercentReduction[l, 'S'].deactivate()
 
         return mdl
+
+    def sets_include_county(self, model):
+        """ Sets """
+        model.COUNTIES = oe.Set(initialize=counties)
+        model.CNTYLRSEGLINKS = oe.Set(initialize=cntylrseglinks, dimen=2)
 
     @staticmethod
     def build_subproblem_model(pltnts, counties, lrsegs, cntylrseglinks,

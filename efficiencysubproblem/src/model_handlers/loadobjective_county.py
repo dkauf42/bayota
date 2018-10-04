@@ -1,13 +1,13 @@
 import pyomo.environ as oe
 
-from .efficiencymodel_base import EfficiencyModel
+from .efficiencymodel_base import EfficiencyModelBase
 from efficiencysubproblem.src.data_handlers.dataloader_types import CountyWithCostConstraint
 
 
-class LoadObj(EfficiencyModel):
+class LoadObj(EfficiencyModelBase):
     def __init__(self):
         # super constructor
-        EfficiencyModel.__init__(self)
+        EfficiencyModelBase.__init__(self)
 
     def load_data(self, savedata2file=False, county_list=None):
         data = CountyWithCostConstraint(save2file=savedata2file, geolist=county_list)

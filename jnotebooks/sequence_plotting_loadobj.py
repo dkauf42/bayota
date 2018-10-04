@@ -6,25 +6,38 @@
 
 import sys
 sys.path.append('..')  # allow this notebook to find equal-level directories
+import os
+import pandas as pd
+import seaborn as sns
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+from
+
 get_ipython().run_line_magic('pylab', 'inline')
-from importing_modules import *
+# from importing_modules import *
 # pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
-# from src.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
+
+_project_root = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/'         'CRC_ResearchScientist_Optimization/Optimization_Tool/'         '2_ExperimentFolder/bayota/'
+_package_root = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/'         'CRC_ResearchScientist_Optimization/Optimization_Tool/'         '2_ExperimentFolder/bayota/efficiencysubproblem/'
+# pyomo.environ as oe, seaborn as sns, plotly.plotly as py, plotly.graph_objs as go
+# from util.gjh_wrapper import gjh_solve, make_df, from vis import acres_bars, zL_bars
 
 
 # #### Load Solution Sequence
 
-# In[2]:
+# In[3]:
 
 
-filename = 'output/loadobj_costboundsequence_N51133RL0_6450_0000_alldfs_ipopt_2018-07-30_171201.csv'
-df = pd.read_csv(os.path.join(projectpath, filename))
+filename = 'output/output_study_loadreductionmax_lrsegcostboundsequence8_costbound9_2018-10-03_115212.csv'
+df = pd.read_csv(os.path.join(_package_root, filename))
 # display(df.head(2))
 
 
 # #### Pivot table for acres
 
-# In[3]:
+# In[4]:
 
 
 df_piv = df.pivot(index='totalcostupperbound', columns='x', values='acres')
@@ -36,7 +49,7 @@ df_piv['objective'] = df_piv['totalcostupperbound'].map(dict(zip(df.totalcostupp
 
 # #### Pivot table for gradient (g), if available
 
-# In[4]:
+# In[5]:
 
 
 if 'g' in df.columns:
@@ -51,14 +64,14 @@ else:
 
 # # Visualizations
 
-# In[5]:
+# In[9]:
 
 
-from src.vis.sequence_plot import plotly_loadobj
-from src.vis.acres_heatmap import heatmap_loadobj
+from efficiencysubproblem.src.vis.sequence_plot import plotly_loadobj
+from efficiencysubproblem.src.vis.acres_heatmap import heatmap_loadobj
 
 
-# In[6]:
+# In[10]:
 
 
 fig = plotly_loadobj(df=df_piv, xname='totalcostupperbound')
@@ -210,7 +223,7 @@ plt.xlabel("totalcostupperbound (max % load reduction achieved)")
 
 # filenamestr = ''.join(['output/loadobj_Gheatmap_costboundsequence_', solvername, '_',
 #                            datetime.now().strftime('%Y-%m-%d_%H%M%S'), '.png'])
-# savefilepathandname = os.path.join(PROJECT_DIR, filenamestr)
+# savefilepathandname = os.path.join(projectpath, filenamestr)
 # plt.savefig(savefilepathandname, bbox_inches='tight')
 
 
