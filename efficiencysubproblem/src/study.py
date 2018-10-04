@@ -154,7 +154,7 @@ class Study:
                                                                                              fileprintlevel=fileprintlevel)
             solution_objective = oe.value(mdl.PercentReduction['N'])
             merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
-            merged_df['totalcostupperbound'] = mdl.totalcostupperbound  # Label this run in the dataframe
+            merged_df['totalcostupperbound'] = oe.value(mdl.totalcostupperbound ) # Label this run in the dataframe
 
         print('\nObjective is: %d' % solution_objective)
 
@@ -305,20 +305,20 @@ class Study:
                 baseconstraint = baseconstraint[0]
 
         if self.objectivetype == 'costmin':
-            # ---- Set the total capital available, e.g. $100,000 ----
-            if self.multirun:
-                self.modelhandler.model.totalcostupperbound = baseconstraint[0]
-            else:
-                self.modelhandler.model.totalcostupperbound = baseconstraint
-            self.constraintstr = str(round(self.modelhandler.model.totalcostupperbound, 1))
-        elif self.objectivetype == 'loadreductionmax':
             # ---- Set the tau target load, e.g. 12% reduction ----
             for k in self.modelhandler.model.tau:
                 if self.multirun:
                     self.modelhandler.model.tau[k] = baseconstraint[0]
                 else:
                     self.modelhandler.model.tau[k] = baseconstraint
-                self.constraintstr = str(round(self.modelhandler.model.tau[k], 1))
+                self.constraintstr = str(round(oe.value(self.modelhandler.model.tau[k]), 1))
+        elif self.objectivetype == 'loadreductionmax':
+            # ---- Set the total capital available, e.g. $100,000 ----
+            if self.multirun:
+                self.modelhandler.model.totalcostupperbound = baseconstraint[0]
+            else:
+                self.modelhandler.model.totalcostupperbound = baseconstraint
+            self.constraintstr = str(round(oe.value(self.modelhandler.model.totalcostupperbound), 1))
 
     def _iterate_numberofruns(self):
         self.numberofrunscompleted += 1
