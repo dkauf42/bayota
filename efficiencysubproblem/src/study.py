@@ -9,13 +9,12 @@ import pyomo.environ as oe
 from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR, verbose
 # amplappdir = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
 
-from efficiencysubproblem.src.solver_handlers.solve_triggerer import SolveAndParse
-from efficiencysubproblem.src.solution_handlers.ipopt_parser import IpoptParser
+from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
+from efficiencysubproblem.src.solution_handling.ipopt_parser import IpoptParser
 
-from efficiencysubproblem.src.model_handlers.costobjective_lrseg import CostObj as CostObj_lrseg
-from efficiencysubproblem.src.model_handlers.costobjective_county import CostObj as CostObj_county
-from efficiencysubproblem.src.model_handlers.loadobjective_lrseg import LoadObj as LoadObj_lrseg
-from efficiencysubproblem.src.model_handlers.loadobjective_county import LoadObj as LoadObj_county
+from efficiencysubproblem.src.model_handling.interface import get_loaded_model_handler
+
+from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
 
 class Study:
@@ -33,8 +32,7 @@ class Study:
             saveData2file (bool):
 
         Attributes:
-            mdl (obj): A particular model instance.
-            data (obj): A data loader object, containing sets, parameters, etc.
+            modelhandler (obj): A ModelHandler object, which holds the model and data for any particular instance
             geoscale (str): 'county' or 'lrseg'.
             geoentities (:obj:`list` of :obj:`str`): Specific lrsegs or counties to include in each run.
             objectivetype (str): Either 'costmin' or 'loadreductionmax'
@@ -43,9 +41,6 @@ class Study:
             numberofrunscompleted (int): Counter for how many runs have been performed so far by this Study object.
 
         Examples:
-            Examples should be written in doctest format, and should illustrate how
-            to use the function.
-
             >>> print(Study(objectivetype='costmin', \
                             geoscale='county', \
                             geoentities=['Anne Arundel, MD'], \
@@ -73,11 +68,11 @@ class Study:
             A Study represents a series of one (or multiple) run(s),
         with different configurations.
         """
+
         if not geoentities:
             raise ValueError('Geoentities must be specified')
 
-        self.mdl = None
-        self.data = None
+        self.modelhandler = None
         self.geoscale = geoscale
         self.geoentities = geoentities
         self.objectivetype = objectivetype
@@ -90,13 +85,10 @@ class Study:
         starttime_modelinstantiation = time.time()
 
         # Instantiate a modelhandler object, which itself generates the model and sets the instance data
-        modelhandler = self._setup_modelhandler_and_load_instance_data()
+        self.modelhandler = get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file=False)
 
         # Set the base constraint level
-        self._set_data_constraint_level(self.data, baseconstraint)
-
-        # Tell the modelhandler to create a model instance
-        self.mdl = modelhandler.create_concrete(data=self.data)
+        self._set_data_constraint_level(baseconstraint)
 
         # Print the wall time
         self._endtime_modelinstantiation = time.time()
@@ -109,7 +101,6 @@ class Study:
                                  self.geoscale])
 
         self.numberofrunscompleted = 0
-
 
     def __str__(self):
         """ Custom 'print' that displays the attributes of this Study.
@@ -141,23 +132,29 @@ class Study:
     def go(self, fileprintlevel=4):
         """ Perform a single run - Solve the problem instance """
 
+        mdl = self.modelhandler.model
+
         solver_output_filepath = None
         merged_df = None
         solution_objective = None
         solvetimestamp = ''
 
         if self.objectivetype == 'costmin':
-            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
-                                                                                       fileprintlevel=fileprintlevel)
-            solution_objective = oe.value(self.mdl.Total_Cost)
-            merged_df['solution_objectives'] = oe.value(self.mdl.Total_Cost)
-            merged_df['tau'] = self.data.tau['N']  # Label this run in the dataframe
+            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+                                                                                             fileprintlevel=fileprintlevel)
+            solution_objective = oe.value(mdl.Total_Cost)
+            merged_df['solution_objectives'] = oe.value(mdl.Total_Cost)
+
+            for k in mdl.tau:
+                merged_df['tau'] = mdl.tau[k]  # Label this run in the dataframe
+                break
+
         if self.objectivetype == 'loadreductionmax':
-            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
-                                                                                       fileprintlevel=fileprintlevel)
-            solution_objective = oe.value(self.mdl.PercentReduction['N'])
-            merged_df['solution_objectives'] = oe.value(self.mdl.PercentReduction['N'])
-            merged_df['totalcostupperbound'] = self.data.totalcostupperbound  # Label this run in the dataframe
+            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+                                                                                             fileprintlevel=fileprintlevel)
+            solution_objective = oe.value(mdl.PercentReduction['N'])
+            merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
+            merged_df['totalcostupperbound'] = mdl.totalcostupperbound  # Label this run in the dataframe
 
         print('\nObjective is: %d' % solution_objective)
 
@@ -176,6 +173,8 @@ class Study:
     def go_constraintsequence(self, constraints=None, fileprintlevel=4):
         """ Perform multiple runs with different constraints """
 
+        mdl = self.modelhandler.model
+
         df_list = []
         solution_objectives = OrderedDict()
         solver_output_filepath = ''
@@ -188,36 +187,36 @@ class Study:
         for ii, newconstraint in enumerate(constraints):
             if self.objectivetype == 'costmin':
                 # Reassign the target load values (tau)
-                for k in self.data.tau:
-                    self.mdl.tau[k] = newconstraint
-                    self.constraintstr = str(round(self.mdl.tau[k].value, 1))
+                for k in mdl.tau:
+                    mdl.tau[k] = newconstraint
+                    self.constraintstr = str(round(mdl.tau[k].value, 1))
                     print(self.constraintstr)
 
                 loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
-                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
-                                                                                           output_file_str=loopname,
-                                                                                           fileprintlevel=fileprintlevel)
+                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+                                                                                                 output_file_str=loopname,
+                                                                                                 fileprintlevel=fileprintlevel)
 
                 # Save this run's objective value in a list
-                solution_objectives[newconstraint] = oe.value(self.mdl.Total_Cost)
-                merged_df['solution_objectives'] = oe.value(self.mdl.Total_Cost)
+                solution_objectives[newconstraint] = oe.value(mdl.Total_Cost)
+                merged_df['solution_objectives'] = oe.value(mdl.Total_Cost)
                 merged_df['tau'] = newconstraint  # Label this run in the dataframe
             if self.objectivetype == 'loadreductionmax':
                 # Reassign the cost bound values (C)
-                self.data.totalcostupperbound = newconstraint
-                self.mdl.totalcostupperbound = self.data.totalcostupperbound
-                self.constraintstr = str(round(self.data.totalcostupperbound, 1))
+                mdl.totalcostupperbound = newconstraint
+                mdl.totalcostupperbound = mdl.totalcostupperbound
+                self.constraintstr = str(round(mdl.totalcostupperbound, 1))
                 print(self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
-                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(self.mdl, self.data,
-                                                                                           output_file_str=loopname,
-                                                                                           fileprintlevel=fileprintlevel)
+                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+                                                                                                 output_file_str=loopname,
+                                                                                                 fileprintlevel=fileprintlevel)
 
                 # Save this run's objective value in a list
-                solution_objectives[newconstraint] = oe.value(self.mdl.PercentReduction['N'])
-                merged_df['solution_objectives'] = oe.value(self.mdl.PercentReduction['N'])
+                solution_objectives[newconstraint] = oe.value(mdl.PercentReduction['N'])
+                merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
                 merged_df['totalcostupperbound'] = newconstraint  # Label this run in the dataframe
 
             self._iterate_numberofruns()
@@ -238,8 +237,7 @@ class Study:
 
         return solver_output_filepaths, solution_csv_filepath, alldfs, solution_objectives
 
-    def _solve_problem_instance(self, mdl, data, randomstart=False, output_file_str='',
-                                fileprintlevel=4):
+    def _solve_problem_instance(self, mdl, randomstart=False, output_file_str='', fileprintlevel=4):
         """
 
         Args:
@@ -262,7 +260,7 @@ class Study:
 
         solvetimestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
 
-        myobj = SolveAndParse(instance=mdl, data=data, localsolver=localsolver, solvername=solvername)
+        solve_handler = SolveHandler(instance=mdl, localsolver=localsolver, solvername=solvername)
 
         # ---- Output File Name ----
         if not output_file_str:
@@ -280,11 +278,25 @@ class Study:
         IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt', newfileprintlevel=fileprintlevel)
 
         # ---- SOLVE ----
-        merged_df = myobj.solve(get_suffixes=False)
+        get_suffixes = False
+        solved_instance = solve_handler.solve(get_suffixes=get_suffixes)
+
+        # ---- PARSE SOLUTION OUTPUT ----
+        # Parse out only the optimal variable values that are nonzero
+        # nzvnames, nzvvalues = get_nonzero_var_names_and_values(self.instance)
+        solution_handler = SolutionHandler()
+        merged_df = solution_handler.get_nonzero_var_df(solved_instance,
+                                                        addcosttbldata=self.modelhandler.datahandler.costsubtbl)
+        if get_suffixes:
+            # Parse out the Lagrange Multipliers
+            lagrange_df = solution_handler.get_lagrangemult_df(solved_instance)
+            merged_df = lagrange_df.merge(merged_df,
+                                          how='right',
+                                          on=['bmpshortname', 'landriversegment', 'loadsource'])
 
         return output_file_name, merged_df, solvetimestamp
 
-    def _set_data_constraint_level(self, data, baseconstraint):
+    def _set_data_constraint_level(self, baseconstraint):
         # Check whether multiple runs are required
         if isinstance(baseconstraint, list):
             if len(baseconstraint) > 1:
@@ -295,44 +307,19 @@ class Study:
         if self.objectivetype == 'costmin':
             # ---- Set the total capital available, e.g. $100,000 ----
             if self.multirun:
-                data.totalcostupperbound = baseconstraint[0]
+                self.modelhandler.model.totalcostupperbound = baseconstraint[0]
             else:
-                data.totalcostupperbound = baseconstraint
-            self.constraintstr = str(round(data.totalcostupperbound, 1))
+                self.modelhandler.model.totalcostupperbound = baseconstraint
+            self.constraintstr = str(round(self.modelhandler.model.totalcostupperbound, 1))
         elif self.objectivetype == 'loadreductionmax':
             # ---- Set the tau target load, e.g. 12% reduction ----
-            for k in data.tau:
+            for k in self.modelhandler.model.tau:
                 if self.multirun:
-                    data.tau[k] = baseconstraint[0]
+                    self.modelhandler.model.tau[k] = baseconstraint[0]
                 else:
-                    data.tau[k] = baseconstraint
-                self.constraintstr = str(round(data.tau[k], 1))
-
-    def _setup_modelhandler_and_load_instance_data(self):
-        if self.objectivetype == 'costmin':
-            if self.geoscale == 'lrseg':
-                modelhandler = CostObj_lrseg()
-            elif self.geoscale == 'county':
-                modelhandler = CostObj_county()
-            else:
-                raise ValueError('unrecognized "geoscale"')
-        elif self.objectivetype == 'loadreductionmax':
-            if self.geoscale == 'lrseg':
-                modelhandler = LoadObj_lrseg()
-            elif self.geoscale == 'county':
-                modelhandler = LoadObj_county()
-            else:
-                raise ValueError('unrecognized "geoscale"')
-        else:
-            raise ValueError('unrecognized objectivetype')
-
-        # Set instance Data
-        if self.geoscale == 'lrseg':
-            self.data = modelhandler.load_data(savedata2file=False, lrsegs_list=self.geoentities)
-        elif self.geoscale == 'county':
-            self.data = modelhandler.load_data(savedata2file=False, county_list=self.geoentities)
-
-        return modelhandler
+                    self.modelhandler.model.tau[k] = baseconstraint
+                self.constraintstr = str(round(self.modelhandler.model.tau[k], 1))
 
     def _iterate_numberofruns(self):
         self.numberofrunscompleted += 1
+
