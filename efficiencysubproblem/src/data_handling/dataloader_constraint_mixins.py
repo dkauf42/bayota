@@ -2,6 +2,7 @@ import pandas as pd
 
 
 class CostConstraintMixin(object):
+
     def _load_constraint(self):
         print('CostConstraintMixin._load_constraint()')
         """ Total Cost constraint for entire  """
@@ -12,6 +13,7 @@ class CostConstraintMixin(object):
 
 
 class LoadConstraintMixin(object):
+
     def _load_constraint(self):
         print('LoadConstraintMixin._load_constraint()')
         """ (Tau) target percent load reductions (%) per pollutant p and land river segment l """
