@@ -1,4 +1,4 @@
-from .datahandler_base import DataLoaderBase
+from .datahandler_base import DataHandlerBase
 from .dataloader_constraint_mixins import CostConstraintMixin, LoadConstraintMixin
 from .dataloader_geography_mixins import DataCountyMixin, DataLrsegMixin
 
@@ -30,15 +30,15 @@ def get_loaded_data_handler(objectivetype, geoscale, geoentities, savedata2file=
 """ Different DataHandler classes inherit from different Mixin combinations """
 
 
-class DataHandlerLrsegWithLoadReductionConstraint(LoadConstraintMixin, DataLrsegMixin, DataLoaderBase):
+class DataHandlerLrsegWithLoadReductionConstraint(LoadConstraintMixin, DataLrsegMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
 
         self.tau = None
 
-        DataLoaderBase.__init__(self, save2file=savedata2file, geolist=geoentities)
+        DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
 
 
-class DataHandlerCountyWithLoadReductionConstraint(LoadConstraintMixin, DataCountyMixin, DataLoaderBase):
+class DataHandlerCountyWithLoadReductionConstraint(LoadConstraintMixin, DataCountyMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
 
         self.countysetlist = []
@@ -48,15 +48,15 @@ class DataHandlerCountyWithLoadReductionConstraint(LoadConstraintMixin, DataCoun
 
         self.tau = None
 
-        DataLoaderBase.__init__(self, save2file=savedata2file, geolist=geoentities)
+        DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
 
 
-class DataHandlerLrsegWithCostConstraint(CostConstraintMixin, DataLrsegMixin, DataLoaderBase):
+class DataHandlerLrsegWithCostConstraint(CostConstraintMixin, DataLrsegMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
-        DataLoaderBase.__init__(self, save2file=savedata2file, geolist=geoentities)
+        DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
 
 
-class DataHandlerCountyWithCostConstraint(CostConstraintMixin, DataCountyMixin, DataLoaderBase):
+class DataHandlerCountyWithCostConstraint(CostConstraintMixin, DataCountyMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
 
         self.countysetlist = []
@@ -64,4 +64,4 @@ class DataHandlerCountyWithCostConstraint(CostConstraintMixin, DataCountyMixin, 
         self.COUNTIES = []
         self.CNTYLRSEGLINKS = []
 
-        DataLoaderBase.__init__(self, save2file=savedata2file, geolist=geoentities)
+        DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)

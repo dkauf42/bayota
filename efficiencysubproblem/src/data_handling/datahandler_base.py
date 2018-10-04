@@ -7,7 +7,7 @@ from efficiencysubproblem import config
 from castjeeves.src.jeeves import Jeeves
 
 
-class DataLoaderBase:
+class DataHandlerBase:
     def __init__(self, save2file=True, geolist=None):
         """Base Class for data loader classes.
 
@@ -113,7 +113,7 @@ class DataLoaderBase:
                                                            TblLandUsePreBmp, baseconditionid)
 
         if config.verbose:
-            print('DataLoaderBase.init(): LRsegs: %s' % self.lrsegsetlist)
+            print('DataHandlerBase.init(): LRsegs: %s' % self.lrsegsetlist)
 
     def _load_constraint(self):
         """ overridden in the Mixins """
