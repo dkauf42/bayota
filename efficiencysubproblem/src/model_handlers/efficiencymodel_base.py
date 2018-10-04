@@ -2,8 +2,7 @@ import pyomo.environ as oe
 
 
 class EfficiencyModelBase:
-    def __init__(self, saveData2file=False, tau=12,
-                 instance=None, data=None, localsolver=False, solvername=''):
+    def __init__(self):
         pass
 
     def load_data(self):
