@@ -95,7 +95,9 @@ class DataLoaderBase:
 
         # Populate the data - SETS
         self._load_set_pollutants()
+
         self._load_set_geographies(TblLandRiverSegment, geolist=geolist)
+
         self._load_set_BMPs(TblBmp, TblBmpType, TblBmpLoadSourceGroup, TblBmpGroup)
         self._load_set_LoadSources(TblLandUsePreBmp, singlelsgrpdf, baseconditionid)
         self._load_set_BmpLoadSourceAssociations(TblBmp, TblBmpEfficiency, TblBmpGroup,
