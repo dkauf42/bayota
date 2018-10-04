@@ -1,5 +1,5 @@
 from .datahandler_base import DataHandlerBase
-from .dataloader_constraint_mixins import CostConstraintMixin, LoadConstraintMixin
+from .dataloader_constraint_mixins import DataCostConstraintMixin, DataLoadConstraintMixin
 from .dataloader_geography_mixins import DataCountyMixin, DataLrsegMixin
 
 
@@ -30,7 +30,7 @@ def get_loaded_data_handler(objectivetype, geoscale, geoentities, savedata2file=
 """ Different DataHandler classes inherit from different Mixin combinations """
 
 
-class DataHandlerLrsegWithLoadReductionConstraint(LoadConstraintMixin, DataLrsegMixin, DataHandlerBase):
+class DataHandlerLrsegWithLoadReductionConstraint(DataLoadConstraintMixin, DataLrsegMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
 
         self.tau = None
@@ -38,7 +38,7 @@ class DataHandlerLrsegWithLoadReductionConstraint(LoadConstraintMixin, DataLrseg
         DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
 
 
-class DataHandlerCountyWithLoadReductionConstraint(LoadConstraintMixin, DataCountyMixin, DataHandlerBase):
+class DataHandlerCountyWithLoadReductionConstraint(DataLoadConstraintMixin, DataCountyMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
 
         self.countysetlist = []
@@ -51,12 +51,12 @@ class DataHandlerCountyWithLoadReductionConstraint(LoadConstraintMixin, DataCoun
         DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
 
 
-class DataHandlerLrsegWithCostConstraint(CostConstraintMixin, DataLrsegMixin, DataHandlerBase):
+class DataHandlerLrsegWithCostConstraint(DataCostConstraintMixin, DataLrsegMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
         DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
 
 
-class DataHandlerCountyWithCostConstraint(CostConstraintMixin, DataCountyMixin, DataHandlerBase):
+class DataHandlerCountyWithCostConstraint(DataCostConstraintMixin, DataCountyMixin, DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
 
         self.countysetlist = []

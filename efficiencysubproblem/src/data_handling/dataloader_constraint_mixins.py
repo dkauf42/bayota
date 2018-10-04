@@ -1,10 +1,10 @@
 import pandas as pd
 
 
-class CostConstraintMixin(object):
+class DataCostConstraintMixin(object):
 
     def _load_constraint(self):
-        print('CostConstraintMixin._load_constraint()')
+        print('DataCostConstraintMixin._load_constraint()')
         """ Total Cost constraint for entire  """
         self.totalcostupperbound = 100000  # a default
         if self.save2file:
@@ -12,10 +12,10 @@ class CostConstraintMixin(object):
             totalcostupperbound_df.to_csv('data_totalcostupperbound.tab', sep=' ', index=False)
 
 
-class LoadConstraintMixin(object):
+class DataLoadConstraintMixin(object):
 
     def _load_constraint(self):
-        print('LoadConstraintMixin._load_constraint()')
+        print('DataLoadConstraintMixin._load_constraint()')
         """ (Tau) target percent load reductions (%) per pollutant p and land river segment l """
         Taudict = {}
         for l in self.lrsegsetlist:
