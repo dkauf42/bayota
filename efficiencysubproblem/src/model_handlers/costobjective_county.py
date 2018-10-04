@@ -38,11 +38,6 @@ class CostObj(EfficiencyModelBase):
 
         return mdl
 
-    def sets_include_county(self, model):
-        """ Sets """
-        model.COUNTIES = oe.Set(initialize=counties)
-        model.CNTYLRSEGLINKS = oe.Set(initialize=cntylrseglinks, dimen=2)
-
     @staticmethod
     def build_subproblem_model(pltnts, counties, lrsegs, cntylrseglinks,
                                bmps, bmpgrps, bmpgrping,
