@@ -5,7 +5,7 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import *
 
 
 class SolveHandler:
-    def __init__(self, instance=None, data=None, localsolver=False, solvername=''):
+    def __init__(self, instance=None, localsolver=False, solvername=''):
 
         self.instance = instance
         self.solvername = solvername
@@ -40,14 +40,4 @@ class SolveHandler:
 
         # self.instance.display()
 
-        # Parse out only the optimal variable values that are nonzero
-        # nzvnames, nzvvalues = get_nonzero_var_names_and_values(self.instance)
-        merged_df = get_nonzero_var_df(self.instance, addcosttbldata=self.data.costsubtbl)
-        if get_suffixes:
-            # Parse out the Lagrange Multipliers
-            lagrange_df = get_lagrangemult_df(self.instance)
-            merged_df = lagrange_df.merge(merged_df,
-                                          how='right',
-                                          on=['bmpshortname', 'landriversegment', 'loadsource'])
-
-        return merged_df
+        return self.instance
