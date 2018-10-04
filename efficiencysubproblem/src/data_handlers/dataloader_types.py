@@ -1,7 +1,6 @@
 from .dataloader_base import DataLoaderBase
 from .dataloader_constraint_mixins import CostConstraintMixin, LoadConstraintMixin
-from .dataloader_county_mixin import DataCountyMixin
-from .dataloader_lrseg_mixin import DataLrsegMixin
+from .dataloader_geography_mixins import DataCountyMixin, DataLrsegMixin
 
 from efficiencysubproblem.config import verbose
 
