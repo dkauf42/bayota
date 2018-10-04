@@ -199,7 +199,8 @@ class DataHandlerBase:
             pd.DataFrame(loadsrcsetlist, columns=['LOADSRCS']).to_csv('data_LOADSRCS.tab', sep=' ', index=False)
 
     def _load_set_BmpLoadSourceAssociations(self, TblBmp, TblBmpEfficiency,
-                  TblBmpGroup, TblBmpLoadSourceGroup, TblLoadSource, singlelsgrpdf):
+                                            TblBmpGroup, TblBmpLoadSourceGroup,
+                                            TblLoadSource, singlelsgrpdf):
         """ Correspondence between BMPs and LoadSources """
         # Get correspondences between BMPS, BMPGRPS, LOADSRCS, and LOADSRCGRPS, and
         #   - restrict membership to those bmps and loadsources within the sets: BMPS and LOADSRCS
@@ -271,7 +272,7 @@ class DataHandlerBase:
                                                                   index=False, header=['BMPS', 'c'])
 
     def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment,
-                    TblLoadSource):
+                                        TblLoadSource):
         """ (E) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
         # Pre-processing is necessary to build the parameter dictionary
         #  - get efficiency bmps that are in the landriversegments
@@ -307,8 +308,8 @@ class DataHandlerBase:
                                                                           'E'])
 
     def _load_param_PhiBaseLoadingRates(self, TblLandRiverSegment,
-                    TblGeography, TblGeographyType, TblGeographyLrSeg,
-                    TblLoadSource, Tbl2010NoActionLoads):
+                                        TblGeography, TblGeographyType, TblGeographyLrSeg,
+                                        TblLoadSource, Tbl2010NoActionLoads):
         """ (Phi) base loading rate (lb. ac-1) of pollutant p per load source per land river segment (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary
         #   - Unfortunately, the NoActionLoads table is from the website so doesn't have id numbers.
