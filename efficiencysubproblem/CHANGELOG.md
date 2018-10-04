@@ -24,6 +24,8 @@ Each version should:
 - merged into a monorepo with 'castjeeves' and 'sandbox'
 - reorganized data handler classes for more flexible inheritance of new types
 - updated the the return of Study.go methods to include solution objective value
+- restructured data handling and model handling to use mixin inheritance pattern, thus
+eliminating the duplication of code for each type of objective/geoscale combination.
 
 ### Fixed
 - updated import paths
