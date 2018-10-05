@@ -25,6 +25,26 @@ class Lrseg(SourceHook):
         return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
                                   fromtable=ids, toname='landriversegment')
 
+    def totalacres_for(self, lrsegnames=None, lrsegids=None):
+        if lrsegnames is not None:
+            names = self.forceToSingleColumnDataFrame(lrsegnames, colname='landriversegment')
+
+            subtbl = self.singleconvert(sourcetbl='TblLandRiverSegment',
+                                        toandfromheaders=['totalacres', 'landriversegment'],
+                                        fromtable=names, toname='totalacres')
+
+        elif lrsegids is not None:
+            names = self.forceToSingleColumnDataFrame(lrsegnames, colname='lrsegid')
+
+            subtbl = self.singleconvert(sourcetbl='TblLandRiverSegment',
+                                        toandfromheaders=['totalacres', 'lrsegid'],
+                                        fromtable=names, toname='totalacres')
+
+        else:
+            raise ValueError('No valid input passed')
+
+        return list(subtbl['totalacres'])
+
     def append_lrsegs_to_counties(self, tablewithcountyids):
         TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
 

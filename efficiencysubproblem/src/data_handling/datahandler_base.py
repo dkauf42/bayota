@@ -137,6 +137,12 @@ class DataHandlerBase:
             # lrsegs_list = ['N51133RL0_6450_0000']
             # lrsegs_list = ['N42071SL2_2410_2700']
             lrsegs_list = ['N42071SL2_2410_2700']
+
+        # Remove lrsegs that don't have any acres (are "non-physical land-river segments"),
+        # for example, N24031PL0_5390_0000 has zero acres and only represents wastewater loads
+        totalacres = self.jeeves.lrseg.totalacres_for(lrsegnames=lrsegs_list)
+        lrsegs_list = [a for a,b in zip(lrsegs_list, totalacres) if b != 0]
+
         # lrsegids = TblLandRiverSegment[TblLandRiverSegment['landriversegment'] == lrsegs_list[0]].lrsegid.tolist()
         self.lrsegsetlist = list([x for x in lrsegs_list])
         self.lrsegsetidlist = self.jeeves.geo.lrsegids_from(lrsegnames=lrsegs_list)['lrsegid'].tolist()
