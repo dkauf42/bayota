@@ -38,7 +38,7 @@ class ModelCostObjMixin(object):
                            for lmbda in model.LOADSRCS])
 
             temp = ((model.originalload[l, p] - newload) / model.originalload[l, p]) * 100
-            return (model.tau[l, p], temp, None)
+            return model.tau[l, p], temp, None
 
         model.TargetPercentReduction = oe.Constraint(model.LRSEGS,
                                                      model.PLTNTS,
