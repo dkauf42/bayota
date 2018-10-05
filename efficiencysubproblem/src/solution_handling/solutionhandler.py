@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import pandas as pd
 
@@ -103,6 +104,29 @@ class SolutionHandler:
 
         # print(dual_df)
         return dual_df
+
+    @staticmethod
+    def make_pivot_from_solution_sequence(solution_csv_filepath='', constraint_sequencing_var=''):
+        """Load a sequence of solutions with incrementally changing constraint values
+
+        Args:
+            solution_csv_filepath (str): full path to csv containing solutions at different constraint values
+            constraint_sequencing_var (str): 'tau' or 'totalcostupperbound'
+
+        Returns:
+            Pandas.DataFrame: pivoted dataframe, containing one row for each constraint value in the sequence
+        """
+        df = pd.read_csv(solution_csv_filepath)
+
+        # Pivot table for acres
+        df_piv = df.pivot(index=constraint_sequencing_var, columns='x', values='acres')
+        df_piv.reset_index(level=[constraint_sequencing_var], inplace=True)  # make tau into a regular column
+        df_piv['range'] = df_piv.drop(constraint_sequencing_var,
+                                      axis=1).apply(lambda x: list((0, int(math.ceil(np.nanmax(x)) + 1))), 1)
+        df_piv['objective'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
+                                                                             df.solution_objectives)))  # solution_objectives
+
+        return df_piv
 
 # # Other ways to access the optimal values:
 # mdl.x['HRTill', 'N51133RL0_6450_0000', 'oac'].value
