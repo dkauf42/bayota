@@ -268,6 +268,8 @@ class Study:
         else:
             output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', output_file_str, '_', solvetimestamp, '.iters']))
 
+        print('Solver_Path====%s' % solve_handler.get_solver_path())
+
         optionsfilepath = os.path.join(os.path.dirname(solve_handler.get_solver_path()), 'ipopt.opt')
         solve_handler.modify_ipopt_options(optionsfilepath=optionsfilepath,
                                            newoutputfilepath=output_file_name)
