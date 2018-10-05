@@ -2,7 +2,7 @@ import math
 import numpy as np
 import pandas as pd
 
-tol = 1e-2
+tol = 1e-6
 
 
 class SolutionHandler:
@@ -40,6 +40,9 @@ class SolutionHandler:
                                              'loadsource': x[2],
                                              'acres': y}
                                             for x, y in zip(nonzerokeyvals_df.key, nonzerokeyvals_df.value)])
+
+        if nonzerodf.empty:
+            raise ValueError('No non-zero decision variables identified in dataframe')
 
         if addcosttbldata is not None:
             # add cost/unit data to results table
