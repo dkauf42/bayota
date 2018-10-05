@@ -206,7 +206,7 @@ class Study:
                 # Reassign the cost bound values (C)
                 mdl.totalcostupperbound = newconstraint
                 mdl.totalcostupperbound = mdl.totalcostupperbound
-                self.constraintstr = str(round(mdl.totalcostupperbound, 1))
+                self.constraintstr = str(round(oe.value(mdl.totalcostupperbound), 1))
                 print(self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
