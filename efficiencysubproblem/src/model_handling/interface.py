@@ -1,5 +1,5 @@
 from .modelhandler_base import ModelHandlerBase
-from .efficiencymodel_geography_mixins import ModelCountyMixin, ModelLrsegMixin
+from .efficiencymodel_geography_mixins import ModelCountyGeoentitiesMixin, ModelLrsegGeoentitiesMixin
 from .efficiencymodel_objective_mixins import ModelCostObjMixin, ModelLoadObjMixin
 
 from efficiencysubproblem.src.data_handling.interface import get_loaded_data_handler
@@ -36,21 +36,21 @@ def get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file
 """ Different ModelHandler classes inherit from different Mixin combinations """
 
 
-class ModelHandlerLrsegWithCostObjective(ModelCostObjMixin, ModelLrsegMixin, ModelHandlerBase):
+class ModelHandlerLrsegWithCostObjective(ModelCostObjMixin, ModelLrsegGeoentitiesMixin, ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
 
 
-class ModelHandlerCountyWithCostObjective(ModelCostObjMixin, ModelCountyMixin, ModelHandlerBase):
+class ModelHandlerCountyWithCostObjective(ModelCostObjMixin, ModelCountyGeoentitiesMixin, ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
 
 
-class ModelHandlerLrsegWithLoadObjective(ModelLoadObjMixin, ModelLrsegMixin, ModelHandlerBase):
+class ModelHandlerLrsegWithLoadObjective(ModelLoadObjMixin, ModelLrsegGeoentitiesMixin, ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
 
 
-class ModelHandlerCountyWithLoadObjective(ModelLoadObjMixin, ModelCountyMixin, ModelHandlerBase):
+class ModelHandlerCountyWithLoadObjective(ModelLoadObjMixin, ModelCountyGeoentitiesMixin, ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
