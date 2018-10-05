@@ -10,7 +10,7 @@ from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR, verbose
 # amplappdir = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
 
 from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
-from efficiencysubproblem.src.solution_handling.ipopt_parser import IpoptParser
+# from efficiencysubproblem.src.solution_handling.ipopt_parser import IpoptParser
 
 from efficiencysubproblem.src.model_handling.interface import get_loaded_model_handler
 
@@ -267,7 +267,9 @@ class Study:
             output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', solvetimestamp, '.iters']))
         else:
             output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', output_file_str, '_', solvetimestamp, '.iters']))
-        IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt',
+
+        optionsfilepath = os.path.join(os.path.dirname(solve_handler.get_solver_path()), 'ipopt.opt')
+        solve_handler.modify_ipopt_options(optionsfilepath=optionsfilepath,
                                            newoutputfilepath=output_file_name)
         # ---- Output Level-of-Detail ----
         # file_print_levels:
@@ -275,7 +277,7 @@ class Study:
         #   6 for summary information about all iterations, but not variable values
         #   8 for variable values at all iterations
         #   10 for all iterations
-        IpoptParser().modify_ipopt_options(optionsfilepath='ipopt.opt', newfileprintlevel=fileprintlevel)
+        solve_handler.modify_ipopt_options(optionsfilepath=optionsfilepath, newfileprintlevel=fileprintlevel)
 
         # ---- SOLVE ----
         get_suffixes = False

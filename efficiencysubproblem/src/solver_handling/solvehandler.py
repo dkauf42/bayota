@@ -1,7 +1,10 @@
+import fileinput
+import os
+import re
+import sys
+
 import pyomo.environ as oe
 from pyomo.opt import SolverFactory, SolverManagerFactory
-
-from efficiencysubproblem.src.solution_handling.solutionhandler import *
 
 
 class SolveHandler:
@@ -10,6 +13,54 @@ class SolveHandler:
         self.instance = instance
         self.solvername = solvername
         self.localsolver = localsolver
+
+    def get_solver_path(self):
+        def is_exe(fpath):
+            return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+        fpath, fname = os.path.split(self.solvername)
+        if fpath:
+            if is_exe(self.solvername):
+                return self.solvername
+        else:
+            for path in os.environ["PATH"].split(os.pathsep):
+                exe_file = os.path.join(path, self.solvername)
+                if is_exe(exe_file):
+                    return exe_file
+
+        return None
+
+    @staticmethod
+    def modify_ipopt_options(optionsfilepath='ipopt.opt', newoutputfilepath='', newfileprintlevel=''):
+        rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
+
+        def _parse_line(string):
+            """
+            Do a regex search against all defined regexes and
+            return the key and match result of the first matching regex
+
+            """
+            iterator = rx_kv.finditer(string)
+
+            row = None
+            for match in iterator:
+                if match:
+                    row = {'key': match.group('key'),
+                           'value': match.group('value')
+                           }
+
+            return row
+
+        for line in fileinput.FileInput(optionsfilepath, inplace=1):
+            parsed = _parse_line(line)
+            if parsed:
+                if parsed['key'] == 'output_file':
+                    if not not newoutputfilepath:
+                        line = line.replace(parsed['value'], newoutputfilepath)
+                if parsed['key'] == 'file_print_level':
+                    if not not newfileprintlevel:
+                        line = line.replace(parsed['value'], str(newfileprintlevel))
+            sys.stdout.write(line)
 
     def solve(self, logfilename='logfile_loadobjective.log', get_suffixes=True):
         if self.localsolver:

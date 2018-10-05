@@ -1,6 +1,4 @@
 import re
-import sys
-import fileinput
 import pandas as pd
 from collections import OrderedDict
 
@@ -13,38 +11,6 @@ class IpoptParser:
     """
     def __init__(self):
         pass
-
-    @staticmethod
-    def modify_ipopt_options(optionsfilepath='ipopt.opt', newoutputfilepath='', newfileprintlevel=''):
-        rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
-
-        def _parse_line(string):
-            """
-            Do a regex search against all defined regexes and
-            return the key and match result of the first matching regex
-
-            """
-            iterator = rx_kv.finditer(string)
-
-            row = None
-            for match in iterator:
-                if match:
-                    row = {'key': match.group('key'),
-                           'value': match.group('value')
-                           }
-
-            return row
-
-        for line in fileinput.FileInput(optionsfilepath, inplace=1):
-            parsed = _parse_line(line)
-            if parsed:
-                if parsed['key'] == 'output_file':
-                    if not not newoutputfilepath:
-                        line = line.replace(parsed['value'], newoutputfilepath)
-                if parsed['key'] == 'file_print_level':
-                    if not not newfileprintlevel:
-                        line = line.replace(parsed['value'], str(newfileprintlevel))
-            sys.stdout.write(line)
 
     @staticmethod
     def parse_output_file(filepath):
