@@ -140,6 +140,10 @@ class DataHandlerBase:
         # lrsegids = TblLandRiverSegment[TblLandRiverSegment['landriversegment'] == lrsegs_list[0]].lrsegid.tolist()
         self.lrsegsetlist = list([x for x in lrsegs_list])
         self.lrsegsetidlist = self.jeeves.geo.lrsegids_from(lrsegnames=lrsegs_list)['lrsegid'].tolist()
+
+        if not self.lrsegsetidlist:
+            raise ValueError('No LRSEGS found matching the input list')
+
         self.LRSEGS = lrsegs_list
         if self.save2file:
             pd.DataFrame(lrsegs_list, columns=['LRSEGS']).to_csv('data_LRSEGS.tab', sep=' ', index=False)

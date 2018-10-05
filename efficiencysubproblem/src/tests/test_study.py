@@ -18,6 +18,13 @@ def test_study_instantiation_badobjective():
         Study(objectivetype='Dennis Nedry')
 
 
+def test_study_instantiation_scale_entities_mismatch():
+    with pytest.raises(ValueError):
+        s = Study(objectivetype='costmin',
+                  geoscale='lrseg', geoentities=['Montgomery, MD'],
+                  baseconstraint=1)
+
+
 def test_study_lrseg_costmin_instantiation():
     study = Study(objectivetype='costmin',
                   geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
