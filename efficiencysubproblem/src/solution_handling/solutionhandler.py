@@ -42,7 +42,7 @@ class SolutionHandler:
                                             for x, y in zip(nonzerokeyvals_df.key, nonzerokeyvals_df.value)])
 
         if nonzerodf.empty:
-            raise ValueError('No non-zero decision variables identified in dataframe')
+            raise ValueError('No non-zero decision variables identified in model instance dataframe')
 
         if addcosttbldata is not None:
             # add cost/unit data to results table
