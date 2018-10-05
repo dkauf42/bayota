@@ -37,7 +37,17 @@ class ModelCostObjMixin(object):
                                     for gamma in model.BMPGRPS])
                            for lmbda in model.LOADSRCS])
 
-            temp = ((model.originalload[l, p] - newload) / model.originalload[l, p]) * 100
+            # Some lrsegs have 0 total load for some nutrients
+            # E.g. N24031PM0_4640_4820 = Cabin John Creek, in Montgomery County
+            # has 0 originalload for phosphorus.  This causes a ZeroDivisionError when Pyomo
+            # tries to generate an expression for this rule.
+            # To avoid this, we set the percent reduction here to zero no matter what, since
+            # we can assume newload never increases from zero to a positive value.
+            if model.originalload[l, p] != 0:
+                temp = ((model.originalload[l, p] - newload) / model.originalload[l, p]) * 100
+            else:
+                temp = 0
+
             return model.tau[l, p], temp, None
 
         model.TargetPercentReduction = oe.Constraint(model.LRSEGS,
