@@ -28,24 +28,25 @@ up and running.
 │   ├── __init__.py        <- Makes src a Python module
 │   ├── study.py           <- Main class for setting up optimization runs
 │   │
-│   ├── data_handlers      <- Code to populate necessary source data
-│   │   ├── county.py
-│   │   ├── dataloader.py
-│   │   └── lrseg.py
+│   ├── data_handling      <- Code to populate necessary source data
+│   │   ├── interface.py
+│   │   ├── datahandler_base.py
+│   │   ├── dataloader_constraint_mixins.py
+│   │   └── dataloader_geography_mixins.py
 │   │
 │   ├── model_handlers     <- Formulations of the optimization model
-│   │   ├── costobjective_county.py
-│   │   ├── costobjective_lrseg.py
-│   │   ├── loadobjective_county.py
-│   │   └── loadobjective_lrseg.py
+│   │   ├── interface.py
+│   │   ├── modelhandler_base.py
+│   │   ├── efficiencymodel_objective_mixins.py
+│   │   └── efficiencymodel_geography_mixins.py
 │   │
-│   ├── solution_handlers  <- Code to parse and manipulate run solutions
+│   ├── solution_handling  <- Code to parse and manipulate run solutions
 │   │   ├── ipopt_parser.py
-│   │   └── solution_wrangler.py
+│   │   └── solutionhandler.py
 │   │
 │   ├── solver_handlers    <- Scripts to send commands to solver
 │   │   ├── gjh_wrapper.py
-│   │   └── solve_triggerer.py
+│   │   └── solvehandler.py
 │   │
 │   ├── tests              <- Scripts to test and validate code using pytest
 │   │   └── test_study.py
