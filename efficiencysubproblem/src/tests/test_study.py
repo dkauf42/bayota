@@ -1,5 +1,11 @@
 import pytest
 from efficiencysubproblem.src.study import Study
+from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
+
+
+@pytest.fixture(scope='module')
+def valid_ipopt_available_on_env_path(request):
+    return SolveHandler(solvername='ipopt').get_solver_path()
 
 
 def test_study_instantiation_noargs():
@@ -17,16 +23,6 @@ def test_study_lrseg_costmin_instantiation():
                   geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
                   baseconstraint=5, saveData2file=False)
     assert study.numberofrunscompleted == 0
-
-
-def test_study_lrseg_costmin_solutionobjectivevalue():
-    study = Study(objectivetype='costmin',
-                  geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
-                  baseconstraint=5, saveData2file=False)
-
-    solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go()
-
-    assert 20675 == round(solution_objective)
 
 
 def test_study_lrseg_costmin_instantiation_multirun_check():
@@ -62,3 +58,32 @@ def test_study_county_loadreductionmax_instantiation():
                   geoscale='county', geoentities=['Northumberland, VA'],
                   baseconstraint=100000, saveData2file=False)
     assert study.numberofrunscompleted == 0
+
+
+
+
+def test_study_solutionobjectivevalue_costmin_lrsegNorthumberlandCountyVA(valid_ipopt_available_on_env_path):
+    if not valid_ipopt_available_on_env_path:
+        pytest.skip("unsupported configuration - ipopt not available on env path")
+
+    study = Study(objectivetype='costmin',
+                  geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
+                  baseconstraint=5, saveData2file=False)
+
+    solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go()
+
+    assert 20675 == round(solution_objective)
+
+
+def test_study_solutionobjectivevalue_costmin_lrsegMontgomeryCountyMD(valid_ipopt_available_on_env_path):
+    if not valid_ipopt_available_on_env_path:
+        pytest.skip("unsupported configuration - ipopt not available on env path")
+
+    study = Study(objectivetype='costmin',
+                  geoscale='lrseg', geoentities=['N24031PM0_4640_4820'],  # Cabin John Creek, in Montgomery County
+                  baseconstraint=5, saveData2file=False)
+
+    solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go()
+    print(solution_csv_filepath)
+
+    assert 8 == round(solution_objective)
