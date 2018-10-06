@@ -1,6 +1,9 @@
 from .modelhandler_base import ModelHandlerBase
-from .efficiencymodel_geography_mixins import ModelCountyGeoentitiesMixin, ModelLrsegGeoentitiesMixin
-from .efficiencymodel_objective_mixins import ModelCostObjMixin, ModelLoadObjMixin
+from .model_geography_mixins import ModelCountyGeoentitiesMixin, ModelLrsegGeoentitiesMixin
+from .model_objective_mixins import ModelTotalCostMinObjMixin, ModelTotalLoadReductionMaxObjMixin
+from .model_constraint_mixins import ModelPercentLoadReductionConstraintAtCountyLevelSumMixin,\
+    ModelPercentLoadReductionConstraintAtLrsegLevelMixin,\
+    ModelTotalCostUpperBoundConstraintMixin
 
 from efficiencysubproblem.src.data_handling.interface import get_loaded_data_handler
 
@@ -36,21 +39,33 @@ def get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file
 """ Different ModelHandler classes inherit from different Mixin combinations """
 
 
-class ModelHandlerLrsegWithCostObjective(ModelCostObjMixin, ModelLrsegGeoentitiesMixin, ModelHandlerBase):
+class ModelHandlerLrsegWithCostObjective(ModelPercentLoadReductionConstraintAtLrsegLevelMixin,
+                                         ModelTotalCostMinObjMixin,
+                                         ModelLrsegGeoentitiesMixin,
+                                         ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
 
 
-class ModelHandlerCountyWithCostObjective(ModelCostObjMixin, ModelCountyGeoentitiesMixin, ModelHandlerBase):
+class ModelHandlerCountyWithCostObjective(ModelPercentLoadReductionConstraintAtCountyLevelSumMixin,
+                                          ModelTotalCostMinObjMixin,
+                                          ModelCountyGeoentitiesMixin,
+                                          ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
 
 
-class ModelHandlerLrsegWithLoadObjective(ModelLoadObjMixin, ModelLrsegGeoentitiesMixin, ModelHandlerBase):
+class ModelHandlerLrsegWithLoadObjective(ModelTotalCostUpperBoundConstraintMixin,
+                                         ModelTotalLoadReductionMaxObjMixin,
+                                         ModelLrsegGeoentitiesMixin,
+                                         ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
 
 
-class ModelHandlerCountyWithLoadObjective(ModelLoadObjMixin, ModelCountyGeoentitiesMixin, ModelHandlerBase):
+class ModelHandlerCountyWithLoadObjective(ModelTotalCostUpperBoundConstraintMixin,
+                                          ModelTotalLoadReductionMaxObjMixin,
+                                          ModelCountyGeoentitiesMixin,
+                                          ModelHandlerBase):
     def __init__(self, datahandler=None):
         ModelHandlerBase.__init__(self, datahandler)
