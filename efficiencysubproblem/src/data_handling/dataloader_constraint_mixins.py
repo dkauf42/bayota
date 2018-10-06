@@ -2,6 +2,10 @@ import pandas as pd
 
 
 class DataCostConstraintMixin(object):
+    """
+    Parameters:
+        totalcostupperbound indexed by []
+    """
 
     def _load_constraint(self):
         print('DataCostConstraintMixin._load_constraint()')
@@ -13,6 +17,10 @@ class DataCostConstraintMixin(object):
 
 
 class DataLoadConstraintAtCountyLevelMixin(object):
+    """
+    Parameters:
+        tau indexed by [PLTNTS]
+    """
 
     def _load_constraint(self):
         print('DataLoadConstraintAtCountyLevelMixin._load_constraint()')
@@ -26,7 +34,12 @@ class DataLoadConstraintAtCountyLevelMixin(object):
             tau_df[['PLTNTS']] = tau_df.apply(pd.Series)
             tau_df.loc[:, ['PLTNTS', 'tau']].to_csv('data_tau.tab', sep=' ', index=False)
 
+
 class DataLoadConstraintAtLrsegLevelMixin(object):
+    """
+    Parameters:
+        tau indexed by [LRSEGS, PLTNTS]
+    """
 
     def _load_constraint(self):
         print('DataLoadConstraintAtLrsegLevelMixin._load_constraint()')
