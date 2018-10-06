@@ -2,6 +2,11 @@ import pyomo.environ as oe
 
 
 class ModelTotalCostMinObjMixin(object):
+    """
+    Objective:
+        Total_Cost indexed by []
+
+    """
 
     @staticmethod
     def _load_model_objective(model):
@@ -21,6 +26,14 @@ class ModelTotalCostMinObjMixin(object):
 
 
 class ModelTotalLoadReductionMaxObjMixin(object):
+    """
+    Parameters:
+        Original load indexed by [PLTNTS]
+
+    Objective:
+        PercentReduction indexed by [PLTNTS]
+
+    """
 
     @staticmethod
     def _specify_model_original_load(model):

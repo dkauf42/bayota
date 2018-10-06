@@ -2,6 +2,15 @@ import pyomo.environ as oe
 
 
 class ModelPercentLoadReductionConstraintAtCountyLevelSumMixin(object):
+    """
+    Parameters:
+        Original load indexed by [PLTNTS]
+        tau indexed by [PLTNTS]
+
+    Constraints:
+        TargetPercentReduction indexed by [PLTNTS]
+
+    """
 
     @staticmethod
     def _specify_model_original_load(model):
@@ -52,6 +61,15 @@ class ModelPercentLoadReductionConstraintAtCountyLevelSumMixin(object):
 
 
 class ModelPercentLoadReductionConstraintAtLrsegLevelMixin(object):
+    """
+    Parameters:
+        Original load indexed by [LRSEGS, PLTNTS]
+        tau indexed by [LRSEGS, PLTNTS]
+
+    Constraints:
+        TargetPercentReduction indexed by [LRSEGS, PLTNTS]
+
+    """
 
     @staticmethod
     def _specify_model_original_load(model):
@@ -112,6 +130,14 @@ class ModelPercentLoadReductionConstraintAtLrsegLevelMixin(object):
 
 
 class ModelTotalCostUpperBoundConstraintMixin(object):
+    """
+    Parameters:
+        totalcostupperbound indexed by []
+
+    Constraints:
+        Total_Cost indexed by []
+
+    """
 
     @staticmethod
     def _load_model_constraints_other(model, datahandler):
