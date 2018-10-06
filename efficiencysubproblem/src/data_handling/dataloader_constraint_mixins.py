@@ -12,10 +12,24 @@ class DataCostConstraintMixin(object):
             totalcostupperbound_df.to_csv('data_totalcostupperbound.tab', sep=' ', index=False)
 
 
-class DataLoadConstraintMixin(object):
+class DataLoadConstraintAtCountyLevelMixin(object):
 
     def _load_constraint(self):
-        print('DataLoadConstraintMixin._load_constraint()')
+        print('DataLoadConstraintAtCountyLevelMixin._load_constraint()')
+        """ (Tau) target percent load reductions (%) per pollutant p """
+        Taudict = {'N': 5,
+                   'P': 5,
+                   'S': 5}
+        self.tau = Taudict
+        if self.save2file:
+            tau_df = pd.DataFrame(list(Taudict.items()), columns=['tau'])
+            tau_df[['PLTNTS']] = tau_df.apply(pd.Series)
+            tau_df.loc[:, ['PLTNTS', 'tau']].to_csv('data_tau.tab', sep=' ', index=False)
+
+class DataLoadConstraintAtLrsegLevelMixin(object):
+
+    def _load_constraint(self):
+        print('DataLoadConstraintAtLrsegLevelMixin._load_constraint()')
         """ (Tau) target percent load reductions (%) per pollutant p and land river segment l """
         Taudict = {}
         for l in self.lrsegsetlist:
