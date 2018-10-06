@@ -1,9 +1,9 @@
 
 
-class DataCountyMixin(object):
+class DataCountyGeoentitiesMixin(object):
 
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
-        print('DataCountyMixin._load_set_geographies()')
+        print('DataCountyGeoentitiesMixin._load_set_geographies()')
         """ Counties and Land River Segments """
         geodf = self.jeeves.county.add_lrsegs_to_counties(countystatestrs=geolist)
         lrsegs_list = geodf.landriversegment.tolist()
@@ -18,8 +18,8 @@ class DataCountyMixin(object):
         self._load_set_lrsegs_from_lrseg_list(TblLandRiverSegment, lrsegs_list)
 
 
-class DataLrsegMixin(object):
+class DataLrsegGeoentitiesMixin(object):
 
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
-        print('DataLrsegMixin._load_set_geographies()')
+        print('DataLrsegGeoentitiesMixin._load_set_geographies()')
         return self._load_set_lrsegs_from_lrseg_list(TblLandRiverSegment, geolist)
