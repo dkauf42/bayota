@@ -1,5 +1,6 @@
 from .datahandler_base import DataHandlerBase
-from .dataloader_constraint_mixins import DataCostConstraintMixin, DataLoadConstraintAtLrsegLevelMixin
+from .dataloader_constraint_mixins import DataCostConstraintMixin, \
+    DataLoadConstraintAtCountyLevelMixin, DataLoadConstraintAtLrsegLevelMixin
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 
 
@@ -40,7 +41,7 @@ class DataHandlerLrsegWithLoadReductionConstraint(DataLoadConstraintAtLrsegLevel
         DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
 
 
-class DataHandlerCountyWithLoadReductionConstraint(DataLoadConstraintAtLrsegLevelMixin,
+class DataHandlerCountyWithLoadReductionConstraint(DataLoadConstraintAtCountyLevelMixin,
                                                    DataCountyGeoentitiesMixin,
                                                    DataHandlerBase):
     def __init__(self, savedata2file=None, geoentities=None):
