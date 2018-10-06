@@ -67,8 +67,6 @@ def test_study_county_loadreductionmax_instantiation():
     assert study.numberofrunscompleted == 0
 
 
-
-
 def test_study_solutionobjectivevalue_costmin_lrsegNorthumberlandCountyVA(valid_ipopt_available_on_env_path):
     if not valid_ipopt_available_on_env_path:
         pytest.skip("unsupported configuration - ipopt not available on env path")
@@ -91,6 +89,18 @@ def test_study_solutionobjectivevalue_costmin_lrsegMontgomeryCountyMD(valid_ipop
                   baseconstraint=5, saveData2file=False)
 
     solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go()
-    print(solution_csv_filepath)
 
     assert 8 == round(solution_objective)
+
+
+def test_study_solutionobjectivevalue_costmin_countyMontgomeryCountyMD(valid_ipopt_available_on_env_path):
+    if not valid_ipopt_available_on_env_path:
+        pytest.skip("unsupported configuration - ipopt not available on env path")
+
+    study = Study(objectivetype='costmin',
+                  geoscale='county', geoentities=['Montgomery, MD'],
+                  baseconstraint=5)
+
+    solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go()
+
+    assert 5637 == round(solution_objective)
