@@ -23,7 +23,6 @@ class SolveHandler:
 
         print('Solver_Path====%s' % self.options_file_path)
 
-
     def get_solver_path(self):
         def is_exe(fpath):
             return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
