@@ -268,18 +268,14 @@ class Study:
         else:
             output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', output_file_str, '_', solvetimestamp, '.iters']))
 
-        print('Solver_Path====%s' % solve_handler.get_solver_path())
-
-        optionsfilepath = os.path.join(os.path.dirname(solve_handler.get_solver_path()), 'ipopt.opt')
-        solve_handler.modify_ipopt_options(optionsfilepath=optionsfilepath,
-                                           newoutputfilepath=output_file_name)
+        solve_handler.modify_ipopt_options(newoutputfilepath=output_file_name)
         # ---- Output Level-of-Detail ----
         # file_print_levels:
         #   4 for just # of iterations, and final objective, infeas,etc. values
         #   6 for summary information about all iterations, but not variable values
         #   8 for variable values at all iterations
         #   10 for all iterations
-        solve_handler.modify_ipopt_options(optionsfilepath=optionsfilepath, newfileprintlevel=fileprintlevel)
+        solve_handler.modify_ipopt_options(newfileprintlevel=fileprintlevel)
 
         # ---- SOLVE ----
         get_suffixes = False

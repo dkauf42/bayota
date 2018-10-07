@@ -14,6 +14,16 @@ class SolveHandler:
         self.solvername = solvername
         self.localsolver = localsolver
 
+        self.options_file_path = os.path.join(os.path.dirname(self.get_solver_path()), 'ipopt.opt')
+
+        try:
+            open(self.options_file_path, 'x')
+        except FileExistsError:
+            pass  # 'x': exclusive creation - operation fails if file already exists, but creates it if it does not.
+
+        print('Solver_Path====%s' % self.options_file_path)
+
+
     def get_solver_path(self):
         def is_exe(fpath):
             return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
@@ -30,8 +40,7 @@ class SolveHandler:
 
         return None
 
-    @staticmethod
-    def modify_ipopt_options(optionsfilepath='ipopt.opt', newoutputfilepath='', newfileprintlevel=''):
+    def modify_ipopt_options(self, newoutputfilepath='', newfileprintlevel=''):
         rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
 
         def _parse_line(string):
@@ -51,7 +60,7 @@ class SolveHandler:
 
             return row
 
-        for line in fileinput.FileInput(optionsfilepath, inplace=1):
+        for line in fileinput.FileInput(self.options_file_path, inplace=1):
             parsed = _parse_line(line)
             if parsed:
                 if parsed['key'] == 'output_file':
