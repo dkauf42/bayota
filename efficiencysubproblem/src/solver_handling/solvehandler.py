@@ -14,14 +14,21 @@ class SolveHandler:
         self.solvername = solvername
         self.localsolver = localsolver
 
-        self.options_file_path = os.path.join(os.path.dirname(self.get_solver_path()), 'ipopt.opt')
+        self.solver_path = self.get_solver_path()
 
-        try:
-            open(self.options_file_path, 'x')
-        except FileExistsError:
-            pass  # 'x': exclusive creation - operation fails if file already exists, but creates it if it does not.
+        # If the solver executable is found on PATH, then we check for solver options file in same dir.
+        if not not self.solver_path:
+            self.options_file_path = os.path.join(os.path.dirname(self.solver_path), 'ipopt.opt')
 
-        print('Solver_Path====%s' % self.options_file_path)
+            try:
+                open(self.options_file_path, 'x')
+            except FileExistsError:
+                pass  # 'x': exclusive creation - operation fails if file already exists, but creates it if it does not.
+
+            print('Solver_Path====%s' % self.options_file_path)
+
+        else:
+            self.options_file_path = None
 
     def get_solver_path(self):
         def is_exe(fpath):
