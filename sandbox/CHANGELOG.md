@@ -27,6 +27,7 @@ Each version should:
 ### Fixed
 - Methods that append bmps to the decision space tables
 - Use appropriate Base Condition (from year and name metadata info)
+- add posix path check in setup.py for windows OS
 
 ## [0.3.0] - 2018-04-27
 ### Added

@@ -26,6 +26,7 @@ Each version should:
 - brought sourcehooks up-to-date w/changes missed during merges
 - replaced '' with np.nan for out-of-the-watershed transport
 - removed docs folder in castjeeves that was a duplicate of sandbox docs
+- add posix path check in setup.py for windows OS
 
 ## v0.0.2 - 2018-09-14
 #### Added

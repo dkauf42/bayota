@@ -44,7 +44,7 @@ class TestCommand(setuptools.command.test.test):
                       ' --cov-report=html:%s' % os.path.join(this_project_dir, 'htmlcov')
 
         print('pytest args :\n %s' % pytest_args)
-        errno = pytest.main(shlex.split(pytest_args))
+        errno = pytest.main(shlex.split(pytest_args, posix="win" not in sys.platform))
         sys.exit(errno)
 
 
