@@ -15,10 +15,16 @@ def test_default_CountyWithCostConstraint_instantiation_NUmberlandVACounty():
     assert county.lrsegsetlist == ['N51133RL0_6450_0000', 'N51133RL0_6530_0000', 'N51133RL0_6501_0000', 'N51133PL0_6272_0000', 'N51133PL0_6271_0000', 'N51133PL0_6270_0000', 'N51133PL0_6140_0000']
 
 
-def test_default_CountyWithLoadReductionConstraint_instantiation():
+def test_default_CountyWithLoadReductionConstraint_instantiation_AdamsPACounty():
     yo = DataHandlerCountyWithLoadReductionConstraint(savedata2file=False, geoentities=['Adams, PA'])
     # Verify the lrseg list is populated correctly
     assert 'N42001PU0_3000_3090' in yo.LRSEGS
+
+
+def test_default_CountyWithLoadReductionConstraint_instantiation_BroomeNYCounty():
+    county = DataHandlerCountyWithLoadReductionConstraint(savedata2file=False, geoentities=['Broome, NY'])
+    # Verify the lrseg list is populated correctly
+    assert set(county.lrsegsetlist) == {'N36007SU5_0420_0500', 'N36007SU4_0430_0420', 'N36007SU2_0440_0550', 'N36007SU5_0460_0480', 'N36007SU6_0480_0520', 'N36007SU6_0520_0500', 'N36007SU7_0550_0540', 'N36007SU6_0500_0550', 'N36007SU1_0410_0480', 'N36007SU3_0240_0350', 'N36007SU2_0280_0430', 'N36007SU4_0260_0350', 'N36007SU4_0350_0420'}
 
 
 def test_default_LrsegWithCostConstraint_instantiation():
