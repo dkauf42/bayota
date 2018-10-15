@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 
 from .. import get_datadir
@@ -337,13 +338,24 @@ class DataHandlerBase:
         loadssubtbl = Tbl2010NoActionLoads[Tbl2010NoActionLoads['geography'].isin(lrsegfullnames)]
 
         # Go from load source table with geographyfullname to geographyid
-        includecols = ['geography', 'loadsource', '2010 no action_nloadeot', '2010 no action_ploadeot',
+        # (drops Agency, ...)
+        includecols = ['geography', 'loadsource', '2010 no action_amount',
+                       '2010 no action_nloadeot', '2010 no action_ploadeot',
                        '2010 no action_sloadeot']
         loadssubtbl = loadssubtbl.loc[:, includecols].merge(TblGeography, how='inner',
                                                             left_on='geography',
                                                             right_on='geographyfullname')
         loadssubtbl.drop(columns=['geographyname', 'geographyfullname',
                                   'geography', 'geographytypeid'], inplace=True)
+
+        loadssubtbl['eotn'] = (loadssubtbl['2010 no action_nloadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
+        loadssubtbl["eotn"].replace([np.inf, -np.inf], 0)
+        loadssubtbl['eotp'] = (loadssubtbl['2010 no action_ploadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
+        loadssubtbl["eotp"].replace([np.inf, -np.inf], 0)
+        loadssubtbl['eots'] = (loadssubtbl['2010 no action_sloadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
+        loadssubtbl["eots"].replace([np.inf, -np.inf], 0)
+        loadssubtbl.drop(columns=['2010 no action_nloadeot', '2010 no action_ploadeot',
+                                  '2010 no action_sloadeot'], inplace=True)
 
         # Go from load source table with geographyid to lrsegid
         includecols = ['geographyid', 'lrsegid']
@@ -362,7 +374,7 @@ class DataHandlerBase:
 
         # make the pollutant names into an index instead of separate columns
         listofdataframes = []
-        pcolnames = ['2010 no action_nloadeot', '2010 no action_ploadeot', '2010 no action_sloadeot']
+        pcolnames = ['eotn', 'eotp', 'eots']
         pltntdict = {pcolnames[0]: 'N',
                      pcolnames[1]: 'P',
                      pcolnames[2]: 'S'}
