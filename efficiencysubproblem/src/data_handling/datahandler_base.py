@@ -328,9 +328,8 @@ class DataHandlerBase:
         Tbl2010NoActionLoads.columns = map(str.lower, Tbl2010NoActionLoads.columns)
 
         # First, let's translate our lrseg list to full names so we can subset it before translating.
-        gtypeid = TblGeographyType[TblGeographyType[
-                                       'geographytypefullname'] == 'Land River Segment indicating if in or out of CBWS'].geographytypeid.tolist()[
-            0]
+        gtypeid = TblGeographyType[TblGeographyType['geographytypefullname'] ==
+                                   'Land River Segment indicating if in or out of CBWS'].geographytypeid.tolist()[0]
         geolrsegsubtbl = TblGeographyLrSeg.loc[TblGeographyLrSeg['lrsegid'].isin(self.lrsegsetidlist)]
         geosubtbl = geolrsegsubtbl.merge(TblGeography, on='geographyid', how='inner')
         lrsegfullnames = geosubtbl[geosubtbl['geographytypeid'] == gtypeid].geographyfullname.tolist()
