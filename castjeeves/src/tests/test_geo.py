@@ -10,6 +10,7 @@ def resource_a(request):
     source = Jeeves.loadInSourceDataFromSQL()
     return Geo(sourcedata=source)
 
+
 def test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation(resource_a):
     assert 11 in resource_a.county.countyid_from_countystatestrs(getfrom=['Adams, PA',
                                                                          'Anne Arundel, MD']).countyid.tolist()
