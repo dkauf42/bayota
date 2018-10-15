@@ -53,6 +53,28 @@ class Lrseg(SourceHook):
 
         return tblsubset
 
+    def remove_outofcbws_lrsegs(self, lrseglist=None, lrsegdf=None):
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+
+        if lrseglist is not None:
+            tablewithlrsegs = self.forceToSingleColumnDataFrame(lrseglist, colname='landriversegment')
+
+            columnmask = ['landriversegment', 'outofcbws']
+            tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tablewithlrsegs, how='inner')
+
+            newsubset = tblsubset.loc[tblsubset['outofcbws'] != True, 'landriversegment'].tolist()
+
+            return newsubset
+        elif lrsegdf is not None:
+            tablewithlrsegs = lrsegdf
+
+            columnmask = ['landriversegment', 'outofcbws']
+            tblsubset = TblLandRiverSegment.loc[:, columnmask].merge(tablewithlrsegs, how='inner')
+
+            newsubset = tblsubset.loc[tblsubset['outofcbws'] != True, :]
+
+            return newsubset
+
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
         kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
