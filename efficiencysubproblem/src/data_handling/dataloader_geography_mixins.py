@@ -6,7 +6,10 @@ class DataCountyGeoentitiesMixin(object):
         print('DataCountyGeoentitiesMixin._load_set_geographies()')
         """ Counties and Land River Segments """
         geodf = self.jeeves.county.add_lrsegs_to_counties(countystatestrs=geolist)
+
+        geodf = self.jeeves.lrseg.remove_outofcbws_lrsegs(lrsegdf=geodf)
         lrsegs_list = geodf.landriversegment.tolist()
+
         counties_list = geodf.countyid.tolist()
         cntylrseglinkslist = list(zip(lrsegs_list, counties_list))
 
@@ -22,4 +25,6 @@ class DataLrsegGeoentitiesMixin(object):
 
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
         print('DataLrsegGeoentitiesMixin._load_set_geographies()')
-        return self._load_set_lrsegs_from_lrseg_list(TblLandRiverSegment, geolist)
+        lrsegs_list = self.jeeves.lrseg.remove_outofcbws_lrsegs(lrseglist=geolist)
+
+        return self._load_set_lrsegs_from_lrseg_list(TblLandRiverSegment, lrsegs_list)
