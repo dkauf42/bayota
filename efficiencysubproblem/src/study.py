@@ -131,7 +131,23 @@ class Study:
         return formattedstr
 
     def go(self, fileprintlevel=4):
-        """ Perform a single run - Solve the problem instance """
+        """
+        Perform a single run - Solve the problem instance.
+
+        Args:
+            fileprintlevel (int): level of detail in the solver ouput files, e.g.
+                4 for just # of iterations, and final objective, infeas,etc. values
+                6 for summary information about all iterations, but not variable values
+                8 for variable values at all iterations
+                10 for all iterations
+
+        Returns:
+            solver_output_filepath (str): where the iterations' info is saved, if fileprintlevel is set high.
+            solution_csv_filepath (str): where the solution info is saved.
+            sorteddf_byacres (pd.DataFrame): solution data is stored here for further code manipulation.
+            solution_objective (float): numeric objective value of the solution.
+            feasible_solution (bool): True or False, as returned by the solver's Termination Condition.
+        """
 
         mdl = self.modelhandler.model
 
@@ -179,7 +195,23 @@ class Study:
         return solver_output_filepath, solution_csv_filepath, sorteddf_byacres, solution_objective, feasible_solution
 
     def go_constraintsequence(self, constraints=None, fileprintlevel=4):
-        """ Perform multiple runs with different constraints """
+        """ Perform multiple runs with different constraints
+
+        Args:
+            constraints (list of numeric): the sequence of constraint values to run through and solve
+            fileprintlevel (int): level of detail in the solver ouput files, e.g.
+                4 for just # of iterations, and final objective, infeas,etc. values
+                6 for summary information about all iterations, but not variable values
+                8 for variable values at all iterations
+                10 for all iterations
+
+        Returns:
+            solver_output_filepaths (list of str): where the iterations' info is saved, if fileprintlevel is set high.
+            solution_csv_filepath (str): where the solution info is saved.
+            alldfs (pd.DataFrame): solution data is stored here for further code manipulation.
+            solution_objectives (list of float): numeric objective value of the solution.
+            feasible_solution (list of bool): True or False, as returned by the solver's Termination Condition.
+        """
 
         mdl = self.modelhandler.model
 
