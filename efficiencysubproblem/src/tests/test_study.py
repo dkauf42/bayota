@@ -67,6 +67,20 @@ def test_study_county_loadreductionmax_instantiation():
     assert study.numberofrunscompleted == 0
 
 
+def test_study_bad_mix_of_WVcounty_and_NYstate():
+    with pytest.raises(ValueError):
+        s = Study(objectivetype='costmin',
+                  geoscale='county', geoentities=['Hardy, NY'],
+                  baseconstraint=5)
+
+
+def test_study_bad_mix_of_lrseg_scale_and_county_entities():
+    with pytest.raises(ValueError):
+        s = Study(objectivetype='costmin',
+                  geoscale='lrseg', geoentities=['Hardy, WV'],
+                  baseconstraint=5)
+
+
 def test_study_solutionobjectivevalue_costmin_lrsegNorthumberlandCountyVA(valid_ipopt_available_on_env_path):
     if not valid_ipopt_available_on_env_path:
         pytest.skip("unsupported configuration - ipopt not available on env path")
