@@ -40,13 +40,22 @@ application up and running.
 
 # How do I get set up?
 
-**Each project is located in its own subdir:**
-'castjeeves', 'efficiencysubproblem', 'sandbox'
 
-Set up should be done for each project individually...
+Get the latest version.
+From the /bayota directory, run
+
+    > git pull
 
 
 ### Install
+
+
+**Each project is located in its own subdir:**
+'castjeeves', 'efficiencysubproblem', 'sandbox'
+
+Set up should be done for each subproject individually, e.g....
+
+    > python efficiencysubproblem/setup.py install
 
 * Summary of set up
 * Configuration
@@ -56,9 +65,20 @@ Set up should be done for each project individually...
 
 #### Run the tests
 
-    > python <subdir>/setup.py test
+    > python efficiencysubproblem/setup.py test
 
 # Usage
+
+From the python prompt or in a jupyter notebook:
+
+    >>> from efficiencysubproblem.src.study import Study
+
+    >>> # Create a model instance
+    >>> s = Study(objectivetype='costmin', geoscale='county', geoentities=['Adams, PA'], baseconstraint=5)
+
+    >>> # Solve the instance and get results
+    >>> solveroutpath, csvpath, df, objective, feasible = s.go()
+
 
 # How do I uninstall?
 
