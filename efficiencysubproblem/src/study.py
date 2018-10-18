@@ -5,6 +5,7 @@ from datetime import datetime
 from collections import OrderedDict
 
 import pyomo.environ as oe
+from pyomo.opt import SolverStatus, TerminationCondition
 
 from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR, verbose
 # amplappdir = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
@@ -138,9 +139,10 @@ class Study:
         merged_df = None
         solution_objective = None
         solvetimestamp = ''
+        feasible_solution = None
 
         if self.objectivetype == 'costmin':
-            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+            solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
                                                                                              fileprintlevel=fileprintlevel)
             solution_objective = oe.value(mdl.Total_Cost)
             merged_df['solution_objectives'] = oe.value(mdl.Total_Cost)
@@ -149,12 +151,18 @@ class Study:
                 merged_df['tau'] = mdl.tau[k]  # Label this run in the dataframe
                 break
 
+            merged_df['originalload'] = oe.value(mdl.originalload['N'])
+            merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
+                                        oe.value(mdl.originalload['N'])
+
         if self.objectivetype == 'loadreductionmax':
-            solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+            solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
                                                                                              fileprintlevel=fileprintlevel)
             solution_objective = oe.value(mdl.PercentReduction['N'])
             merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
             merged_df['totalcostupperbound'] = oe.value(mdl.totalcostupperbound ) # Label this run in the dataframe
+
+        merged_df['feasible'] = feasible_solution
 
         print('\nObjective is: %d' % solution_objective)
 
@@ -168,7 +176,7 @@ class Study:
         solution_csv_filepath = os.path.join(PROJECT_DIR, filenamestr)
         sorteddf_byacres.to_csv(solution_csv_filepath)
 
-        return solver_output_filepath, solution_csv_filepath, merged_df, solution_objective
+        return solver_output_filepath, solution_csv_filepath, sorteddf_byacres, solution_objective, feasible_solution
 
     def go_constraintsequence(self, constraints=None, fileprintlevel=4):
         """ Perform multiple runs with different constraints """
@@ -177,9 +185,11 @@ class Study:
 
         df_list = []
         solution_objectives = OrderedDict()
+        feasibility_list = []
         solver_output_filepath = ''
         solver_output_filepaths = []
         merged_df = None
+        feasible_solution = None
         solvetimestamp = ''
         loopname = ''
 
@@ -194,9 +204,13 @@ class Study:
 
                 loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
-                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+                solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
                                                                                                  output_file_str=loopname,
                                                                                                  fileprintlevel=fileprintlevel)
+
+                merged_df['originalload'] = oe.value(mdl.originalload['N'])
+                merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
+                                            oe.value(mdl.originalload['N'])
 
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(mdl.Total_Cost)
@@ -210,7 +224,7 @@ class Study:
                 print(self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
-                solver_output_filepath, merged_df, solvetimestamp = self._solve_problem_instance(mdl,
+                solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
                                                                                                  output_file_str=loopname,
                                                                                                  fileprintlevel=fileprintlevel)
 
@@ -220,6 +234,9 @@ class Study:
                 merged_df['totalcostupperbound'] = newconstraint  # Label this run in the dataframe
 
             self._iterate_numberofruns()
+
+            merged_df['feasible'] = feasible_solution
+            feasibility_list.append(feasible_solution)
 
             sorteddf_byacres = merged_df.sort_values(by='acres')
             # Save all of the solutions in a list
@@ -235,7 +252,7 @@ class Study:
         solution_csv_filepath = os.path.join(PROJECT_DIR, filenamestr)
         alldfs.to_csv(solution_csv_filepath)
 
-        return solver_output_filepaths, solution_csv_filepath, alldfs, solution_objectives
+        return solver_output_filepaths, solution_csv_filepath, alldfs, solution_objectives, feasibility_list
 
     def _solve_problem_instance(self, mdl, randomstart=False, output_file_str='', fileprintlevel=4):
         """
@@ -279,7 +296,22 @@ class Study:
 
         # ---- SOLVE ----
         get_suffixes = False
-        solved_instance = solve_handler.solve(get_suffixes=get_suffixes)
+        solved_instance, solved_results = solve_handler.solve(get_suffixes=get_suffixes)
+
+        # Check solution feasibility status
+        feasible = False
+        if (solved_results.solver.status == SolverStatus.ok) and (
+                solved_results.solver.termination_condition == TerminationCondition.optimal):
+            if verbose:
+                print('Study._solve_problem_instance(): solution is optimal and feasible')
+            feasible = True
+        elif solved_results.solver.termination_condition == TerminationCondition.infeasible:
+            if verbose:
+                print('Study._solve_problem_instance(): solution is infeasible')
+        else:
+            # Something else is wrong
+            if verbose:
+                print('Study._solve_problem_instance(): Solver Status: ' % solved_results.solver.status)
 
         # ---- PARSE SOLUTION OUTPUT ----
         # Parse out only the optimal variable values that are nonzero
@@ -294,7 +326,7 @@ class Study:
                                           how='right',
                                           on=['bmpshortname', 'landriversegment', 'loadsource'])
 
-        return output_file_name, merged_df, solvetimestamp
+        return output_file_name, merged_df, solvetimestamp, feasible
 
     def _set_data_constraint_level(self, baseconstraint):
         # Check whether multiple runs are required

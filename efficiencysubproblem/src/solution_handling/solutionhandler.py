@@ -128,6 +128,14 @@ class SolutionHandler:
                                       axis=1).apply(lambda x: list((0, int(math.ceil(np.nanmax(x)) + 1))), 1)
         df_piv['objective'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
                                                                              df.solution_objectives)))  # solution_objectives
+        df_piv['feasible'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
+                                                                            df.feasible)))  # feasibility of solutions
+
+        if constraint_sequencing_var == 'tau':
+            df_piv['originalload'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
+                                                                                    df.originalload)))  # N load
+            df_piv['N_pounds_reduced'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
+                                                                                        df.N_pounds_reduced)))  # lbs
 
         return df_piv
 
