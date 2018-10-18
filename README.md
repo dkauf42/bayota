@@ -34,7 +34,6 @@ application up and running.
 ├── definitions.py         <- Specifies top-level directory information
 │
 ├── CHANGELOG.md           <- Documentation of notable changes to this project
-│
 └── LICENSE
 ```
 

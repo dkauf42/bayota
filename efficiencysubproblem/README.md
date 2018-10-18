@@ -20,10 +20,6 @@ up and running.
 │   ├── instance_data      <- Intermediate data that has been transformed.
 │   └── raw                <- Original, immutable data.
 │
-├── jnotebooks             <- Notebooks for looking at model results and analyses
-│
-├── castjeeves             <- Submodule to query source data
-│
 ├── src                    <- Source code for use in this project.
 │   ├── __init__.py        <- Makes src a Python module
 │   ├── study.py           <- Main class for setting up optimization runs
@@ -44,11 +40,13 @@ up and running.
 │   │   ├── ipopt_parser.py
 │   │   └── solutionhandler.py
 │   │
-│   ├── solver_handlers    <- Scripts to send commands to solver
+│   ├── solver_handling    <- Scripts to send commands to solver
 │   │   ├── gjh_wrapper.py
 │   │   └── solvehandler.py
 │   │
 │   ├── tests              <- Scripts to test and validate code using pytest
+│   │   ├── test_datahandling.py
+│   │   ├── test_modelhandling.py
 │   │   └── test_study.py
 │   │
 │   └── vis                <- Scripts to create exploratory and results oriented visualizations
@@ -58,6 +56,8 @@ up and running.
 │       ├── sequence_plot.py
 │       └── zL_bars.py
 │
+├── CHANGELOG.md
+├── MANIFEST.in
 └── LICENSE
 ```
 
@@ -80,7 +80,7 @@ To be determined...
 
 #### Run the unittests
 
-To be determined...
+>> python setup.py test
 
 # Usage
 
