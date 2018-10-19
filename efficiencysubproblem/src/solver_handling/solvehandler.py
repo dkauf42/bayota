@@ -130,13 +130,8 @@ class SolveHandler:
             # Something else is wrong
             logger.info('Solver Status: ' % results.solver.status)
 
-        # self.instance.display()
-
-        logger.info('** Before log_infeasible_constraints **')
+        logger.info('** checking infeasible constraints... **')
         log_infeasible_constraints(self.instance, logger=logger)
         log_infeasible_bounds(self.instance, logger=logger)
-        log_close_to_bounds(self.instance, logger=logger)
-        log_active_constraints(self.instance, logger=logger)
-        logger.info('** After log_infeasible_constraints **')
 
         return self.instance, results, feasible
