@@ -21,7 +21,7 @@ class MyLogFormatter(logging.Formatter):
         return super(MyLogFormatter, self).format(record)
 
 
-CONFIG = u'''
+logger_config_str = u'''
 [loggers]
 keys=root
 
@@ -50,7 +50,7 @@ formatter=detailedFormatter
 args=('efficiencysubproblem/output/testSuite.log',)
 
 [formatter_reallysimpleFormatter]
-format: %(levelname)-8s- %(message)s
+format: %(levelname)-8s %(message)s
 
 [formatter_simpleFormatter]
 format: %(asctime)s:%(levelname)-8s- %(module)s - %(message)s
@@ -60,6 +60,6 @@ datefmt=%H:%M:%S
 class=efficiencysubproblem.config.MyLogFormatter
 '''
 
-loggercfg = StringIO(CONFIG)
+LOGGERCFG = StringIO(logger_config_str)
 # format=%(asctime)s:%(levelname)-8s- %(module)-35s [%(funcName)s:%(lineno)s] - %(message)s
 # datefmt=%Y-%m-%d %H:%M:%S
