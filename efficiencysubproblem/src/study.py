@@ -14,9 +14,10 @@ from efficiencysubproblem.config import PROJECT_DIR, verbose
 
 
 class Study:
-    def __init__(self, *, objectivetype='costmin',
+    def __init__(self, *,
+                 objectivetype='costmin',
                  geoscale, geoentities,
-                 baseconstraint=5, saveData2file=False):
+                 saveData2file=False):
         """
         Perform a series of different optimization runs.
 
@@ -24,7 +25,6 @@ class Study:
             objectivetype (str): Either 'costmin' or 'loadreductionmax'
             geoscale (str): Either 'county' or 'lrseg'
             geoentities (:obj:`list` of :obj:`str`): the specific lrsegs or counties to include in each run
-            baseconstraint (float or :obj:`list` of :obj:`float`): Tau or Total_Cost
             saveData2file (bool):
 
         Attributes:
@@ -33,19 +33,19 @@ class Study:
             geoentities (:obj:`list` of :obj:`str`): Specific lrsegs or counties to include in each run.
             objectivetype (str): Either 'costmin' or 'loadreductionmax'
             multirun (bool): Whether or not a single run or multiple runs are to be performed in this Study object.
-            constraintstr (str): String representation of the constraint level specified.
+            constraintstr (str): String representation of the constraint level.
             numberofrunscompleted (int): Counter for how many runs have been performed so far by this Study object.
 
         Examples:
             >>> print(Study(objectivetype='costmin', \
                             geoscale='county', \
                             geoentities=['Anne Arundel, MD'], \
-                            baseconstraint=5, saveData2file=False))
+                            saveData2file=False))
             ***** Study Details *****
             objective:                costmin
             geographic scale:         county
             # of geographic entities: 1
-            current constraint level: 5
+            current constraint level: not set
             ***************************
 
         Definitions
@@ -70,7 +70,7 @@ class Study:
         self.geoentities = geoentities
         self.objectivetype = objectivetype
         self.multirun = False
-        self.constraintstr = ''
+        self.constraintstr = 'not set'
 
         # TODO: could add a check here to make sure the PATH variable includes the location of the ipopt solver.
 
@@ -122,6 +122,7 @@ class Study:
         Perform a single run - Solve the problem instance.
 
         Args:
+            constraint (float): the constraint value (Tau or Total_Cost) to solve for
             fileprintlevel (int): level of detail in the solver ouput files, e.g.
                 4 for just # of iterations, and final objective, infeas,etc. values
                 6 for summary information about all iterations, but not variable values
@@ -185,7 +186,7 @@ class Study:
         """ Perform multiple runs with different constraints
 
         Args:
-            constraints (list of numeric): the sequence of constraint values to run through and solve
+            constraints (list of numeric): the sequence of constraint values (Tau or Total_Cost) to run through & solve
             fileprintlevel (int): level of detail in the solver ouput files, e.g.
                 4 for just # of iterations, and final objective, infeas,etc. values
                 6 for summary information about all iterations, but not variable values
