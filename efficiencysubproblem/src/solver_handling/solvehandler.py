@@ -2,11 +2,15 @@ import fileinput
 import os
 import re
 import sys
+import time
+import logging
 
 import pyomo.environ as oe
 from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, TerminationCondition
 
-from efficiencysubproblem.config import verbose
+log = logging.getLogger(__name__)
+
+from util.infeasible import *
 
 
 class SolveHandler:
@@ -27,7 +31,7 @@ class SolveHandler:
             except FileExistsError:
                 pass  # 'x': exclusive creation - operation fails if file already exists, but creates it if it does not.
 
-            print('Solver_Path====%s' % self.options_file_path)
+            logger.debug('Solver_Path====%s' % self.options_file_path)
 
         else:
             self.options_file_path = None
@@ -80,6 +84,9 @@ class SolveHandler:
             sys.stdout.write(line)
 
     def solve(self, logfilename='logfile_loadobjective.log', get_suffixes=True):
+        # Wall time - clock starts.
+        starttime_modelsolve = time.time()
+
         if self.localsolver:
             solver = SolverFactory(self.solvername)
 
@@ -106,20 +113,22 @@ class SolveHandler:
 
             results.write()
 
+        # Wall time - clock stops.
+        _endtime_modelsolve = time.time()
+        timefor_modelsolve = _endtime_modelsolve - starttime_modelsolve
+        logger.info('*solving done* <- it took %f seconds>' % timefor_modelsolve)
+
         # Check solution feasibility status
         feasible = False
         if (results.solver.status == SolverStatus.ok) and (
                 results.solver.termination_condition == TerminationCondition.optimal):
-            if verbose:
-                print('Study._solve_problem_instance(): solution is optimal and feasible')
+            logger.info('solution is optimal and feasible')
             feasible = True
         elif results.solver.termination_condition == TerminationCondition.infeasible:
-            if verbose:
-                print('Study._solve_problem_instance(): solution is infeasible')
+            logger.info('solution is infeasible')
         else:
             # Something else is wrong
-            if verbose:
-                print('Study._solve_problem_instance(): Solver Status: ' % results.solver.status)
+            logger.info('Solver Status: ' % results.solver.status)
 
         # self.instance.display()
 

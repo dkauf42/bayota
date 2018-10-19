@@ -3,6 +3,7 @@ import time
 import pandas as pd
 from datetime import datetime
 from collections import OrderedDict
+import logging.config
 
 import pyomo.environ as oe
 
@@ -10,7 +11,10 @@ from efficiencysubproblem.src.model_handling.interface import get_loaded_model_h
 from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from efficiencysubproblem.config import PROJECT_DIR, verbose
+from efficiencysubproblem.config import PROJECT_DIR, LOGGING_CONFIG
+
+logging.config.fileConfig(LOGGING_CONFIG, disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
 
 
 class Study:
@@ -77,14 +81,13 @@ class Study:
         # Wall time - clock starts.
         starttime_modelinstantiation = time.time()
 
-        # A modelhandler object is instantiated, generating model and setting instance data.
+        # A modelhandler object is instantiated, generating the model and setting instance data.
         self.modelhandler = get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file=False)
 
         # Wall time - clock stops.
         self._endtime_modelinstantiation = time.time()
         timefor_modelinstantiation = self._endtime_modelinstantiation - starttime_modelinstantiation
-        if verbose:
-            print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
+        logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
         self.studystr = ''.join(['study_', self.objectivetype, '_', self.geoscale])
         self.numberofrunscompleted = 0
@@ -167,7 +170,7 @@ class Study:
 
         merged_df['feasible'] = feasible_solution
 
-        print('\nObjective is: %d' % solution_objective)
+        logger.info('\nObjective is: %d' % solution_objective)
 
         self._iterate_numberofruns()
         sorteddf_byacres = merged_df.sort_values(by='acres')
@@ -219,7 +222,7 @@ class Study:
                 for k in mdl.tau:
                     mdl.tau[k] = newconstraint
                     self.constraintstr = str(round(mdl.tau[k].value, 1))
-                    print(self.constraintstr)
+                    logger.info('constraint = %s' % self.constraintstr)
 
                 loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
@@ -240,7 +243,7 @@ class Study:
                 mdl.totalcostupperbound = newconstraint
                 mdl.totalcostupperbound = mdl.totalcostupperbound
                 self.constraintstr = str(round(oe.value(mdl.totalcostupperbound), 1))
-                print(self.constraintstr)
+                logger.info('constraint = %s' % self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
                 solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
