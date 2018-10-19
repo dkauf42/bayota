@@ -119,12 +119,12 @@ class Study:
         formattedstr = "time of instantiation:    %s" % str(timestr)
         return formattedstr
 
-    def go(self, fileprintlevel=4):
+    def go(self, *, constraint, fileprintlevel=4):
         """
         Perform a single run - Solve the problem instance.
 
         Args:
-            constraint (float): the constraint value (Tau or Total_Cost) to solve for
+            constraint (float or int): the constraint value (Tau or Total_Cost) to solve for
             fileprintlevel (int): level of detail in the solver ouput files, e.g.
                 4 for just # of iterations, and final objective, infeas,etc. values
                 6 for summary information about all iterations, but not variable values
@@ -146,6 +146,9 @@ class Study:
         solution_objective = None
         solvetimestamp = ''
         feasible_solution = None
+
+        # Set the constraint level
+        self._set_data_constraint_level(constraint)
 
         if self.objectivetype == 'costmin':
             solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
