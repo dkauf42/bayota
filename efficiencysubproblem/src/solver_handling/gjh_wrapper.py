@@ -7,10 +7,10 @@ import re
 
 def gjh_solve(instance, keepfiles=True, amplenv=None, basegjhpath=''):
     opt2 = SolverFactory('gjh')
-    r2 = opt2.solve(instance, keepfiles=keepfiles)
+    solved_instance, solved_results = opt2.solve(instance, keepfiles=keepfiles)
 
     # Get the output file name
-    str1 = r2.Solver._list[0].Message
+    str1 = solved_instance.Solver._list[0].Message
     # matches = re.findall('\w+\.pyomo\.gjh', str1)
 
     rx = re.compile('\s*\"(?P<filepath>(?:[^\"])*)\"\s*written', re.MULTILINE)
