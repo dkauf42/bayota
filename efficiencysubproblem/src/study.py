@@ -6,15 +6,11 @@ from collections import OrderedDict
 
 import pyomo.environ as oe
 
-from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR, verbose
-# amplappdir = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
-
-from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
-# from efficiencysubproblem.src.solution_handling.ipopt_parser import IpoptParser
-
 from efficiencysubproblem.src.model_handling.interface import get_loaded_model_handler
-
+from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
+
+from efficiencysubproblem.config import PROJECT_DIR, verbose
 
 
 class Study:
@@ -78,25 +74,20 @@ class Study:
 
         # TODO: could add a check here to make sure the PATH variable includes the location of the ipopt solver.
 
-        # Keep track of wall time
+        # Wall time - clock starts.
         starttime_modelinstantiation = time.time()
 
-        # Instantiate a modelhandler object, which itself generates the model and sets the instance data
+        # A modelhandler object is instantiated, generating the model and setting the instance data.
         self.modelhandler = get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file=False)
 
-        # Set the base constraint level
-        self._set_data_constraint_level(baseconstraint)
-
-        # Print the wall time
+        # Wall time - clock stops.
         self._endtime_modelinstantiation = time.time()
         timefor_modelinstantiation = self._endtime_modelinstantiation - starttime_modelinstantiation
 
         if verbose:
             print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
-        self.studystr = ''.join(['study_', self.objectivetype, '_',
-                                 self.geoscale])
-
+        self.studystr = ''.join(['study_', self.objectivetype, '_', self.geoscale])
         self.numberofrunscompleted = 0
 
     def __str__(self):
