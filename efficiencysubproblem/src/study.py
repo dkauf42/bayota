@@ -77,13 +77,12 @@ class Study:
         # Wall time - clock starts.
         starttime_modelinstantiation = time.time()
 
-        # A modelhandler object is instantiated, generating the model and setting the instance data.
+        # A modelhandler object is instantiated, generating model and setting instance data.
         self.modelhandler = get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file=False)
 
         # Wall time - clock stops.
         self._endtime_modelinstantiation = time.time()
         timefor_modelinstantiation = self._endtime_modelinstantiation - starttime_modelinstantiation
-
         if verbose:
             print('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
