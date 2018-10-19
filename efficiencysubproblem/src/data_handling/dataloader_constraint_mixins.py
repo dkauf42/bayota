@@ -1,5 +1,8 @@
 import pandas as pd
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class DataCostConstraintMixin(object):
     """
@@ -8,7 +11,7 @@ class DataCostConstraintMixin(object):
     """
 
     def _load_constraint(self):
-        print('DataCostConstraintMixin._load_constraint()')
+        logger.debug('loading total cost constraint')
         """ Total Cost constraint for entire  """
         self.totalcostupperbound = 100000  # a default
         if self.save2file:
@@ -23,7 +26,7 @@ class DataLoadConstraintAtCountyLevelMixin(object):
     """
 
     def _load_constraint(self):
-        print('DataLoadConstraintAtCountyLevelMixin._load_constraint()')
+        logger.debug('loading county level load constraint')
         """ (Tau) target percent load reductions (%) per pollutant p """
         Taudict = {'N': 5,
                    'P': 5,
@@ -42,7 +45,7 @@ class DataLoadConstraintAtLrsegLevelMixin(object):
     """
 
     def _load_constraint(self):
-        print('DataLoadConstraintAtLrsegLevelMixin._load_constraint()')
+        logger.debug('loading lrseg level load constraint')
         """ (Tau) target percent load reductions (%) per pollutant p and land river segment l """
         Taudict = {}
         for l in self.lrsegsetlist:

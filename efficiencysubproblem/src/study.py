@@ -11,9 +11,9 @@ from efficiencysubproblem.src.model_handling.interface import get_loaded_model_h
 from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from efficiencysubproblem.config import PROJECT_DIR, LOGGING_CONFIG
+from efficiencysubproblem.config import PROJECT_DIR, loggercfg
 
-logging.config.fileConfig(LOGGING_CONFIG, disable_existing_loggers=False)
+logging.config.fileConfig(loggercfg, disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
 
@@ -75,6 +75,12 @@ class Study:
         self.objectivetype = objectivetype
         self.multirun = False
         self.constraintstr = 'not set'
+
+        logger.info('**********************************************')
+        logger.info('*********** Study creation started ***********')
+        logger.info('***********   [scale=%s]' % self.geoscale)
+        logger.info('***********   [entities=%s]' % self.geoentities)
+        logger.info('**********************************************')
 
         # TODO: could add a check here to make sure the PATH variable includes the location of the ipopt solver.
 

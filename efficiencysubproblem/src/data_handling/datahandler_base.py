@@ -3,9 +3,11 @@ import numpy as np
 import pandas as pd
 
 from .. import get_datadir
-from efficiencysubproblem import config
 
 from castjeeves.src.jeeves import Jeeves
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class DataHandlerBase:
@@ -113,8 +115,7 @@ class DataHandlerBase:
         self._load_param_TotalAcresAvailableForLoadSources(TblLandRiverSegment, TblLoadSource,
                                                            TblLandUsePreBmp, baseconditionid)
 
-        if config.verbose:
-            print('DataHandlerBase.init(): LRsegs: %s' % self.lrsegsetlist)
+        logger.info('LRsegs loaded: %s' % self.lrsegsetlist)
 
     def _load_constraint(self):
         """ overridden in the Mixins """

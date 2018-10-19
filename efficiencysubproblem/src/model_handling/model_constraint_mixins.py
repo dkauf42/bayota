@@ -1,5 +1,8 @@
 import pyomo.environ as oe
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class ModelPercentLoadReductionConstraintAtCountyLevelSumMixin(object):
     """
@@ -25,7 +28,7 @@ class ModelPercentLoadReductionConstraintAtCountyLevelSumMixin(object):
 
     @staticmethod
     def _load_model_constraints_other(model, datahandler):
-        print('ModelPercentLoadReductionConstraintAtCountyLevelSumMixin._load_model_constraints_other()')
+        logger.debug('loading county level constraints')
 
         # target percent load reduction
         model.tau = oe.Param(model.PLTNTS,
@@ -82,7 +85,8 @@ class ModelPercentLoadReductionConstraintAtLrsegLevelMixin(object):
 
     @staticmethod
     def _load_model_constraints_other(model, datahandler):
-        print('ModelPercentLoadReductionConstraintAtLrsegLevelMixin._load_model_constraints_other()')
+        logger.debug('loading lrseg level constraints')
+        # print('ModelPercentLoadReductionConstraintAtLrsegLevelMixin._load_model_constraints_other()')
 
         # target percent load reduction
         model.tau = oe.Param(model.LRSEGS,
@@ -141,7 +145,8 @@ class ModelTotalCostUpperBoundConstraintMixin(object):
 
     @staticmethod
     def _load_model_constraints_other(model, datahandler):
-        print('ModelTotalCostUpperBoundConstraintMixin._load_model_constraints_other()')
+        logger.debug('loading total cost upper bound constraint')
+        # print('ModelTotalCostUpperBoundConstraintMixin._load_model_constraints_other()')
 
         # upper bound on total cost
         model.totalcostupperbound = oe.Param(initialize=datahandler.totalcostupperbound,

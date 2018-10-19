@@ -1,9 +1,12 @@
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class DataCountyGeoentitiesMixin(object):
 
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
-        print('DataCountyGeoentitiesMixin._load_set_geographies()')
+        logger.debug('loading county geoentities')
 
         geodf = self.jeeves.county.add_lrsegs_to_counties(countystatestrs=geolist)
 
@@ -27,7 +30,7 @@ class DataCountyGeoentitiesMixin(object):
 class DataLrsegGeoentitiesMixin(object):
 
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
-        print('DataLrsegGeoentitiesMixin._load_set_geographies()')
+        logger.debug('loading lrseg geoentities')
         lrsegs_list = self.jeeves.lrseg.remove_outofcbws_lrsegs(lrseglist=geolist)
 
         if not lrsegs_list:

@@ -1,5 +1,8 @@
 import pyomo.environ as oe
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class ModelTotalCostMinObjMixin(object):
     """
@@ -10,7 +13,7 @@ class ModelTotalCostMinObjMixin(object):
 
     @staticmethod
     def _load_model_objective(model):
-        print('ModelTotalCostMinObjMixin._load_model_objective()')
+        logger.debug('Loading total cost min objective')
 
         def obj_rule(model):
             return sum([(model.c[b] * model.x[b, l, lmbda])
@@ -48,7 +51,7 @@ class ModelTotalLoadReductionMaxObjMixin(object):
 
     @staticmethod
     def _load_model_objective(model):
-        print('ModelTotalLoadReductionMaxObjMixin._load_model_objective()')
+        logger.debug('Loading total load reduction max objective')
 
         # Relative load reductions
         def percent_reduction_rule(model, p):
