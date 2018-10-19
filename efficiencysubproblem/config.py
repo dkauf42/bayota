@@ -4,5 +4,6 @@ from definitions import ROOT_DIR
 
 PROJECT_DIR = os.path.join(ROOT_DIR, 'efficiencysubproblem/')
 AMPLAPP_DIR = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
+LOGGING_CONFIG = os.path.join(PROJECT_DIR, 'logging_config.ini')
 
-verbose = False
+verbose = True
