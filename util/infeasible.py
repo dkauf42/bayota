@@ -41,6 +41,8 @@ def log_infeasible_bounds(m, tol=1E-6, logger=logger):
     """
     for var in m.component_data_objects(
             ctype=Var, descend_into=True):
+        if var.stale:
+            continue
         if var.has_lb() and value(var.lb - var) >= tol:
             logger.info('VAR {}: {} < LB {}'.format(
                 var.name, value(var), value(var.lb)))
@@ -58,6 +60,8 @@ def log_close_to_bounds(m, tol=1E-6, logger=logger):
     """
     for var in m.component_data_objects(
             ctype=Var, descend_into=True):
+        if var.stale:
+            continue
         if var.fixed:
             continue
         if (var.has_lb() and var.has_ub() and
