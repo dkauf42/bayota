@@ -18,8 +18,8 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 
 
 class Study:
-    def __init__(self, objectivetype='costmin',
-                 geoscale='county', geoentities=None,
+    def __init__(self, *, objectivetype='costmin',
+                 geoscale, geoentities,
                  baseconstraint=5, saveData2file=False):
         """
         Perform a series of different optimization runs.
@@ -68,9 +68,6 @@ class Study:
             A Study represents a series of one (or multiple) run(s),
         with different configurations.
         """
-
-        if not geoentities:
-            raise ValueError('Geoentities must be specified')
 
         self.modelhandler = None
         self.geoscale = geoscale
