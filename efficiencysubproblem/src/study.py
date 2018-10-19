@@ -5,7 +5,6 @@ from datetime import datetime
 from collections import OrderedDict
 
 import pyomo.environ as oe
-from pyomo.opt import SolverStatus, TerminationCondition
 
 from efficiencysubproblem.config import PROJECT_DIR, AMPLAPP_DIR, verbose
 # amplappdir = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
@@ -328,22 +327,7 @@ class Study:
 
         # ---- SOLVE ----
         get_suffixes = False
-        solved_instance, solved_results = solve_handler.solve(get_suffixes=get_suffixes)
-
-        # Check solution feasibility status
-        feasible = False
-        if (solved_results.solver.status == SolverStatus.ok) and (
-                solved_results.solver.termination_condition == TerminationCondition.optimal):
-            if verbose:
-                print('Study._solve_problem_instance(): solution is optimal and feasible')
-            feasible = True
-        elif solved_results.solver.termination_condition == TerminationCondition.infeasible:
-            if verbose:
-                print('Study._solve_problem_instance(): solution is infeasible')
-        else:
-            # Something else is wrong
-            if verbose:
-                print('Study._solve_problem_instance(): Solver Status: ' % solved_results.solver.status)
+        solved_instance, solved_results, feasible = solve_handler.solve(get_suffixes=get_suffixes)
 
         # ---- PARSE SOLUTION OUTPUT ----
         # Parse out only the optimal variable values that are nonzero

@@ -4,7 +4,9 @@ import re
 import sys
 
 import pyomo.environ as oe
-from pyomo.opt import SolverFactory, SolverManagerFactory
+from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, TerminationCondition
+
+from efficiencysubproblem.config import verbose
 
 
 class SolveHandler:
@@ -104,6 +106,21 @@ class SolveHandler:
 
             results.write()
 
+        # Check solution feasibility status
+        feasible = False
+        if (results.solver.status == SolverStatus.ok) and (
+                results.solver.termination_condition == TerminationCondition.optimal):
+            if verbose:
+                print('Study._solve_problem_instance(): solution is optimal and feasible')
+            feasible = True
+        elif results.solver.termination_condition == TerminationCondition.infeasible:
+            if verbose:
+                print('Study._solve_problem_instance(): solution is infeasible')
+        else:
+            # Something else is wrong
+            if verbose:
+                print('Study._solve_problem_instance(): Solver Status: ' % results.solver.status)
+
         # self.instance.display()
 
-        return self.instance, results
+        return self.instance, results, feasible
