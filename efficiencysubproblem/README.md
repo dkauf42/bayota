@@ -56,6 +56,9 @@ up and running.
 │       ├── sequence_plot.py
 │       └── zL_bars.py
 │
+├── output                 <- solution output files are created here
+├── log                    <- logging files are created here for debugging purposes
+│
 ├── CHANGELOG.md
 ├── MANIFEST.in
 └── LICENSE
