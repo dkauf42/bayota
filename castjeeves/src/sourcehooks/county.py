@@ -26,11 +26,30 @@ class County(SourceHook):
         return self.singleconvert(sourcetbl='TblCounty', toandfromheaders=['countyid', 'countyname'],
                                   fromtable=countyids, toname='countyname')
 
+    def validate_countystatestrs(self, countystatestrs=None):
+        """
+
+        Args:
+            countystatestrs (list of str):
+
+        Returns:
+            pd.DataFrame
+
+        """
+        try:
+            areas = [x.split(', ') for x in countystatestrs]  # split ('County, StateAbbrev')
+            return pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
+        except (AssertionError, ValueError) as e:
+            raise Exception('** Invalid County Input **\n'
+                            '   %s is invalid'
+                            '   -- Must be list of comma-separated strings'
+                            '   -- e.g. [\'Adams, PA\', \'Hardy, WV\']'
+                            % countystatestrs).with_traceback(e.__traceback__)
+
     def countyid_from_countystatestrs(self, getfrom=None, append=False):
         TblCounty = self.source.TblCounty  # get relevant source data
 
-        areas = [x.split(', ') for x in getfrom]  # split ('County, StateAbbrev')
-        rowmask = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
+        rowmask = self.validate_countystatestrs(getfrom)
 
         columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
         tblsubset = TblCounty.loc[:, columnmask].merge(rowmask, how='inner')
