@@ -6,6 +6,7 @@ Test various BMP-load source combinations
 import os
 import sys
 import timeit
+import logging
 import argparse
 import textwrap
 import tkinter as tk
@@ -13,8 +14,13 @@ import tkinter as tk
 from sandbox.src.util.OptCase import OptCase
 from sandbox.src.gui.toplevelframes.MainWindow import MainWindow
 
+from efficiencysubproblem.config import set_up_logger
+
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
+
+set_up_logger()
+logger = logging.getLogger(__name__)
 
 
 def main(numinstances=1, testcase=None, scale='', areanames=None):
@@ -31,21 +37,21 @@ def main(numinstances=1, testcase=None, scale='', areanames=None):
     for i in range(numinstances):
         # Load the Source Data and Base Condition tables
         if testcase == 1:
-            print('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
+            logger.info('\nTEST CASE 1 : No GUI; Only "Adams, PA" County\n')
             oc = OptCase.loadexample(name='adamscounty')
 
         elif testcase == 2:
-            print('\nTEST CASE 2 : No GUI; 2 Counties: ("Adams, PA" and "Anne Arundel, MD")\n')
+            logger.info('\nTEST CASE 2 : No GUI; 2 Counties: ("Adams, PA" and "Anne Arundel, MD")\n')
             oc = OptCase.loadexample(name='adams_and_annearundel')
 
         elif testcase == 3:
-            print('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
+            logger.info('\nTEST CASE 3 : No GUI; 3 Counties: ("Adams, PA", "York, PA", and "Anne Arundel, MD")\n')
             oc = OptCase.loadexample(name='adams_annearundel_and_york')
 
         elif testcase == 99:
-            print('\nTEST CASE 99 : No GUI; Custom geography specified.\n')
-            print('\tScale = %s\n' % scale)
-            print('\tAreanames = %s\n' % areanames)
+            logger.info('\nTEST CASE 99 : No GUI; Custom geography specified.\n')
+            logger.info('\tScale = %s\n' % scale)
+            logger.info('\tAreanames = %s\n' % areanames)
             oc = OptCase.loadcustom(scale=scale, areanames=areanames)
 
         elif not testcase:
@@ -66,9 +72,9 @@ def main(numinstances=1, testcase=None, scale='', areanames=None):
 
         # Write scenario tables to file.
 
-        print('<Runner Loading Complete>')
-        print("Loading time", timeit.default_timer() - start_time)
-        print('<DONE>')
+        logger.info('<Runner Loading Complete>')
+        logger.info("Loading time", timeit.default_timer() - start_time)
+        logger.info('<DONE>')
 
         oc.successful_creation_log = True
 

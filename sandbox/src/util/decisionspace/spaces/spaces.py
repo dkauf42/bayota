@@ -1,6 +1,7 @@
+import logging
 import pandas as pd
 
-from sandbox import config
+logger = logging.getLogger(__name__)
 
 
 class Space(object):
@@ -65,28 +66,25 @@ class Space(object):
         return formattedstr
 
     def generate_from_SourceGeoAgencytable(self):
-        if config.verbose:
-            print('** %s space being populated from lrseg_agency_table **  '
-                  '{Space.generate_from_SourceGeoAgencytable()}' % type(self).__name__)
+        logger.debug('** %s space being populated from lrseg_agency_table **  '
+                     '{Space.generate_from_SourceGeoAgencytable()}' % type(self).__name__)
 
         # Populate BMPs
         self.append_bmps_to_SourceGeoAgencytable()
-        if config.verbose:
-            print('\t-- idtable has  set to the Source,Geo,Agency table, which looks like:')
-            print(self.idtable.head())
-            print('\t^shape is %s' % str(self.idtable.shape))
-            print('\t--')
+        logger.debug('\t-- idtable has  set to the Source,Geo,Agency table, which looks like:')
+        logger.debug(self.idtable.head())
+        logger.debug('\t^shape is %s' % str(self.idtable.shape))
+        logger.debug('\t--')
 
         # QC BMPs
         self.qc_bmps()
         self.append_units_and_bounds()
         self.translate_ids_to_names()
 
-        if config.verbose:
-            print('\t-- after qc_bmps and translation, the idtable looks like')
-            print(self.idtable.head())
-            print('\t^shape is %s' % str(self.idtable.shape))
-            print('\t--')
+        logger.debug('\t-- after qc_bmps and translation, the idtable looks like')
+        logger.debug(self.idtable.head())
+        logger.debug('\t^shape is %s' % str(self.idtable.shape))
+        logger.debug('\t--')
 
     def append_bmps_to_SourceGeoAgencytable(self):
         """ Overridden by land, animal, manure subclasses """

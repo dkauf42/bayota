@@ -1,6 +1,8 @@
 import pandas as pd
+import logging
 from .spaces import Space
-from sandbox import config
+
+logger = logging.getLogger(__name__)
 
 
 class Animal(Space):
@@ -37,10 +39,9 @@ class Animal(Space):
         - "FEEDPermitted" and "FEEDNonPermitted" are removed; replaced by "FEED"
 
         """
-        if config.verbose:
-            print('\t-- QC\'ing the idtable { in animal.qc_bmps() }, which looks like:')
-            print(self.idtable.head())
-            print('^shape is %s' % (self.idtable.shape, ))
+        logger.debug('\t-- QC\'ing the idtable { in animal.qc_bmps() }, which looks like:')
+        logger.debug(self.idtable.head())
+        logger.debug('^shape is %s' % (self.idtable.shape, ))
 
         origrowcnt, origcolcnt = self.idtable.shape
         newtable = self.idtable.copy()
@@ -56,8 +57,7 @@ class Animal(Space):
             mask = pd.Series(newtable['bmpid'] == bmpid)
             newtable = newtable[~mask]
             removaltotal += mask.sum()
-            if config.verbose:
-                print('removing %d for %s (type=%s)' % (mask.sum(), bmpnametoremove, bmptypename))
+            logger.debug('removing %d for %s (type=%s)' % (mask.sum(), bmpnametoremove, bmptypename))
 
         # Remove "AllLoadSources" loadsourcegroup from the manure table
         loadsourcenametoremove = 'AllLoadSources'
@@ -66,8 +66,7 @@ class Animal(Space):
         mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
         newtable = newtable[~mask]
         removaltotal += mask.sum()
-        if config.verbose:
-            print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
+        logger.debug('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Remove "FEEDPermitted" and "FEEDNonPermitted" loadsourcegroups from the manure table,
         # leaving only "FEED", which contains both anyway
@@ -77,16 +76,14 @@ class Animal(Space):
         mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
         newtable = newtable[~mask]
         removaltotal += mask.sum()
-        if config.verbose:
-            print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
+        logger.debug('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
         loadsourcenametoremove = 'FEEDNonPermitted'
         loadsourcegroupid = self.jeeves.loadsource. \
             single_loadsourcegroupid_from_loadsourcegroup_name(loadsourcegroupname=loadsourcenametoremove)
         mask = pd.Series(newtable['loadsourcegroupid'] == loadsourcegroupid)
         newtable = newtable[~mask]
         removaltotal += mask.sum()
-        if config.verbose:
-            print('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
+        logger.debug('removing %d for %s' % (mask.sum(), loadsourcenametoremove))
 
         # Add together the AnimalUnits and AnimalCount for Permitted and NonPermitted
         keycols = ['loadsourcegroupid', 'bmpid', 'baseconditionid', 'countyid', 'animalid', 'agencyid']
@@ -97,8 +94,7 @@ class Animal(Space):
 
         self.idtable = newtable
         newrowcnt, newcolcnt = self.idtable.shape
-        if config.verbose:
-            print('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
+        logger.debug('New decision space size is (%d, %d) - (%d, ) = (%d, %d)' %
                   (origrowcnt, origcolcnt, removaltotal, newrowcnt, newcolcnt))
 
     def append_units_and_bounds(self):

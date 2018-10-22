@@ -1,7 +1,10 @@
+import logging
+
 from sandbox.src.util.decisionspace import DecisionSpace
 from sandbox.src.util.scenariomaker.scenariomaker import ScenarioMaker
 from sandbox.src.util.Examples import Examples
-from sandbox import config
+
+logger = logging.getLogger(__name__)
 
 
 class OptCase(object):
@@ -49,8 +52,7 @@ class OptCase(object):
         Parameters:
             name (str):  this is the name of the example to load.
         """
-        if config.verbose:
-            print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
+        logger.debug('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
 
         ex = Examples(name)
 
@@ -120,8 +122,7 @@ class OptCase(object):
             name (str):  this is the name of the example to load.
 
         """
-        if config.verbose:
-            print('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
+        logger.debug('** OptCase is loading example "%s" **  {OptCase.loadexample()}' % name)
 
         ex = Examples(name)
 
