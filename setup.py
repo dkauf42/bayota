@@ -11,6 +11,8 @@ import sys
 from setuptools import setup, Command, find_packages
 import setuptools.command.test
 
+sys.path.append('.')
+
 
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
