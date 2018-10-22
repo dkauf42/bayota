@@ -50,4 +50,3 @@ COPY ./efficiencysubproblem /app/efficiencysubproblem
 WORKDIR /app/efficiencysubproblem
 
 RUN python setup.py develop
-### #CMD python ./index.py
