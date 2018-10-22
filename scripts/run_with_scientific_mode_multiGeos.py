@@ -1,11 +1,9 @@
 
 import os
 import pandas as pd
-import plotly.plotly as py
 
 from definitions import ROOT_DIR
 
-from efficiencysubproblem.src.vis.sequence_plot import plotly_costobj
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
 from efficiencysubproblem.src.study import Study
