@@ -11,9 +11,9 @@ from efficiencysubproblem.src.model_handling.interface import get_loaded_model_h
 from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from efficiencysubproblem.config import PROJECT_DIR, LOGGERCFG
+from efficiencysubproblem.config import PROJECT_DIR, set_up_logger
 
-logging.config.fileConfig(LOGGERCFG, disable_existing_loggers=False)
+set_up_logger()
 logger = logging.getLogger(__name__)
 
 
