@@ -7,25 +7,25 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-listofgeos = ['Hampshire, WV',
-              'Broome, NY',
-              'Cumberland, PA',
-              'Wicomico, MD',
-              'Nelson, VA',
-              'Kent, DE',
-              'District of Columbia, DC',
-              'Calvert, MD',
-              'Montgomery, MD',
-              'Adams, PA',
-              'Sussex, DE',
-              'Jefferson, WV',
-              'Dorchester, MD',
-              'Centre, PA',
-              'Steuben, NY',
-              'Northumberland, VA',
-              'Botetourt, VA',
-              'Fairfax, VA',
-              'Anne Arundel, MD']
+listofgeos = ['Allegany, MD'
+              'Anne Arundel, MD'
+              'Baltimore, MD'
+              'Baltimore City, MD'
+              'Calvert, MD'
+              'Caroline, MD'
+              'Carroll, MD'
+              'Cecil, MD'
+              'Charles, MD'
+              'Dorchester, MD'
+              'Frederick, MD'
+              'Garrett, MD'
+              'Harford, MD'
+              'Howard, MD'
+              'Kent, MD'
+              'Montgomery, MD'
+              'Prince Georges, MD'
+              'Queen Annes, MD'
+              'St. Marys, MD']
 
 
 for g in listofgeos:
