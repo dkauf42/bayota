@@ -33,7 +33,7 @@ class TestCommand(setuptools.command.test.test):
     def run_tests(self):
         """Customized run"""
         # deferred import, because outside the eggs aren't loaded
-        print('no tests specified at the top(bayota package)-level)')
+        print('no tests specified at the top(bayota package)-level')
         pass
         # import shlex
         # import pytest
