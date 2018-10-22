@@ -11,7 +11,7 @@ PROJECT_DIR = os.path.join(ROOT_DIR, 'efficiencysubproblem/')
 AMPLAPP_DIR = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
 
 logconfig_file = (os.path.join(PROJECT_DIR, 'logging_config.cfg'))
-logfilename = os.path.join(PROJECT_DIR, 'output', 'testSuite.log')
+logfilename = os.path.join(PROJECT_DIR, 'log', 'efficiencysubproblem_debug.log')
 
 
 def set_up_logger():
