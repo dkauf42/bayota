@@ -28,7 +28,7 @@ application up and running.
 ├── sandbox                <- Project for automated generation of valid BMP input files for use with CAST
 │   └── ...
 │
-├── jnotebooks             <- Jupyter notebooks for interactively accessing and running the bayota projects
+├── scripts                <- Jupyter notebooks and other scripts for interactively accessing and running the bayota projects
 │   └── ...
 │
 ├── definitions.py         <- Specifies top-level directory information
@@ -74,10 +74,10 @@ From the python prompt or in a jupyter notebook:
     >>> from efficiencysubproblem.src.study import Study
 
     >>> # Create a model instance
-    >>> s = Study(objectivetype='costmin', geoscale='county', geoentities=['Adams, PA'], baseconstraint=5)
+    >>> s = Study(objectivetype='costmin', geoscale='county', geoentities=['Adams, PA'])
 
     >>> # Solve the instance and get results
-    >>> solveroutpath, csvpath, df, objective, feasible = s.go()
+    >>> solveroutpath, csvpath, df, objective, feasible = s.go(constraint=5)
 
 
 # How do I uninstall?
