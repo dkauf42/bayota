@@ -26,6 +26,7 @@ Each version should:
 - updated the the return of Study.go methods to include solution objective value
 - restructured data handling and model handling to use mixin inheritance pattern, thus
 eliminating the duplication of code for each type of objective/geoscale combination.
+- output now piped through python logging module instead of print() statements
 
 ### Fixed
 - updated import paths
