@@ -5,8 +5,6 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-import plotly.plotly as py
-
 from definitions import ROOT_DIR
 
 from efficiencysubproblem.src.vis import sequence_plot
