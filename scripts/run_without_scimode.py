@@ -31,8 +31,7 @@ listofgeos = ['Hampshire, WV',
 for g in listofgeos:
     print(g)
     s = Study(objectivetype='costmin',
-              geoscale='county', geoentities=[g],
-              baseconstraint=3)
+              geoscale='county', geoentities=[g])
 
     countyname = g.split(',')[0]
     stateabbrev = g.split(',')[1]
