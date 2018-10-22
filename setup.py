@@ -33,20 +33,22 @@ class TestCommand(setuptools.command.test.test):
     def run_tests(self):
         """Customized run"""
         # deferred import, because outside the eggs aren't loaded
-        import shlex
-        import pytest
-
-        this_project_dir = os.path.dirname(os.path.abspath(__file__))
-
-        pytest_args = '%s' % os.path.join(this_project_dir, 'src') +\
-                      ' --rootdir=%s' % this_project_dir +\
-                      ' --cov=%s' % os.path.join(this_project_dir, 'src') +\
-                      ' --cov-report=term-missing' +\
-                      ' --cov-report=html:%s' % os.path.join(this_project_dir, 'htmlcov')
-
-        print('pytest args :\n %s' % pytest_args)
-        errno = pytest.main(shlex.split(pytest_args, posix="win" not in sys.platform))
-        sys.exit(errno)
+        print('no tests specified at the top(bayota package)-level)')
+        pass
+        # import shlex
+        # import pytest
+        #
+        # this_project_dir = os.path.dirname(os.path.abspath(__file__))
+        #
+        # pytest_args = '%s' % os.path.join(this_project_dir, 'src') +\
+        #               ' --rootdir=%s' % this_project_dir +\
+        #               ' --cov=%s' % os.path.join(this_project_dir, 'src') +\
+        #               ' --cov-report=term-missing' +\
+        #               ' --cov-report=html:%s' % os.path.join(this_project_dir, 'htmlcov')
+        #
+        # print('pytest args :\n %s' % pytest_args)
+        # errno = pytest.main(shlex.split(pytest_args, posix="win" not in sys.platform))
+        # sys.exit(errno)
 
 
 with open('README.md') as f:
