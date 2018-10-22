@@ -122,15 +122,15 @@ class SolveHandler:
         feasible = False
         if (results.solver.status == SolverStatus.ok) and (
                 results.solver.termination_condition == TerminationCondition.optimal):
-            logger.info('solution is optimal and feasible')
+            logger.debug('solution is optimal and feasible')
             feasible = True
         elif results.solver.termination_condition == TerminationCondition.infeasible:
-            logger.info('solution is infeasible')
+            logger.debug('solution is infeasible')
         else:
             # Something else is wrong
-            logger.info('Solver Status: ' % results.solver.status)
+            logger.debug('Solver Status: ' % results.solver.status)
 
-        logger.info('** checking infeasible constraints... **')
+        logger.debug('** checking infeasible constraints... **')
         log_infeasible_constraints(self.instance, logger=logger)
         log_infeasible_bounds(self.instance, logger=logger)
 
