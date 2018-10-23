@@ -33,7 +33,6 @@ def main(objectivetype, scale, entities):
     if not entities:
         listofgeos = ['Allegany, MD',
                       'Anne Arundel, MD',
-                      'Baltimore, MD',
                       'Baltimore City, MD',
                       'Calvert, MD',
                       'Caroline, MD',
@@ -49,7 +48,8 @@ def main(objectivetype, scale, entities):
                       'Montgomery, MD',
                       'Prince Georges, MD',
                       'Queen Annes, MD',
-                      'St. Marys, MD']
+                      'St. Marys, MD',
+                      'Baltimore, MD']
 
     for g in listofgeos:
         print(g)

@@ -5,23 +5,16 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-# from definitions import ROOT_DIR
-
-# import pkg_resources
-# access the filepath:
-# ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
-
 from config.settings import get_graphics_path
 
 from efficiencysubproblem.src.vis import sequence_plot
-# from efficiencysubproblem.src.vis.sequence_plot import plotly_costobj
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
 #%%
-geoent = 'Cumberland, PA'
+geoent = 'Baltimore, MD'
 s = Study(objectivetype='costmin',
           geoscale='county', geoentities=[geoent])
 
@@ -41,7 +34,7 @@ stateabbrev = geoent.split(',')[1]
  solution_csv_filepath,
  mdf,
  solution_objective,
- feasibility_list) = s.go_constraintsequence(list(range(1, 3)))
+ feasibility_list) = s.go_constraintsequence(list(range(1, 10)))
 
 #%%
 # log_infeasible_constraints(s.modelhandler.model)

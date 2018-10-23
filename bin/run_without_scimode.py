@@ -16,7 +16,6 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 
 listofgeos = ['Allegany, MD',
               'Anne Arundel, MD',
-              'Baltimore, MD',
               'Baltimore City, MD',
               'Calvert, MD',
               'Caroline, MD',
@@ -32,7 +31,8 @@ listofgeos = ['Allegany, MD',
               'Montgomery, MD',
               'Prince Georges, MD',
               'Queen Annes, MD',
-              'St. Marys, MD']
+              'St. Marys, MD',
+              'Baltimore, MD']
 
 
 for g in listofgeos:
