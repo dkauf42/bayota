@@ -74,10 +74,11 @@ setup(name='bayota',
       packages=find_packages(),  #['src', 'scripts', 'castjeeves', 'castjeeves.CastJeeves'],
       include_package_data=True,
       install_requires=install_requires,
-      # test_suite="src.tests",
       setup_requires=['pytest-runner'],
       tests_require=['pytest',
                      'pytest-cov'],
       cmdclass={'clean': CleanCommand,
-                'test': TestCommand}
+                'test': TestCommand},
+      entry_points={"console_scripts":
+                    ['bayota = bin.bootstrap:main']}
       )
