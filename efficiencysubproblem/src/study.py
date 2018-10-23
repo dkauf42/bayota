@@ -172,14 +172,14 @@ class Study:
 
             merged_df['originalload'] = oe.value(mdl.originalload['N'])
             merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
-                                        oe.value(mdl.originalload['N'])
+                                            oe.value(mdl.originalload['N'])
 
         if self.objectivetype == 'loadreductionmax':
             solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
                                                                                              fileprintlevel=fileprintlevel)
             solution_objective = oe.value(mdl.PercentReduction['N'])
             merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
-            merged_df['totalcostupperbound'] = oe.value(mdl.totalcostupperbound ) # Label this run in the dataframe
+            merged_df['totalcostupperbound'] = oe.value(mdl.totalcostupperbound)  # Label this run in the dataframe
 
         merged_df['feasible'] = feasible_solution
 
