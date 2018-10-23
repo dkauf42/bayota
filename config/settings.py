@@ -19,3 +19,8 @@ def get_graphics_path():
     dirname = os.path.join(get_outdir_path(), 'graphics')
     os.makedirs(dirname, exist_ok=True)
     return dirname
+
+def get_logger_path():
+    dirname = os.path.join(get_outdir_path(), 'log')
+    os.makedirs(dirname, exist_ok=True)
+    return dirname
