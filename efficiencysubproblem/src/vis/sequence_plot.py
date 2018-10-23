@@ -145,8 +145,10 @@ def plotlib_loadreductionobj(df=None, savefig=True, savefilepathandname=None,
             alpha=0.4, linestyle='-', linewidth=1)
 
     ax.set_xticks(df[xname])
-    ax.set_xticklabels(df[xname])
+    ax.set_xticklabels(["{:,}".format(x) for x in df[xname]])
     plt.yticks(rotation=45)
+
+    plt.xticks(rotation=60)
 
     # Hide the right and top spines
     ax.spines['top'].set_visible(False)
