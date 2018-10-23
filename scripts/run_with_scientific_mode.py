@@ -5,7 +5,12 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-from definitions import ROOT_DIR
+# from definitions import ROOT_DIR
+
+import pkg_resources
+# access the filepath:
+ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
+
 
 from efficiencysubproblem.src.vis import sequence_plot
 # from efficiencysubproblem.src.vis.sequence_plot import plotly_costobj
@@ -17,8 +22,7 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 #%%
 geoent = 'Cumberland, PA'
 s = Study(objectivetype='costmin',
-          geoscale='county', geoentities=[geoent],
-          baseconstraint=3)
+          geoscale='county', geoentities=[geoent])
 
 countyname = geoent.split(',')[0]
 stateabbrev = geoent.split(',')[1]

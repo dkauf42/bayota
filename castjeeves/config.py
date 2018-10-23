@@ -1,4 +1,3 @@
 import os
-from definitions import ROOT_DIR
 
-PROJECT_DIR = os.path.join(ROOT_DIR, 'castjeeves/')
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -1,12 +1,9 @@
 import os
-from definitions import ROOT_DIR
-# from amplpy import AMPL, Environment
 
 import logging
 import logging.config
 
-PROJECT_DIR = os.path.join(ROOT_DIR, 'efficiencysubproblem/')
-AMPLAPP_DIR = os.path.join(ROOT_DIR, 'ampl/amplide.macosx64/')
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 logconfig_file = (os.path.join(PROJECT_DIR, 'logging_config.cfg'))
 logfilename = os.path.join(PROJECT_DIR, 'log', 'efficiencysubproblem_debug.log')

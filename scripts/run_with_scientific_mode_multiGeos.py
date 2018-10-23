@@ -2,7 +2,11 @@
 import os
 import pandas as pd
 
-from definitions import ROOT_DIR
+# from definitions import ROOT_DIR
+
+import pkg_resources
+# access the filepath:
+ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
 
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 

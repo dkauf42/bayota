@@ -1,9 +1,8 @@
 import os
 import logging
 import logging.config
-from definitions import ROOT_DIR
 
-PROJECT_DIR = os.path.join(ROOT_DIR, 'sandbox/')
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(PROJECT_DIR, 'output/')
 
 logconfig_file = (os.path.join(PROJECT_DIR, 'logging_config.cfg'))
