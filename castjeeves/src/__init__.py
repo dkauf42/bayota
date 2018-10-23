@@ -3,6 +3,7 @@ Module for cast_opt_tests
 """
 
 import os
+from config.settings import get_outdir_path
 # import requests
 
 # from .jeeves import Jeeves
@@ -35,11 +36,14 @@ def get_datadir(path=''):
 
 
 def get_tempdir():
-    return os.path.join(_ROOT, 'temp/')
+    dirname = os.path.join(_ROOT, 'temp/')
+    os.makedirs(dirname, exist_ok=True)
+    return dirname
 
 
 def get_outputdir():
-    return os.path.join(_WORKINGDIR, 'output/')
+    # return os.path.join(_WORKINGDIR, 'output/')
+    return get_outdir_path()
 
 
 def get_sqlsourcetabledir():
