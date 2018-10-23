@@ -7,10 +7,11 @@ import importlib
 
 # from definitions import ROOT_DIR
 
-import pkg_resources
+# import pkg_resources
 # access the filepath:
-ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
+# ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
 
+from config.settings import get_graphics_path
 
 from efficiencysubproblem.src.vis import sequence_plot
 # from efficiencysubproblem.src.vis.sequence_plot import plotly_costobj
@@ -56,7 +57,7 @@ importlib.reload(sequence_plot)
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
 fig = plotlib_costobj(df=df_piv, xname=constraintvar,
-                          savefilepathandname=os.path.join(ROOT_DIR, 'graphics', stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'),
+                          savefilepathandname=os.path.join(get_graphics_path(), stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'),
                       secondaryxticklabels=df_piv['N_pounds_reduced'])
 # py.iplot(fig, filename='styled-line')
 
