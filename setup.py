@@ -71,7 +71,7 @@ setup(name='bayota',
       author_email='dkaufman@chesapeakebay.net',
       url='https://gitlab.com/daka42',
       license=license_text,
-      packages=['castjeeves', 'efficiencysubproblem', 'sandbox', 'util'],
+      packages=find_packages(),  #['castjeeves', 'efficiencysubproblem', 'sandbox', 'util'],
       include_package_data=True,
       install_requires=install_requires,
       setup_requires=['pytest-runner'],
@@ -80,5 +80,5 @@ setup(name='bayota',
       cmdclass={'clean': CleanCommand,
                 'test': TestCommand},
       entry_points={"console_scripts":
-                    ['bayota = bin.bootstrap:main']}
+                    ['bayota = bin.bayota_efficiency:main']}
       )
