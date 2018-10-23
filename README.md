@@ -17,23 +17,39 @@ application up and running.
 # Directory Structure
 
 ```
-├── README.md              <- The top-level README for developers using this project.
+bayota
 │
-├── castjeeves             <- Project to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
-│   └── ...
-│
-├── efficiencysubproblem   <- Project to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
-│   └── ...
-│
-├── sandbox                <- Project for automated generation of valid BMP input files for use with CAST
-│   └── ...
-│
-├── scripts                <- Jupyter notebooks and other scripts for interactively accessing and running the bayota projects
-│   └── ...
-│
-├── definitions.py         <- Specifies top-level directory information
-│
+├── README.md              <- Top-level README for users/developers of this project.
 ├── CHANGELOG.md           <- Documentation of notable changes to this project
+│
+├── bin                    <- scripts (python, bash, slurm) for running from the command-line
+│   └── ...
+│
+├── config                 <- specification of data output, graphics, and logging directory paths
+│   └── ...
+│
+├── castjeeves             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+│   ├── __init__.py
+│   └── ...
+│
+├── efficiencysubproblem   <- PACKAGE to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+│   ├── __init__.py
+│   └── ...
+│
+├── sandbox                <- PACKAGE for automated generation of valid BMP input files for use with CAST
+│   ├── __init__.py
+│   └── ...
+│
+├── jnotebooks             <- Jupyter notebooks for browser-based analyses
+│   └── ...
+│
+├── util                   <- PACKAGE for utility methods that haven't yet found a home elsewhere
+│   ├── __init__.py
+│   └── ...
+│
+├── setup.py
+├── MANIFEST.in
+├── Dockerfile_36
 └── LICENSE
 ```
 
@@ -50,12 +66,11 @@ From the /bayota directory, run
 ### Install
 
 
-**Each project is located in its own subdir:**
-'castjeeves', 'efficiencysubproblem', 'sandbox'
+**To install as a python package**
 
-Set up should be done for each subproject individually, e.g....
+From the project root dir (bayota), enter:
 
-    > python efficiencysubproblem/setup.py install
+    > python setup.py install
 
 * Summary of set up
 * Configuration
@@ -65,18 +80,30 @@ Set up should be done for each subproject individually, e.g....
 
 #### Run the tests
 
-    > python efficiencysubproblem/setup.py test
+    > python setup.py test
 
 # Usage
+
+To run the standard bash script:
+
+    > cd bin/
+    > chmod 755 bayota
+    > chmod 755 bayota_efficiency.py
+
+    # back up to the project root (bayota/)
+    > cd ..
+
+    # run the script (and you can include --daemon argument to detach process and run with no hangup)
+    > ./bin/bayota
 
 From the python prompt or in a jupyter notebook:
 
     >>> from efficiencysubproblem.src.study import Study
 
-    >>> # Create a model instance
+    # Create a model instance
     >>> s = Study(objectivetype='costmin', geoscale='county', geoentities=['Adams, PA'])
 
-    >>> # Solve the instance and get results
+    # Solve the instance and get results
     >>> solveroutpath, csvpath, df, objective, feasible = s.go(constraint=5)
 
 
@@ -84,9 +111,16 @@ From the python prompt or in a jupyter notebook:
 
 ##### 1. To remove only the files created by "python setup.py install":
 
-    > python <subdir>/setup.py clean
+    > python setup.py clean
 
-##### 2. To remove everything, delete the directory.
+##### 2. To remove the installed package files from your environment (site-packages):
+
+    > python setup.py develop --uninstall
+
+##### 2. To remove everything
+
+    > python setup.py develop --uninstall
+    > rm -r bayota
 
 # Who do I talk to? ###
 

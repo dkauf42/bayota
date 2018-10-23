@@ -15,10 +15,14 @@ Each version should:
 
 ## Current Development
 ### Added
+- add bash script to run efficiency model counties as a daemon process
 
 ### Changed
 - moved jupyter notebook up from the efficiencysubproblem folder
-to the root level
+to the project root level
+- moved python and bash scripts to a project root level bin/ folder
+- placed output, graphics, and log path specifications into a project
+root level config/ folder
 
 ### Fixed
 
