@@ -6,10 +6,8 @@ import logging.config
 from .settings import get_logger_path
 
 logconfig_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logging_config.cfg')
-# print(logconfig_file)
 
 logfilename = os.path.join(get_logger_path(), 'efficiencysubproblem_debug.log')
-# print(logfilename)
 
 
 def set_up_logger():
