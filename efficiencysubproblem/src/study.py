@@ -3,7 +3,6 @@ import time
 import pandas as pd
 from datetime import datetime
 from collections import OrderedDict
-import logging.config
 
 import pyomo.environ as oe
 
@@ -12,6 +11,10 @@ from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
 from efficiencysubproblem.config import PROJECT_DIR
+
+from config.settings import get_outdir_path
+
+import logging
 from config.logger_setup import set_up_logger
 
 set_up_logger()
@@ -188,8 +191,7 @@ class Study:
             zip(sorteddf_byacres.bmpshortname, sorteddf_byacres.landriversegment,
                 sorteddf_byacres.loadsource, sorteddf_byacres.totalannualizedcostperunit))
 
-        filenamestr = ''.join(['output/output_', solvetimestamp, '.csv'])
-        solution_csv_filepath = os.path.join(PROJECT_DIR, filenamestr)
+        solution_csv_filepath = os.path.join(get_outdir_path(), 'output_' + solvetimestamp + '.csv')
         sorteddf_byacres.to_csv(solution_csv_filepath)
 
         return solver_output_filepath, solution_csv_filepath, sorteddf_byacres, solution_objective, feasible_solution
@@ -280,8 +282,7 @@ class Study:
         alldfs['x'] = list(
             zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource, alldfs.totalannualizedcostperunit))
 
-        filenamestr = ''.join(['output/output_', loopname, '_', solvetimestamp, '.csv'])
-        solution_csv_filepath = os.path.join(PROJECT_DIR, filenamestr)
+        solution_csv_filepath = os.path.join(get_outdir_path(), 'output_' + loopname + '_' + solvetimestamp + '.csv')
         alldfs.to_csv(solution_csv_filepath)
 
         return solver_output_filepaths, solution_csv_filepath, alldfs, solution_objectives, feasibility_list
