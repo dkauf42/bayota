@@ -7,7 +7,8 @@ def plotlib_costobj(df=None, savefig=True, savefilepathandname=None,
                     title='Minimal Total Cost vs. Load Constraint',
                     xlabel='Load Reduction (%) Lower Bound Constraint',
                     ylabel='Minimal Total Cost ($)',
-                    secondaryxticklabels=None):
+                    secondaryxticklabels=None,
+                    showplot=True):
     if not savefilepathandname:
         savefig = False
 
@@ -90,7 +91,10 @@ def plotlib_costobj(df=None, savefig=True, savefilepathandname=None,
 
         plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
 
-    plt.show()
+    if showplot:
+        plt.show()
+    else:
+        plt.draw()
     if savefig:
         fig.savefig(savefilepathandname, dpi=300,
                     bbox_inches='tight', transparent=True)
