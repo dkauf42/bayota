@@ -1,1 +1,3 @@
 include config/logging_config.cfg
+recursive-include castjeeves/data *.csv
+recursive-include efficiencysubproblem/data *.csv
