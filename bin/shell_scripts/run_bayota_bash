@@ -3,7 +3,7 @@
 if [ $# -gt 0 ]; then
     STUDY=$1
 else
-    echo 'Usage: csh run_bayota.csh <study_name>'
+    echo 'Usage: ./run_bayota.csh <study_name>'
     echo ''
     echo 'Enter name of the Study: '
     read STUDY
