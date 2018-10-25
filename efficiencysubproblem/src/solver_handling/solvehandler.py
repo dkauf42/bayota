@@ -97,7 +97,7 @@ class SolveHandler:
                 setattr(self.instance, 'lambda', oe.Suffix(direction=oe.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
             results = solver.solve(self.instance, tee=True, symbolic_solver_labels=True,
-                                   keepfiles=False, logfile=logfilename)
+                                   keepfiles=True, logfile=logfilename)
         else:
             opt = SolverFactory("cbc")
             solver_manager = SolverManagerFactory('neos')

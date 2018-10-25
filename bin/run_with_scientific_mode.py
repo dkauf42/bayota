@@ -5,7 +5,7 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-from config.settings import get_graphics_path
+from log_handler.settings import get_graphics_path
 
 from efficiencysubproblem.src.vis import sequence_plot
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj

@@ -15,9 +15,9 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from config.logger_setup import set_up_logger
+from log_handler.logger_setup import set_up_logger
 
-from config.settings import get_graphics_path
+from log_handler.settings import get_graphics_path
 
 # script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 # sys.path.append(script_dir)

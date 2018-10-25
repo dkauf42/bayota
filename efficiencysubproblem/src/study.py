@@ -12,10 +12,10 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 
 from efficiencysubproblem.config import PROJECT_DIR
 
-from config.settings import get_outdir_path
+from log_handler.settings import get_outdir_path
 
 import logging
-from config.logger_setup import set_up_logger
+from log_handler.logger_setup import set_up_logger
 
 set_up_logger()
 logger = logging.getLogger(__name__)
