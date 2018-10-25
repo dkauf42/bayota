@@ -1,16 +1,16 @@
 #!/bin/bash
 
 if [ $# -gt 0 ]; then
-    STUDY = $1
+    STUDY=$1
 else
     echo 'Usage: csh run_bayota.csh <study_name>'
     echo ''
     echo 'Enter name of the Study: '
     read STUDY
-    INTERACTIVE = 1
+    INTERACTIVE=1
 fi
 
-SETTINGS_CONFIG_FILE = ../../config/cloudfish/settings_config.cfg
+SETTINGS_CONFIG_FILE=../../config/cloudfish/settings_config.cfg
 
 echo ''
 echo 'Locating SETTINGS Configuration File...'
@@ -19,26 +19,26 @@ if ( ! -f $SETTINGS_CONFIG_FILE ); then
     exit 1
 fi
 
-source $SETTINGS_CONFIG_FILE
+source ${SETTINGS_CONFIG_FILE}
 
 
 # Define a timestamp function
 timestamp() {
   date +"%Y%m%d-%H%M%S"
 }
-TIME_STAMP       = timestamp
+TIME_STAMP=timestamp
 monthstamp() {
   date +"%Y%m"
 }
-MONTH_STAMP      = monthstamp
+MONTH_STAMP=monthstamp
 
 
 # Directories to store Output and Logs
-OUT_DIR = ${OUTPUT_DIR_STEM}_${MONTH_STAMP}
+OUT_DIR=${OUTPUT_DIR_STEM}_${MONTH_STAMP}
 mkdir -p $OUT_DIR
 
 if [ -z ${PRIORITY} ]; then
-    PRIORITY = 5000
+    PRIORITY=5000
 fi
 
 echo 'Study: **' $STUDY '** in ' $PROJECT_HOME
@@ -47,12 +47,12 @@ echo ''
 echo 'Continue? [Y/N]'
 read response
 
-if [ $response = 'Y' ] || [ $response = 'y' ]; then
-    sbatch --nice=$PRIORITY --job-name=$STUDY ../bayota_efficiency.py
+if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
+    sbatch --nice=${PRIORITY} --job-name=${STUDY} ../bayota_efficiency.py
 
-    iRETURN = $?
+    iRETURN=$?
 
-    if [ $iRETURN = 1 ]; then
+    if [ ${iRETURN} = 1 ]; then
         echo 'SLURM Unable to Queue'
     else
         echo ''
