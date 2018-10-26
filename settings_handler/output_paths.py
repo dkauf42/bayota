@@ -19,8 +19,8 @@ def write_default_config():
     config['output_directories']['graphics'] = default_graphics_dir
     config['output_directories']['logs'] = default_logging_dir
 
-    config.add_section('settings')
-    config['settings']['logging'] = default_logging_dir
+    # config.add_section('settings')
+    # config['settings']['logging'] = default_logging_dir
 
     with open("default_config.ini", 'w') as f:
         config.write(f)
@@ -56,6 +56,7 @@ def get_graphics_dir():
     # dirname = os.path.join(graphics_dir, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
     os.makedirs(graphics_dir, exist_ok=True)
     return graphics_dir
+
 
 def get_logging_dir():
     logging_dir = parse_config()['output_directories']['logs']
