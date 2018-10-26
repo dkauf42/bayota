@@ -1,6 +1,11 @@
 
 old__maybe_obsolete/
 
+# Pyomo/Ipopt temporary files
+*.col
+*.row
+*.nl
+*.sol
 
 # Created by https://www.gitignore.io/api/macos,python,pycharm
 
