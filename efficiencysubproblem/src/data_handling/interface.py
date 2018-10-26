@@ -12,7 +12,7 @@ def get_loaded_data_handler(objectivetype, geoscale, geoentities, savedata2file=
         elif geoscale == 'county':
             datahandler = DataHandlerCountyWithLoadReductionConstraint(savedata2file=savedata2file, geoentities=geoentities)
         else:
-            raise ValueError('unrecognized "geoscale"')
+            raise ValueError('<%s> is an unrecognized "geoscale".' % geoscale)
 
     elif objectivetype == 'loadreductionmax':
         if geoscale == 'lrseg':
@@ -20,10 +20,10 @@ def get_loaded_data_handler(objectivetype, geoscale, geoentities, savedata2file=
         elif geoscale == 'county':
             datahandler = DataHandlerCountyWithCostConstraint(savedata2file=savedata2file, geoentities=geoentities)
         else:
-            raise ValueError('unrecognized "geoscale"')
+            raise ValueError('<%s> is an unrecognized "geoscale".' % geoscale)
 
     else:
-        raise ValueError('unrecognized objectivetype')
+        raise ValueError('<%s> is an unrecognized objectivetype.' % objectivetype)
 
     return datahandler
 
