@@ -1,16 +1,19 @@
 #!/bin/bash
 
+MY_HOME=/home/dkaufman
+PROJECT_HOME=${MY_HOME}/bayota
+
 if [ $# -gt 0 ]; then
     STUDY=$1
 else
-    echo 'Usage: ./run_bayota.csh <study_name>'
+    echo 'Usage: ./run_bayota_bash <study_name>'
     echo ''
     echo 'Enter name of the Study: '
     read STUDY
     INTERACTIVE=1
 fi
 
-SETTINGS_CONFIG_FILE=../../config/cloudfish/settings_config.cfg
+SETTINGS_CONFIG_FILE=${PROJECT_HOME}/config/cloudfish/settings_config.cfg
 
 echo ''
 echo 'Locating SETTINGS Configuration File...'
@@ -48,7 +51,7 @@ echo 'Continue? [Y/N]'
 read response
 
 if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
-    sbatch --nice=${PRIORITY} --job-name=${STUDY} ../bayota_efficiency.py
+    sbatch --nice=${PRIORITY} --job-name=${STUDY} ${PROJECT_HOME}/bin/bayota_efficiency.py
 
     iRETURN=$?
 
