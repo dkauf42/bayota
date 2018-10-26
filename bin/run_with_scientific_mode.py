@@ -5,7 +5,7 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-from file_handler.path_settings import get_graphics_path
+from settings_handler.output_paths import get_graphics_dir
 
 from efficiencysubproblem.src.vis import sequence_plot
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
@@ -13,8 +13,10 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
+graphicsdir = get_graphics_dir()
+
 #%%
-geoent = 'Baltimore, MD'
+geoent = 'Adams, PA'
 s = Study(objectivetype='costmin',
           geoscale='county', geoentities=[geoent])
 
@@ -34,7 +36,7 @@ stateabbrev = geoent.split(',')[1]
  solution_csv_filepath,
  mdf,
  solution_objective,
- feasibility_list) = s.go_constraintsequence(list(range(1, 10)))
+ feasibility_list) = s.go_constraintsequence(list(range(1, 4)))
 
 #%%
 # log_infeasible_constraints(s.modelhandler.model)
@@ -50,7 +52,8 @@ importlib.reload(sequence_plot)
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
 fig = plotlib_costobj(df=df_piv, xname=constraintvar,
-                          savefilepathandname=os.path.join(get_graphics_path(), stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'),
+                          savefilepathandname=os.path.join(graphicsdir,
+                                                           stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'),
                       secondaryxticklabels=df_piv['N_pounds_reduced'])
 # py.iplot(fig, filename='styled-line')
 

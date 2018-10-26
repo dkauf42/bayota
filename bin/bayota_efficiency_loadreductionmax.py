@@ -15,9 +15,10 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_loadreductionobj
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from file_handler.logger_setup import set_up_logger
+from settings_handler.logging import set_up_logger
 
-from file_handler.path_settings import get_graphics_path
+from settings_handler.output_paths import get_graphics_dir
+graphicsdir = get_graphics_dir()
 
 # script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 # sys.path.append(script_dir)
@@ -70,7 +71,7 @@ def main(objectivetype, scale, entities):
                                                                    constraint_sequencing_var=constraintvar)
 
         fig = plotlib_loadreductionobj(df=df_piv, xname=constraintvar,
-                              savefilepathandname=os.path.join(get_graphics_path(),
+                              savefilepathandname=os.path.join(graphicsdir,
                                                                stateabbrev + countyname + '_totalcostbound1-1mil' + '_plotlibfig.png'),
                               showplot=False)
 

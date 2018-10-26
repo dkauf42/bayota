@@ -1,5 +1,6 @@
 import os
 import time
+import logging
 import pandas as pd
 from datetime import datetime
 from collections import OrderedDict
@@ -12,13 +13,13 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 
 from efficiencysubproblem.config import PROJECT_DIR
 
-from file_handler.path_settings import get_outdir_path
-
-import logging
-from file_handler.logger_setup import set_up_logger
+from settings_handler.logging import set_up_logger
+from settings_handler.output_paths import get_output_dir
 
 set_up_logger()
 logger = logging.getLogger(__name__)
+
+outdir = get_output_dir()
 
 
 class Study:
@@ -70,7 +71,7 @@ class Study:
         a set of Trials. It is assumed that 𝑓(𝑥) does not change in the
         course of a Run.
             A Study represents a series of one (or multiple) run(s),
-        with different configurations.
+        with the same geography, but different constraints.
         """
 
         self.modelhandler = None
@@ -191,7 +192,7 @@ class Study:
             zip(sorteddf_byacres.bmpshortname, sorteddf_byacres.landriversegment,
                 sorteddf_byacres.loadsource, sorteddf_byacres.totalannualizedcostperunit))
 
-        solution_csv_filepath = os.path.join(get_outdir_path(), 'output_' + solvetimestamp + '.csv')
+        solution_csv_filepath = os.path.join(outdir, 'output_' + solvetimestamp + '.csv')
         sorteddf_byacres.to_csv(solution_csv_filepath)
 
         return solver_output_filepath, solution_csv_filepath, sorteddf_byacres, solution_objective, feasible_solution
@@ -282,7 +283,7 @@ class Study:
         alldfs['x'] = list(
             zip(alldfs.bmpshortname, alldfs.landriversegment, alldfs.loadsource, alldfs.totalannualizedcostperunit))
 
-        solution_csv_filepath = os.path.join(get_outdir_path(), 'output_' + loopname + '_' + solvetimestamp + '.csv')
+        solution_csv_filepath = os.path.join(outdir, 'output_' + loopname + '_' + solvetimestamp + '.csv')
         alldfs.to_csv(solution_csv_filepath)
 
         return solver_output_filepaths, solution_csv_filepath, alldfs, solution_objectives, feasibility_list

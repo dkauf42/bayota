@@ -5,9 +5,8 @@ import os
 # import pkg_resources
 # access the filepath:
 # ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
-import file_handler.path_settings
-
-file_handler.path_settings
+from settings_handler.output_paths import get_graphics_dir
+graphicsdir = get_graphics_dir()
 
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
@@ -59,6 +58,6 @@ for g in listofgeos:
                                                                constraint_sequencing_var=constraintvar)
 
     fig = plotlib_costobj(df=df_piv, xname=constraintvar,
-                          savefilepathandname=os.path.join(ROOT_DIR, 'graphics',
+                          savefilepathandname=os.path.join(graphicsdir, 'graphics',
                                                            stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'),
                           secondaryxticklabels=df_piv['N_pounds_reduced'])

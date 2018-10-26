@@ -15,9 +15,10 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from file_handler.logger_setup import set_up_logger
+from settings_handler.logging import set_up_logger
 
-from file_handler.path_settings import get_graphics_path
+from settings_handler.output_paths import get_graphics_dir
+graphicsdir = get_graphics_dir()
 
 # script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 # sys.path.append(script_dir)
@@ -26,7 +27,7 @@ set_up_logger()
 logger = logging.getLogger(__name__)
 
 
-def main(objectivetype, scale, entities):
+def main(objectivetype, scale, entities, baseyear):
     start_time = timeit.default_timer()
 
     listofgeos = entities
@@ -70,7 +71,7 @@ def main(objectivetype, scale, entities):
                                                                    constraint_sequencing_var=constraintvar)
 
         fig = plotlib_costobj(df=df_piv, xname=constraintvar,
-                              savefilepathandname=os.path.join(get_graphics_path(),
+                              savefilepathandname=os.path.join(graphicsdir,
                                                                stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'),
                               secondaryxticklabels=df_piv['N_pounds_reduced'],
                               showplot=False)
@@ -114,6 +115,13 @@ if __name__ == '__main__':
                         help="list of geographic entity names",
                         default="")
 
+    parser.add_argument('-y', '--baseyear', dest='y',
+                        type=str,
+                        nargs="*",
+                        help="base condition (year)",
+                        default="")
+
     args = parser.parse_args()
 
-    main(objectivetype=args.o, scale=args.s, entities=args.e)
+    main(objectivetype=args.o, scale=args.s, entities=args.e,
+         baseyear=args.y)

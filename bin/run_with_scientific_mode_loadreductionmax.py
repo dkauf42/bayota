@@ -5,13 +5,15 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-from file_handler.path_settings import get_graphics_path
+from settings_handler.output_paths import get_graphics_dir
 
 from efficiencysubproblem.src.vis import sequence_plot
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_loadreductionobj
 
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
+
+graphicsdir = get_graphics_dir()
 
 #%%
 geoent = 'Northumberland, VA'
@@ -50,7 +52,7 @@ importlib.reload(sequence_plot)
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_loadreductionobj
 
 fig = plotlib_loadreductionobj(df=df_piv, xname=constraintvar,
-                      savefilepathandname=os.path.join(get_graphics_path(),
+                      savefilepathandname=os.path.join(graphicsdir,
                                                        stateabbrev + countyname + '_totalcostbound1-1mil' + '_plotlibfig.png')
                       )
 # py.iplot(fig, filename='styled-line')

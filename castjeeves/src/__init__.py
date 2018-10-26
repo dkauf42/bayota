@@ -3,7 +3,8 @@ Module for cast_opt_tests
 """
 
 import os
-from file_handler.path_settings import get_outdir_path
+from settings_handler.output_paths import get_output_dir
+outdir = get_output_dir()
 # import requests
 
 # from .jeeves import Jeeves
@@ -43,7 +44,7 @@ def get_tempdir():
 
 def get_outputdir():
     # return os.path.join(_WORKINGDIR, 'output/')
-    return get_outdir_path()
+    return outdir
 
 
 def get_sqlsourcetabledir():
