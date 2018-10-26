@@ -55,7 +55,7 @@ if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
 
     iRETURN=$?
 
-    if [ ${iRETURN} = 1 ]; then
+    if [ ${iRETURN} -eq 1 ]; then
         echo 'SLURM Unable to Queue'
     else
         echo ''
