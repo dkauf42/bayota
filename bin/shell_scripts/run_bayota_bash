@@ -14,7 +14,7 @@ SETTINGS_CONFIG_FILE=../../config/cloudfish/settings_config.cfg
 
 echo ''
 echo 'Locating SETTINGS Configuration File...'
-if ( ! -f $SETTINGS_CONFIG_FILE ); then
+if [ ! -f $SETTINGS_CONFIG_FILE ]; then
     echo 'Error'
     exit 1
 fi
