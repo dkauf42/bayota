@@ -51,7 +51,7 @@ echo 'Continue? [Y/N]'
 read response
 
 if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
-    sbatch --nice=${PRIORITY} --job-name=${STUDY} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_CONFIG_FILE}
+    sbatch --nice=${PRIORITY} --nodes=1 --job-name=${STUDY} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_CONFIG_FILE}
 
     iRETURN=$?
 
