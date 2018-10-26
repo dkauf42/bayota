@@ -1,7 +1,6 @@
 #!/bin/bash
 
-MY_HOME=/home/dkaufman
-PROJECT_HOME=${MY_HOME}/bayota
+source ${HOME}/.config/danny/bayota_bash_config.con
 
 if [ $# -gt 0 ]; then
     STUDY=$1
@@ -16,6 +15,7 @@ fi
 STUDY_CONFIG_FILE=${PROJECT_HOME}/bin/studies/study_a1_mdcounties.cfg
 
 echo ''
+echo ${STUDY_CONFIG_FILE}
 echo 'Locating SETTINGS Configuration File...'
 if [ ! -f $STUDY_CONFIG_FILE ]; then
     echo 'Error'
