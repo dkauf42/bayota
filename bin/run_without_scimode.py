@@ -5,9 +5,9 @@ import os
 # import pkg_resources
 # access the filepath:
 # ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
-import log_handler.settings
+import file_handler.path_settings
 
-log_handler.settings
+file_handler.path_settings
 
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 

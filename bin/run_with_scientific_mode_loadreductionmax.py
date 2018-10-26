@@ -5,7 +5,7 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-from log_handler.settings import get_graphics_path
+from file_handler.path_settings import get_graphics_path
 
 from efficiencysubproblem.src.vis import sequence_plot
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_loadreductionobj

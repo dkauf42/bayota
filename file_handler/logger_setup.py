@@ -3,7 +3,7 @@ import os
 import logging
 import logging.config
 
-from .settings import get_logger_path
+from .path_settings import get_logger_path
 
 logconfig_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logging_config.cfg')
 

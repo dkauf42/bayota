@@ -3,7 +3,7 @@ Module for cast_opt_tests
 """
 
 import os
-from log_handler.settings import get_outdir_path
+from file_handler.path_settings import get_outdir_path
 # import requests
 
 # from .jeeves import Jeeves

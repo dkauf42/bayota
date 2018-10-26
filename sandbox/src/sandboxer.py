@@ -14,7 +14,7 @@ import tkinter as tk
 from sandbox.src.util.OptCase import OptCase
 from sandbox.src.gui.toplevelframes.MainWindow import MainWindow
 
-from log_handler.logger_setup import set_up_logger
+from file_handler.logger_setup import set_up_logger
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
