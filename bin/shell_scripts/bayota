@@ -1,6 +1,10 @@
 #!/bin/bash
 
-BINPATH=`dirname $0`
+MY_HOME=/home/dkaufman
+PROJECT_HOME=${MY_HOME}/bayota
+PYTHON_ENTRY_SCRIPT_DIR=${PROJECT_HOME}/bin
+
+#BINPATH=`dirname $0`
 
 echo
 
@@ -15,4 +19,4 @@ case "$1" in
         ;;
 esac
 
-"$BINPATH/bayota_efficiency.py" $@
+"$PYTHON_ENTRY_SCRIPT_DIR/bayota_efficiency.py" $@
