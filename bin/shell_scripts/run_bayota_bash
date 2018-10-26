@@ -13,16 +13,16 @@ else
     INTERACTIVE=1
 fi
 
-SETTINGS_CONFIG_FILE=${PROJECT_HOME}/config/cloudfish/settings_config.cfg
+STUDY_CONFIG_FILE=${PROJECT_HOME}/bin/studies/study_a1_mdcounties.cfg
 
 echo ''
 echo 'Locating SETTINGS Configuration File...'
-if [ ! -f $SETTINGS_CONFIG_FILE ]; then
+if [ ! -f $STUDY_CONFIG_FILE ]; then
     echo 'Error'
     exit 1
 fi
 
-source ${SETTINGS_CONFIG_FILE}
+source ${STUDY_CONFIG_FILE}
 
 
 # Define a timestamp function
@@ -51,7 +51,7 @@ echo 'Continue? [Y/N]'
 read response
 
 if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
-    sbatch --nice=${PRIORITY} --job-name=${STUDY} ${PROJECT_HOME}/bin/bayota_efficiency.py
+    sbatch --nice=${PRIORITY} --job-name=${STUDY} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_CONFIG_FILE}
 
     iRETURN=$?
 
