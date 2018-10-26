@@ -14,10 +14,12 @@ Example Usage:
     >>> ./bin/study_cli.py @study_config.cfg -s county -e "Adams, PA" "Lancaster, PA"
 """
 import os
+import ast
 import timeit
 import logging
 import argparse
 import textwrap
+from configparser import ConfigParser
 
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
@@ -81,31 +83,58 @@ if __name__ == '__main__':
                                                       * specify constraints
                                                  2. Generate a Scenario
                                                  '''),
-                                     fromfile_prefix_chars='@')
+                                     # Turn off help, so we print all options in response to -h
+                                     add_help=False)
 
-    parser.add_argument('-o', '--objective', dest='o',
+    parser.add_argument("-c", "--conf_file",
+                        help="Specify config file", metavar="FILE")
+    args, remaining_argv = parser.parse_known_args()
+
+    defaults = {"objective":None,
+                "scale": None,
+                "entities": None,
+                "baseyear": None}
+
+    if args.conf_file:
+        config = ConfigParser()
+        config.read([args.conf_file])
+        defaults.update(dict(config.items("Defaults")))
+
+    print(defaults)
+    defaults['entities'] = ast.literal_eval(defaults['entities'])
+    print(defaults)
+
+    # Parse rest of arguments
+    # Don't suppress add_help here so it will handle -h
+    parser = argparse.ArgumentParser(
+        # Inherit options from config_parser
+        parents=[parser]
+    )
+    parser.set_defaults(**defaults)
+    parser.add_argument('-o', '--objective', dest='objective',
                         choices=['costmin', 'loadreductionmax'], type=str,
                         help='optimization objective type')
 
-    parser.add_argument('-s', '--scale', dest='s',
+    parser.add_argument('-s', '--scale', dest='scale',
                         choices=['county', 'lrseg'], type=str,
                         help="geographic scale string")
 
-    parser.add_argument('-e', '--entities', dest='e',
+    parser.add_argument('-e', '--entities', dest='entities',
                         type=str,
                         nargs="*",
                         help="list of geographic entity names")
 
-    parser.add_argument('-y', '--baseyear', dest='y',
+    parser.add_argument('-y', '--baseyear', dest='baseyear',
                         type=str,
                         nargs="*",
                         help="base condition (year)")
 
-    args = parser.parse_args()
-
-    main(objectivetype=args.o,
-         scale=args.s,
-         entities=args.e,
-         baseyear=args.y,
+    # args = parser.parse_args()
+    args = parser.parse_args(remaining_argv)
+    print(args)
+    main(objectivetype=args.objective,
+         scale=args.scale,
+         entities=args.entities,
+         baseyear=args.baseyear,
 
          )
