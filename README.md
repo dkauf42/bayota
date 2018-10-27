@@ -14,8 +14,21 @@ as part of the Optimization Tool Development Project
 This README documents steps necessary to get the
 application up and running.
 
-# Directory Structure
+<details>
+ <summary><strong>Table of Contents</strong> (click to expand)</summary>
 
+* [Project structure](#-project-structure)
+* [How do I get set up?](#-how-do-I-get-set-up?)
+* [Usage](#-usage)
+* [How do I uninstall?](#-How-do-I-uninstall?)
+* [Troubleshooting & debugging](#-troubleshooting--debugging)
+* [Credits](#️-credits)
+* [License](#-license)
+</details>
+
+# 📁 Project Structure
+
+#### Source Directory Tree
 ```
 bayota
 │
@@ -44,10 +57,10 @@ bayota
 │   ├── __init__.py
 │   └── ...
 │
-├── SETTINGS               <- PACKAGE that configures data output, graphics, and logging directory paths
+├── BAYOTA_SETTINGS        <- PACKAGE that configures data output, graphics, and logging directory paths
 │   └── ...
 │
-├── UTIL                   <- PACKAGE for utility methods that haven't yet found a home elsewhere
+├── BAYOTA_UTIL            <- PACKAGE for utility methods that haven't yet found a home elsewhere
 │   ├── __init__.py
 │   └── ...
 │
@@ -60,48 +73,52 @@ bayota
 ├── default_logging_config.cfg
 ```
 
+#### Other paths used by this project
 
-# How do I get set up?
+(Set during install, but originally specified in:
+- bayota_settings.logging.py
+- bayota_settings.output_paths.py
+
+)
+
+ `~/.config/${USER}/` # holds configuration files
+
+`~/bayota_output/`  #
+
+# ⚙ How do I get set up?
 
 
-Get the latest version.
-From the /bayota directory, run
+Get the latest version.\
+From the /bayota directory, run:
 
-    > git pull
+```git pull```
+
+#### ✅ Run the tests
+
+```python setup.py test```
 
 
-### Install
+#### 💾 Installation as python packages
 
+From the project root dir (bayota), run:
 
-**To install as a python package**
+```python setup.py install```
 
-From the project root dir (bayota), enter:
-
-    > python setup.py install
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* Deployment instructions
-
-#### Run the tests
-
-    > python setup.py test
-
-# Usage
+# ▶ Usage
 
 To run the standard bash script:
 
-    > cd bin/
-    > chmod 755 bayota
-    > chmod 755 bayota_efficiency.py
+```
+cd bin/
+chmod 755 bayota
+chmod 755 bayota_efficiency.py
 
-    # back up to the project root (bayota/)
-    > cd ..
+# back up to the project root (bayota/)
+cd ..
 
-    # run the script (and you can include --daemon argument to detach process and run with no hangup)
-    > ./bin/bayota
+# run the script (and you can include --daemon argument to detach process and run with no hangup)
+./bin/bayota
+```
 
 From the python prompt or in a jupyter notebook:
 
@@ -114,22 +131,41 @@ From the python prompt or in a jupyter notebook:
     >>> solveroutpath, csvpath, df, objective, feasible = s.go(constraint=5)
 
 
-# How do I uninstall?
+# 🚮️ How do I uninstall?
 
-##### 1. To remove only the files created by "python setup.py install":
+--- To remove build files created by "python setup.py install":
 
-    > python setup.py clean
+```python setup.py clean```
 
-##### 2. To remove the installed package files from your environment (site-packages):
+--- To remove installed package files from your environment (site-packages):
 
-    > python setup.py develop --uninstall
+```python setup.py develop --uninstall```
 
-##### 2. To remove everything
+--- To remove everything
 
-    > python setup.py develop --uninstall
-    > rm -r bayota
+```python setup.py develop --uninstall```
 
-# Who do I talk to? ###
+```rm -r bayota```
+
+# 🐛 Troubleshooting & debugging
+
+* (NOT YET IMPLEMENTED) Use `--verbose` to output commands that bayota executes.
+* (NOT YET IMPLEMENTED) Use `--debug` to output configuration and additional (error) logs.
+
+## 💕 Credits
+
+Major dependencies:
+
+* [Pyomo](https://www.pyomo.org/)
+* [IPOPT solver](https://projects.coin-or.org/Ipopt)
+* [AMPLPY](https://github.com/ampl/amplpy)
+* [Pandas](https://pandas.pydata.org/)
+* [NumPy](https://www.numpy.org/)
+
+## 🎓 License
+GNU General Public License
+
+## 🗣️ Who do I talk to?
 
 * The U.S. EPA Chesapeake Bay Program
 * Daniel E. Kaufman: dkaufman@chesapeakebay.net
