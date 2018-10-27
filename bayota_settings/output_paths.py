@@ -3,7 +3,7 @@ import os
 import shutil
 import configparser
 
-user_config_dir = os.path.expanduser("~") + "/.config/danny"
+user_config_dir = os.path.expanduser("~") + "/.config/" + os.environ['USER']
 user_config = user_config_dir + "/bayota_user_config.ini"
 
 default_output_dir = os.path.join(os.path.expanduser("~"), 'output')
