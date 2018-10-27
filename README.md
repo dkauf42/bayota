@@ -22,35 +22,42 @@ bayota
 ├── README.md              <- Top-level README for users/developers of this project.
 ├── CHANGELOG.md           <- Documentation of notable changes to this project
 │
-├── bin                    <- scripts (python, bash, slurm) for running from the command-line
-│   └── ...
+├── bin                    <- scripts (python, bash, slurm, jupyter notebooks) for running from the command-line and performing analyses
+│   └── config
+│       └── ...
+│   └── jnotebooks
+│       └── ...
+│   └── shell_scripts
+│       └── ...
+│   └── studies
+│       └── ...
 │
-├── castjeeves             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+├── CASTJEEVES             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
 │   ├── __init__.py
 │   └── ...
 │
-├── efficiencysubproblem   <- PACKAGE to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+├── EFFICIENCYSUBPROBLEM   <- PACKAGE to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── sandbox                <- PACKAGE for automated generation of valid BMP input files for use with CAST
+├── SANDBOX                <- PACKAGE for automated generation of valid BMP input files for use with CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── jnotebooks             <- Jupyter notebooks for browser-based analyses
+├── SETTINGS               <- PACKAGE that configures data output, graphics, and logging directory paths
 │   └── ...
 │
-├── settings               <- specification of data output, graphics, and logging directory paths
-│   └── ...
-│
-├── util                   <- PACKAGE for utility methods that haven't yet found a home elsewhere
+├── UTIL                   <- PACKAGE for utility methods that haven't yet found a home elsewhere
 │   ├── __init__.py
 │   └── ...
 │
 ├── setup.py
 ├── MANIFEST.in
 ├── Dockerfile_36
-└── LICENSE
+├── LICENSE
+├── default_bash_config.con
+├── default_config.ini
+├── default_logging_config.cfg
 ```
 
 
