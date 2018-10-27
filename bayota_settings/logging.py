@@ -7,7 +7,7 @@ import logging.config
 from bayota_settings.output_paths import get_logging_dir
 logdir = get_logging_dir()
 
-user_log_config_dir = os.path.expanduser("~") + "/.config/" +  + os.environ['USER']
+user_log_config_dir = os.path.expanduser("~") + "/.config/" + os.environ['USER']
 user_log_config = user_log_config_dir + "/bayota_logging_config.cfg"
 
 logfilename = os.path.join(logdir, 'efficiencysubproblem_debug.log')
