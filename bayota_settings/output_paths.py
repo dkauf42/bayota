@@ -6,6 +6,8 @@ import configparser
 user_config_dir = os.path.expanduser("~") + "/.config/" + os.environ['USER']
 user_config = user_config_dir + "/bayota_user_config.ini"
 
+print('user_config is %s' % user_config)
+
 default_output_dir = os.path.join(os.path.expanduser("~"), 'output')
 default_graphics_dir = os.path.join(default_output_dir, 'graphics')
 default_logging_dir = os.path.join(default_output_dir, 'logs')
@@ -38,6 +40,7 @@ def parse_config():
 
 def get_output_dir():
     outputdir_top_level = parse_config()['output_directories']['general']
+    print('outputdir_top_level is %s' % user_config)
 
     # # Output Path
     # today = datetime.now()
