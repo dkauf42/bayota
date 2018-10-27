@@ -93,6 +93,17 @@ From the /bayota directory, run:
 
 ```git pull```
 
+##### Local configuration files
+Three default configuration files will be copied into ```~/.config/${USER}/```\
+during the first install or test run.\
+These files will not be changed by subsequent project executions.
+
+These config files should be customized by the user:
+
+- ```bayota_user_config.ini``` specifies output paths.
+- ```bayota_bash_config.con``` specifies the project directory.
+- ```bayota_logging_config``` specifies the format and targets of log messages.
+
 ##### ✅ Run tests to check whether things work
 
 Tests are located within each package, but should be run from the project dir:
