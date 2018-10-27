@@ -25,8 +25,8 @@ from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
-from settings.logging import set_up_logger
-from settings.output_paths import get_graphics_dir
+from bayota_settings.logging import set_up_logger
+from bayota_settings.output_paths import get_graphics_dir
 
 set_up_logger()
 logger = logging.getLogger(__name__)

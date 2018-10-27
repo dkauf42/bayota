@@ -5,7 +5,7 @@ import os
 # import pkg_resources
 # access the filepath:
 # ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
-from settings.output_paths import get_graphics_dir
+from bayota_settings.output_paths import get_graphics_dir
 graphicsdir = get_graphics_dir()
 
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj

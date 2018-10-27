@@ -15,9 +15,9 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_loadreductionobj
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from settings.logging import set_up_logger
+from bayota_settings.logging import set_up_logger
 
-from settings.output_paths import get_graphics_dir
+from bayota_settings.output_paths import get_graphics_dir
 graphicsdir = get_graphics_dir()
 
 # script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script

@@ -10,7 +10,7 @@ from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, Termina
 
 log = logging.getLogger(__name__)
 
-from util.infeasible import *
+from bayota_util.infeasible import *
 
 
 class SolveHandler:
