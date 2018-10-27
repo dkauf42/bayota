@@ -93,14 +93,28 @@ From the /bayota directory, run:
 
 ```git pull```
 
-###### ✅ Run the tests
+##### ✅ Run tests to check whether things work
 
-```python setup.py test```
+Tests are located within each package, but should be run from the project dir:
+
+```cd bayota/```
+
+```python efficiencysubproblem/setup.py test```
+
+```python castjeeves/setup.py test```
+
+***Note:*** Tests aren't located at the project level.\
+So, if you try to run
+```python setup.py test``` from bayota/ dir,\
+you will get an error message like
+"no tests specified at the top(bayota package)-level"
+
+***Note:*** To remove the test files after testing, run ```python setup.py clean```
 
 
-###### 💾 Installation as python packages
+##### 💾 Install packages
 
-From the project root dir (bayota), run:
+From the project root dir (bayota/), run:
 
 ```python setup.py install```
 
