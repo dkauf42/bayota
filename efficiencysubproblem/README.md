@@ -11,7 +11,7 @@ is the Chesapeake Bay Program's (CBP) Phase 6 time-averaged watershed model
 This README will document the steps necessary to get the optimization model
 up and running.
 
-# Directory Structure
+# 📁 Directory Structure
 
 ```
 ├── README.md              <- The top-level README for developers using this project.
@@ -64,7 +64,7 @@ up and running.
 └── LICENSE
 ```
 
-# How do I get set up?
+# ⚙ How do I get set up?
 
 ### Install
 
@@ -85,7 +85,7 @@ To be determined...
 
 >> python setup.py test
 
-# Usage
+# ▶ Usage
 
 To be determined...
 ###### A simple example (to run using GUI):
@@ -100,7 +100,7 @@ To be determined...
 To be determined...
 ##### 2. To remove everything, delete the directory.
 
-# Who do I talk to? ###
+## 🗣️ Who do I talk to?
 
 * The U.S. EPA Chesapeake Bay Program
 * Daniel E. Kaufman: dkaufman@chesapeakebay.net

@@ -93,12 +93,12 @@ From the /bayota directory, run:
 
 ```git pull```
 
-#### ✅ Run the tests
+###### ✅ Run the tests
 
 ```python setup.py test```
 
 
-#### 💾 Installation as python packages
+###### 💾 Installation as python packages
 
 From the project root dir (bayota), run:
 
