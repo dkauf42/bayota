@@ -3,7 +3,7 @@ Module for cast_opt_tests
 """
 
 import os
-from settings_handler.output_paths import get_output_dir
+from settings.output_paths import get_output_dir
 outdir = get_output_dir()
 # import requests
 

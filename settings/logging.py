@@ -4,7 +4,7 @@ import shutil
 import logging
 import logging.config
 
-from settings_handler.output_paths import get_logging_dir
+from settings.output_paths import get_logging_dir
 logdir = get_logging_dir()
 
 user_log_config_dir = os.path.expanduser("~") + "/.config/danny"

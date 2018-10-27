@@ -25,9 +25,6 @@ bayota
 ├── bin                    <- scripts (python, bash, slurm) for running from the command-line
 │   └── ...
 │
-├── config                 <- specification of data output, graphics, and logging directory paths
-│   └── ...
-│
 ├── castjeeves             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
 │   ├── __init__.py
 │   └── ...
@@ -41,6 +38,9 @@ bayota
 │   └── ...
 │
 ├── jnotebooks             <- Jupyter notebooks for browser-based analyses
+│   └── ...
+│
+├── settings               <- specification of data output, graphics, and logging directory paths
 │   └── ...
 │
 ├── util                   <- PACKAGE for utility methods that haven't yet found a home elsewhere
