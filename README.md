@@ -17,13 +17,13 @@ application up and running.
  <summary><strong>Table of Contents</strong> (click to expand)</summary>
 
 * [Project structure](#-project-structure)
-* [How do I get set up?](#-how-do-i-get-set-up?)
+* [How do I get set up?](#-how-do-i-get-set-up)
 * [Usage](#-usage)
-* [How do I uninstall?](#-how-do-i-uninstall?)
+* [How do I uninstall?](#-how-do-i-uninstall)
 * [Troubleshooting & debugging](#-troubleshooting--debugging)
 * [Credits](#-credits)
 * [License](#-license)
-* [Who do I talk to?](#-who-do-i-talk-to?)
+* [Who do I talk to?](#-who-do-i-talk-to)
 </details>
 
 # 📁 Project Structure
