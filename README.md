@@ -21,9 +21,9 @@ application up and running.
 * [Usage](#-usage)
 * [How do I uninstall?](#-how-do-i-uninstall)
 * [Troubleshooting & debugging](#-troubleshooting--debugging)
-* [Credits](#-credits)
-* [License](#-license)
-* [Who do I talk to?](#-who-do-i-talk-to)
+* [Credits](##-credits)
+* [License](##-license)
+* [Who do I talk to?](##-who-do-i-talk-to)
 </details>
 
 # 📁 Project Structure
