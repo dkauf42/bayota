@@ -20,7 +20,7 @@ application up and running.
 * [How do I get set up?](#-how-do-i-get-set-up)
 * [Usage](#-usage)
 * [How do I uninstall?](#-how-do-i-uninstall)
-* [Troubleshooting & debugging](#-troubleshooting--debugging)
+* [Troubleshooting & debugging](#-troubleshooting-debugging)
 * [Credits](#-credits)
 * [License](#-license)
 * [Who do I talk to?](#-who-do-i-talk-to)
