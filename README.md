@@ -20,9 +20,10 @@ application up and running.
 * [How do I get set up?](#-how-do-I-get-set-up?)
 * [Usage](#-usage)
 * [How do I uninstall?](#-How-do-I-uninstall?)
-* [Troubleshooting & debugging](#-troubleshooting--debugging)
+* [Troubleshooting & debugging](#-troubleshooting-&-debugging)
 * [Credits](#️-credits)
 * [License](#-license)
+* [Who do I talk to?](#-Who-do-I-talk-to?)
 </details>
 
 # 📁 Project Structure
