@@ -17,18 +17,18 @@ application up and running.
  <summary><strong>Table of Contents</strong> (click to expand)</summary>
 
 * [Project structure](#-project-structure)
-* [How do I get set up?](#-how-do-I-get-set-up?)
+* [How do I get set up?](#-how-do-i-get-set-up?)
 * [Usage](#-usage)
-* [How do I uninstall?](#-How-do-I-uninstall?)
-* [Troubleshooting & debugging](#-troubleshooting-&-debugging)
-* [Credits](#️-credits)
+* [How do I uninstall?](#-how-do-i-uninstall?)
+* [Troubleshooting & debugging](#-troubleshooting--debugging)
+* [Credits](#-credits)
 * [License](#-license)
-* [Who do I talk to?](#-Who-do-I-talk-to?)
+* [Who do I talk to?](#-who-do-i-talk-to?)
 </details>
 
 # 📁 Project Structure
 
-##### Directory Tree
+#### Directory Tree
 ```
 bayota
 │
@@ -73,7 +73,7 @@ bayota
 ├── default_logging_config.cfg
 ```
 
-##### Other paths used by this project
+#### Other paths used by this project
 
 (Set during install, but originally specified in:
 - bayota_settings.logging.py
@@ -94,7 +94,7 @@ From the project directory, get the latest version:
 
 ```git pull```
 
-##### Local configuration files
+#### Local configuration files
 During the first install or test run, three default config files will be copied into ```~/.config/${USER}/```\
 (These files will not be changed by subsequent project executions.)
 
@@ -104,7 +104,7 @@ Values in these config files should be customized by the user:
 - ```bayota_bash_config.con``` specifies the project directory.
 - ```bayota_logging_config``` specifies the format and targets of log messages.
 
-##### ✅ Run tests to check whether things work
+#### ✅ Run tests to check whether things work
 
 Tests are located within each package, but should be run from the project dir:
 
@@ -123,7 +123,7 @@ you will get an error message like
 ***Note:*** To remove the test files after testing, run ```python setup.py clean```
 
 
-##### 💾 Install packages
+#### 💾 Install packages
 
 From the project dir (`bayota/`), run:
 
