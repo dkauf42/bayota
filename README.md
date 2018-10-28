@@ -2,12 +2,11 @@
 
 "BayOTA" (Bay Optimization Tools for Analysis) is a repository of
 optimization and analysis tools created to serve the
-Chesapeake Bay Program (CBP) Partners.
-Specifically, these tools are designed to help users of CAST
-(the Chesapeake Bay Assessement Scenario Tool), which
-is the CBP Phase 6 time-averaged watershed model,
-as part of the Optimization Tool Development Project
+Chesapeake Bay Program (CBP) Partners, as part of the Optimization Tool Development Project
 (EPA-R3-CBP-16-03).
+Specifically, these tools are designed to add functionality to - and help users of - CAST
+(the Chesapeake Bay Assessement Scenario Tool), which
+is the CBP Phase 6 time-averaged watershed model.
 
 * Version 0.0.1
 
@@ -28,7 +27,7 @@ application up and running.
 
 # 📁 Project Structure
 
-#### Source Directory Tree
+##### Directory Tree
 ```
 bayota
 │
@@ -73,7 +72,7 @@ bayota
 ├── default_logging_config.cfg
 ```
 
-#### Other paths used by this project
+##### Other paths used by this project
 
 (Set during install, but originally specified in:
 - bayota_settings.logging.py
@@ -88,17 +87,17 @@ bayota
 # ⚙ How do I get set up?
 
 
-Get the latest version.\
-From the /bayota directory, run:
+From the project directory, get the latest version:
+
+```cd bayota/```
 
 ```git pull```
 
 ##### Local configuration files
-Three default configuration files will be copied into ```~/.config/${USER}/```\
-during the first install or test run.\
-These files will not be changed by subsequent project executions.
+During the first install or test run, three default config files will be copied into ```~/.config/${USER}/```\
+(These files will not be changed by subsequent project executions.)
 
-These config files should be customized by the user:
+Values in these config files should be customized by the user:
 
 - ```bayota_user_config.ini``` specifies output paths.
 - ```bayota_bash_config.con``` specifies the project directory.
@@ -116,7 +115,7 @@ Tests are located within each package, but should be run from the project dir:
 
 ***Note:*** Tests aren't located at the project level.\
 So, if you try to run
-```python setup.py test``` from bayota/ dir,\
+```python setup.py test``` from the `bayota/` dir,\
 you will get an error message like
 "no tests specified at the top(bayota package)-level"
 
@@ -125,7 +124,7 @@ you will get an error message like
 
 ##### 💾 Install packages
 
-From the project root dir (bayota/), run:
+From the project dir (`bayota/`), run:
 
 ```python setup.py install```
 
@@ -135,8 +134,10 @@ To run the standard bash script:
 
 ```
 cd bin/
-chmod 755 bayota
-chmod 755 bayota_efficiency.py
+
+# set execute permission
+chmod +x bayota
+chmod +x bayota_efficiency.py
 
 # back up to the project root (bayota/)
 cd ..
@@ -158,7 +159,7 @@ From the python prompt or in a jupyter notebook:
 
 # 🚮️ How do I uninstall?
 
---- To remove build files created by "python setup.py install":
+--- To remove build files created by "`python setup.py install`":
 
 ```python setup.py clean```
 
