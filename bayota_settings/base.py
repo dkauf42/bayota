@@ -15,8 +15,13 @@ default_output_dir = os.path.join(os.path.expanduser("~"), 'output')
 default_graphics_dir = os.path.join(default_output_dir, 'graphics')
 default_logging_dir = os.path.join(default_output_dir, 'logs')
 
+path_to_examples = os.path.dirname(__file__)
+example_user_config = os.path.join(path_to_examples, "example_config.ini")
+example_bash_config = os.path.join(path_to_examples, "example_bash_config.ini")
+example_log_config = os.path.join(path_to_examples, "example_logging_config.ini")
 
-def parse_config():
+
+def parse_user_config():
     make_user_config()
 
     config = configparser.ConfigParser()
@@ -24,20 +29,22 @@ def parse_config():
     return config
 
 
-def make_user_config():
-    if not os.path.isfile(user_config):
+def make_config_file(file_path, example_file):
+    if not os.path.isfile(file_path):
         os.makedirs(user_config_dir, exist_ok=True)
-        shutil.copyfile("example_config.ini", user_config)
+        shutil.copyfile(example_file, file_path)
+
+
+def make_user_config():
+    make_config_file(file_path=bash_config, example_file=example_bash_config)
+
 
 def make_bash_config():
-    if not os.path.isfile(bash_config):
-        os.makedirs(user_config_dir, exist_ok=True)
-        shutil.copyfile("example_bash_config.ini", bash_config)
+    make_config_file(file_path=user_config, example_file=example_user_config)
+
 
 def make_log_config():
-    if not os.path.isfile(log_config):
-        os.makedirs(user_config_dir, exist_ok=True)
-        shutil.copyfile("example_logging_config.ini", log_config)
+    make_config_file(file_path=log_config, example_file=example_log_config)
 
 
 class MyLogFormatter(logging.Formatter):

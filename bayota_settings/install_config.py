@@ -5,7 +5,7 @@ import logging.config
 # get directories from base config methods
 from bayota_settings.base import *
 
-logdir = parse_config()['output_directories']['logs']
+logdir = parse_user_config()['output_directories']['logs']
 os.makedirs(logdir, exist_ok=True)
 logfilename = os.path.join(logdir, 'efficiencysubproblem_debug.log')
 
@@ -18,7 +18,7 @@ def set_up_logger():
 
 
 def get_output_dir():
-    outputdir_top_level = parse_config()['output_directories']['general']
+    outputdir_top_level = parse_user_config()['output_directories']['general']
     print('outputdir_top_level is %s' % user_config)
 
     # # Output Path
@@ -33,7 +33,7 @@ def get_output_dir():
 
 
 def get_graphics_dir():
-    graphics_dir = parse_config()['output_directories']['graphics']
+    graphics_dir = parse_user_config()['output_directories']['graphics']
 
     # dirname = os.path.join(graphics_dir, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
     os.makedirs(graphics_dir, exist_ok=True)
