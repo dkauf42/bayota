@@ -74,15 +74,10 @@ bayota
 
 #### Other paths used by this project
 
-(Set during install, but originally specified in:
-- bayota_settings.logging.py
-- bayota_settings.output_paths.py
+ - `~/.config/${USER}/` # holds configuration files
+ - `~/bayota_output/`  #
 
-)
-
- `~/.config/${USER}/` # holds configuration files
-
-`~/bayota_output/`  #
+(These paths are set during install by the `bayota_settings` package)
 
 # ⚙ How do I get set up?
 
