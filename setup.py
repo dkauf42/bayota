@@ -53,14 +53,13 @@ class TestCommand(setuptools.command.test.test):
         # sys.exit(errno)
 
 
-class PostDevelopCommand(setuptools.command.develop):
+class PostDevelopCommand(setuptools.command.develop.develop):
     """Post-installation for development mode."""
     def run(self):
+        setuptools.command.develop.develop.run(self)
 
-        setuptools.command.develop.run(self)
 
-
-class PostInstallCommand(setuptools.command.install):
+class PostInstallCommand(setuptools.command.install.install):
     """Post-installation for installation mode."""
     def run(self):
 
@@ -69,7 +68,7 @@ class PostInstallCommand(setuptools.command.install):
         base.make_bash_config()
         base.make_log_config()
 
-        setuptools.command.install.run(self)
+        setuptools.command.install.install.run(self)
 
 
 with open('README.md') as f:
