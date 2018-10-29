@@ -79,9 +79,9 @@ bayota
 
 # ⚙ How do I get set up?
 
-1 - Clone the project repository:
+1 - Check out a clone of this repository to a location of your choice, e.g.
 ```
-git clone bayota
+git clone https://gitlab.com/daka42/bayota.git ~/bayota
 ```
 
 2 - From the project directory, get the latest version:
@@ -175,17 +175,16 @@ Some example notebooks are provided in the bin/ directory.
 python setup.py clean
 ```
 
---- To remove installed package files from your environment (site-packages):
+--- To uninstall the python packages from your environment (site-packages):
 
 ```
 python setup.py develop --uninstall
 ```
 
---- To remove everything
+--- To remove everything (uninstall the python packages and then delete the source directory):
 
 ```
 python setup.py develop --uninstall
-
 rm -r bayota/
 ```
 
