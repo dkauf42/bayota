@@ -99,7 +99,9 @@ setup(name='bayota',
       tests_require=['pytest',
                      'pytest-cov'],
       cmdclass={'clean': CleanCommand,
-                'test': TestCommand},
+                'test': TestCommand,
+                'develop': PostDevelopCommand,
+                'install': PostInstallCommand},
       entry_points={"console_scripts":
                     ['bayota = bin.bayota_efficiency:main']}
       )

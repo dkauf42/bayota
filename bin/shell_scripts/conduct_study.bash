@@ -41,9 +41,9 @@ TIME_STAMP=$(date +"%Y%m%d-%H%M%S")
 MONTH_STAMP=$(date +"%Y%m")
 
 
-# Directories to store output/logs are created.
-OUT_DIR=${OUTPUT_DIR_STEM}_${MONTH_STAMP}
-mkdir -p $OUT_DIR
+## Directories to store output/logs are created.
+#OUT_DIR=${OUTPUT_DIR_STEM}_${MONTH_STAMP}
+#mkdir -p $OUT_DIR
 
 
 # Compute parameters are given for this batch job.
