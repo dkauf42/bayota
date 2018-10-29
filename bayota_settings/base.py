@@ -26,6 +26,8 @@ def parse_config():
 
 
 class MyLogFormatter(logging.Formatter):
+    """Note: this class is used in the log configuration file (typically stored in ~/.config/$USER/)
+    """
     def format(self, record):
         location = '%s.%s:%s' % (record.name, record.funcName, record.lineno)
         msg = '%s %-100s %-8s %s' % (self.formatTime(record), location, record.levelname, record.msg)
