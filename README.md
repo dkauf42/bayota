@@ -56,7 +56,8 @@ bayota
 │   ├── __init__.py
 │   └── ...
 │
-├── BAYOTA_SETTINGS        <- PACKAGE that configures data output, graphics, and logging directory paths
+├── BAYOTA_SETTINGS        <- PACKAGE that configures directory paths (output, graphics, & logging). Contains example config files.
+│   ├── __init__.py
 │   └── ...
 │
 ├── BAYOTA_UTIL            <- PACKAGE for utility methods that haven't yet found a home elsewhere
@@ -67,9 +68,6 @@ bayota
 ├── MANIFEST.in
 ├── Dockerfile_36
 ├── LICENSE
-├── default_bash_config.con
-├── default_config.ini
-├── default_logging_config.cfg
 ```
 
 #### Other paths used by this project
