@@ -6,7 +6,7 @@ import logging
 
 user_config_dir = os.path.expanduser("~") + "/.config/" + os.environ['USER']
 user_config = user_config_dir + "/bayota_user_config.ini"
-bash_config = user_config_dir + "/bayota_bash_config.ini"
+bash_config = user_config_dir + "/bayota_bash_config.con"
 log_config = user_config_dir + "/bayota_logging_config.cfg"
 
 print('user_config is %s' % user_config)
@@ -16,9 +16,9 @@ default_graphics_dir = os.path.join(default_output_dir, 'graphics')
 default_logging_dir = os.path.join(default_output_dir, 'logs')
 
 path_to_examples = os.path.dirname(__file__)
-example_user_config = os.path.join(path_to_examples, "example_config.ini")
-example_bash_config = os.path.join(path_to_examples, "example_bash_config.ini")
-example_log_config = os.path.join(path_to_examples, "example_logging_config.ini")
+example_user_config = os.path.join(path_to_examples, "example_user_config.ini")
+example_bash_config = os.path.join(path_to_examples, "example_bash_config.con")
+example_log_config = os.path.join(path_to_examples, "example_logging_config.cfg")
 
 
 def parse_user_config():
@@ -68,5 +68,5 @@ def write_example_config():
     # config.add_section('settings')
     # config['settings']['logging'] = default_logging_dir
 
-    with open("example_config.ini", 'w') as f:
+    with open("example_user_config.ini", 'w') as f:
         config.write(f)

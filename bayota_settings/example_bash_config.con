@@ -1,2 +1,2 @@
-PROJECT_HOME= ${HOME}/bayota
+PROJECT_HOME=${HOME}/bayota
 
