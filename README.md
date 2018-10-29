@@ -93,9 +93,8 @@ git pull
 ```
 
 #### 🛣️ Set the local paths
-During the first install or test run, three default config files will be copied into `~/.config/${USER}/`.
-
-These config files are central to conducting BayOTA optimization studies, by setting up the local paths:\
+During the first install or test run, three default config files will be copied into `~/.config/${USER}/`.\
+These files set up the local paths and are central to conducting BayOTA optimization studies.\
 **Values in these config files should be customized by the user:**
 
 - `bayota_user_config.ini` specifies output path stems (for stdout, graphics, and logs)
