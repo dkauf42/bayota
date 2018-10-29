@@ -102,9 +102,8 @@ These config files are central to conducting BayOTA optimization studies, by set
 - `bayota_bash_config.con` specifies the path of the project directory.
 - `bayota_logging_config` specifies the format and targets of log messages.
 
-***Note:*** - *These files will not be changed by subsequent code executions after being generated.*\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-\- *Example config files can be found in the `bayota_settings` package.*
+***Note:*** *These files will not be changed by subsequent code executions after being generated.*\
+*Example config files can be found in the `bayota_settings` package.*
 
 #### ✅ Run tests to check whether things work
 
@@ -116,22 +115,24 @@ python castjeeves/setup.py test
 python efficiencysubproblem/setup.py test
 ```
 
-***Note:*** Tests should be run from the project directory (`bayota/`) even though they are located within each package.\
+***Note:*** *Tests should be run from the project directory (`bayota/`) even though they are located within each package.\
 If you try to run `python setup.py test` directly from the project dir, you will get an error message like:\
-"no tests specified at the top(bayota package)-level".
+"no tests specified at the top(bayota package)-level".*
 
-***Note:*** To remove the test files after running the tests, use `python setup.py clean`.
+***Note:*** *To remove the test files after running the tests, use `python setup.py clean`.*
 
 
 #### 💾 Install packages
 
-From the project dir (`bayota/`), run:
+From the project dir (`bayota/`), enter:
 
-```python setup.py install```
+```
+python setup.py install
+```
 
 # ▶ Usage
 
-Optimization studies can be conducted in multiple ways:
+Optimization studies can be conducted in BayOTA in multiple ways:
 1) Command-line: batch mode or single run
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
