@@ -6,7 +6,8 @@ import logging
 
 user_config_dir = os.path.expanduser("~") + "/.config/" + os.environ['USER']
 user_config = user_config_dir + "/bayota_user_config.ini"
-user_log_config = user_config_dir + "/bayota_logging_config.cfg"
+bash_config = user_config_dir + "/bayota_bash_config.ini"
+log_config = user_config_dir + "/bayota_logging_config.cfg"
 
 print('user_config is %s' % user_config)
 
@@ -16,13 +17,27 @@ default_logging_dir = os.path.join(default_output_dir, 'logs')
 
 
 def parse_config():
-    if not os.path.isfile(user_config):
-        os.makedirs(user_config_dir, exist_ok=True)
-        shutil.copyfile("example_config.ini", user_config)
+    make_user_config()
 
     config = configparser.ConfigParser()
     config.read(user_config)
     return config
+
+
+def make_user_config():
+    if not os.path.isfile(user_config):
+        os.makedirs(user_config_dir, exist_ok=True)
+        shutil.copyfile("example_config.ini", user_config)
+
+def make_bash_config():
+    if not os.path.isfile(bash_config):
+        os.makedirs(user_config_dir, exist_ok=True)
+        shutil.copyfile("example_bash_config.ini", bash_config)
+
+def make_log_config():
+    if not os.path.isfile(log_config):
+        os.makedirs(user_config_dir, exist_ok=True)
+        shutil.copyfile("example_logging_config.ini", log_config)
 
 
 class MyLogFormatter(logging.Formatter):

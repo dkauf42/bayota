@@ -82,3 +82,9 @@ setup(name='bayota',
       entry_points={"console_scripts":
                     ['bayota = bin.bayota_efficiency:main']}
       )
+
+from bayota_settings import base
+base.make_user_config()
+base.make_bash_config()
+base.make_log_config()
+

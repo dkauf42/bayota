@@ -2,6 +2,7 @@ from datetime import datetime
 
 import logging.config
 
+# get directories from base config methods
 from bayota_settings.base import *
 
 logdir = parse_config()['output_directories']['logs']
@@ -10,11 +11,9 @@ logfilename = os.path.join(logdir, 'efficiencysubproblem_debug.log')
 
 
 def set_up_logger():
-    if not os.path.isfile(user_log_config):
-        os.makedirs(user_config_dir, exist_ok=True)
-        shutil.copyfile("default_logging_config.cfg", user_log_config)
+    make_log_config()
 
-    logging.config.fileConfig(user_log_config, defaults={'logfilename': logfilename},
+    logging.config.fileConfig(log_config, defaults={'logfilename': logfilename},
                               disable_existing_loggers=False)
 
 
