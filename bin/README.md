@@ -54,6 +54,11 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
 
+#### 🔀 Run in batch with the slurm manager
+
+First, customize a study .ini file as desired in./bin/studies,\
+Then, execute `./bin/shell_scripts/conduct_study.bash`
+
 #### ⌨️ From the command line
 To run the standard bash script:
 
