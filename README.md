@@ -2,16 +2,15 @@
 
 "BayOTA" (Bay Optimization Tools for Analysis) is a repository of
 optimization and analysis tools created to serve the
-Chesapeake Bay Program (CBP) Partners, as part of the Optimization Tool Development Project
-(EPA-R3-CBP-16-03).
-Specifically, these tools are designed to add functionality to - and help users of - CAST
-(the Chesapeake Bay Assessement Scenario Tool), which
-is the CBP Phase 6 time-averaged watershed model.
+Chesapeake Bay Program (CBP) Partners, as part of the Optimization Tool
+Development Project (EPA-R3-CBP-16-03).
+Specifically, these tools are designed to add functionality to -
+and help users of - CAST (the Chesapeake Bay Assessement Scenario Tool),
+which is the CBP Phase 6 time-averaged watershed model.
 
 * Version 0.0.1
 
-This README documents steps necessary to get the
-application up and running.
+This README documents steps necessary to get the application up and running.
 
 <details>
  <summary><strong>Table of Contents</strong> (click to expand)</summary>
@@ -104,6 +103,12 @@ Values in these config files should be customized by the user:
 - ```bayota_bash_config.con``` specifies the project directory.
 - ```bayota_logging_config``` specifies the format and targets of log messages.
 
+The configuration files are central to the running of BayOTA packages and set up the local environment\
+for conducting optimization studies.
+
+They include the file path of the project directory, the output path stems (for stdout, graphics, and logs),\
+and many other settings. Several example configuration files can be found in the project source directory.
+
 #### ✅ Run tests to check whether things work
 
 Tests are located within each package, but should be run from the project dir:
@@ -116,8 +121,7 @@ Tests are located within each package, but should be run from the project dir:
 
 ***Note:*** Tests aren't located at the project level.\
 So, if you try to run
-```python setup.py test``` from the `bayota/` dir,\
-you will get an error message like
+```python setup.py test``` from the `bayota/` dir, you will get an error message like:\
 "no tests specified at the top(bayota package)-level"
 
 ***Note:*** To remove the test files after testing, run ```python setup.py clean```
@@ -131,6 +135,12 @@ From the project dir (`bayota/`), run:
 
 # ▶ Usage
 
+Optimization studies can be conducted in multiple ways:
+1) Command-line: batch mode or single run
+2) Python prompt: batch or single run
+3) Jupyter notebook: batch or single run
+
+#### ⌨️ From the command line
 To run the standard bash script:
 
 ```
@@ -147,7 +157,7 @@ cd ..
 ./bin/bayota
 ```
 
-From the python prompt or in a jupyter notebook:
+#### 🐍 From the python prompt
 
     >>> from efficiencysubproblem.src.study import Study
 
@@ -157,6 +167,9 @@ From the python prompt or in a jupyter notebook:
     # Solve the instance and get results
     >>> solveroutpath, csvpath, df, objective, feasible = s.go(constraint=5)
 
+#### 📓 From a jupyter notebook
+The approach to use in a notebook is the same as the python prompt.\
+Some example notebooks are provided in the bin/ directory.
 
 # 🚮️ How do I uninstall?
 
