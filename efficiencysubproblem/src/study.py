@@ -13,8 +13,7 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 
 from efficiencysubproblem.config import PROJECT_DIR
 
-from bayota_settings.logging import set_up_logger
-from bayota_settings.output_paths import get_output_dir
+from bayota_settings.install_config import get_output_dir, set_up_logger
 
 set_up_logger()
 logger = logging.getLogger(__name__)

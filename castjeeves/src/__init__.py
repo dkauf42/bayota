@@ -3,7 +3,7 @@ Module for cast_opt_tests
 """
 
 import os
-from bayota_settings.output_paths import get_output_dir
+from bayota_settings.install_config import get_output_dir
 outdir = get_output_dir()
 # import requests
 
