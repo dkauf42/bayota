@@ -175,16 +175,23 @@ Some example notebooks are provided in the bin/ directory.
 python setup.py clean
 ```
 
---- To uninstall the python packages from your environment (site-packages):
+--- To remove development version of package (i.e., remove it from easy-install.pth and delete the .egg-link)
 
 ```
 python setup.py develop --uninstall
+```
+
+
+--- To uninstall the python packages from your environment (site-packages):
+
+```
+pip uninstall bayota
 ```
 
 --- To remove everything (uninstall the python packages and then delete the source directory):
 
 ```
-python setup.py develop --uninstall
+pip uninstall bayota
 rm -r bayota/
 ```
 
