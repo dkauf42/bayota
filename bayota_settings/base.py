@@ -2,6 +2,8 @@ import os
 import shutil
 import configparser
 
+import logging
+
 user_config_dir = os.path.expanduser("~") + "/.config/" + os.environ['USER']
 user_config = user_config_dir + "/bayota_user_config.ini"
 user_log_config = user_config_dir + "/bayota_logging_config.cfg"
@@ -21,6 +23,14 @@ def parse_config():
     config = configparser.ConfigParser()
     config.read(user_config)
     return config
+
+
+class MyLogFormatter(logging.Formatter):
+    def format(self, record):
+        location = '%s.%s:%s' % (record.name, record.funcName, record.lineno)
+        msg = '%s %-100s %-8s %s' % (self.formatTime(record), location, record.levelname, record.msg)
+        record.msg = msg
+        return super(MyLogFormatter, self).format(record)
 
 
 def write_example_config():

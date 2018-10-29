@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import logging
 import logging.config
 
 from bayota_settings.base import *
@@ -17,14 +16,6 @@ def set_up_logger():
 
     logging.config.fileConfig(user_log_config, defaults={'logfilename': logfilename},
                               disable_existing_loggers=False)
-
-
-class MyLogFormatter(logging.Formatter):
-    def format(self, record):
-        location = '%s.%s:%s' % (record.name, record.funcName, record.lineno)
-        msg = '%s %-100s %-8s %s' % (self.formatTime(record), location, record.levelname, record.msg)
-        record.msg = msg
-        return super(MyLogFormatter, self).format(record)
 
 
 def get_output_dir():
