@@ -172,17 +172,23 @@ Some example notebooks are provided in the bin/ directory.
 
 --- To remove build files created by "`python setup.py install`":
 
-```python setup.py clean```
+```
+python setup.py clean
+```
 
 --- To remove installed package files from your environment (site-packages):
 
-```python setup.py develop --uninstall```
+```
+python setup.py develop --uninstall
+```
 
 --- To remove everything
 
-```python setup.py develop --uninstall```
+```
+python setup.py develop --uninstall
 
-```rm -r bayota```
+rm -r bayota/
+```
 
 # 🐛 Troubleshooting & debugging
 
