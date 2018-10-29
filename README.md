@@ -99,7 +99,7 @@ These files set up the local paths and are central to conducting BayOTA optimiza
 
 - `bayota_user_config.ini` specifies output path stems (for stdout, graphics, and logs)
 - `bayota_bash_config.con` specifies the path of the project directory.
-- `bayota_logging_config` specifies the format and targets of log messages.
+- `bayota_logging_config.cfg` specifies the format and targets of log messages.
 
 ***Note:*** *These files will not be changed by subsequent code executions after being generated.*\
 *Example config files can be found in the `bayota_settings` package.*
