@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # The PROJECT_HOME path variable is read from local configuration.
-source ${HOME}/.config/danny/bayota_bash_config.con
+source ${HOME}/.config/${USER}/bayota_bash_config.con
 echo 'PROJECT_HOME is loaded: ' ${PROJECT_HOME}
 
 # A name for this Study is requested from the user.
