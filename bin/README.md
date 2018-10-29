@@ -1,7 +1,7 @@
 # Conducting optimization studies from this bin directory
 
-***Note*** This readme does not describe how to set up, install, or uninstall the BayOTA packages.\
-For those instructions, please see the project-level guide: `bayota/README.md`
+***Note*** *This readme does not describe how to set up, install, or uninstall the BayOTA packages.\
+For those instructions, please see the project-level guide: `bayota/README.md`*
 
 
 This README documents how to conduct optimization studies using the BayOTA packages.
