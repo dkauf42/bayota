@@ -19,7 +19,7 @@ This README documents steps necessary to get the application up and running.
 * [How do I get set up?](#-how-do-i-get-set-up)
 * [Usage](#-usage)
 * [How do I uninstall?](#-how-do-i-uninstall)
-* [Troubleshooting & debugging](#-troubleshooting-debugging)
+* [Troubleshooting & debugging](#-troubleshooting--debugging)
 * [Credits](#-credits)
 * [License](#-license)
 * [Who do I talk to?](#-who-do-i-talk-to)
@@ -79,25 +79,27 @@ bayota
 
 # ⚙ How do I get set up?
 
+1 - Clone the project repository:
+```git clone bayota```
 
-From the project directory, get the latest version:
+2 - From the project directory, get the latest version:
 
 ```cd bayota/```
 
 ```git pull```
 
-#### Set local configuration paths
-During the first install or test run, three default config files will be copied into ```~/.config/${USER}/```\
-(These files will not be changed by subsequent code executions.)
+#### 🛣️ Set the local paths
+During the first install or test run, three default config files will be copied into `~/.config/${USER}/`.
 
-Values in these config files should be customized by the user:
+These config files are central to conducting BayOTA optimization studies, by setting up the local paths:\
+**Values in these config files should be customized by the user:**
 
-- ```bayota_user_config.ini``` specifies output path stems (for stdout, graphics, and logs)
-- ```bayota_bash_config.con``` specifies the path of the project directory.
-- ```bayota_logging_config``` specifies the format and targets of log messages.
+- `bayota_user_config.ini` specifies output path stems (for stdout, graphics, and logs)
+- `bayota_bash_config.con` specifies the path of the project directory.
+- `bayota_logging_config` specifies the format and targets of log messages.
 
-These config files are central to the running of BayOTA and set up the local environment\
-for conducting optimization studies. Example config files can be found in the `bayota_settings` package.
+(***Note:*** *These files will not be changed by subsequent code executions after being generated.*\
+&nbsp;*Example config files can be found in the `bayota_settings` package.*)
 
 #### ✅ Run tests to check whether things work
 
@@ -105,9 +107,9 @@ Tests are located within each package, but should be run from the project dir:
 
 ```cd bayota/```
 
-```python efficiencysubproblem/setup.py test```
-
 ```python castjeeves/setup.py test```
+
+```python efficiencysubproblem/setup.py test```
 
 ***Note:*** Tests aren't located at the project level.\
 So, if you try to run
