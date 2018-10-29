@@ -86,21 +86,18 @@ From the project directory, get the latest version:
 
 ```git pull```
 
-#### Local configuration files
+#### Set local configuration paths
 During the first install or test run, three default config files will be copied into ```~/.config/${USER}/```\
-(These files will not be changed by subsequent project executions.)
+(These files will not be changed by subsequent code executions.)
 
 Values in these config files should be customized by the user:
 
-- ```bayota_user_config.ini``` specifies output paths.
-- ```bayota_bash_config.con``` specifies the project directory.
+- ```bayota_user_config.ini``` specifies output path stems (for stdout, graphics, and logs)
+- ```bayota_bash_config.con``` specifies the path of the project directory.
 - ```bayota_logging_config``` specifies the format and targets of log messages.
 
-The configuration files are central to the running of BayOTA packages and set up the local environment\
-for conducting optimization studies.
-
-They include the file path of the project directory, the output path stems (for stdout, graphics, and logs),\
-and many other settings. Several example configuration files can be found in the project source directory.
+These config files are central to the running of BayOTA and set up the local environment\
+for conducting optimization studies. Example config files can be found in the `bayota_settings` package.
 
 #### ✅ Run tests to check whether things work
 
