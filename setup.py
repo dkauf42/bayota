@@ -10,6 +10,8 @@ import os
 import sys
 from setuptools import setup, Command, find_packages
 import setuptools.command.test
+import setuptools.command.develop
+import setuptools.command.install
 
 
 class CleanCommand(Command):
@@ -51,6 +53,25 @@ class TestCommand(setuptools.command.test.test):
         # sys.exit(errno)
 
 
+class PostDevelopCommand(setuptools.command.develop):
+    """Post-installation for development mode."""
+    def run(self):
+
+        setuptools.command.develop.run(self)
+
+
+class PostInstallCommand(setuptools.command.install):
+    """Post-installation for installation mode."""
+    def run(self):
+
+        from bayota_settings import base
+        base.make_user_config()
+        base.make_bash_config()
+        base.make_log_config()
+
+        setuptools.command.install.run(self)
+
+
 with open('README.md') as f:
     readme_text = f.read()
 
@@ -82,9 +103,3 @@ setup(name='bayota',
       entry_points={"console_scripts":
                     ['bayota = bin.bayota_efficiency:main']}
       )
-
-from bayota_settings import base
-base.make_user_config()
-base.make_bash_config()
-base.make_log_config()
-
