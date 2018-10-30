@@ -9,8 +9,6 @@ user_config = user_config_dir + "/bayota_user_config.ini"
 bash_config = user_config_dir + "/bayota_bash_config.con"
 log_config = user_config_dir + "/bayota_logging_config.cfg"
 
-print('user_config is %s' % user_config)
-
 default_output_dir = os.path.join(os.path.expanduser("~"), 'output')
 default_graphics_dir = os.path.join(default_output_dir, 'graphics')
 default_logging_dir = os.path.join(default_output_dir, 'logs')
