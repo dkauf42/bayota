@@ -40,7 +40,6 @@ class Study:
             geoscale (str): 'county' or 'lrseg'.
             geoentities (:obj:`list` of :obj:`str`): Specific lrsegs or counties to include in each run.
             objectivetype (str): Either 'costmin' or 'loadreductionmax'
-            multirun (bool): Whether or not a single run or multiple runs are to be performed in this Study object.
             constraintstr (str): String representation of the constraint level.
             numberofrunscompleted (int): Counter for how many runs have been performed so far by this Study object.
 
@@ -77,7 +76,6 @@ class Study:
         self.geoscale = geoscale
         self.geoentities = geoentities
         self.objectivetype = objectivetype
-        self.multirun = False
         self.constraintstr = 'not set'
 
         logger.info('**********************************************')
@@ -349,25 +347,16 @@ class Study:
     def _set_data_constraint_level(self, baseconstraint):
         # Check whether multiple runs are required
         if isinstance(baseconstraint, list):
-            if len(baseconstraint) > 1:
-                self.multirun = True
-            else:
-                baseconstraint = baseconstraint[0]
+            baseconstraint = baseconstraint[0]
 
         if self.objectivetype == 'costmin':
             # ---- Set the tau target load, e.g. 12% reduction ----
             for k in self.modelhandler.model.tau:
-                if self.multirun:
-                    self.modelhandler.model.tau[k] = baseconstraint[0]
-                else:
-                    self.modelhandler.model.tau[k] = baseconstraint
+                self.modelhandler.model.tau[k] = baseconstraint
                 self.constraintstr = str(round(oe.value(self.modelhandler.model.tau[k]), 1))
         elif self.objectivetype == 'loadreductionmax':
             # ---- Set the total capital available, e.g. $100,000 ----
-            if self.multirun:
-                self.modelhandler.model.totalcostupperbound = baseconstraint[0]
-            else:
-                self.modelhandler.model.totalcostupperbound = baseconstraint
+            self.modelhandler.model.totalcostupperbound = baseconstraint
             self.constraintstr = str(round(oe.value(self.modelhandler.model.totalcostupperbound), 1))
 
     def _iterate_numberofruns(self):
