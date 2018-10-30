@@ -73,7 +73,11 @@ def test_study_solutionobjectivevalue_costmin_lrsegNorthumberlandCountyVA(valid_
                   geoscale='lrseg', geoentities=['N51133RL0_6450_0000'],  # lrseg in Northumberland County, VA
                   saveData2file=False)
 
-    solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go(constraint=5)
+    (solver_output_filepath,
+     solution_csv_filepath,
+     sorteddf_byacres,
+     solution_objective,
+     feasible_solution) = study.go(constraint=5, fileprintlevel=0)
 
     assert 20675 == round(solution_objective)
 
@@ -86,7 +90,11 @@ def test_study_solutionobjectivevalue_costmin_lrsegMontgomeryCountyMD(valid_ipop
                   geoscale='lrseg', geoentities=['N24031PM0_4640_4820'],  # Cabin John Creek, in Montgomery County
                   saveData2file=False)
 
-    solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go(constraint=5)
+    (solver_output_filepath,
+     solution_csv_filepath,
+     sorteddf_byacres,
+     solution_objective,
+     feasible_solution) = study.go(constraint=5, fileprintlevel=0)
 
     assert 8 == round(solution_objective)
 
@@ -98,6 +106,10 @@ def test_study_solutionobjectivevalue_costmin_countyMontgomeryCountyMD(valid_ipo
     study = Study(objectivetype='costmin',
                   geoscale='county', geoentities=['Montgomery, MD'])
 
-    solver_output_filepaths, solution_csv_filepath, mdf, solution_objective = study.go(constraint=5)
+    (solver_output_filepath,
+     solution_csv_filepath,
+     sorteddf_byacres,
+     solution_objective,
+     feasible_solution) = study.go(constraint=5, fileprintlevel=0)
 
     assert 5637 == round(solution_objective)
