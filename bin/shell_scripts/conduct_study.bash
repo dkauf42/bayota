@@ -3,6 +3,7 @@
 # The PROJECT_HOME path variable is read from local configuration.
 source ${HOME}/.config/${USER}/bayota_bash_config.con
 echo 'PROJECT_HOME is loaded: ' ${PROJECT_HOME}
+echo 'SLURM_OUTPUT is loaded: ' ${SLURM_OUTPUT}
 
 # A name for this Study is requested from the user.
 if [ $# -gt 0 ]; then
@@ -54,7 +55,7 @@ NUMNODES=1
 
 
 # SET UP THE BATCH JOB COMMAND
-XcmdX='sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_SPEC_FILE}'
+XcmdX='sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} --output=${SLURM_OUTPUT} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_SPEC_FILE}'
 
 
 # The user is asked for confirmation to start the job.
@@ -74,7 +75,7 @@ read response
 
 # The batch job is sent to the Slurm scheduler.
 if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
-#    sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_SPEC_FILE}
+#    sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} --output=${SLURM_OUTPUT} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_SPEC_FILE}
     eval ${XcmdX}
 
     iRETURN=$?
@@ -85,5 +86,6 @@ if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
         echo ''
         echo 'Running'
         echo ''
+        echo 'Slurm output will be written to: ' ${SLURM_OUTPUT}
     fi
 fi
