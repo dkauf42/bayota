@@ -72,19 +72,28 @@ bayota
 
 #### Other paths used by this project
 
- - `~/.config/${USER}/` # holds configuration files
- - `~/bayota_output/`  #
-
 (These paths are set during install by the `bayota_settings` package)
+
+***Note:*** *Three config files will be copied into `~/.config/${USER}/` during the first install (or first test run). \
+These files set up local paths and formatting and are central to conducting BayOTA optimization studies.*
+
+- `bayota_user_config.ini` specifies output path stems (for stdout, graphics, and logs)
+- `bayota_bash_config.con` specifies the path of the project directory.
+- `bayota_logging_config.cfg` specifies the format and targets of log messages.
+
+*These files will not be changed by subsequent code executions after being generated.*\
+*Example config files can be found in the `bayota_settings` package.*
 
 # ⚙ How do I get set up?
 
-1 - Check out a clone of this repository to a location of your choice, e.g.
+#### 👥 Clone the repository
+
+-- Check out a clone of this repository to a location of your choice, e.g.
 ```
 git clone https://gitlab.com/daka42/bayota.git ~/bayota
 ```
 
-2 - From the project directory, get the latest version:
+-- From the project directory, get the latest version:
 
 ```
 cd bayota/
@@ -92,19 +101,25 @@ cd bayota/
 git pull
 ```
 
+#### 💾 Install packages
+
+-- From the project dir (`bayota/`), enter:
+
+```
+python setup.py install
+```
+
+
 #### 🛣️ Set the local paths
-During the first install or test run, three default config files will be copied into `~/.config/${USER}/`.\
-These files set up the local paths and are central to conducting BayOTA optimization studies.\
-**Values in these config files should be customized by the user:**
 
-- `bayota_user_config.ini` specifies output path stems (for stdout, graphics, and logs)
-- `bayota_bash_config.con` specifies the path of the project directory.
-- `bayota_logging_config.cfg` specifies the format and targets of log messages.
+During the first install (or first test run), a default configuration file will be generated in `~/.config/${USER}`.
 
-***Note:*** *These files will not be changed by subsequent code executions after being generated.*\
-*Example config files can be found in the `bayota_settings` package.*
+-- Customize the values in `~/.config/${USER}/bayota_user_config.ini` to direct output to the desired directories.
 
-#### ✅ Run tests to check whether things work
+
+#### ✅ Test the installation
+
+-- From the project directory, run the automated test suites:
 
 ```
 cd bayota/
@@ -114,20 +129,11 @@ python castjeeves/setup.py test
 python efficiencysubproblem/setup.py test
 ```
 
-***Note:*** *Tests should be run from the project directory (`bayota/`) even though they are located within each package.\
-If you try to run `python setup.py test` directly from the project dir, you will get an error message like:\
+***Note:*** *Tests can be run from the project directory (`bayota/`) even though they are located within each package.\
+If you try to run `python setup.py test` from the project dir directly, you will get an error message like:\
 "no tests specified at the top(bayota package)-level".*
 
 ***Note:*** *To remove the test files after running the tests, use `python setup.py clean`.*
-
-
-#### 💾 Install packages
-
-From the project dir (`bayota/`), enter:
-
-```
-python setup.py install
-```
 
 # ▶ Usage
 
