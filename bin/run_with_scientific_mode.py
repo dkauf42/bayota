@@ -17,7 +17,7 @@ graphicsdir = get_graphics_dir()
 
 #%%
 geoent = 'Adams, PA'
-s = Study(objectivetype='costmin',
+s = Study(objectivetype='loadreductionmax',
           geoscale='county', geoentities=[geoent])
 
 countyname = geoent.split(',')[0]
@@ -36,13 +36,13 @@ stateabbrev = geoent.split(',')[1]
  solution_csv_filepath,
  mdf,
  solution_objective,
- feasibility_list) = s.go_constraintsequence(list(range(1, 4)))
+ feasibility_list) = s.go_constraintsequence(list(range(100000, 500000, 100000)))
 
 #%%
 # log_infeasible_constraints(s.modelhandler.model)
 
 #%%
-constraintvar = 'tau'
+constraintvar = 'totalcostupperbound'
 df = pd.read_csv(solution_csv_filepath)
 df_piv = SolutionHandler.make_pivot_from_solution_sequence(solution_csv_filepath=solution_csv_filepath,
                                                            constraint_sequencing_var=constraintvar)
@@ -53,8 +53,8 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
 fig = plotlib_costobj(df=df_piv, xname=constraintvar,
                           savefilepathandname=os.path.join(graphicsdir,
-                                                           stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'),
-                      secondaryxticklabels=df_piv['N_pounds_reduced'])
+                                                           stateabbrev + countyname + '_tau1-10' + '_plotlibfig.png'))
+                      #secondaryxticklabels=df_piv['N_pounds_reduced'])
 # py.iplot(fig, filename='styled-line')
 
 #%%

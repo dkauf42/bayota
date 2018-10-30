@@ -168,9 +168,9 @@ class Study:
                 merged_df['tau'] = mdl.tau[k]  # Label this run in the dataframe
                 break
 
-            merged_df['originalload'] = oe.value(mdl.originalload['N'])
-            merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
-                                            oe.value(mdl.originalload['N'])
+            # merged_df['originalload'] = oe.value(mdl.originalload['N'])
+            # merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
+            #                                 oe.value(mdl.originalload['N'])
 
         if self.objectivetype == 'loadreductionmax':
             solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,

@@ -19,7 +19,7 @@ def set_up_logger():
 
 def get_output_dir():
     outputdir_top_level = parse_user_config()['output_directories']['general']
-    print('outputdir_top_level is %s' % user_config)
+    print('outputdir_top_level is %s' % outputdir_top_level)
 
     # # Output Path
     # today = datetime.now()
