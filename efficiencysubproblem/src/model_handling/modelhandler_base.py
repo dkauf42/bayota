@@ -60,7 +60,8 @@ class ModelHandlerBase:
 
         """ Sets """
         model.PLTNTS = oe.Set(initialize=datahandler.PLTNTS,
-                              ordered=True)
+                              ordered=True,
+                              doc="""Pollutants (N, P, or S).""")
 
         self._load_model_geographies(model, datahandler)  #lrsegs, counties, cntylrseglinks)
         # model.LRSEGS = oe.Set(initialize=lrsegs)
@@ -75,28 +76,28 @@ class ModelHandlerBase:
         model.BMPGRPSRCLINKS = oe.Set(initialize=datahandler.BMPGRPSRCLINKS, dimen=2)
 
         """ Parameters """
-        # cost per acre of BMP b
         model.c = oe.Param(model.BMPS,
                            initialize=datahandler.c,
-                           within=oe.NonNegativeReals)
-        # effectiveness per acre of BMP b
+                           within=oe.NonNegativeReals,
+                           doc="""cost per acre of BMP b.""")
         model.E = oe.Param(model.BMPS,
                            model.PLTNTS,
                            model.LRSEGS,
                            model.LOADSRCS,
                            initialize=datahandler.E,
-                           within=oe.NonNegativeReals)
-        # base nutrient load per load source
+                           within=oe.NonNegativeReals,
+                           doc='effectiveness per acre of BMP b')
         model.phi = oe.Param(model.LRSEGS,
                              model.LOADSRCS,
                              model.PLTNTS,
                              initialize=datahandler.phi,
-                             within=oe.NonNegativeReals)
-        # total acres available in an lrseg/load source
+                             within=oe.NonNegativeReals,
+                             doc='base nutrient load per load source')
         model.T = oe.Param(model.LRSEGS,
                            model.LOADSRCS,
                            initialize=datahandler.T,
-                           within=oe.NonNegativeReals)
+                           within=oe.NonNegativeReals,
+                           doc='total acres available in an lrseg/load source')
 
         self._specify_model_original_load(model)
 
@@ -124,7 +125,8 @@ class ModelHandlerBase:
                          model.LRSEGS,
                          model.LOADSRCS,
                          within=model.BMPSRCLINKS,
-                         domain=oe.NonNegativeReals)
+                         domain=oe.NonNegativeReals,
+                         doc='Amount of each BMP to implement.')
 
         """ Constraints """
         self._load_model_constraint_availableacres(model)
