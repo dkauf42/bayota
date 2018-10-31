@@ -14,6 +14,14 @@ class ModelHandlerBase:
         """ Overridden in Mixins """
         pass
 
+    def _load_model_constraints_other(self, model, datahandler):
+        """ Overridden in Mixins """
+        pass
+
+    def _load_model_objective(self, model):
+        """ Overridden in Mixins """
+        pass
+
     @staticmethod
     def _load_model_constraint_availableacres(model):
         """ BMPs within a BMPGRP cannot use more than the acres in a LRSEG,LOADSRC """
@@ -28,14 +36,6 @@ class ModelHandlerBase:
                                                     model.LRSEGS,
                                                     model.LOADSRCS,
                                                     rule=additive_bmps_acre_bound_rule)
-
-    def _load_model_constraints_other(self, model, datahandler):
-        """ Overridden in Mixins """
-        pass
-
-    def _load_model_objective(self, model):
-        """ Overridden in Mixins """
-        pass
 
     def build_subproblem_model(self, datahandler):
 
