@@ -32,10 +32,13 @@ bin
 │
 ├── README.md              <- README describing how to conduct optimization studies
 │
-├── config                 <- specification of paths
+├── cli                    <- command line interfaces written in python
 │   └── ...
 │
 ├── jnotebooks             <- jupyter notebooks for easy access to optimization studies and results analyses.
+│   └── ...
+│
+├── python_scripts         <- python scripts for easy access to optimization studies and results analyses.
 │   └── ...
 │
 ├── shell_scripts          <- scripts for batch optimization studies.

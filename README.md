@@ -35,14 +35,11 @@ bayota
 ├── CHANGELOG.md           <- Documentation of notable changes to this project
 │
 ├── bin                    <- scripts (python, bash, slurm, jupyter notebooks) for running from the command-line and performing analyses
-│   └── config
-│       └── ...
-│   └── jnotebooks
-│       └── ...
-│   └── shell_scripts
-│       └── ...
-│   └── studies
-│       └── ...
+│   └── cli/
+│   └── jnotebooks/
+│   └── python_scripts/
+│   └── shell_scripts/
+│   └── studies/
 │
 ├── CASTJEEVES             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
 │   ├── __init__.py
