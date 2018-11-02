@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-plt.switch_backend('agg')
 from matplotlib import rcParams
 
 
@@ -9,7 +8,12 @@ def plotlib_costobj(df=None, savefig=True, savefilepathandname=None,
                     xlabel='Load Reduction (%) Lower Bound Constraint',
                     ylabel='Minimal Total Cost ($)',
                     secondaryxticklabels=None,
-                    showplot=True):
+                    showplot=True,
+                    backend='agg'):
+
+    if not not backend:
+        plt.switch_backend(backend)
+
     if not savefilepathandname:
         savefig = False
 
@@ -109,7 +113,12 @@ def plotlib_loadreductionobj(df=None, savefig=True, savefilepathandname=None,
                     xlabel='Total Cost ($) Upper Bound Constraint',
                     ylabel='Maximal Load Reduction (%)',
                     secondaryxticklabels=None,
-                    showplot=True):
+                    showplot=True,
+                    backend='agg'):
+
+    if not not backend:
+        plt.switch_backend(backend)
+
     if not savefilepathandname:
         savefig = False
 
