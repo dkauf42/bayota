@@ -1,2 +1,1 @@
-recursive-include castjeeves/data *.csv
-recursive-include efficiencysubproblem/data *.csv
+recursive-include data *.csv
