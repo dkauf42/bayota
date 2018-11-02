@@ -16,10 +16,6 @@ up and running.
 ```
 ├── README.md              <- The top-level README for developers using this project.
 │
-├── data
-│   ├── instance_data      <- Intermediate data that has been transformed.
-│   └── raw                <- Original, immutable data.
-│
 ├── src                    <- Source code for use in this project.
 │   ├── __init__.py        <- Makes src a Python module
 │   ├── study.py           <- Main class for setting up optimization runs
@@ -55,9 +51,6 @@ up and running.
 │       ├── genericvis.py
 │       ├── sequence_plot.py
 │       └── zL_bars.py
-│
-├── output                 <- solution output files are created here
-├── log                    <- logging files are created here for debugging purposes
 │
 ├── CHANGELOG.md
 ├── MANIFEST.in

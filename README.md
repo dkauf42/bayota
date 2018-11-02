@@ -41,6 +41,8 @@ bayota
 │   └── shell_scripts/
 │   └── studies/
 │
+├── data                   <- source data CSVs, excel files
+│
 ├── CASTJEEVES             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
 │   ├── __init__.py
 │   └── ...
