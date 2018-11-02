@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The PROJECT_HOME path variable is read from local configuration.
+# The PROJECT_HOME and SLURM_OUTPUT path variables are read from local configuration.
 source ${HOME}/.config/${USER}/bayota_bash_config.con
 echo 'PROJECT_HOME is loaded: ' ${PROJECT_HOME}
 echo 'SLURM_OUTPUT is loaded: ' ${SLURM_OUTPUT}
@@ -27,6 +27,7 @@ if [ ! -f ${STUDY_SPEC_FILE} ]; then
     exit 1
 fi
 
+# Study configuration attributes are printed in the console.
 OBJECTIVE=$(awk -F " = " '/^objective/ {gsub(/[ \t]/, "", $2); print $2}' ${STUDY_SPEC_FILE})
 SCALE=$(awk -F " = " '/^scale/ {gsub(/[ \t]/, "", $2); print $2}' ${STUDY_SPEC_FILE})
 ENTITIES=$(awk -F " = " '/^entities/ {gsub(/[ \t]/, "", $2); print $2}' ${STUDY_SPEC_FILE})
@@ -54,9 +55,22 @@ fi
 NUMNODES=1
 
 
-# SET UP THE BATCH JOB COMMAND
-XcmdX='sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} --output=${SLURM_OUTPUT} ${PROJECT_HOME}/bin/cli/conductor_cli.py -c ${STUDY_SPEC_FILE}'
+# The slurm batch command is set up.
 
+# SBATCH -n 1      # tasks requested
+# SBATCH -c 4      # cores requested
+# SBATCH --mem=10  # memory in Mb
+# SBATCH --output=logs/multiprocess_%j.out
+# SBATCH -o outfile  # send stdout to outfile
+# SBATCH -e errfile  # send stderr to errfile
+
+CMD="sbatch "
+CMD+="--job-name=${STUDY} "
+CMD+="--nice=${PRIORITY} "
+CMD+="--nodes=${NUMNODES} "      # nodes requested
+CMD+="--output=${SLURM_OUTPUT} "
+CMD+="--time=01:00:00 "          # time requested in hour:minute:second
+CMD+="${PROJECT_HOME}/bin/cli/conductor_cli.py -c ${STUDY_SPEC_FILE}"
 
 # The user is asked for confirmation to start the job.
 echo ''
@@ -66,17 +80,16 @@ echo '-- Job Priority = ' ${PRIORITY}
 echo '-- Number of nodes = ' ${NUMNODES}
 echo ''
 echo 'Command is: '
-echo ${XcmdX}
+echo ${CMD}
 echo '*** *** *** *** ***'
 echo ''
 echo 'Continue? [Y/N]'
 read response
 
 
-# The batch job is sent to the Slurm scheduler.
+# The batch job is sent to the Slurm manager.
 if [ ${response} = 'Y' ] || [ ${response} = 'y' ]; then
-#    sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} --output=${SLURM_OUTPUT} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_SPEC_FILE}
-    eval ${XcmdX}
+    eval ${CMD}
 
     iRETURN=$?
 
