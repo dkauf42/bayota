@@ -40,7 +40,7 @@ class Jeeves:
 
     @classmethod
     def loadInSourceDataFromSQL(cls):
-        savename = get_tempdir() + 'SourceData.obj'
+        savename = os.path.join(get_tempdir(), 'SourceData.obj')
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
                 sourcedata = pickle.load(f)
@@ -62,12 +62,12 @@ class Jeeves:
 
     @classmethod
     def loadInMetaDataFromSQL(cls):
-        savename = get_tempdir() + 'MetaData.obj'
+        savename = os.path.join(get_tempdir(), 'MetaData.obj')
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
                 metadata = pickle.load(f)
         else:
-            print('<%s object does not exist yet. Generating...>' % SourceData.__name__)
+            print('<%s object does not exist yet. Generating...>' % sqlMetaData.__name__)
             # Source tables are loaded.
             metadata = sqlMetaData()
             tbllist = metadata.getTblList()

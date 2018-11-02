@@ -17,6 +17,21 @@ def set_up_logger():
                               disable_existing_loggers=False)
 
 
+def get_data_dir():
+    datadir_top_level = parse_user_config()['data_directories']['sourcecsvs']
+    if not os.path.isdir(datadir_top_level):
+        raise ValueError('Data directory specified in config <%s> does not exist!')
+
+    return datadir_top_level
+
+
+def get_temp_dir():
+    tempdir_top_level = parse_user_config()['output_directories']['temp']
+    os.makedirs(tempdir_top_level, exist_ok=True)
+
+    return tempdir_top_level
+
+
 def get_output_dir():
     outputdir_top_level = parse_user_config()['output_directories']['general']
     print('outputdir_top_level is %s' % outputdir_top_level)
