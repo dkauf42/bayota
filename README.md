@@ -85,7 +85,7 @@ These files set up local paths and formatting and are central to conducting BayO
 
 # ⚙ How do I get set up?
 
-###### Ensure the IPOPT solver is installed
+###### Ensure the IPOPT solver is installed and in $PATH
 
 The Ipopt solver must be compiled/installed separately in order to solve Efficiency BMP optimization problems.
 - Instructions can be found at https://www.coin-or.org/Ipopt/documentation/node14.html
@@ -112,7 +112,7 @@ git pull
 -- From the project dir (`bayota/`), enter:
 
 ```
-python setup.py install
+pip install -e .
 ```
 
 
