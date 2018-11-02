@@ -55,7 +55,7 @@ NUMNODES=1
 
 
 # SET UP THE BATCH JOB COMMAND
-XcmdX='sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} --output=${SLURM_OUTPUT} ${PROJECT_HOME}/bin/study_cli.py -c ${STUDY_SPEC_FILE}'
+XcmdX='sbatch --nice=${PRIORITY} --nodes=${NUMNODES} --job-name=${STUDY} --output=${SLURM_OUTPUT} ${PROJECT_HOME}/bin/cli/conductor_cli.py -c ${STUDY_SPEC_FILE}'
 
 
 # The user is asked for confirmation to start the job.
