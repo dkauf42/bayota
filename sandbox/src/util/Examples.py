@@ -1,5 +1,3 @@
-from sandbox.config import OUTPUT_DIR
-
 
 class Examples:
     def __init__(self, name=''):

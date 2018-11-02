@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 
-from . import get_tempdir
+from bayota_settings.install_config import get_source_pickles_dir
 from . import get_sqlsourcetabledir
 from . import get_sqlmetadatatabledir
 
@@ -40,7 +40,7 @@ class Jeeves:
 
     @classmethod
     def loadInSourceDataFromSQL(cls):
-        savename = os.path.join(get_tempdir(), 'SourceData.obj')
+        savename = os.path.join(get_source_pickles_dir(), 'SourceData.obj')
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
                 sourcedata = pickle.load(f)
@@ -62,7 +62,7 @@ class Jeeves:
 
     @classmethod
     def loadInMetaDataFromSQL(cls):
-        savename = os.path.join(get_tempdir(), 'MetaData.obj')
+        savename = os.path.join(get_source_pickles_dir(), 'MetaData.obj')
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
                 metadata = pickle.load(f)

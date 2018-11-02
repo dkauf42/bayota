@@ -6,8 +6,10 @@ from itertools import product
 
 # import dask.dataframe as dd
 
-from sandbox.config import OUTPUT_DIR
 from sandbox.config import inaws, s3, _S3BUCKET
+from bayota_settings.install_config import get_output_dir
+
+outdir = get_output_dir()
 
 
 class Maker(object):
@@ -60,9 +62,9 @@ class Maker(object):
         # df_manure = self.longdf_manure
         # dd_manure = dd.from_pandas(df_manure, npartitions=3)
 
-        animal_path = os.path.join(OUTPUT_DIR, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal')
-        land_path = os.path.join(OUTPUT_DIR, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land')
-        manure_path = os.path.join(OUTPUT_DIR, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure')
+        animal_path = os.path.join(outdir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'animal')
+        land_path = os.path.join(outdir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'land')
+        manure_path = os.path.join(outdir, 'testwrite_CASTscenario_LongDF_%s.txt' % 'manure')
         if os.name == 'nt':
             print('<using windows line terminators>')
             df_animal.to_csv(animal_path, sep='\t', header=True, index=False, line_terminator='\n')
