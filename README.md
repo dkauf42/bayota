@@ -112,7 +112,7 @@ git pull
 -- From the project dir (`bayota/`), enter:
 
 ```
-pip install -e .
+pip install .
 ```
 
 
