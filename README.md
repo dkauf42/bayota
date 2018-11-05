@@ -76,9 +76,9 @@ bayota
 ***Note:*** *Three config files will be copied into `~/.config/${USER}/` during the first install (or first test run). \
 These files set up local paths and formatting and are central to conducting BayOTA optimization studies.*
 
-- `bayota_user_config.ini` specifies output path stems (for stdout, graphics, and logs)
-- `bayota_bash_config.con` specifies the path of the project directory.
-- `bayota_logging_config.cfg` specifies the format and targets of log messages.
+- `user_config.ini` specifies output path stems (for stdout, graphics, and logs)
+- `bash_config.con` specifies the path of the project directory.
+- `logging_config.cfg` specifies the format and targets of log messages.
 
 *These files will not be changed by subsequent code executions after being generated.*\
 *Example config files can be found in the `bayota_settings` package.*
@@ -107,6 +107,13 @@ cd bayota/
 git pull
 ```
 
+#### 🏡 Configure before installing
+
+-- Customize the following values in `bayota_settings/install_config.ini`:
+- `project_home`
+- `repo_top`
+
+
 #### 💾 Install packages
 
 -- From the project dir (`bayota/`), enter:
@@ -116,11 +123,13 @@ pip install .
 ```
 
 
-#### 🛣️ Set the local paths
+#### 🛣️ Double-check the local paths
 
-During the first install (or first test run), a default configuration file will be generated in `~/.config/${USER}`.
+During the first install (or first test run), default configuration files will be generated.\
+In `bayota_ws_${version}/config/`, customize values within:
 
--- Customize the values in `~/.config/${USER}/bayota_user_config.ini` to direct output to the desired directories.
+-- `user_config.ini` to direct output to the desired directories.\
+-- `bash_config.con` to specify the project home.
 
 
 #### ✅ Test the installation
@@ -140,6 +149,8 @@ If you try to run `python setup.py test` from the project dir directly, you will
 "no tests specified at the top(bayota package)-level".*
 
 ***Note:*** *To remove the test files after running the tests, use `python setup.py clean`.*
+
+-- **If the tests pass, you should be good to go!**
 
 # ▶ Usage
 
