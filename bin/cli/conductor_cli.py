@@ -54,14 +54,15 @@ def main(args):
 
     elif args.command == 'solveinstance':
 
-        with open(savepath, "rb") as f:
+        # A Study instance is read in.
+        with open(opts.instancefile, "rb") as f:
             s = cloudpickle.load(f)
 
-        if objectivetype == 'costmin':
+        if s.objectivetype == 'costmin':
             constraint_list = list(range(1, 5))
             constraintvar = 'tau'
             plotfunction = plotlib_costobj
-        elif objectivetype == 'loadreductionmax':
+        elif s.objectivetype == 'loadreductionmax':
             constraint_list = list(range(100000, 500000, 100000))
             constraintvar = 'tau'
             plotfunction = plotlib_loadreductionobj
