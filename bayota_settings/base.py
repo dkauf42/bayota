@@ -1,44 +1,71 @@
 import os
 import shutil
 import configparser
+import pkg_resources
 
 import logging
 
-user_config_dir = os.path.expanduser("~") + "/.config/" + os.environ['USER']
-user_config = user_config_dir + "/bayota_user_config.ini"
-bash_config = user_config_dir + "/bayota_bash_config.con"
-log_config = user_config_dir + "/bayota_logging_config.cfg"
+version = pkg_resources.require("bayota")[0].version
+print('bayota_settings.base(): version = %s' % version)
 
-default_output_dir = os.path.join(os.path.expanduser("~"), 'output')
-default_graphics_dir = os.path.join(default_output_dir, 'graphics')
-default_logging_dir = os.path.join(default_output_dir, 'logs')
+install_config_path = os.path.join('bayota_settings','install_config.ini')
+
+# The version number is updated in the config file.
+install_config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
+install_config.read(install_config_path)
+install_config.set("version", "version", str(version))
+
+ws_dir = install_config['top_paths']['workspace_top']
+print('bayota_settings.base(): ws_dir = %s' % ws_dir)
+os.makedirs(ws_dir, exist_ok=True)
+
+config_dir = install_config['workspace_directories']['config']
+user_config = install_config['other_config']['userconfigcopy']
+bash_config = install_config['other_config']['bashconfig']
+log_config = install_config['other_config']['logconfig']
+
+default_output_dir = install_config['output_directories']['general']
+default_graphics_dir = install_config['output_directories']['graphics']
+default_logging_dir = install_config['output_directories']['logs']
 
 path_to_examples = os.path.dirname(__file__)
-example_user_config = os.path.join(path_to_examples, "example_user_config.ini")
+example_user_config = os.path.join(path_to_examples, "install_config.ini")
 example_bash_config = os.path.join(path_to_examples, "example_bash_config.con")
 example_log_config = os.path.join(path_to_examples, "example_logging_config.cfg")
+
+
+def make_config_file(file_path, example_file):
+    created = False
+    if not os.path.isfile(file_path):
+        os.makedirs(config_dir, exist_ok=True)
+        shutil.copyfile(example_file, file_path)
+        created = True
+    return created
 
 
 def parse_user_config():
     make_user_config()
 
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
     config.read(user_config)
+
     return config
 
 
-def make_config_file(file_path, example_file):
-    if not os.path.isfile(file_path):
-        os.makedirs(user_config_dir, exist_ok=True)
-        shutil.copyfile(example_file, file_path)
-
-
 def make_user_config():
-    make_config_file(file_path=bash_config, example_file=example_bash_config)
+    created = make_config_file(file_path=user_config, example_file=example_user_config)
+    if created:
+        # Ensure version is up-to-date
+        config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
+        config.read(user_config)
+        config.set("version", "version", str(version))
+
+        with open(user_config, 'w') as newini:
+            config.write(newini)
 
 
 def make_bash_config():
-    make_config_file(file_path=user_config, example_file=example_user_config)
+    make_config_file(file_path=bash_config, example_file=example_bash_config)
 
 
 def make_log_config():
@@ -66,5 +93,5 @@ def write_example_config():
     # config.add_section('settings')
     # config['settings']['logging'] = default_logging_dir
 
-    with open("example_user_config.ini", 'w') as f:
+    with open("install_config.ini", 'w') as f:
         config.write(f)
