@@ -56,8 +56,9 @@ def make_user_config():
     created = make_config_file(file_path=user_config, example_file=example_user_config)
     if created:
         # Ensure version is up-to-date
-        config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
+        config = configparser.ConfigParser()
         config.read(user_config)
+
         config.set("version", "version", str(version))
 
         with open(user_config, 'w') as newini:
