@@ -15,7 +15,7 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 
 from efficiencysubproblem.config import PROJECT_DIR
 
-from bayota_settings.install_config import get_output_dir, set_up_logger
+from bayota_settings.config_script import get_output_dir, set_up_logger
 
 set_up_logger()
 logger = logging.getLogger(__name__)
@@ -86,7 +86,7 @@ class Study:
             config = configparser.ConfigParser()
             config.read(configfile)
 
-            print('configfile is %s' % configfile)
+            logger.debug('configfile is %s' % configfile)
 
             self.objectivetype = config['Defaults']['objective']
             self.geoscale = config['Defaults']['scale']

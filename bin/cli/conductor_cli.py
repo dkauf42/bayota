@@ -24,7 +24,7 @@ from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj, plotlib_loadreductionobj
 
-from bayota_settings.install_config import get_graphics_dir, set_up_logger
+from bayota_settings.config_script import get_graphics_dir, set_up_logger
 
 set_up_logger()
 logger = logging.getLogger(__name__)

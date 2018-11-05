@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from bayota_settings.install_config import get_instance_data_dir, get_raw_data_dir
+from bayota_settings.config_script import get_instance_data_dir, get_raw_data_dir
 
 from castjeeves.src.jeeves import Jeeves
 

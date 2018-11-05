@@ -5,7 +5,7 @@ import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-from bayota_settings.install_config import get_graphics_dir
+from bayota_settings.config_script import get_graphics_dir
 
 from efficiencysubproblem.src.vis import sequence_plot
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_loadreductionobj

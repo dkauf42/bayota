@@ -14,7 +14,7 @@ import tkinter as tk
 from sandbox.src.util.OptCase import OptCase
 from sandbox.src.gui.toplevelframes.MainWindow import MainWindow
 
-from bayota_settings.install_config import set_up_logger
+from bayota_settings.config_script import set_up_logger
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)

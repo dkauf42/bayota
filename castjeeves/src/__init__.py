@@ -3,7 +3,7 @@ Module for castjeeves src
 """
 
 import os
-from bayota_settings.install_config import get_source_csvs_dir
+from bayota_settings.config_script import get_source_csvs_dir
 sourcecsvsdir = get_source_csvs_dir()
 
 
