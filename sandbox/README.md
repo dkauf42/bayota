@@ -74,12 +74,6 @@ Note:
 There are three test cases available, and
 no GUI appears when running a test case.
 
-# How do I uninstall?
-
-##### 1. To remove only the files created by "python setup.py install":
-
-    > python setup.py clean
-
 ##### 2. To remove everything, delete the directory.
 
 # Who do I talk to? ###

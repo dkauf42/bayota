@@ -84,14 +84,9 @@ To be determined...
 ###### A simple example (to run using GUI):
 
 
-# How do I uninstall?
-
-To be determined...
-
 # commands
 
 To be determined...
-##### 2. To remove everything, delete the directory.
 
 ## 🗣️ Who do I talk to?
 
