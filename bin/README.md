@@ -19,12 +19,8 @@ This README documents how to conduct optimization studies using the BayOTA packa
 
 In this bin directory, you will find:
 
-* shell scripts
-* jupyter notebooks
-* python scripts
-<br><br/>
-* config files that specify optimization study parameters
-*
+* Scripts (shell scripts, jupyter notebooks, python scripts)
+* Config files that specify optimization study parameters
 
 #### Directory Tree
 ```
@@ -57,21 +53,40 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
 
-#### 🔀 Run in batch with the slurm manager
+#### ⌨️ Command Line Interface
+
+Several alternative CLI scripts are available with varying degrees of completeness:
+
+###### 1) a python cli: "conductor_cli.py"
+
+--- Two commands are available for conductor_cli.py:
+
+* ```createinstance -f [CONFIG_FILE]``` - instantiate a model using options specified in FILE
+* ```solveinstance -i [INSTANCE_FILE]``` - solve a model instance with specified constraint
+
+--- Some examples, executed from the project root (`cd bayota/`):
+- Bundle with main color changed to orange:\
+`$ ./bin/conductor_cli.py createinstance -f bin/studies/study_costmin_county_annearundelmd.ini
+- Serve with nativeScrollbars option set to true:\
+`$ ./bin/conductor_cli.py createinstance [spec] --options.nativeScrollbars`
+- Bundle using custom template (check default template for reference):\
+`$ ./bin/conductor_cli.py solveinstance -i saved_instance.pickle`
+
+--- For more details run:\
+`conductor_cli.py --help`, or\
+`conductor_cli.py <command> --help`
+
+###### 2) a standard bash script
+
+--- To run the script (from the project root (`cd bayota/`):\
+`> ./bin/conduct_study_on_login_node.bash`
+
+(and you can include --daemon argument to detach process and run with no hangup)
+
+#### 🔀 Run studies in parallel, using slurm
 
 First, customize a study .ini file as desired in./bin/studies,\
 Then, execute `./bin/shell_scripts/conduct_study.bash`
-
-#### ⌨️ From the command line
-To run the standard bash script:
-
-```
-# move to the project root
-cd bayota/
-
-# run the script (and you can include --daemon argument to detach process and run with no hangup)
-./bin/bayota
-```
 
 #### 🐍 From the python prompt
 
