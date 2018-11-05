@@ -79,8 +79,10 @@ with open('LICENSE') as f:
 
 install_requires = ['pytest',
                     'amplpy',
+                    'numpy',
                     'pandas',
-                    'pyomo'
+                    'pyomo',
+                    'matplotlib',
                     ]
 
 setup(name='bayota',
