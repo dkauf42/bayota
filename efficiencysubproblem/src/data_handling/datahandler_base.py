@@ -29,8 +29,7 @@ class DataHandlerBase:
 
         # Save instance data to file?
         self.save2file = save2file
-        if self.save2file:
-            self.instdatadir = get_instance_data_dir()
+        self.instdatadir = get_instance_data_dir()
 
         """ Instance Specifiers """
         baseconditionid = 29
@@ -122,10 +121,10 @@ class DataHandlerBase:
 
     def _load_set_pollutants(self):
         """ Pollutants """
-        p_list = ['N', 'P', 'S']
-        self.PLTNTS = p_list
+        self.pltntslist = ['N', 'P', 'S']
+        self.PLTNTS = self.pltntslist
         if self.save2file:
-            df = pd.DataFrame(p_list, columns=['PLTNTS']).to_csv(os.path.join(self.instdatadir, 'data_PLTNTS.tab'), sep=' ', index=False)
+            df = pd.DataFrame(self.pltntslist, columns=['PLTNTS']).to_csv(os.path.join(self.instdatadir, 'data_PLTNTS.tab'), sep=' ', index=False)
 
     def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
         """ overridden in the Mixins """

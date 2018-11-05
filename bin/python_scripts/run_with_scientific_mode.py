@@ -17,10 +17,17 @@ graphicsdir = get_graphics_dir()
 
 #%%
 
-lrsegs_for_annearundel = ['N24003WM0_3966_0000'] #['N24003WL0_4390_0000', 'N24003WL0_4424_0000', 'N24003WL0_4601_0000', 'N24003WL0_4393_0000']  #['N24003XU3_4650_0001', 'N24003XU2_4480_4650', 'N24003XL3_4710_0000', 'N24003XL3_4711_0000', 'N24003XL3_4712_0000', 'N24003XL3_4713_0000', 'N24003XL3_4950_0000', 'N24003XU2_4270_4650', 'N24003WL0_4420_0000', 'N24003WL0_4421_0000', 'N24003WL0_4422_0000', 'N24003WL0_4423_0000', 'N24003WL0_4600_0000', 'N24003WL0_4602_0000', 'N24003WL0_4603_0000', 'N24003WL0_4770_0000', 'N24003WL0_4771_0000', 'N24003WL0_4772_0000', 'N24003WM0_3961_0000', 'N24003WM0_3962_0000', 'N24003WM0_3963_0000', 'N24003WM3_4060_0001', 'N24003WL0_4425_0000', 'N24003WL0_4394_0000', 'N24003WL0_4391_0000', 'N24003WL0_4392_0000']
-# geoent = 'Anne Arundel, MD'
-s = Study(objectivetype='costmin',
-          geoscale='lrseg', geoentities=lrsegs_for_annearundel) #[geoent]) #lrsegs_for_annearundel)  #[geoent])
+# WITH ARGUMENTS
+# lrsegs_for_annearundel = ['N24003WM0_3966_0000'] #['N24003WL0_4390_0000', 'N24003WL0_4424_0000', 'N24003WL0_4601_0000', 'N24003WL0_4393_0000']  #['N24003XU3_4650_0001', 'N24003XU2_4480_4650', 'N24003XL3_4710_0000', 'N24003XL3_4711_0000', 'N24003XL3_4712_0000', 'N24003XL3_4713_0000', 'N24003XL3_4950_0000', 'N24003XU2_4270_4650', 'N24003WL0_4420_0000', 'N24003WL0_4421_0000', 'N24003WL0_4422_0000', 'N24003WL0_4423_0000', 'N24003WL0_4600_0000', 'N24003WL0_4602_0000', 'N24003WL0_4603_0000', 'N24003WL0_4770_0000', 'N24003WL0_4771_0000', 'N24003WL0_4772_0000', 'N24003WM0_3961_0000', 'N24003WM0_3962_0000', 'N24003WM0_3963_0000', 'N24003WM3_4060_0001', 'N24003WL0_4425_0000', 'N24003WL0_4394_0000', 'N24003WL0_4391_0000', 'N24003WL0_4392_0000']
+# # geoent = 'Anne Arundel, MD'
+# s = Study(objectivetype='costmin',
+#           geoscale='lrseg', geoentities=lrsegs_for_annearundel) #[geoent]) #lrsegs_for_annearundel)  #[geoent])
+
+# WITH CONFIG FILE
+from pathlib import Path
+
+configpath = Path('__file__').absolute().parent/'bin'/'studies'/'study_a1_mdcounties.ini'
+s = Study(configfile=configpath) #[geoent]) #lrsegs_for_annearundel)  #[geoent])
 
 # countyname = geoent.split(',')[0]
 # stateabbrev = geoent.split(',')[1]

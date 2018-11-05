@@ -18,7 +18,7 @@ fi
 
 
 # The Study specification file is defined and its variables are read.
-STUDY_SPEC_FILE=${PROJECT_HOME}/bin/studies/study_a1_mdcounties.ini
+STUDY_SPEC_FILE=${PROJECT_HOME}/bin/studies/${STUDY}.ini
 echo ''
 echo ${STUDY_SPEC_FILE}
 echo 'Locating Study Specification File...'

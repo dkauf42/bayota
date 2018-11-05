@@ -1,6 +1,7 @@
 import os
 import time
 import logging
+import configparser
 import pandas as pd
 from datetime import datetime
 from collections import OrderedDict
@@ -24,7 +25,8 @@ outdir = get_output_dir()
 class Study:
     def __init__(self, *,
                  objectivetype='costmin',
-                 geoscale, geoentities,
+                 geoscale=None, geoentities=None,
+                 configfile=None,
                  saveData2file=False):
         """
         Perform a series of different optimization runs.
@@ -73,10 +75,21 @@ class Study:
         """
 
         self.modelhandler = None
-        self.geoscale = geoscale
-        self.geoentities = geoentities
-        self.objectivetype = objectivetype
         self.constraintstr = 'not set'
+
+        if not configfile:
+            self.objectivetype = objectivetype
+            self.geoscale = geoscale
+            self.geoentities = geoentities
+        else:
+            config = configparser.ConfigParser()
+            config.read(configfile)
+
+            print('configfile is %s' % configfile)
+
+            self.objectivetype = config['Defaults']['objective']
+            self.geoscale = config['Defaults']['scale']
+            self.geoentities = config['Defaults']['entities']
 
         logger.info('**********************************************')
         logger.info('*********** Study creation started ***********')
@@ -240,9 +253,9 @@ class Study:
                                                                                                  output_file_str=loopname,
                                                                                                  fileprintlevel=fileprintlevel)
 
-                merged_df['originalload'] = oe.value(mdl.originalload['N'])
-                merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
-                                            oe.value(mdl.originalload['N'])
+                # merged_df['originalload'] = oe.value(mdl.originalload['N'])
+                # merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
+                #                             oe.value(mdl.originalload['N'])
 
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(mdl.Total_Cost)
