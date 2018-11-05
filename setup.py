@@ -74,6 +74,9 @@ class PostInstallCommand(setuptools.command.install.install):
 with open('README.md') as f:
     readme_text = f.read()
 
+with open('VERSION') as version_file:
+    version = version_file.read().strip()
+
 with open('LICENSE') as f:
     license_text = f.read()
 
@@ -86,7 +89,7 @@ install_requires = ['pytest',
                     ]
 
 setup(name='bayota',
-      version='0.0.1',
+      version=version,
       description='Python package of optimization tools for the Chesapeake Bay Program',
       long_description=readme_text,
       author='Daniel Kaufman',

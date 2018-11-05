@@ -3,6 +3,7 @@ import time
 import logging
 import configparser
 import pandas as pd
+import pkg_resources  # part of setuptools
 from datetime import datetime
 from collections import OrderedDict
 
@@ -91,11 +92,15 @@ class Study:
             self.geoscale = config['Defaults']['scale']
             self.geoentities = config['Defaults']['entities']
 
-        logger.info('**********************************************')
+        version = pkg_resources.require("bayota")[0].version
+        logger.info('----------------------------------------------')
+        logger.info('*********** BayOTA version %s *************' % version)
+        logger.info('----------------------------------------------\n')
+        logger.info('----------------------------------------------')
         logger.info('*********** Study creation started ***********')
         logger.info('***********   [scale=%s]' % self.geoscale)
         logger.info('***********   [entities=%s]' % self.geoentities)
-        logger.info('**********************************************')
+        logger.info('----------------------------------------------')
 
         # TODO: could add a check here to make sure the PATH variable includes the location of the ipopt solver.
 
