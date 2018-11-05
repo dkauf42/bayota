@@ -79,22 +79,8 @@ def get_source_pickles_dir():
     return source_pickles_top_level
 
 
-def get_abstract_models_dir():
-    abstract_models_top_level = parse_user_config()['temp_directories']['abstract_models']
-    os.makedirs(abstract_models_top_level, exist_ok=True)
-
-    return abstract_models_top_level
-
-
 def get_instance_data_dir():
-    instance_data_top_level = parse_user_config()['temp_directories']['instance_data']
+    instance_data_top_level = parse_user_config()['temp_directories']['model_instances']
     os.makedirs(instance_data_top_level, exist_ok=True)
 
     return instance_data_top_level
-
-
-def get_concrete_models_dir():
-    concrete_models_top_level = parse_user_config()['temp_directories']['concrete_models']
-    os.makedirs(concrete_models_top_level, exist_ok=True)
-
-    return concrete_models_top_level
