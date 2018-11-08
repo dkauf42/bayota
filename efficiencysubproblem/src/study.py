@@ -3,7 +3,6 @@ import time
 import logging
 import configparser
 import pandas as pd
-import pkg_resources  # part of setuptools
 from datetime import datetime
 from collections import OrderedDict
 
@@ -15,7 +14,7 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 
 from efficiencysubproblem.config import PROJECT_DIR
 
-from bayota_settings.config_script import get_output_dir, set_up_logger
+from bayota_settings.config_script import get_output_dir, set_up_logger, get_bayota_version
 
 set_up_logger()
 logger = logging.getLogger(__name__)
@@ -72,7 +71,7 @@ class Study:
         a set of Trials. It is assumed that 𝑓(𝑥) does not change in the
         course of a Run.
             A Study represents a series of one (or multiple) run(s),
-        with the same geography, but different constraints.
+        with the same geography (sets), but different objectives or different constraints.
         """
 
         self.modelhandler = None
@@ -92,7 +91,7 @@ class Study:
             self.geoscale = config['Defaults']['scale']
             self.geoentities = config['Defaults']['entities']
 
-        version = pkg_resources.require("bayota")[0].version
+        version = get_bayota_version()
         logger.info('----------------------------------------------')
         logger.info('*********** BayOTA version %s *************' % version)
         logger.info('----------------------------------------------\n')
