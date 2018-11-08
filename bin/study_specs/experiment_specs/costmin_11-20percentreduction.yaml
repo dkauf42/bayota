@@ -1,0 +1,7 @@
+# objective dictionary
+exp_setup:
+  - none
+
+# constraints list
+trials:
+  - tau: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
