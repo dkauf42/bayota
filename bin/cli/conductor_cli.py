@@ -99,7 +99,8 @@ if __name__ == '__main__':
 
     # Arguments for top-level
     parser.add_argument("-v", "--verbose", dest='verbose',
-                        action="count", default=0)
+                        action="count", default=0,
+                        help="don't print status messages to stdout")
 
     parser.add_argument("-f", "--conf_file", dest='conf_file',
                         help="Specify config file", metavar="FILE")
