@@ -93,7 +93,7 @@ class DataHandlerBase:
         # Populate the data - SETS
         self._load_set_pollutants()
 
-        self._load_set_geographies(jeeves, TblLandRiverSegment, geolist=geolist)
+        self._load_set_geographies(jeeves, geolist=geolist)
 
         self._load_set_BMPs(jeeves, TblBmpLoadSourceGroup, TblBmpGroup)
         self._load_set_LoadSources(TblLandUsePreBmp, singlelsgrpdf, baseconditionid)
@@ -126,7 +126,7 @@ class DataHandlerBase:
         if self.save2file:
             df = pd.DataFrame(self.pltntslist, columns=['PLTNTS']).to_csv(os.path.join(self.instdatadir, 'data_PLTNTS.tab'), sep=' ', index=False)
 
-    def _load_set_geographies(self, TblLandRiverSegment, geolist=None):
+    def _load_set_geographies(self, jeeves, geolist=None):
         """ overridden in the Mixins """
         pass
 

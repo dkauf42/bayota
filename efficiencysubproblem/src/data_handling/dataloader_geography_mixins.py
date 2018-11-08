@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 class DataCountyGeoentitiesMixin(object):
 
-    def _load_set_geographies(self, jeeves, TblLandRiverSegment, geolist=None):
+    def _load_set_geographies(self, jeeves, geolist=None):
         logger.debug('loading county geoentities')
 
         geodf = jeeves.county.add_lrsegs_to_counties(countystatestrs=geolist)
@@ -29,11 +29,11 @@ class DataCountyGeoentitiesMixin(object):
 
 class DataLrsegGeoentitiesMixin(object):
 
-    def _load_set_geographies(self, jeeves, TblLandRiverSegment, geolist=None):
+    def _load_set_geographies(self, jeeves, geolist=None):
         logger.debug('loading lrseg geoentities')
         lrsegs_list = jeeves.lrseg.remove_outofcbws_lrsegs(lrseglist=geolist)
 
         if not lrsegs_list:
             raise ValueError('** no matching geographies found. please check scale and entities **')
 
-        return self._load_set_lrsegs_from_lrseg_list(TblLandRiverSegment, lrsegs_list)
+        return self._load_set_lrsegs_from_lrseg_list(jeeves, lrsegs_list)
