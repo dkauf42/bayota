@@ -1,0 +1,5 @@
+model_spec: adamsPA_costmin
+
+experiments:
+  - costmin_1-10percentreduction
+  - costmin_11-20percentreduction

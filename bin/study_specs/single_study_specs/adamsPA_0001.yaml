@@ -1,6 +1,0 @@
-model_spec: adamsPA_costmin
-
-experiments_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/experiment_specs'
-experiments:
-  - costmin_1-10percentreduction
-  - costmin_11-20percentreduction
