@@ -1,0 +1,21 @@
+baseyear: 2010
+
+# geography dictionary
+geography:
+  scale: county
+  entity: "Adams, PA"
+
+# objective dictionary
+objective:
+  name: Total_Cost
+  sense: minimize
+  expression: total_cost_expr
+
+# constraints list
+constraints:
+  - bound: lower
+    boundparamname: percent_reduction_minimum
+    expression: percent_reduction_expr
+
+other_components:
+  - name: Available_Acres_Constraint
