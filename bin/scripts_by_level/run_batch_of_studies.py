@@ -6,6 +6,7 @@ Example usage command:
 """
 
 import os
+import sys
 import subprocess
 from argparse import ArgumentParser
 
@@ -21,7 +22,7 @@ def notdry(dryrun, descr):
 
 
 def main(batch_spec_file, dryrun=False):
-    batchdict = spec_handler.read(batch_spec_file)
+    batchdict = spec_handler.read_spec(batch_spec_file)
 
     STUDIES = batchdict['studies']
     print('Studies to be conducted: %s' % STUDIES)

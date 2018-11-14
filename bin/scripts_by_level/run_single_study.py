@@ -6,6 +6,8 @@ Example usage command:
 """
 
 import os
+import sys
+import logging
 import subprocess
 from argparse import ArgumentParser
 
@@ -20,8 +22,15 @@ def notdry(dryrun, descr):
         return False
 
 
-def main(study_model_spec_file, dryrun=False):
-    studydict = spec_handler.read(study_model_spec_file)
+def main(study_spec_file, dryrun=False):
+    studydict = spec_handler.read_spec(study_spec_file)
+
+    version = get_bayota_version()
+    logger.info('----------------------------------------------')
+    logger.info('*********** BayOTA version %s *************' % version)
+    logger.info('----------------------------------------------')
+    logger.info('************** Single Study RUN **************')
+    logger.info('----------------------------------------------')
 
     EXPERIMENTS = studydict['experiments']
     print('Experiments to be conducted: %s' % EXPERIMENTS)
@@ -36,7 +45,7 @@ def main(study_model_spec_file, dryrun=False):
 
     # Create a task to submit to the queue
     CMD = "srun "
-    CMD += "study_cli.py generatemodel -f %s " % study_model_spec_file
+    CMD += "study_cli.py generatemodel -f %s " % study_spec_file
     CMD += "&"
     # Submit the job
     if notdry(dryrun, '--Dryrun-- Would submit job command: <%s>' % CMD):
@@ -58,7 +67,7 @@ def main(study_model_spec_file, dryrun=False):
     for ii, exp in enumerate(EXPERIMENTS):
         print('Experiment #%d: %s' % (ii+1, exp))
 
-        expdict = spec_handler.read(os.path.join(experiments_dir, exp + '.yaml'))
+        expdict = spec_handler.read_spec(os.path.join(experiments_dir, exp + '.yaml'))
 
         TRIALS = expdict['trials']
         print('Trials to be conducted: %s' % TRIALS)
@@ -84,7 +93,7 @@ def parse_cli_arguments():
     one_or_the_other = parser.add_mutually_exclusive_group(required=True)
     one_or_the_other.add_argument("-n", "--study_name", dest="study_name", default=None,
                                   help="name for this study, which should match the study specification file")
-    one_or_the_other.add_argument("-f", "--study_model_spec_filepath", dest="study_model_spec_filepath", default=None,
+    one_or_the_other.add_argument("-f", "--study_spec_filepath", dest="study_spec_filepath", default=None,
                                   help="path for this study's specification file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
@@ -92,10 +101,10 @@ def parse_cli_arguments():
 
     opts = parser.parse_args()
 
-    if not opts.study_model_spec_filepath:  # study name was specified
-        opts.study_model_spec_file = os.path.join('study_model_specs', opts.study_name + '.yaml')
+    if not opts.study_spec_filepath:  # study name was specified
+        opts.study_spec_file = os.path.join(get_run_specs_dir(), 'single_study_specs', opts.study_name + '.yaml')
     else:  # study filepath was specified
-        opts.study_model_spec_file = opts.study_model_spec_filepath
+        opts.study_spec_file = opts.study_spec_filepath
 
     return opts
 
@@ -103,4 +112,4 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    main(opts.study_model_spec_file, dryrun=opts.dryrun)
+    sys.exit(main(opts.study_spec_file, dryrun=opts.dryrun))
