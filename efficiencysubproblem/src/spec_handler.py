@@ -3,6 +3,17 @@ import yaml
 from argparse import ArgumentParser
 
 
+def notdry(dryrun, logger=None, descr=''):
+    if not dryrun:
+        return True
+    else:
+        if not logger:
+            print(descr)
+        else:
+            logger.info(descr)
+        return False
+
+
 def read_spec(spec_file):
     adict = None
     with open(spec_file, 'r') as stream:
