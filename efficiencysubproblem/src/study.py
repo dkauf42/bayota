@@ -59,19 +59,25 @@ class Study:
 
         Definitions
         -----------
-            A Trial is a list of parameter values, 𝑥, that will lead to a
+        [modified from the Google Vizier paper (Golovin et al. 2017)]
+
+            An Iteration is a list of parameter values, 𝑥, that will lead to a
         single evaluation of 𝑓(𝑥). A trial can be “Completed”, which
         means that it has been evaluated and the objective value
         𝑓(𝑥) has been assigned to it, otherwise it is “Pending”.
-        [from the Google Vizier paper (Golovin et al. 2017)]
-        [In other words, each iteration of the solver that calculates a
-        single objective value is a trial]
-            A Run is a single optimization over a feasible space. Each Run
+        [In other words, each iteration of the solver calculates a
+        single objective value]
+
+            A Trial is a single optimization over a feasible space. Each Trial
         contains a configuration describing the feasible space, as well as
-        a set of Trials. It is assumed that 𝑓(𝑥) does not change in the
-        course of a Run.
-            A Study represents a series of one (or multiple) run(s),
-        with the same geography (sets), but different objectives or different constraints.
+        a set of iterations. It is assumed that 𝑓(𝑥) does not change in the
+        course of a Trial.
+
+            An Experiment is a series of one (or multiple) trial(s),
+        with the same geography (sets) and same objective, but different constraints.
+
+            A Study represents a series of one (or multiple) experiment(s),
+        with the same geography (sets).
         """
 
         self.modelhandler = None
@@ -143,6 +149,9 @@ class Study:
         timestr = str(datetime.fromtimestamp(d['_endtime_modelinstantiation']))
         formattedstr = "time of instantiation:    %s" % str(timestr)
         return formattedstr
+
+    def makemodel_from_file(self, modelspecfile):
+        pass
 
     def go(self, *, constraint, fileprintlevel=4):
         """
