@@ -6,49 +6,50 @@ Example usage command:
 """
 import os
 import sys
-import ast
-import timeit
+import time
 import logging
-import argparse
 from argparse import ArgumentParser
 import cloudpickle
-from configparser import ConfigParser
 
-from efficiencysubproblem.src.study import Study
-from efficiencysubproblem.src.model_handling.utils import parse_model_spec
-from efficiencysubproblem.src.model_handling.interface import get_loaded_model_handler
-from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
-from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj, plotlib_loadreductionobj
-from efficiencysubproblem.src import spec_handler
+from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
-from bayota_settings.config_script import get_graphics_dir, set_up_logger
+from efficiencysubproblem.src.model_handling import model_generator
 
+from bayota_settings.config_script import set_up_logger, get_model_specs_dir, get_run_specs_dir
 set_up_logger()
 logger = logging.getLogger(__name__)
 
-graphicsdir = get_graphics_dir()
-
-start_time = timeit.default_timer()
-
 savepath = 'saved_instance.pickle'
+geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
 
 
-def main(model_spec_file, dryrun=False):
-    print(parse_model_spec(model_spec_file))
-    exit(0)
+def main(model_spec_file, geography_name, dryrun=False):
 
-    Study().makemodel_from_file(modelspecfile=model_spec_file)
-    # OR
+    geodict = read_spec(geo_spec_file)[geography_name]
 
-    # A modelhandler object is instantiated, generating the model and setting instance data.
-    modelhandler = get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file=False)
-    
-    # Create model instance
-    s = Study(objectivetype=opts.objectivetype,
-              geoscale=opts.scale, geoentities=opts.entities)
+    logger.info('----------------------------------------------')
+    logger.info('************** Model Generation **************')
+    logger.info('----------------------------------------------')
 
-    with open(savepath, "wb") as f:
-        cloudpickle.dump(s, f)
+    logger.info('Geographies specification: %s' % geodict)
+
+    if notdry(dryrun, logger, '--Dryrun-- Would generate model'):
+        starttime_modelinstantiation = time.time()  # Wall time - clock starts.
+
+        mdl = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
+                                               geoscale=geodict['scale'],
+                                               geoentities=geodict['entities'],
+                                               savedata2file=False)
+
+        timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
+        logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
+
+    if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % savepath):
+        starttime_modelsave = time.time()  # Wall time - clock starts.
+        with open(savepath, "wb") as f:
+            cloudpickle.dump(mdl, f)
+        timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
+        logger.info('*model pickling done* <- it took %f seconds>' % timefor_modelsave)
 
 
 def parse_cli_arguments():
@@ -61,6 +62,9 @@ def parse_cli_arguments():
                                   help="name for this model, which should match the model specification file")
     one_or_the_other.add_argument("-f", "--model_spec_filepath", dest="model_spec_filepath", default=None,
                                   help="path for this model's specification file")
+
+    parser.add_argument("-g", "--geography", dest="geography_name",
+                        help="name for a geography defined in geography_specs.yaml")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without sending any slurm commands")
@@ -129,7 +133,7 @@ def parse_cli_arguments():
     # opts = parser.parse_args(remaining_argv, namespace=opts)
     #
     if not opts.model_spec_filepath:  # name was specified
-        opts.model_spec_file = os.path.join('study_model_specs', opts.model_name + '.yaml')
+        opts.model_spec_file = os.path.join(get_model_specs_dir(), opts.model_name + '.yaml')
     else:  # filepath was specified
         opts.model_spec_file = opts.model_spec_filepath
 
@@ -151,4 +155,4 @@ if __name__ == '__main__':
     #         config.write(f)
 
     # The main function is called.
-    sys.exit(main(opts.model_spec_file, dryrun=opts.dryrun))
+    sys.exit(main(opts.model_spec_file, opts.geography_name, dryrun=opts.dryrun))
