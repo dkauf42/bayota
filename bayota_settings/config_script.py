@@ -42,29 +42,30 @@ def set_up_logger():
                               disable_existing_loggers=False)
 
 
-def get_output_dir():
-    dir = parse_user_config()['output_directories']['general']
-    print('outputdir_top_level is %s' % dir)
+def _make_or_get_user_dir(section, key):
+    dir = parse_user_config()[section][key]
     os.makedirs(dir, exist_ok=True)
     return dir
+
+
+def get_output_dir():
+    return _make_or_get_user_dir('output_directories', 'general')
 
 
 def get_run_specs_dir():
-    dir = parse_user_config()['top_paths']['run_specs_top']
-    os.makedirs(dir, exist_ok=True)
-    return dir
-
-
+    return _make_or_get_user_dir('top_paths', 'run_specs_top')
+def get_single_study_specs_dir():
+    return _make_or_get_user_dir('run_specification_directories', 'single_studies')
+def get_batch_studies_specs_dir():
+    return _make_or_get_user_dir('run_specification_directories', 'batch_studies')
+def get_model_specs_dir():
+    return _make_or_get_user_dir('run_specification_directories', 'models')
 def get_experiment_specs_dir():
-    dir = parse_user_config()['run_specification_directories']['experiments']
-    os.makedirs(dir, exist_ok=True)
-    return dir
+    return _make_or_get_user_dir('run_specification_directories', 'experiments')
 
 
 def get_graphics_dir():
-    dir = parse_user_config()['output_directories']['graphics']
-    os.makedirs(dir, exist_ok=True)
-    return dir
+    return _make_or_get_user_dir('output_directories', 'graphics')
 
 
 def get_source_csvs_dir():
@@ -84,14 +85,8 @@ def get_raw_data_dir():
 
 
 def get_source_pickles_dir():
-    source_pickles_top_level = parse_user_config()['temp_directories']['source_pickles']
-    os.makedirs(source_pickles_top_level, exist_ok=True)
-
-    return source_pickles_top_level
+    return _make_or_get_user_dir('temp_directories', 'source_pickles')
 
 
 def get_instance_data_dir():
-    instance_data_top_level = parse_user_config()['temp_directories']['model_instances']
-    os.makedirs(instance_data_top_level, exist_ok=True)
-
-    return instance_data_top_level
+    return _make_or_get_user_dir('temp_directories', 'model_instances')
