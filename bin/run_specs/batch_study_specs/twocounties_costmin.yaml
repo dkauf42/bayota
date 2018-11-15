@@ -1,4 +1,7 @@
 
 studies_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/single_study_specs'
+geographies:
+  - AdamsPA
+  - NorthumberlandWV
 studies:
-  - adamsPA_0001
+  - costmin_tau_experiments

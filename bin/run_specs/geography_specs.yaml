@@ -1,0 +1,9 @@
+AdamsPA:
+  scale: county
+  entities: 'Adams, PA'
+
+NorthumberlandWV:
+  scale: county
+  entities: 'Northumberland, VA'
+
+AnneArundelMD:
