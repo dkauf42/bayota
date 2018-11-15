@@ -126,7 +126,7 @@ class ModelHandlerBase:
         expr = self.specdict['objective']['expression']
 
         # BUILD THE OBJECTIVE
-        logger.info('Loading objective')
+        logger.info('Loading objective {name="%s"} into the model object ' % objectivename)
         model = self._add_expression_to_model(model, expr_name=expr)
 
         # model.component(expr).pprint()
@@ -176,8 +176,6 @@ class ModelHandlerBase:
                         'with "%s" bound defined by <%s> parameter' %
                         (i, expr, boundtype, boundparamname))
             model = self._add_expression_to_model(model, expr_name=expr)
-
-            logger.info(model.component(expr)._index)
 
             if not model.component(boundparamname):  # check if parameter already exists in model object
                 # Check if component is scalar (i.e. isn't indexed over any Sets)
@@ -230,8 +228,6 @@ class ModelHandlerBase:
             # BUILD THE CONSTRAINT
             logger.info('Loading component #%d:{name="%s"} into the model object' % (i, component_name))
             model = self._add_component_to_model(model, comp_name=component_name)
-
-            logger.info(model.component(component_name)._index)
 
     @staticmethod
     def _add_component_to_model(model, comp_name):
