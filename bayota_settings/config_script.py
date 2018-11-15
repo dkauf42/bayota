@@ -26,6 +26,15 @@ logfilename = os.path.join(logdir, 'efficiencysubproblem_debug.log')
 #
 
 
+# # Output Path
+# today = datetime.now()
+# if today.hour < 12:
+#     h = "00"
+# else:
+#     h = "12"
+# dirname = os.path.join(outputdir_top_level, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
+
+
 def set_up_logger():
     make_log_config()
 
@@ -34,26 +43,28 @@ def set_up_logger():
 
 
 def get_output_dir():
-    outputdir_top_level = parse_user_config()['output_directories']['general']
-    print('outputdir_top_level is %s' % outputdir_top_level)
+    dir = parse_user_config()['output_directories']['general']
+    print('outputdir_top_level is %s' % dir)
+    os.makedirs(dir, exist_ok=True)
+    return dir
 
-    # # Output Path
-    # today = datetime.now()
-    # if today.hour < 12:
-    #     h = "00"
-    # else:
-    #     h = "12"
-    # dirname = os.path.join(outputdir_top_level, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
-    os.makedirs(outputdir_top_level, exist_ok=True)
-    return outputdir_top_level
+
+def get_run_specs_dir():
+    dir = parse_user_config()['top_paths']['run_specs_top']
+    os.makedirs(dir, exist_ok=True)
+    return dir
+
+
+def get_experiment_specs_dir():
+    dir = parse_user_config()['run_specification_directories']['experiments']
+    os.makedirs(dir, exist_ok=True)
+    return dir
 
 
 def get_graphics_dir():
-    graphics_dir = parse_user_config()['output_directories']['graphics']
-
-    # dirname = os.path.join(graphics_dir, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
-    os.makedirs(graphics_dir, exist_ok=True)
-    return graphics_dir
+    dir = parse_user_config()['output_directories']['graphics']
+    os.makedirs(dir, exist_ok=True)
+    return dir
 
 
 def get_source_csvs_dir():
