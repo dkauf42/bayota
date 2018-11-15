@@ -86,6 +86,7 @@ install_requires = ['pytest',
                     'pandas',
                     'pyomo',
                     'matplotlib',
+                    'pyyaml'
                     ]
 
 setup(name='bayota',
