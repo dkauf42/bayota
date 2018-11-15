@@ -1,4 +1,4 @@
-import pyomo.environ as oe
+import pyomo.environ as pe
 
 import logging
 logger = logging.getLogger(__name__)
@@ -8,23 +8,11 @@ class ModelTotalCostMinObjMixin(object):
     """
     Objective:
         Total_Cost indexed by []
-
     """
-
     @staticmethod
     def _load_model_objective(model):
         logger.debug('Loading total cost min objective')
-
-        def obj_rule(model):
-            return sum([(model.c[b] * model.x[b, l, lmbda])
-                        if ((b, lmbda) in model.BMPSRCLINKS)
-                        else 0
-                        for l in model.LRSEGS
-                        for lmbda in model.LOADSRCS
-                        for b in model.BMPS])
-
-        model.Total_Cost = oe.Objective(rule=obj_rule, sense=oe.minimize)
-
+        model.Total_Cost = pe.Objective(rule=model.total_cost_expr, sense=pe.minimize)
         return model
 
 
@@ -37,42 +25,20 @@ class ModelTotalLoadReductionMaxObjMixin(object):
         PercentReduction indexed by [PLTNTS]
 
     """
-
     @staticmethod
     def _specify_model_original_load(model):
         # loading before any new BMPs have been implemented
-        def originalload_rule(model, p):
-            temp = sum([(model.phi[l, lmbda, p] * model.T[l, lmbda])
-                        for l in model.LRSEGS
-                        for lmbda in model.LOADSRCS])
-            return temp
-        model.originalload = oe.Param(model.PLTNTS,
-                                      initialize=originalload_rule)
+        model.originalload = pe.Param(model.PLTNTS,
+                                      initialize=lambda m, p: m.original_load_expr[p])
 
     @staticmethod
     def _load_model_objective(model):
         logger.debug('Loading total load reduction max objective')
 
         # Relative load reductions
-        def percent_reduction_rule(model, p):
-            newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
-                           oe.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
-                                              if ((model.T[l, lmbda] > 1e-6) &
-                                                  ((b, gamma) in model.BMPGRPING) &
-                                                  ((b, lmbda) in model.BMPSRCLINKS))
-                                              else 0
-                                              for b in model.BMPS]))
-                                    if (gamma, lmbda) in model.BMPGRPSRCLINKS
-                                    else 1
-                                    for gamma in model.BMPGRPS])
-                           for l in model.LRSEGS
-                           for lmbda in model.LOADSRCS])
-            temp = ((model.originalload[p] - newload) / model.originalload[p]) * 100
-            return temp
-
-        model.PercentReduction = oe.Objective(model.PLTNTS,
-                                              rule=percent_reduction_rule,
-                                              sense=oe.maximize)
+        model.PercentReduction = pe.Objective(model.PLTNTS,
+                                              rule=lambda m, p: model.percent_reduction_expr[p],
+                                              sense=pe.maximize)
 
         """ Deactivate unused P and S objectives """
         # Retain only the Nitrogen load objective, and deactivate the others
