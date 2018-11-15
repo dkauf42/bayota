@@ -7,42 +7,50 @@ Example usage command:
 
 import os
 import sys
+import logging
+import itertools
 import subprocess
 from argparse import ArgumentParser
 
-from efficiencysubproblem.src import spec_handler
-
-
-def notdry(dryrun, descr):
-    if not dryrun:
-        return True
-    else:
-        print(descr)
-        return False
+from efficiencysubproblem.src.spec_handler import read_spec, notdry
+from bayota_settings.config_script import set_up_logger
+set_up_logger()
+logger = logging.getLogger(__name__)
 
 
 def main(batch_spec_file, dryrun=False):
-    batchdict = spec_handler.read_spec(batch_spec_file)
+    batchdict = read_spec(batch_spec_file)
 
+    GEOS = batchdict['geographies']
     STUDIES = batchdict['studies']
-    print('Studies to be conducted: %s' % STUDIES)
+    study_pairs = list(itertools.product(GEOS, STUDIES))
+
+    logger.info('----------------------------------------------')
+    logger.info('************** Batch of studies **************')
+    logger.info('----------------------------------------------')
+
+    logger.info('%d studies to be conducted: %s' % (len(study_pairs), study_pairs))
 
     NUMNODES = 1
     PRIORITY = 5000
     SLURM_OUTPUT = 'slurm_out'
 
-    for study in STUDIES:
+    for sp in study_pairs:
+        geoname = sp[0]
+        studyspecname = sp[1]
+        spname = geoname+'_'+studyspecname
         # Create a job to submit to the HPC with sbatch
         CMD = "sbatch "
-        CMD += "--job-name=%s " % study
+        CMD += "--job-name=%s " % spname
         CMD += "--nice=%s " % PRIORITY
         CMD += "--nodes=%s " % NUMNODES # nodes requested
         CMD += "--output=%s " % SLURM_OUTPUT
         CMD += "--time=01:00:00 "  # time requested in hour:minute:second
-        CMD += "run_single_study.py -n %s " % study
+        CMD += "run_single_study.py -g %s -n %s " % (geoname, studyspecname)
+        CMD += "&"
 
         # Submit the job
-        if notdry(dryrun, '--Dryrun- Would submit job command: <%s>' % CMD):
+        if notdry(dryrun, logger, '--Dryrun- Would submit job command: <%s>' % CMD):
             subprocess.call([CMD], shell=True)
 
     return 0  # a clean, no-issue, exit
