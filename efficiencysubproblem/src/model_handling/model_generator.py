@@ -146,8 +146,8 @@ class ModelHandlerBase:
         # print(model.component(expr)._index)
         # print(extract_indexed_expression_values(model.component(expr)))
 
+        # Check if component is scalar (i.e. isn't indexed over any Sets)
         if model.component(expr)._index == {None}:
-            print('SCALAR OBJECTIVE EXPRESSION!!!!')
             objective_object = pe.Objective(rule=lambda m: m.component(expr),
                                             sense=sense)
         else:
@@ -180,6 +180,7 @@ class ModelHandlerBase:
             logger.info(model.component(expr)._index)
 
             if not model.component(boundparamname):  # check if parameter already exists in model object
+                # Check if component is scalar (i.e. isn't indexed over any Sets)
                 if model.component(expr)._index == {None}:
                     boundparamobj = pe.Param(initialize=0,
                                              within=pe.NonNegativeReals,
@@ -194,8 +195,8 @@ class ModelHandlerBase:
                 logger.info('parameter <%s> already exists in model object' % boundparamname)
 
             if boundtype == 'lower':
+                # Check if component is scalar (i.e. isn't indexed over any Sets)
                 if model.component(expr)._index == {None}:
-                    print('SCALAR CONSTRAINT EXPRESSION!!!!')
                     cobj = pe.Constraint(rule=lambda m: (m.component(boundparamname),
                                                          m.component(expr),
                                                          None))
@@ -205,8 +206,8 @@ class ModelHandlerBase:
                                                                        m_with_indices[0].component(expr)[m_with_indices[1:]],
                                                                        None))
             elif boundtype == 'upper':
+                # Check if component is scalar (i.e. isn't indexed over any Sets)
                 if model.component(expr)._index == {None}:
-                    print('SCALAR CONSTRAINT EXPRESSION!!!!')
                     cobj = pe.Constraint(rule=lambda m: (None,
                                                          m.component(expr),
                                                          m.component(boundparamname)))
