@@ -15,9 +15,14 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
 from bayota_settings.config_script import get_output_dir, \
     set_up_logger, get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir
-set_up_logger()
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger('root')
+if not logger.hasHandlers():
+    set_up_logger()
+    logger = logging.getLogger(__name__)
+
 outdir = get_output_dir()
+
 
 def main(study_spec_file, geography_name, dryrun=False):
     studydict = read_spec(study_spec_file)
@@ -40,7 +45,7 @@ def main(study_spec_file, geography_name, dryrun=False):
 
     # Create a task to submit to the queue
     CMD = "srun "
-    CMD += "run_generatemodel.py -g %s -n %s " % (geography_name, model_spec_name)
+    CMD += "bin/scripts_by_level/run_generatemodel.py -g %s -n %s " % (geography_name, model_spec_name)
     CMD += "&"
     # Submit the job
     if notdry(dryrun, logger, '--Dryrun-- Would submit job command: <%s>' % CMD):

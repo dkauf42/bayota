@@ -16,8 +16,15 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.model_handling import model_generator
 
 from bayota_settings.config_script import set_up_logger, get_model_specs_dir, get_run_specs_dir
-set_up_logger()
-logger = logging.getLogger(__name__)
+# set_up_logger()
+# logger = logging.getLogger(__name__)
+# logger = logging.getLogger('root')
+
+logger = logging.getLogger('root')
+if not logger.hasHandlers():
+    set_up_logger()
+    logger = logging.getLogger(__name__)
+
 
 savepath = 'saved_instance.pickle'
 geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')

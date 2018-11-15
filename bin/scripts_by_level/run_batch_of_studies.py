@@ -14,8 +14,11 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from bayota_settings.config_script import set_up_logger
-set_up_logger()
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger('root')
+if not logger.hasHandlers():
+    set_up_logger()
+    logger = logging.getLogger(__name__)
 
 
 def main(batch_spec_file, dryrun=False):
@@ -46,7 +49,7 @@ def main(batch_spec_file, dryrun=False):
         CMD += "--nodes=%s " % NUMNODES # nodes requested
         CMD += "--output=%s " % SLURM_OUTPUT
         CMD += "--time=01:00:00 "  # time requested in hour:minute:second
-        CMD += "run_single_study.py -g %s -n %s " % (geoname, studyspecname)
+        CMD += "bin/scripts_by_level/run_single_study.py -g %s -n %s " % (geoname, studyspecname)
         CMD += "&"
 
         # Submit the job
