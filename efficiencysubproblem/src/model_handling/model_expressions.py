@@ -61,9 +61,6 @@ def percent_reduction_expr(mdl):
                        for l in model.LRSEGS
                        for lmbda in model.LOADSRCS])
 
-        print('in percent reductino fule')
-        print('with model')
-        print('with p = %s' % p)
         return ((model.originalload[p] - newload) / model.originalload[p]) * 100
 
     mdl.percent_reduction_expr = pe.Expression(mdl.PLTNTS, rule=percent_reduction_rule)
