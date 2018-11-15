@@ -13,7 +13,7 @@ import subprocess
 from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
-from bayota_settings.config_script import set_up_logger
+from bayota_settings.config_script import set_up_logger, get_bayota_version, get_scripts_dir
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -24,11 +24,14 @@ if not logger.hasHandlers():
 def main(batch_spec_file, dryrun=False):
     batchdict = read_spec(batch_spec_file)
 
+    version = get_bayota_version()
+
     GEOS = batchdict['geographies']
     STUDIES = batchdict['studies']
     study_pairs = list(itertools.product(GEOS, STUDIES))
 
     logger.info('----------------------------------------------')
+    logger.info('*********** BayOTA version %s *************' % version)
     logger.info('************** Batch of studies **************')
     logger.info('----------------------------------------------')
 
@@ -37,6 +40,7 @@ def main(batch_spec_file, dryrun=False):
     NUMNODES = 1
     PRIORITY = 5000
     SLURM_OUTPUT = 'slurm_out'
+    single_study_script = os.path.join(get_scripts_dir(), 'run_single_study.py')
 
     for sp in study_pairs:
         geoname = sp[0]
@@ -49,11 +53,12 @@ def main(batch_spec_file, dryrun=False):
         CMD += "--nodes=%s " % NUMNODES # nodes requested
         CMD += "--output=%s " % SLURM_OUTPUT
         CMD += "--time=01:00:00 "  # time requested in hour:minute:second
-        CMD += "bin/scripts_by_level/run_single_study.py -g %s -n %s " % (geoname, studyspecname)
+        CMD += "%s -g %s -n %s " % (single_study_script, geoname, studyspecname)
         CMD += "&"
 
         # Submit the job
-        if notdry(dryrun, logger, '--Dryrun- Would submit job command: <%s>' % CMD):
+        logger.info('Job command is: "%s"' % CMD)
+        if notdry(dryrun, logger, '--Dryrun- Would submit command'):
             subprocess.call([CMD], shell=True)
 
     return 0  # a clean, no-issue, exit

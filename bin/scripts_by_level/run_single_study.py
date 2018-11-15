@@ -13,7 +13,7 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
-from bayota_settings.config_script import get_output_dir, \
+from bayota_settings.config_script import get_output_dir, get_scripts_dir, \
     set_up_logger, get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir
 
 logger = logging.getLogger('root')
@@ -26,31 +26,29 @@ outdir = get_output_dir()
 
 def main(study_spec_file, geography_name, dryrun=False):
     studydict = read_spec(study_spec_file)
+    model_spec_name = studydict['model_spec']
+    EXPERIMENTS = studydict['experiments']
+    model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
 
     version = get_bayota_version()
+
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)
-    logger.info('----------------------------------------------')
-
-    logger.info('Geography for this study: %s' % geography_name)
-    model_spec_name = studydict['model_spec']
-    logger.info('Model for this study: %s' % model_spec_name)
-
-    EXPERIMENTS = studydict['experiments']
-    logger.info('Experiments in study spec: %s' % EXPERIMENTS)
-
-    logger.info('----------------------------------------------')
     logger.info('******** Single Study: Model Creation ********')
     logger.info('----------------------------------------------')
 
+    logger.info('Geography for this study: %s' % geography_name)
+    logger.info('Model for this study: %s' % model_spec_name)
+    logger.info('Experiments in study spec: %s' % EXPERIMENTS)
+
     # Create a task to submit to the queue
     CMD = "srun "
-    CMD += "bin/scripts_by_level/run_generatemodel.py -g %s -n %s " % (geography_name, model_spec_name)
+    CMD += "%s -g %s -n %s " % (model_generator_script, geography_name, model_spec_name)
     CMD += "&"
     # Submit the job
-    if notdry(dryrun, logger, '--Dryrun-- Would submit job command: <%s>' % CMD):
+    logger.info('Job command is: "%s"' % CMD)
+    if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
         subprocess.call([CMD], shell=True)
-
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         subprocess.call(["wait"], shell=True)
 
@@ -73,7 +71,8 @@ def main(study_spec_file, geography_name, dryrun=False):
             CMD += "study_cli.py solveinstance --instancefile %s " % opts.study_name
             CMD += "&"
             # Submit the job
-            if notdry(dryrun, logger, '--Dryrun-- Would submit job command: <%s>' % CMD):
+            logger.info('Job command is: "%s"' % CMD)
+            if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
                 subprocess.call([CMD], shell=True)
 
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
