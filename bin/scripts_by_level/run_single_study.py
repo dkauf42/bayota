@@ -13,12 +13,18 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src import spec_handler
 
+from bayota_settings.config_script import get_output_dir, \
+    set_up_logger, get_bayota_version, get_run_specs_dir, get_experiment_specs_dir
+set_up_logger()
+logger = logging.getLogger(__name__)
+outdir = get_output_dir()
+
 
 def notdry(dryrun, descr):
     if not dryrun:
         return True
     else:
-        print(descr)
+        logger.info(descr)
         return False
 
 
@@ -33,7 +39,7 @@ def main(study_spec_file, dryrun=False):
     logger.info('----------------------------------------------')
 
     EXPERIMENTS = studydict['experiments']
-    print('Experiments to be conducted: %s' % EXPERIMENTS)
+    logger.info('Experiments in study spec: %s' % EXPERIMENTS)
 
     '''
     ----------------------------------
@@ -63,14 +69,14 @@ def main(study_spec_file, dryrun=False):
     ----------------------------------
     '''
 
-    experiments_dir = studydict['experiments_dir']
+    experiments_dir = get_experiment_specs_dir()
     for ii, exp in enumerate(EXPERIMENTS):
-        print('Experiment #%d: %s' % (ii+1, exp))
+        logger.info('Exp. #%d: %s' % (ii+1, exp))
 
         expdict = spec_handler.read_spec(os.path.join(experiments_dir, exp + '.yaml'))
 
         TRIALS = expdict['trials']
-        print('Trials to be conducted: %s' % TRIALS)
+        logger.info('\tTrials to be conducted: %s' % TRIALS)
 
         for trial in TRIALS:
             # Create a task to submit to the queue
@@ -84,7 +90,7 @@ def main(study_spec_file, dryrun=False):
     if notdry(dryrun, '--Dryrun-- Would wait'):
         subprocess.call(["wait"], shell=True)
 
-    exit(0)  # a clean, no-issue, exit
+    return 0  # a clean, no-issue, exit
 
 
 def parse_cli_arguments():
