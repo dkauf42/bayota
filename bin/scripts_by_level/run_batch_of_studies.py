@@ -45,7 +45,7 @@ def main(batch_spec_file, dryrun=False):
         if notdry(dryrun, '--Dryrun- Would submit job command: <%s>' % CMD):
             subprocess.call([CMD], shell=True)
 
-    exit(0)  # a clean, no-issue, exit
+    return 0  # a clean, no-issue, exit
 
 
 def parse_cli_arguments():
@@ -73,4 +73,4 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    main(opts.batch_spec_file, dryrun=opts.dryrun)
+    sys.exit(main(opts.batch_spec_file, dryrun=opts.dryrun))
