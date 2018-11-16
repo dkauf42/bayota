@@ -5,18 +5,6 @@ import pkg_resources
 
 import logging
 
-install_config_path = os.path.join('bayota_settings', 'install_config.ini')
-
-install_config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
-install_config.read(install_config_path)
-
-# Get (or make if doesn't exist) Workspace Directory
-ws_dir = install_config['top_paths']['workspace_top']
-print('bayota_settings.base(): ws_dir = %s' % ws_dir)
-os.makedirs(ws_dir, exist_ok=True)
-
-repo_dir = install_config['top_paths']['repo_top']
-
 
 def get_bayota_version():
     try:
@@ -25,19 +13,27 @@ def get_bayota_version():
     except pkg_resources.DistributionNotFound:
         print('installed "bayota" pkg-resources not found. Running from source.')
         try:
-            with open(os.path.join(repo_dir, 'VERSION'), 'r') as f:
+            with open('VERSION', 'r') as f:
                 for line in f:
                     version = line
                     break
         except:
-            print("bayota_settings.base.get_bayota_version(): unable to open VERSION file")
-            version = '0.0.-'
+            version = '0.0.1'
     return version
 
 
-# The version number is updated in the config file.
 version = get_bayota_version()
+
+install_config_path = os.path.join('bayota_settings', 'install_config.ini')
+
+# The version number is updated in the config file.
+install_config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
+install_config.read(install_config_path)
 install_config.set("version", "version", str(version))
+
+ws_dir = install_config['top_paths']['workspace_top']
+print('bayota_settings.base(): ws_dir = %s' % ws_dir)
+os.makedirs(ws_dir, exist_ok=True)
 
 config_dir = install_config['workspace_directories']['config']
 user_config = install_config['other_config']['userconfigcopy']
