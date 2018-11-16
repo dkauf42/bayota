@@ -17,8 +17,9 @@ def get_bayota_version():
                 for line in f:
                     version = line
                     break
-        except:
-            version = '0.0.1'
+        except FileNotFoundError:
+            print("bayota_settings.base.get_bayota_version(): unable to open VERSION file")
+            raise
     return version
 
 
