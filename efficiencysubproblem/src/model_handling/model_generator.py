@@ -164,6 +164,9 @@ class ModelHandlerBase:
 
     def add_constraints_from_spec(self, model):
         for i, c in enumerate(self.specdict['constraints']):
+
+            # CONSTRAINT NAME
+            constraint_name = c['name']
             # BOUND
             boundtype = c['bound']
             # BOUND PARAMETER
@@ -172,9 +175,9 @@ class ModelHandlerBase:
             expr = c['expression']
 
             # BUILD THE CONSTRAINT
-            logger.info('Loading constraint #%d:{expression="%s"} into the model object '
+            logger.info('Loading constraint #%d:{name="%s"} into the model object '
                         'with "%s" bound defined by <%s> parameter' %
-                        (i, expr, boundtype, boundparamname))
+                        (i, constraint_name, boundtype, boundparamname))
             model = self._add_expression_to_model(model, expr_name=expr)
 
             if not model.component(boundparamname):  # check if parameter already exists in model object
@@ -217,7 +220,6 @@ class ModelHandlerBase:
             else:
                 raise ValueError('unrecognized bound type <%s>' % boundtype)
 
-            constraint_name = 'constraint_%d_%s' % (i, expr)
             setattr(model, constraint_name, cobj)
 
     def add_other_components_from_spec(self, model):

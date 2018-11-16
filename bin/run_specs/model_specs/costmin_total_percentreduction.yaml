@@ -8,7 +8,8 @@ objective:
 
 # constraints list
 constraints:
-  - bound: lower
+  - name: Percent_Reduction
+    bound: lower
     boundparamname: percent_reduction_minimum
     expression: percent_reduction_expr
 
