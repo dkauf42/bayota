@@ -46,11 +46,13 @@ def main(study_spec_file, geography_name, dryrun=False):
     CMD += "%s -g %s -n %s " % (model_generator_script, geography_name, model_spec_name)
     CMD += "&"
     # Submit the job
+    p1 = None
     logger.info('Job command is: "%s"' % CMD)
     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-        subprocess.call([CMD], shell=True)
+        p1 = subprocess.Popen([CMD], shell=True)
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
-        subprocess.call(["wait"], shell=True)
+        p1.wait()
+        # subprocess.call(["wait"], shell=True)
 
     logger.info('----------------------------------------------')
     logger.info('******* Single Study: Experiments Loop *******')
