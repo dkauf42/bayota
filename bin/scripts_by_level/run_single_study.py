@@ -44,7 +44,6 @@ def main(study_spec_file, geography_name, dryrun=False):
     # Create a task to submit to the queue
     CMD = "srun "
     CMD += "%s -g %s -n %s " % (model_generator_script, geography_name, model_spec_name)
-    CMD += "&"
     # Submit the job
     p1 = None
     logger.info('Job command is: "%s"' % CMD)
