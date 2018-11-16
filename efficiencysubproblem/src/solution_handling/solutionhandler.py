@@ -149,3 +149,19 @@ class SolutionHandler:
 #         if not not bval:
 #             if abs(bval)>tol:
 #                 print('(%s, %s): %d' % (b, lmbda, bval))
+
+
+def initial_solution_parse_to_dataframe(modelhandler, get_suffixes, solved_instance):
+    # ---- PARSE SOLUTION OUTPUT ----
+    # Parse out only the optimal variable values that are nonzero
+    # nzvnames, nzvvalues = get_nonzero_var_names_and_values(self.instance)
+    solution_handler = SolutionHandler()
+    merged_df = solution_handler.get_nonzero_var_df(solved_instance,
+                                                    addcosttbldata=modelhandler.datahandler.costsubtbl)
+    if get_suffixes:
+        # Parse out the Lagrange Multipliers
+        lagrange_df = solution_handler.get_lagrangemult_df(solved_instance)
+        merged_df = lagrange_df.merge(merged_df,
+                                      how='right',
+                                      on=['bmpshortname', 'landriversegment', 'loadsource'])
+    return merged_df
