@@ -23,16 +23,18 @@ if not logger.hasHandlers():
 
 outdir = get_output_dir()
 
-saved_model_file = os.path.join(get_source_pickles_dir(), 'saved_instance.pickle')
-
 model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
 experiment_script = os.path.join(get_scripts_dir(), 'run_conductexperiment.py')
 
 
 def main(study_spec_file, geography_name, dryrun=False):
+
     studydict = read_spec(study_spec_file)
     model_spec_name = studydict['model_spec']
     EXPERIMENTS = studydict['experiments']
+
+    saved_model_file_for_this_study = os.path.join(get_source_pickles_dir(),
+                                                   'saved_instance' + model_spec_name + '_' + geography_name + '.pickle')
 
     version = get_bayota_version()
 
@@ -47,7 +49,8 @@ def main(study_spec_file, geography_name, dryrun=False):
 
     # Create a task to submit to the queue
     CMD = "srun "
-    CMD += "%s -g %s -n %s -sf %s" % (model_generator_script, geography_name, model_spec_name, saved_model_file)
+    CMD += "%s -g %s -n %s -sf %s" % (model_generator_script, geography_name,
+                                      model_spec_name, saved_model_file_for_this_study)
     # Submit the job
     p1 = None
     logger.info('Job command is: "%s"' % CMD)
@@ -66,7 +69,8 @@ def main(study_spec_file, geography_name, dryrun=False):
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
         # Create a task to submit to the queue
         CMD = "srun "
-        CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file, saved_model_file)
+        CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file,
+                                    saved_model_file_for_this_study)
         # Submit the job
         p1 = None
         logger.info('Job command is: "%s"' % CMD)

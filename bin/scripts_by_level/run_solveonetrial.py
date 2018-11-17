@@ -49,7 +49,7 @@ def main(saved_model_file=None, model_modification=None, dryrun=False):
         # for trial in TRIALS:
         #     # Create a task to submit to the queue
         #     CMD = "srun "
-        #     CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file, saved_model_file)
+        #     CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file, saved_model_file_for_this_study)
         #     # Submit the job
         #     logger.info('Job command is: "%s"' % CMD)
         #     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
