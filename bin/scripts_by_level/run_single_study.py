@@ -13,7 +13,7 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
-from bayota_settings.config_script import get_output_dir, get_scripts_dir, \
+from bayota_settings.config_script import get_output_dir, get_scripts_dir, get_source_pickles_dir, \
     set_up_logger, get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir
 
 logger = logging.getLogger('root')
@@ -23,18 +23,22 @@ if not logger.hasHandlers():
 
 outdir = get_output_dir()
 
+saved_model_file = os.path.join(get_source_pickles_dir(), 'saved_instance.pickle')
+
+model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
+experiment_script = os.path.join(get_scripts_dir(), 'run_conductexperiment.py')
+
 
 def main(study_spec_file, geography_name, dryrun=False):
     studydict = read_spec(study_spec_file)
     model_spec_name = studydict['model_spec']
     EXPERIMENTS = studydict['experiments']
-    model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
 
     version = get_bayota_version()
 
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)
-    logger.info('******** Single Study: Model Creation ********')
+    logger.info('******* Single Study: Model Generation *******')
     logger.info('----------------------------------------------')
 
     logger.info('Geography for this study: %s' % geography_name)
@@ -43,7 +47,7 @@ def main(study_spec_file, geography_name, dryrun=False):
 
     # Create a task to submit to the queue
     CMD = "srun "
-    CMD += "%s -g %s -n %s " % (model_generator_script, geography_name, model_spec_name)
+    CMD += "%s -g %s -n %s -sf %s" % (model_generator_script, geography_name, model_spec_name, saved_model_file)
     # Submit the job
     p1 = None
     logger.info('Job command is: "%s"' % CMD)
@@ -51,33 +55,25 @@ def main(study_spec_file, geography_name, dryrun=False):
         p1 = subprocess.Popen([CMD], shell=True)
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         p1.wait()
-        # subprocess.call(["wait"], shell=True)
 
     logger.info('----------------------------------------------')
     logger.info('******* Single Study: Experiments Loop *******')
     logger.info('----------------------------------------------')
 
-    experiments_dir = get_experiment_specs_dir()
     for ii, exp in enumerate(EXPERIMENTS):
         logger.info('Exp. #%d: %s' % (ii+1, exp))
 
-        expdict = read_spec(os.path.join(experiments_dir, exp + '.yaml'))
-
-        TRIALS = expdict['trials']
-        logger.info('\tTrials to be conducted: %s' % TRIALS)
-
-        for trial in TRIALS:
-            # Create a task to submit to the queue
-            CMD = "srun "
-            CMD += "study_cli.py solveinstance --instancefile %s " % opts.study_name
-            CMD += "&"
-            # Submit the job
-            logger.info('Job command is: "%s"' % CMD)
-            if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-                subprocess.call([CMD], shell=True)
-
-    if notdry(dryrun, logger, '--Dryrun-- Would wait'):
-        subprocess.call(["wait"], shell=True)
+        expspec_file = os.path.join(get_experiment_specs_dir(), exp + '.yaml')
+        # Create a task to submit to the queue
+        CMD = "srun "
+        CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file, saved_model_file)
+        # Submit the job
+        p1 = None
+        logger.info('Job command is: "%s"' % CMD)
+        if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
+            p1 = subprocess.Popen([CMD], shell=True)
+        if notdry(dryrun, logger, '--Dryrun-- Would wait'):
+            p1.wait()
 
     return 0  # a clean, no-issue, exit
 
