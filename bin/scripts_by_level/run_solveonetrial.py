@@ -15,8 +15,7 @@ import json
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
-from bayota_settings.config_script import set_up_logger, get_experiment_specs_dir,\
-    get_run_specs_dir, get_source_pickles_dir
+from bayota_settings.config_script import set_up_logger, get_source_pickles_dir
 # set_up_logger()
 # logger = logging.getLogger(__name__)
 # logger = logging.getLogger('root')
