@@ -63,7 +63,7 @@ def main(study_spec_file, geography_name, dryrun=False):
     for ii, exp in enumerate(EXPERIMENTS):
         logger.info('Exp. #%d: %s' % (ii+1, exp))
 
-        expspec_file = os.path.join(get_experiment_specs_dir(), exp + '.yaml')
+        expspec_file = os.path.join(get_experiment_specs_dir(), exp)
         # Create a task to submit to the queue
         CMD = "srun "
         CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file, saved_model_file)
