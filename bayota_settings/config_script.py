@@ -92,5 +92,5 @@ def get_source_pickles_dir():
     return _make_or_get_user_dir('temp_directories', 'source_pickles')
 
 
-def get_instance_data_dir():
+def get_model_instances_dir():
     return _make_or_get_user_dir('temp_directories', 'model_instances')

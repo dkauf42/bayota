@@ -15,7 +15,7 @@ import json
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
-from bayota_settings.config_script import set_up_logger, get_source_pickles_dir
+from bayota_settings.config_script import set_up_logger, get_model_instances_dir
 # set_up_logger()
 # logger = logging.getLogger(__name__)
 # logger = logging.getLogger('root')
@@ -26,7 +26,7 @@ if not logger.hasHandlers():
     logger = logging.getLogger(__name__)
 
 
-savepath = os.path.join(get_source_pickles_dir(), 'saved_instance.pickle')
+savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
 
 
 def main(saved_model_file=None, model_modification=None, dryrun=False):
@@ -111,7 +111,7 @@ def parse_cli_arguments():
 
     # MODEL SAVE FILE
     if not opts.saved_model_filepath:  # name was specified
-        opts.saved_model_file = os.path.join(get_source_pickles_dir(), opts.saved_model_name + '.yaml')
+        opts.saved_model_file = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
     else:  # filepath was specified
         opts.saved_model_file = opts.saved_model_filepath
 

@@ -16,7 +16,7 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.model_handling import model_generator
 
 from bayota_settings.config_script import set_up_logger, get_model_specs_dir,\
-    get_run_specs_dir, get_source_pickles_dir
+    get_run_specs_dir, get_model_instances_dir
 # set_up_logger()
 # logger = logging.getLogger(__name__)
 # logger = logging.getLogger('root')
@@ -34,7 +34,7 @@ def main(model_spec_file, geography_name, saved_model_file=None, dryrun=False):
     geodict = read_spec(geo_spec_file)[geography_name]
 
     if not saved_model_file:
-        savepath = os.path.join(get_source_pickles_dir(), 'saved_instance.pickle')
+        savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
     else:
         savepath = saved_model_file
 
@@ -159,7 +159,7 @@ def parse_cli_arguments():
 
     # MODEL SAVE FILE
     if not opts.saved_model_filepath:  # name was specified
-        opts.saved_model_file = os.path.join(get_source_pickles_dir(), opts.saved_model_name + '.yaml')
+        opts.saved_model_file = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
     else:  # filepath was specified
         opts.saved_model_file = opts.saved_model_filepath
 

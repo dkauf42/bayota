@@ -13,7 +13,7 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
-from bayota_settings.config_script import get_output_dir, get_scripts_dir, get_source_pickles_dir, \
+from bayota_settings.config_script import get_output_dir, get_scripts_dir, get_model_instances_dir, \
     set_up_logger, get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir
 
 logger = logging.getLogger('root')
@@ -33,7 +33,7 @@ def main(study_spec_file, geography_name, dryrun=False):
     model_spec_name = studydict['model_spec']
     EXPERIMENTS = studydict['experiments']
 
-    saved_model_file_for_this_study = os.path.join(get_source_pickles_dir(),
+    saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
                                                    'saved_instance' + model_spec_name + '_' + geography_name + '.pickle')
 
     version = get_bayota_version()
