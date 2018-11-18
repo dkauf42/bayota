@@ -108,15 +108,5 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    # # Options in the config file are overwritten by command line arguments.
-    # if opts.model_spec_filepath:
-    #     config = ConfigParser()
-    #
-    #     config.read_spec([opts.model_spec_filepath])
-    #     config.set("StudySpecs", "objective", opts.objective)
-    #     config.set("StudySpecs", "scale", opts.scale)
-    #     with open(opts.model_spec_filepath, "w") as f:
-    #         config.write(f)
-
     # The main function is called.
     sys.exit(main(opts.model_spec_file, opts.geography_name, saved_model_file=opts.saved_model_file, dryrun=opts.dryrun))

@@ -12,7 +12,7 @@ from argparse import ArgumentParser
 import cloudpickle
 import json
 
-from efficiencysubproblem.src.spec_handler import read_spec, notdry
+from efficiencysubproblem.src.spec_handler import notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
 from bayota_settings.config_script import set_up_logger, get_model_instances_dir

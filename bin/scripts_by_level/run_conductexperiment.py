@@ -17,9 +17,6 @@ from efficiencysubproblem.src.solver_handling import solvehandler
 
 from bayota_settings.config_script import set_up_logger, get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir
-# set_up_logger()
-# logger = logging.getLogger(__name__)
-# logger = logging.getLogger('root')
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -34,17 +31,6 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
     logger.info('----------------------------------------------')
     logger.info('************* Single Experiment **************')
     logger.info('----------------------------------------------')
-
-    # TRIALS = read_spec(experiment_spec_file)['trials']
-    # logger.info('\tTrials to be conducted: %s' % TRIALS)
-    # for trial in TRIALS:
-    #     # Create a task to submit to the queue
-    #     CMD = "srun "
-    #     CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file, saved_model_file_for_this_study)
-    #     # Submit the job
-    #     logger.info('Job command is: "%s"' % CMD)
-    #     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-    #         p_list.append(subprocess.Popen([CMD], shell=True))
 
     p_list = []
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']
