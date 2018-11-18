@@ -56,7 +56,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
             logger.info('values: %s' % v)
             for j, vi in enumerate(v):
                 logger.info('trial #%d, setting <%s> to <%s>' % (j, k, vi))
-                modificationstr = "\"{'variable': '%s', 'value': %s}\"" % (k, vi)
+                modificationstr = "\'{\"variable\": \"%s\", \"value\": %s}\'" % (k, vi)
                 # Create a task to submit to the queue
                 CMD = "srun "
                 CMD += "%s -sf %s -m %s" % (solve_trial_script, saved_model_file, modificationstr)
