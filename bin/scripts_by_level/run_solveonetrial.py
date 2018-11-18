@@ -38,8 +38,8 @@ def main(saved_model_file=None, model_modification=None, dryrun=False):
     mdlhandler = None
     if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % savepath):
         starttime_modelload = time.time()  # Wall time - clock starts.
-        with open(savepath, "rb") as f:
-            mdlhandler = cloudpickle.load(saved_model_file, f)
+        with open(saved_model_file, "rb") as f:
+            mdlhandler = cloudpickle.load(f)
         timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
         logger.info('*model loading (from pickle) done* <- it took %f seconds>' % timefor_modelload)
 
