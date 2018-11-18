@@ -16,9 +16,6 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
 from bayota_settings.config_script import set_up_logger, get_model_instances_dir
-# set_up_logger()
-# logger = logging.getLogger(__name__)
-# logger = logging.getLogger('root')
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -44,16 +41,6 @@ def main(saved_model_file=None, model_modification=None, dryrun=False):
         logger.info('*model loading (from pickle) done* <- it took %f seconds>' % timefor_modelload)
 
     if notdry(dryrun, logger, '--Dryrun-- Would run trial'):
-        # TRIALS = read_spec(experiment_spec_file)['trials']
-        # logger.info('\tTrials to be conducted: %s' % TRIALS)
-        # for trial in TRIALS:
-        #     # Create a task to submit to the queue
-        #     CMD = "srun "
-        #     CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file, saved_model_file_for_this_study)
-        #     # Submit the job
-        #     logger.info('Job command is: "%s"' % CMD)
-        #     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-        #         p_list.append(subprocess.Popen([CMD], shell=True))
 
         # Make Modification
         if not not model_modification:
@@ -65,26 +52,6 @@ def main(saved_model_file=None, model_modification=None, dryrun=False):
 
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
         logger.info("<My Trial is DONE!>")
-        logger.info(solution_dict)
-
-        # list_of_trialdicts = read_spec(experiment_spec_file)['trials']
-        # logger.info('\tTrials to be conducted: %s' % list_of_trialdicts)
-        # for i, dictwithtrials in enumerate(list_of_trialdicts):
-        #     logger.info('trial set #%d: %s' % (i, dictwithtrials))
-        #     for k, v in dictwithtrials.items():
-        #         logger.info('variable to modify: %s' % k)
-        #         # mdlhandler.model.component(k).pprint()
-        #         # mdlhandler.model.component(k)._index.pprint()
-        #         logger.info('values: %s' % v)
-        #         for j, vi in enumerate(v):
-        #             logger.info('trial #%d, setting <%s> to <%s>' % (j, k, vi))
-        #             mdlhandler.model.component(k)['N'] = vi
-        #             mdlhandler.model.component(k).pprint()
-        #
-        #             solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
-        #
-        #             break
-        #     break
 
 
 def parse_cli_arguments():

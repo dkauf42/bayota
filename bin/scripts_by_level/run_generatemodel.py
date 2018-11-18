@@ -17,9 +17,6 @@ from efficiencysubproblem.src.model_handling import model_generator
 
 from bayota_settings.config_script import set_up_logger, get_model_specs_dir,\
     get_run_specs_dir, get_model_instances_dir
-# set_up_logger()
-# logger = logging.getLogger(__name__)
-# logger = logging.getLogger('root')
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -91,65 +88,6 @@ def parse_cli_arguments():
                         action="count", default=0)
 
     opts = parser.parse_args()
-
-    # opts, remaining_argv = parser.parse_known_args()
-    #
-    # # Defaults are given for all of the model specifications.
-    # studyspec_defaults = {"objective": None,
-    #                       "scale": None,
-    #                       "entities": None,
-    #                       "baseyear": None}
-    # solveoptions_defaults = {"fileprintlevel": 1}
-    # instancespec_defaults = {"constraint": 5}
-    # output_defaults = {'wheretoput': 'hey'}
-    #
-    # # The defaults are merged into one dictionary.
-    # defaults = dict(studyspec_defaults, **solveoptions_defaults)
-    # defaults.update(instancespec_defaults)
-    # defaults.update(output_defaults)
-    #
-    # # Configuration file entries are read_spec to update default values.
-    # if opts.model_spec_filepath:
-    #     studydict = spec_handler.read_spec(opts.model_spec_filepath)
-    #
-    #     config = ConfigParser()
-    #     config.read_spec([opts.model_spec_filepath])
-    #
-    #     defaults.update(dict(config.items("StudySpecs")))
-    #     defaults.update(dict(config.items("SolveOptions")))
-    #     defaults.update(dict(config.items("InstanceSpecs")))
-    #     defaults.update(dict(config.items("OutputOptions")))
-    #
-    #     defaults['entities'] = ast.literal_eval(defaults['entities'])
-    #
-    # # Parse rest of arguments
-    # # Don't suppress add_help here so it will handle -h
-    # # parser = argparse.ArgumentParser(
-    # #     # Inherit options from config_parser
-    # #     parents=[parser]
-    # # )
-    #
-    # parser.set_defaults(**defaults)
-    #
-    # cli_model_spec_group = parser.add_argument_group()
-    # # The lower-level arguments are defined and added to the appropriate subparsers.
-    # cli_model_spec_group.add_argument('-o', '--objective', dest='objective',
-    #                                   choices=['costmin', 'loadreductionmax'], type=str,
-    #                                   help='optimization objective type')
-    # cli_model_spec_group.add_argument('-s', '--scale', dest='scale',
-    #                                   choices=['county', 'lrseg'], type=str,
-    #                                   help="geographic scale string")
-    # cli_model_spec_group.add_argument('-e', '--entities', dest='entities',
-    #                                   type=str,
-    #                                   nargs="*",
-    #                                   help="list of geographic entity names")
-    # cli_model_spec_group.add_argument('-y', '--baseyear', dest='baseyear',
-    #                                   type=str,
-    #                                   help="base condition (year)")
-    #
-    # # The new arguments are parsed and added to the top-level namespace
-    # opts = parser.parse_args(remaining_argv, namespace=opts)
-    #
 
     # MODEL SPEC
     if not opts.model_spec_filepath:  # name was specified
