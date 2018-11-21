@@ -15,7 +15,7 @@ import json
 from efficiencysubproblem.src.spec_handler import notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
-from bayota_settings.config_script import set_up_logger, get_model_instances_dir
+from bayota_settings.config_script import set_up_logger, get_model_instances_dir, get_output_dir
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -26,7 +26,7 @@ if not logger.hasHandlers():
 savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
 
 
-def main(saved_model_file=None, model_modification=None, dryrun=False):
+def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun=False):
 
     logger.info('----------------------------------------------')
     logger.info('*************** Single Trial *****************')
@@ -55,8 +55,9 @@ def main(saved_model_file=None, model_modification=None, dryrun=False):
         logger.info(f"<Solution feasible? --> {solution_dict['feasible']}>")
         logger.info(f"<Solving occurred at {solution_dict['timestamp']}>")
 
-        solution_dict['solution_df'].to_csv(solution_dict['output_file_name'])
-        logger.info(f"<Solution written to: {solution_dict['output_file_name']}>")
+        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{trial_name}_{solution_dict['timestamp']}.csv")
+        solution_dict['solution_df'].to_csv(outputdfpath)
+        logger.info(f"<Solution written to: {outputdfpath}>")
 
 
 def parse_cli_arguments():
@@ -75,6 +76,9 @@ def parse_cli_arguments():
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without sending any slurm commands")
+
+    parser.add_argument("-tn", "--trial_name", action='trial_name',
+                        help="unique name to identify this trial (used for saving results)")
 
     parser.add_argument("-v", "--verbose", dest='verbose',
                         action="count", default=0)
@@ -98,4 +102,7 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(saved_model_file=opts.saved_model_file, model_modification=opts.model_modification, dryrun=opts.dryrun))
+    sys.exit(main(saved_model_file=opts.saved_model_file,
+                  model_modification=opts.model_modification,
+                  trial_name=opts.trial_name,
+                  dryrun=opts.dryrun))

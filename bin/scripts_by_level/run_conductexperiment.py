@@ -28,10 +28,13 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_solveonetrial.py')
 
 def main(experiment_spec_file, saved_model_file=None, dryrun=False):
 
+    expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
+
     logger.info('----------------------------------------------')
     logger.info('************* Single Experiment **************')
     logger.info('----------------------------------------------')
 
+    trialnum = 0
     p_list = []
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']
     logger.info(f'\tTrials to be conducted: {list_of_trialdicts}')
@@ -41,11 +44,16 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
             logger.info(f'variable to modify: {k}')
             logger.info('values: %s' % v)
             for j, vi in enumerate(v):
+                trialnum += 1
+
                 logger.info(f'trial #{j}, setting <{k}> to <{vi}>')
                 modificationstr = f"\'{{\"variable\": \"{k}\", \"value\": {vi}}}\'"
                 # Create a task to submit to the queue
                 CMD = "srun "
-                CMD += f"{solve_trial_script} -sf {saved_model_file} -m {modificationstr}"
+                CMD += f"{solve_trial_script} " \
+                       f"-sf {saved_model_file} " \
+                       f"-tn {expname + '_' + k + '_' + str(trialnum)} " \
+                       f"-m {modificationstr}"
                 # Submit the job
                 logger.info(f'Job command is: "{CMD}"')
                 if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
