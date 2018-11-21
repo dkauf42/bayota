@@ -77,7 +77,7 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without sending any slurm commands")
 
-    parser.add_argument("-tn", "--trial_name", action='trial_name',
+    parser.add_argument("-tn", "--trial_name", dest='trial_name',
                         help="unique name to identify this trial (used for saving results)")
 
     parser.add_argument("-v", "--verbose", dest='verbose',
