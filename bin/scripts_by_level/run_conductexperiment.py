@@ -51,9 +51,6 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
                 if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
                     p_list.append(subprocess.Popen([CMD], shell=True))
 
-                break
-        break
-
     [p.wait() for p in p_list]
 
 
