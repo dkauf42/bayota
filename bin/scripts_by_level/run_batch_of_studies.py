@@ -48,16 +48,16 @@ def main(batch_spec_file, dryrun=False):
         spname = geoname+'_'+studyspecname
         # Create a job to submit to the HPC with sbatch
         CMD = "sbatch "
-        CMD += "--job-name=%s " % spname
-        CMD += "--nice=%s " % PRIORITY
-        CMD += "--nodes=%s " % NUMNODES # nodes requested
-        CMD += "--output=%s " % SLURM_OUTPUT
+        CMD += f"--job-name={spname} "
+        CMD += f"--nice={PRIORITY} "
+        CMD += f"--nodes={NUMNODES} "  # nodes requested
+        CMD += f"--output={SLURM_OUTPUT} "
         CMD += "--time=01:00:00 "  # time requested in hour:minute:second
-        CMD += "%s -g %s -n %s " % (single_study_script, geoname, studyspecname)
+        CMD += f"{single_study_script} -g {geoname} -n {studyspecname} "
         CMD += "&"
 
         # Submit the job
-        logger.info('Job command is: "%s"' % CMD)
+        logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun- Would submit command'):
             subprocess.call([CMD], shell=True)
 
