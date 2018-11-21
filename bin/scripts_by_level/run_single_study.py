@@ -49,11 +49,10 @@ def main(study_spec_file, geography_name, dryrun=False):
 
     # Create a task to submit to the queue
     CMD = "srun "
-    CMD += "%s -g %s -n %s -sf %s" % (model_generator_script, geography_name,
-                                      model_spec_name, saved_model_file_for_this_study)
+    CMD += f"{model_generator_script} -g {geography_name} -n {model_spec_name} -sf {saved_model_file_for_this_study}"
     # Submit the job
     p1 = None
-    logger.info('Job command is: "%s"' % CMD)
+    logger.info(f'Job command is: "{CMD}"')
     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
         p1 = subprocess.Popen([CMD], shell=True)
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
@@ -64,16 +63,15 @@ def main(study_spec_file, geography_name, dryrun=False):
     logger.info('----------------------------------------------')
 
     for ii, exp in enumerate(EXPERIMENTS):
-        logger.info('Exp. #%d: %s' % (ii+1, exp))
+        logger.info(f'Exp. #{ii+1}: {exp}')
 
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
         # Create a task to submit to the queue
         CMD = "srun "
-        CMD += "%s -n %s -sf %s" % (experiment_script, expspec_file,
-                                    saved_model_file_for_this_study)
+        CMD += f"{experiment_script} -n {expspec_file} -sf {saved_model_file_for_this_study}"
         # Submit the job
         p1 = None
-        logger.info('Job command is: "%s"' % CMD)
+        logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
             p1 = subprocess.Popen([CMD], shell=True)
         if notdry(dryrun, logger, '--Dryrun-- Would wait'):
