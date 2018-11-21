@@ -52,6 +52,11 @@ def main(saved_model_file=None, model_modification=None, dryrun=False):
 
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
         logger.info("<My Trial is DONE!>")
+        logger.info(f"<Solution feasible? --> {solution_dict['feasible']}>")
+        logger.info(f"<Solving occurred at {solution_dict['timestamp']}>")
+
+        solution_dict['solution_df'].to_csv(solution_dict['output_file_name'])
+        logger.info(f"<Solution written to: {solution_dict['output_file_name']}>")
 
 
 def parse_cli_arguments():
