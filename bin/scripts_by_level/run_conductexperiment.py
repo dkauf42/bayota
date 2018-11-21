@@ -34,20 +34,20 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
 
     p_list = []
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']
-    logger.info('\tTrials to be conducted: %s' % list_of_trialdicts)
+    logger.info(f'\tTrials to be conducted: {list_of_trialdicts}')
     for i, dictwithtrials in enumerate(list_of_trialdicts):
-        logger.info('trial set #%d: %s' % (i, dictwithtrials))
+        logger.info(f'trial set #{i}: {dictwithtrials}')
         for k, v in dictwithtrials.items():
-            logger.info('variable to modify: %s' % k)
+            logger.info(f'variable to modify: {k}')
             logger.info('values: %s' % v)
             for j, vi in enumerate(v):
-                logger.info('trial #%d, setting <%s> to <%s>' % (j, k, vi))
-                modificationstr = "\'{\"variable\": \"%s\", \"value\": %s}\'" % (k, vi)
+                logger.info(f'trial #{j}, setting <{k}> to <{vi}>')
+                modificationstr = f"\'{{\"variable\": \"{k}\", \"value\": {vi}}}\'"
                 # Create a task to submit to the queue
                 CMD = "srun "
-                CMD += "%s -sf %s -m %s" % (solve_trial_script, saved_model_file, modificationstr)
+                CMD += f"{solve_trial_script} -sf {saved_model_file} -m {modificationstr}"
                 # Submit the job
-                logger.info('Job command is: "%s"' % CMD)
+                logger.info(f'Job command is: "{CMD}"')
                 if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
                     p_list.append(subprocess.Popen([CMD], shell=True))
 
