@@ -27,7 +27,7 @@ def main(batch_spec_file, dryrun=False):
     version = get_bayota_version()
 
     GEOS = batchdict['geographies']
-    STUDIES = batchdict['studies']
+    STUDIES = batchdict['study_specs']
     study_pairs = list(itertools.product(GEOS, STUDIES))
 
     logger.info('----------------------------------------------')
@@ -53,13 +53,12 @@ def main(batch_spec_file, dryrun=False):
         CMD += f"--nodes={NUMNODES} "  # nodes requested
         CMD += f"--output={SLURM_OUTPUT} "
         CMD += "--time=01:00:00 "  # time requested in hour:minute:second
-        CMD += f"{single_study_script} -g {geoname} -n {studyspecname} "
-        CMD += "&"
+        CMD += f"{single_study_script} -g {geoname} -n {studyspecname}"
 
         # Submit the job
         logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun- Would submit command'):
-            subprocess.call([CMD], shell=True)
+            subprocess.Popen([CMD], shell=True)
 
     return 0  # a clean, no-issue, exit
 
