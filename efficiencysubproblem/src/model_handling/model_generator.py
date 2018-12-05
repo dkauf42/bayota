@@ -17,8 +17,8 @@ class ModelHandlerBase:
         self.specdict = read_spec(model_spec_file)
 
         self.datahandler = get_loaded_data_handler_no_objective(geoscale=geoscale,
-                                                   geoentities=[geoentities],
-                                                   savedata2file=savedata2file)
+                                                                geoentities=[geoentities],
+                                                                savedata2file=savedata2file)
 
         model = pe.ConcreteModel()
         self._define_sets(model, self.datahandler, geoscale=geoscale)
@@ -152,8 +152,8 @@ class ModelHandlerBase:
                                             sense=sense)
         else:
             objective_object = pe.Objective(model.component(expr)._index,
-                                           rule=lambda *m_with_indices: m_with_indices[0].component(expr)[m_with_indices[1:]],
-                                           sense=sense)
+                                            rule=lambda *m_with_indices: m_with_indices[0].component(expr)[m_with_indices[1:]],
+                                            sense=sense)
 
         setattr(model, objectivename, objective_object)
         #
