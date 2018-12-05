@@ -159,7 +159,7 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
 
-#### ⌨️ From the command line
+#### ⌨ From the command line
 To run the standard bash script:
 
 ```
@@ -232,6 +232,11 @@ Major dependencies:
 * [AMPLPY](https://github.com/ampl/amplpy)
 * [Pandas](https://pandas.pydata.org/)
 * [NumPy](https://www.numpy.org/)
+
+Funding Acknowledgment:
+
+* U.S. Federal Grant EPA-R3-CBP-16-03 -
+"Chesapeake Bay Program Office Fiscal Year 2016 Request for Proposals for Chesapeake Bay Optimization Tool Development"
 
 ## 🎓 License
 GNU General Public License
