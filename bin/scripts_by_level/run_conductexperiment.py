@@ -47,8 +47,12 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
         varvalue = dictwithtrials['value']
         logger.info('values: %s' % varvalue)
 
-        varindexer = dictwithtrials['indexer']
-        logger.info(f'indexed over: {varindexer}')
+        varindexer = None
+        try:
+            varindexer = dictwithtrials['indexer']
+            logger.info(f'indexed over: {varindexer}')
+        except KeyError:
+            pass
 
         for j, vi in enumerate(varvalue):
             trialnum += 1
