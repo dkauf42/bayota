@@ -104,7 +104,7 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
             setattr(instance, 'lambda', oe.Suffix(direction=oe.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
         results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
-                               keepfiles=True, logfile=logfilename)
+                               keepfiles=False, logfile=logfilename)
     else:
         opt = SolverFactory("cbc")
         solver_manager = SolverManagerFactory('neos')
