@@ -23,9 +23,6 @@ if not logger.hasHandlers():
     logger = logging.getLogger(__name__)
 
 
-savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
-
-
 def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun=False):
 
     logger.info('----------------------------------------------')
@@ -33,7 +30,7 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
     logger.info('----------------------------------------------')
 
     mdlhandler = None
-    if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % savepath):
+    if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
         starttime_modelload = time.time()  # Wall time - clock starts.
         with open(saved_model_file, "rb") as f:
             mdlhandler = cloudpickle.load(f)
@@ -65,7 +62,7 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
 
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
 
-        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{os.path.basename(savepath)}_{trial_name}_{solution_dict['timestamp']}.csv")
+        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{os.path.basename(saved_model_file)}_{trial_name}_{solution_dict['timestamp']}.csv")
         solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
 
