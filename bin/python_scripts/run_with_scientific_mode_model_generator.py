@@ -1,4 +1,5 @@
 import os
+import cloudpickle
 import pandas as pd
 # import pyomo.environ as oe
 import importlib
@@ -10,19 +11,85 @@ from efficiencysubproblem.src.vis import sequence_plot
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
 from efficiencysubproblem.src.model_handling import model_generator
+from efficiencysubproblem.src.spec_handler import read_spec
 
 # from efficiencysubproblem.src.study import Study
+from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
-from bayota_settings.config_script import set_up_logger
+from bayota_settings.config_script import set_up_logger,\
+    get_run_specs_dir, get_model_specs_dir, get_model_instances_dir, get_experiment_specs_dir
 
 set_up_logger()
-graphicsdir = get_graphics_dir()
+geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
+savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
+
+
+#%% Model Generation
+geography_name = 'AdamsPA'
+geodict = read_spec(geo_spec_file)[geography_name]
+
+model_spec_file = os.path.join(get_model_specs_dir(), 'loadreductionmax.yaml')
+# model_spec_file = os.path.join(get_model_specs_dir(), 'costmin_total_percentreduction.yaml')
+mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
+                                              geoscale=geodict['scale'],
+                                              geoentities=geodict['entities'],
+                                              savedata2file=False)
+
+#%% Save the model
+with open(savepath, 'wb') as f:
+    cloudpickle.dump(mdlhandler, f)
+#%% Load the model
+with open(savepath, 'rb') as f:
+    mdlhandler = cloudpickle.load(f)
+
+#%% Experiment Setup
+
+mdlhandler.model.component('totalcostupperbound').pprint()
+
+# from IPython import display
+#%%
+from efficiencysubproblem.src.solver_handling import solvehandler
+importlib.reload(solvehandler)
+from efficiencysubproblem.src.solver_handling import solvehandler
+
+mdl = mdlhandler.model
+
+exp_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-10percentreduction.yaml')
+# exp_spec_file = os.path.join(get_experiment_specs_dir(), 'loadreductionmax_100000-1mil_total_cost_bound.yaml')
+
+trials_list = read_spec(exp_spec_file)['trials']
+for i, t in enumerate(trials_list):
+    print('trial set #%d: %s' % (i, t))
+    for k, v in t.items():
+        print('variable to modify: %s' % k)
+        mdl.component(k).pprint()
+        print('indices: %s' % mdl.component(k)._index)
+        if not not next(iter(mdl.component(k)._index)):
+            mdl.component(k)._index.pprint()
+        print('values: %s' % v)
+        for j, vi in enumerate(v):
+            print('trial #%d, setting <%s> to <%s>' % (j, k, vi))
+            mdl.component(k).value = vi  # ['N']
+            mdl.component(k).pprint()
+
+            solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdl, )
+
+            break
+    break
+
+print(solution_dict)
 
 #%%
-# model_spec_file = 'bin/run_specs/model_specs/adamsPA_costmin.yaml'
-model_spec_file = 'bin/run_specs/model_specs/adamsPA_loadreductionmax.yaml'
-mdl = model_generator.ModelHandlerBase(model_spec_file=model_spec_file, savedata2file=False)
+# print constraint
+mdl.component('Percent_Reduction').pprint()
 
+#%%
+
+#%% Problem Solving
+solution = solve_problem_instance(mdlbase, mdl, randomstart=False, output_file_str='', fileprintlevel=4)
+
+#%%
+print(solution)
 #%%
 
 # WITH ARGUMENTS
