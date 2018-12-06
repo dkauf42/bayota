@@ -34,7 +34,7 @@ def main(study_spec_file, geography_name, dryrun=False):
     EXPERIMENTS = studydict['experiments']
 
     saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
-                                                   'saved_instance' + model_spec_name + '_' + geography_name + '.pickle')
+                                                   'modelinstance_' + model_spec_name + '_' + geography_name + '.pickle')
 
     version = get_bayota_version()
 

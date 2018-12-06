@@ -63,7 +63,9 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
         logger.info(f"<Solution feasible? --> {solution_dict['feasible']}>")
         logger.info(f"<Solving occurred at {solution_dict['timestamp']}>")
 
-        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{trial_name}_{solution_dict['timestamp']}.csv")
+        solution_dict['solution_df']['feasible'] = solution_dict['feasible']
+
+        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{os.path.basename(savepath)}_{trial_name}_{solution_dict['timestamp']}.csv")
         solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
 
