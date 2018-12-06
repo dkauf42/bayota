@@ -54,7 +54,11 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
                                       (modvar, varvalue, varindexer)):
                 mdlhandler.model.component(modvar)[varindexer] = varvalue
 
-    if notdry(dryrun, logger, '--Dryrun-- Would run trial'):
+    modelname = os.path.splitext(os.path.basename(saved_model_file))[0]
+    notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(),
+                                f"solution_model--{modelname}--_{trial_name}_<timestamp>.csv")
+    if notdry(dryrun, logger, '--Dryrun-- Would run trial and save outputdf at: %s' %
+                              notreal_notimestamp_outputdfpath):
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
         logger.info("<My Trial is DONE!>")
         logger.info(f"<Solution feasible? --> {solution_dict['feasible']}>")
@@ -62,7 +66,7 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
 
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
 
-        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{os.path.basename(saved_model_file)}_{trial_name}_{solution_dict['timestamp']}.csv")
+        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv")
         solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
 
