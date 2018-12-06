@@ -54,10 +54,11 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
         except KeyError:
             pass
 
-        for j, vi in enumerate(varvalue):
+        for vi in varvalue:
             trialnum += 1
+            trialstr = '{:04}'.format(trialnum)
 
-            logger.info(f'trial #{j}, setting <{modvar}> to <{vi}>')
+            logger.info(f'trial #{trialstr}, setting <{modvar}> to <{vi}>')
             modificationstr = f"\'{{\"variable\": \"{modvar}\", " \
                               f"\"value\": {vi}, " \
                               f"\"indexer\": \"{varindexer}\"}}\'"
@@ -65,7 +66,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
             CMD = "srun "
             CMD += f"{solve_trial_script} " \
                 f"-sf {saved_model_file} " \
-                f"-tn {expname + '_' + modvar + '_' + str(trialnum)} " \
+                f"-tn {expname + '_' + modvar + '_' + trialstr} " \
                 f"-m {modificationstr}"
             # Submit the job
             logger.info(f'Job command is: "{CMD}"')
