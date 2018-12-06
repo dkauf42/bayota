@@ -6,4 +6,36 @@ NorthumberlandWV:
   scale: county
   entities: 'Northumberland, VA'
 
+MarylandCounties:
+  scale: county
+  entities: ['Allegany, MD',
+             'Anne Arundel, MD',
+             'Baltimore, MD',
+             'Baltimore City, MD',
+             'Calvert, MD',
+             'Caroline, MD',
+             'Carroll, MD',
+             'Cecil, MD',
+             'Charles, MD',
+             'Dorchester, MD',
+             'Frederick, MD',
+             'Garrett, MD',
+             'Harford, MD',
+             'Howard, MD',
+             'Kent, MD',
+             'Montgomery, MD',
+             'Prince Georges, MD',
+             'Queen Annes, MD',
+             'Saint Marys, MD',
+             'Somerset, MD',
+             'Talbot, MD',
+             'Washington, MD',
+             'Wicomico, MD',
+             'Worcester, MD']
+
+Accomack_plus_Northhampton:
+  scale: region
+  entities: ['Accomack, VA',
+             'Northampton, VA']
+
 AnneArundelMD:
