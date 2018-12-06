@@ -66,7 +66,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
             CMD = "srun "
             CMD += f"{solve_trial_script} " \
                 f"-sf {saved_model_file} " \
-                f"-tn {expname + '_' + modvar + '_' + trialstr} " \
+                f"-tn {expname + '_' + modvar + '_' + 'trial' + trialstr} " \
                 f"-m {modificationstr}"
             # Submit the job
             logger.info(f'Job command is: "{CMD}"')
