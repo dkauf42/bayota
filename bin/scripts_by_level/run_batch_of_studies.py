@@ -35,7 +35,9 @@ def main(batch_spec_file, dryrun=False):
     logger.info('************** Batch of studies **************')
     logger.info('----------------------------------------------')
 
-    logger.info('%d studies to be conducted: %s' % (len(study_pairs), study_pairs))
+    tempstr = 'study' if len(study_pairs) == 1 else 'studies'
+    logger.info('%d %s to be conducted: %s' %
+                (len(study_pairs), tempstr, study_pairs))
 
     NUMNODES = 1
     PRIORITY = 5000
