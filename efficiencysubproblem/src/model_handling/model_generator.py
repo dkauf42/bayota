@@ -125,6 +125,7 @@ class ModelHandlerBase:
         # EXPRESSION
         expr = self.specdict['objective']['expression']
 
+
         # BUILD THE OBJECTIVE
         logger.info('Loading objective {name="%s"} into the model object ' % objectivename)
         model = self._add_expression_to_model(model, expr_name=expr)
@@ -155,12 +156,22 @@ class ModelHandlerBase:
                                             rule=lambda *m_with_indices: m_with_indices[0].component(expr)[m_with_indices[1:]],
                                             sense=sense)
 
+        # Set the Objective into the model Object
         setattr(model, objectivename, objective_object)
-        #
-        #     """ Deactivate unused P and S objectives """
-        #     # Retain only the Nitrogen load objective, and deactivate the others
-        #     model.PercentReduction['P'].deactivate()
-        #     model.PercentReduction['S'].deactivate()
+
+        # INDICES TO DEACTIVATE
+        #    for example, deactivate unused P and S objectives to retain only the Nitrogen load objective
+        didcs = []
+        try:
+            didcs = self.specdict['objective']['deactivate_indices']
+        except KeyError:
+            logger.info('no objective indices to deactivate')
+            pass
+        for di in didcs:
+            for k, valuelist in di.items():
+                for v in valuelist:
+                    model.component(objectivename)[v].deactivate()
+                    logger.info('index <%s> deactivated in the model Objective' % v)
 
     def add_constraints_from_spec(self, model):
         for i, c in enumerate(self.specdict['constraints']):
