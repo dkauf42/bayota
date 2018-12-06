@@ -40,24 +40,33 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
     logger.info(f'\tTrials to be conducted: {list_of_trialdicts}')
     for i, dictwithtrials in enumerate(list_of_trialdicts):
         logger.info(f'trial set #{i}: {dictwithtrials}')
-        for k, v in dictwithtrials.items():
-            logger.info(f'variable to modify: {k}')
-            logger.info('values: %s' % v)
-            for j, vi in enumerate(v):
-                trialnum += 1
 
-                logger.info(f'trial #{j}, setting <{k}> to <{vi}>')
-                modificationstr = f"\'{{\"variable\": \"{k}\", \"value\": {vi}}}\'"
-                # Create a task to submit to the queue
-                CMD = "srun "
-                CMD += f"{solve_trial_script} " \
-                       f"-sf {saved_model_file} " \
-                       f"-tn {expname + '_' + k + '_' + str(trialnum)} " \
-                       f"-m {modificationstr}"
-                # Submit the job
-                logger.info(f'Job command is: "{CMD}"')
-                if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-                    p_list.append(subprocess.Popen([CMD], shell=True))
+        modvar = dictwithtrials['variable']
+        logger.info(f'variable to modify: {modvar}')
+
+        varvalue = dictwithtrials['value']
+        logger.info('values: %s' % varvalue)
+
+        varindexer = dictwithtrials['indexer']
+        logger.info(f'indexed over: {varindexer}')
+
+        for j, vi in enumerate(varvalue):
+            trialnum += 1
+
+            logger.info(f'trial #{j}, setting <{modvar}> to <{vi}>')
+            modificationstr = f"\'{{\"variable\": \"{modvar}\", " \
+                              f"\"value\": {vi}, " \
+                              f"\"indexer\": \"{varindexer}\"}}\'"
+            # Create a task to submit to the queue
+            CMD = "srun "
+            CMD += f"{solve_trial_script} " \
+                f"-sf {saved_model_file} " \
+                f"-tn {expname + '_' + modvar + '_' + str(trialnum)} " \
+                f"-m {modificationstr}"
+            # Submit the job
+            logger.info(f'Job command is: "{CMD}"')
+            if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
+                p_list.append(subprocess.Popen([CMD], shell=True))
 
     [p.wait() for p in p_list]
 

@@ -4,4 +4,6 @@ exp_setup:
 
 # constraints list (key names must match model parameter names)
 trials:
-  - percent_reduction_minimum: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+  - variable: percent_reduction_minimum
+    value: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    indexer: 'N'

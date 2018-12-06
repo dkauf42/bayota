@@ -40,16 +40,24 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
         timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
         logger.info('*model loading (from pickle) done* <- it took %f seconds>' % timefor_modelload)
 
+    # Make Modification
+    if not not model_modification:
+        modvar = model_modification['variable']
+        varvalue = model_modification['value']
+        varindexer = model_modification['indexer']
+
+        if not not varindexer:
+            if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
+                                      'setting %s to %s (no index)' %
+                                      (modvar, varvalue)):
+                setattr(mdlhandler.model, modvar, varvalue)
+        else:
+            if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
+                                      'setting %s to %s (at index %s)' %
+                                      (modvar, varvalue, varindexer)):
+                mdlhandler.model.component(modvar)[varindexer] = varvalue
+
     if notdry(dryrun, logger, '--Dryrun-- Would run trial'):
-
-        # Make Modification
-        if not not model_modification:
-            varname = model_modification['variable']
-            varvalu = model_modification['value']
-
-            mdlhandler.model.component(varname)['N'] = varvalu
-            mdlhandler.model.component(varname).pprint()
-
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
         logger.info("<My Trial is DONE!>")
         logger.info(f"<Solution feasible? --> {solution_dict['feasible']}>")

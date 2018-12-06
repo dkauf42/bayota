@@ -4,4 +4,5 @@ exp_setup:
 
 # constraints list (key names must match model parameter names)
 trials:
-  - totalcostupperbound: [100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000]
+  - variable: totalcostupperbound
+    value: [100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000]
