@@ -26,7 +26,6 @@ outdir = get_output_dir()
 model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
 experiment_script = os.path.join(get_scripts_dir(), 'run_conductexperiment.py')
 
-
 def main(study_spec_file, geography_name, dryrun=False):
 
     studydict = read_spec(study_spec_file)
@@ -58,10 +57,7 @@ def main(study_spec_file, geography_name, dryrun=False):
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         p1.wait()
 
-    logger.info('----------------------------------------------')
     logger.info('******* Single Study: Experiments Loop *******')
-    logger.info('----------------------------------------------')
-
     for ii, exp in enumerate(EXPERIMENTS):
         logger.info(f'Exp. #{ii+1}: {exp}')
 

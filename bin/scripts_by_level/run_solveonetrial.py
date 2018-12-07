@@ -24,10 +24,7 @@ if not logger.hasHandlers():
 
 
 def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun=False):
-
-    logger.info('----------------------------------------------')
-    logger.info('*************** Single Trial *****************')
-    logger.info('----------------------------------------------')
+    logprefix = '** Single Trial **: '
 
     mdlhandler = None
     if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
@@ -35,7 +32,8 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
         with open(saved_model_file, "rb") as f:
             mdlhandler = cloudpickle.load(f)
         timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
-        logger.info('*model loading (from pickle) done* <- it took %f seconds>' % timefor_modelload)
+        logger.info('%s model loading (from pickle) done* <- it took %f seconds>' %
+                    (logprefix, timefor_modelload))
 
     # Make Modification
     if not not model_modification:
@@ -60,9 +58,9 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
     if notdry(dryrun, logger, '--Dryrun-- Would run trial and save outputdf at: %s' %
                               notreal_notimestamp_outputdfpath):
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
-        logger.info("<My Trial is DONE!>")
-        logger.info(f"<Solution feasible? --> {solution_dict['feasible']}>")
-        logger.info(f"<Solving occurred at {solution_dict['timestamp']}>")
+        logger.info(f"{logprefix} Trial '{trial_name}' is DONE "
+                    f"(@{solution_dict['timestamp']})! "
+                    f"<Solution feasible? --> {solution_dict['feasible']}> ")
 
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
 

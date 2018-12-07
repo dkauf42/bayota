@@ -13,7 +13,6 @@ from argparse import ArgumentParser
 import cloudpickle
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
-from efficiencysubproblem.src.solver_handling import solvehandler
 from efficiencysubproblem.src.model_handling.utils import modify_model
 
 from bayota_settings.config_script import set_up_logger, get_experiment_specs_dir,\
@@ -28,14 +27,17 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_solveonetrial.py')
 
 
 def main(experiment_spec_file, saved_model_file=None, dryrun=False):
-
-    expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
+    logprefix = '** Single Experiment **: '
 
     logger.info('----------------------------------------------')
     logger.info('************* Single Experiment **************')
     logger.info('-----------------------------------------------')
 
-    logger.info('************* Experiment Setup **************')
+    # Log the name of the experiment
+    expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
+    logger.info(f"{logprefix} {expname}")
+
+    # Load the model object
     mdlhandler = None
     if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
         starttime_modelload = time.time()  # Wall time - clock starts.
@@ -44,11 +46,13 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
         timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
         logger.info('*model loading (from pickle) done* <- it took %f seconds>' % timefor_modelload)
 
+    # Modify the model according to any specified experiment set-up
     actionlist = read_spec(experiment_spec_file)['exp_setup']
     if notdry(dryrun, logger, '--Dryrun-- Would modify model with action <%s>' % actionlist):
         for a in actionlist:
             modify_model(mdlhandler.model, actiondict=a)
 
+    # Save the modified model object
     if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % saved_model_file):
         starttime_modelsave = time.time()  # Wall time - clock starts.
         with open(saved_model_file, "wb") as f:
@@ -56,11 +60,14 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
         timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
         logger.info('*model pickling done* <- it took %f seconds>' % timefor_modelsave)
 
-    logger.info('************* Trials **************')
     trialnum = 0
     p_list = []
+
+    # Log the list of trials that will be conducted for this experiment
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']
-    logger.info(f'\tTrials to be conducted: {list_of_trialdicts}')
+    tempstr = 'trial' if len(list_of_trialdicts) == 1 else 'trials'
+    logger.info(f"{logprefix} {tempstr} to be conducted: {list_of_trialdicts}")
+
     for i, dictwithtrials in enumerate(list_of_trialdicts):
         logger.info(f'trial set #{i}: {dictwithtrials}')
 
