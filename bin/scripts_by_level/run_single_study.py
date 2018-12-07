@@ -74,8 +74,8 @@ def main(study_spec_file, geography_name, dryrun=False):
         # if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         #     p_list.append(subprocess.Popen([CMD], shell=True))
 
-    if notdry(dryrun, logger, '--Dryrun-- Would wait'):
-        [p.wait() for p in p_list]
+    # if notdry(dryrun, logger, '--Dryrun-- Would wait'):
+    #     [p.wait() for p in p_list]
 
     return 0  # a clean, no-issue, exit
 
