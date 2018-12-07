@@ -43,7 +43,7 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
         varvalue = model_modification['value']
         varindexer = model_modification['indexer']
 
-        if not not varindexer:
+        if not varindexer:
             if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
                                       'setting %s to %s (no index)' %
                                       (modvar, varvalue)):
