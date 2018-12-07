@@ -29,10 +29,6 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_solveonetrial.py')
 def main(experiment_spec_file, saved_model_file=None, dryrun=False):
     logprefix = '** Single Experiment **: '
 
-    logger.info('----------------------------------------------')
-    logger.info('************* Single Experiment **************')
-    logger.info('-----------------------------------------------')
-
     # Log the name of the experiment
     expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
     logger.info(f"{logprefix} {expname}")
@@ -44,7 +40,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
         with open(saved_model_file, "rb") as f:
             mdlhandler = cloudpickle.load(f)
         timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
-        logger.info('*model loading (from pickle) done* <- it took %f seconds>' % timefor_modelload)
+        logger.info(f"{logprefix} {expname} - model load (from pickle) done* <- it took {timefor_modelload} seconds>")
 
     # Modify the model according to any specified experiment set-up
     actionlist = read_spec(experiment_spec_file)['exp_setup']
@@ -58,7 +54,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
         with open(saved_model_file, "wb") as f:
             cloudpickle.dump(mdlhandler, f)
         timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
-        logger.info('*model pickling done* <- it took %f seconds>' % timefor_modelsave)
+        logger.info(f"{logprefix} {expname} - model pickling done* <- it took {timefor_modelsave} seconds>")
 
     trialnum = 0
     p_list = []
@@ -66,7 +62,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
     # Log the list of trials that will be conducted for this experiment
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']
     tempstr = 'trial' if len(list_of_trialdicts) == 1 else 'trials'
-    logger.info(f"{logprefix} {tempstr} to be conducted: {list_of_trialdicts}")
+    logger.info(f"{logprefix} {expname} - {tempstr} to be conducted: {list_of_trialdicts}")
 
     for i, dictwithtrials in enumerate(list_of_trialdicts):
         logger.info(f'trial set #{i}: {dictwithtrials}')
