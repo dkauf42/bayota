@@ -13,12 +13,15 @@ import subprocess
 from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
-from bayota_settings.config_script import set_up_logger, get_bayota_version, get_scripts_dir
+from bayota_settings.config_script import set_up_logger, get_bayota_version, \
+    get_scripts_dir, get_run_specs_dir
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
     set_up_logger()
     logger = logging.getLogger(__name__)
+
+geo_expansion_file = os.path.join(get_run_specs_dir(), 'geography_expansions.yaml')
 
 
 def main(batch_spec_file, dryrun=False):
@@ -26,7 +29,18 @@ def main(batch_spec_file, dryrun=False):
 
     version = get_bayota_version()
 
+    # Process geographies, and expand any if necessary
     GEOS = batchdict['geographies']
+    expansiondict = read_spec(geo_expansion_file)
+    expandedGEOS = []
+    for g in GEOS:
+        if isinstance(g, dict):  # check if GEOS are expansions
+            expansion_name = g['expand']
+            expandedGEOS = expandedGEOS + expansiondict[expansion_name]
+        else:
+            expandedGEOS.append(g)
+    GEOS = expandedGEOS
+
     STUDIES = batchdict['study_specs']
     study_pairs = list(itertools.product(GEOS, STUDIES))
 
