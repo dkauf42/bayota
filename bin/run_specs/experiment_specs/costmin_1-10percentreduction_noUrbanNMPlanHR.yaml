@@ -1,0 +1,24 @@
+# objective dictionary
+exp_setup:
+  - action: add_component
+    component_type: Param
+    name: p_ub
+    args:
+      initialize: 0
+      mutable: True
+  - action: fix_variable
+    index:
+      set: 'BMPS'
+      value: 'UrbanNMPlanHR'
+    value: 0.0
+#  - action: add_component
+#    component_type: Constraint
+#    name: modified_noUrbanNMPlanHR
+#    args:
+#      rule: m.x['UrbanNMPlanHR', :, :] <= m.p_ub
+
+# constraints list (key names must match model parameter names)
+trials:
+  - variable: percent_reduction_minimum
+    value: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    indexer: 'N'
