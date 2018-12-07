@@ -28,44 +28,49 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_solveonetrial.py')
 
 def main(experiment_spec_file, saved_model_file=None, dryrun=False):
     logprefix = '** Single Experiment **: '
-
-    # Log the name of the experiment
     expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
-    logger.info(f"{logprefix} {expname}")
-
-    # Load the model object
-    mdlhandler = None
-    if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
-        starttime_modelload = time.time()  # Wall time - clock starts.
-        with open(saved_model_file, "rb") as f:
-            mdlhandler = cloudpickle.load(f)
-        timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
-        logger.info(f"{logprefix} {expname} - model load (from pickle) done* <- it took {timefor_modelload} seconds>")
 
     # Modify the model according to any specified experiment set-up
     actionlist = read_spec(experiment_spec_file)['exp_setup']
+    logger.info(f"{logprefix} {expname} - modification action list = {actionlist}")
     if notdry(dryrun, logger, '--Dryrun-- Would modify model with action <%s>' % actionlist):
-        for a in actionlist:
-            modify_model(mdlhandler.model, actiondict=a)
 
-    # Save the modified model object
-    if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % saved_model_file):
-        starttime_modelsave = time.time()  # Wall time - clock starts.
-        with open(saved_model_file, "wb") as f:
-            cloudpickle.dump(mdlhandler, f)
-        timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
-        logger.info(f"{logprefix} {expname} - model pickling done* <- it took {timefor_modelsave} seconds>")
+        # Check whether any model modifications are specified
+        if not not actionlist:
+            # Load the model object
+            mdlhandler = None
+            if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
+                starttime_modelload = time.time()  # Wall time - clock starts.
+                with open(saved_model_file, "rb") as f:
+                    mdlhandler = cloudpickle.load(f)
+                timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
+                logger.info(
+                    f"{logprefix} {expname} - model load (from pickle) done* <- it took {timefor_modelload} seconds>")
 
-    trialnum = 0
-    p_list = []
+            for a in actionlist:
+                modify_model(mdlhandler.model, actiondict=a)
+
+            # Save the modified model object
+            if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % saved_model_file):
+                starttime_modelsave = time.time()  # Wall time - clock starts.
+                with open(saved_model_file, "wb") as f:
+                    cloudpickle.dump(mdlhandler, f)
+                timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
+                logger.info(f"{logprefix} {expname} - model pickling done* <- it took {timefor_modelsave} seconds>")
+
+        else:
+            logger.info(f"{logprefix} {expname} - no model modifications made")
 
     # Log the list of trials that will be conducted for this experiment
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']
     tempstr = 'trial' if len(list_of_trialdicts) == 1 else 'trials'
     logger.info(f"{logprefix} {expname} - {tempstr} to be conducted: {list_of_trialdicts}")
 
+    # Loop through and start each trial
+    trialnum = 0
+    p_list = []
     for i, dictwithtrials in enumerate(list_of_trialdicts):
-        logger.info(f'trial set #{i}: {dictwithtrials}')
+        logger.info(f'{logprefix} {expname} - trial set #{i}: {dictwithtrials}')
 
         modvar = dictwithtrials['variable']
         logger.info(f'variable to modify: {modvar}')
