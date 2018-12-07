@@ -27,6 +27,7 @@ model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
 experiment_script = os.path.join(get_scripts_dir(), 'run_conductexperiment.py')
 
 def main(study_spec_file, geography_name, dryrun=False):
+    logprefix = '** Single Study **: '
 
     studydict = read_spec(study_spec_file)
     model_spec_name = studydict['model_spec']
@@ -39,12 +40,12 @@ def main(study_spec_file, geography_name, dryrun=False):
 
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)
-    logger.info('******* Single Study: Model Generation *******')
+    logger.info('*************** Single Study *****************')
     logger.info('----------------------------------------------')
 
-    logger.info('Geography for this study: %s' % geography_name)
-    logger.info('Model for this study: %s' % model_spec_name)
-    logger.info('Experiments in study spec: %s' % EXPERIMENTS)
+    logger.info(f"{logprefix} Model Generation - Geography = {geography_name}")
+    logger.info(f"{logprefix} Model Generation - Spec name = {model_spec_name}")
+    logger.info(f"{logprefix} Model Generation - Experiments = {EXPERIMENTS}")
 
     # Create a task to submit to the queue
     CMD = "srun "
@@ -57,9 +58,9 @@ def main(study_spec_file, geography_name, dryrun=False):
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         p1.wait()
 
-    logger.info('******* Single Study: Experiments Loop *******')
+    p_list = []
     for ii, exp in enumerate(EXPERIMENTS):
-        logger.info(f'Exp. #{ii+1}: {exp}')
+        logger.info(f"{logprefix} Exp. #{ii+1}: {exp}")
 
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
         # Create a task to submit to the queue
@@ -69,9 +70,12 @@ def main(study_spec_file, geography_name, dryrun=False):
         p1 = None
         logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-            p1 = subprocess.Popen([CMD], shell=True)
-        if notdry(dryrun, logger, '--Dryrun-- Would wait'):
-            p1.wait()
+            p_list.append(subprocess.Popen([CMD], shell=True))
+        # if notdry(dryrun, logger, '--Dryrun-- Would wait'):
+        #     p_list.append(subprocess.Popen([CMD], shell=True))
+
+    if notdry(dryrun, logger, '--Dryrun-- Would wait'):
+        [p.wait() for p in p_list]
 
     return 0  # a clean, no-issue, exit
 
