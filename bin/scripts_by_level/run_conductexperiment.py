@@ -33,7 +33,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
 
     logger.info('----------------------------------------------')
     logger.info('************* Single Experiment **************')
-    logger.info('-----------------------------s-----------------')
+    logger.info('-----------------------------------------------')
 
     logger.info('************* Experiment Setup **************')
     mdlhandler = None
@@ -45,8 +45,9 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
         logger.info('*model loading (from pickle) done* <- it took %f seconds>' % timefor_modelload)
 
     actionlist = read_spec(experiment_spec_file)['exp_setup']
-    for a in actionlist:
-        modify_model(mdlhandler.model, actiondict=a)
+    if notdry(dryrun, logger, '--Dryrun-- Would modify model with action <%s>' % actionlist):
+        for a in actionlist:
+            modify_model(mdlhandler.model, actiondict=a)
 
     if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % saved_model_file):
         starttime_modelsave = time.time()  # Wall time - clock starts.
