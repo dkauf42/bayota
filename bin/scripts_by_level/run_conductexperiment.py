@@ -36,7 +36,9 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
     if notdry(dryrun, logger, '--Dryrun-- Would modify model with action <%s>' % actionlist):
 
         # Check whether any model modifications are specified
-        if not not actionlist:
+        if actionlist[0] == 'none':
+            logger.info(f"{logprefix} {expname} - no model modifications made")
+        else:
             # Load the model object
             mdlhandler = None
             if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
@@ -58,13 +60,10 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
                 timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
                 logger.info(f"{logprefix} {expname} - model pickling done* <- it took {timefor_modelsave} seconds>")
 
-        else:
-            logger.info(f"{logprefix} {expname} - no model modifications made")
-
-    # Log the list of trials that will be conducted for this experiment
+    # Log the list of trial sets that will be conducted for this experiment
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']
-    tempstr = 'trial' if len(list_of_trialdicts) == 1 else 'trials'
-    logger.info(f"{logprefix} {expname} - {tempstr} to be conducted: {list_of_trialdicts}")
+    tempstr = 'set' if len(list_of_trialdicts) == 1 else 'sets'
+    logger.info(f"{logprefix} {expname} - trial {tempstr} to be conducted: {list_of_trialdicts}")
 
     # Loop through and start each trial
     trialnum = 0
