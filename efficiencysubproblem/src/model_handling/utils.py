@@ -25,9 +25,6 @@ def modify_model(model, actiondict=None):
         idxset = actiondict['index']['set']
         idxval = actiondict['index']['value']
         fix_value = actiondict['value']
-        # print(f'idxset: {idxset}')
-        # print(f'idxval: {idxval}')
-        # print(f'fix_value: {fix_value}')
 
         # find which element in the index tuple do we need to compare
         compbool = [idxset == st._name for st in model.x._index.set_tuple]
