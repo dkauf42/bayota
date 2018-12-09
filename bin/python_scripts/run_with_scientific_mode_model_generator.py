@@ -1,50 +1,67 @@
 import os
 import cloudpickle
 import pandas as pd
-# import pyomo.environ as oe
+import pyomo.environ as pe
 import importlib
 
 # from pyomo.util. import log_infeasible_constraints
 
-from bayota_settings.config_script import get_graphics_dir
 from efficiencysubproblem.src.vis import sequence_plot
-from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 
 from efficiencysubproblem.src.model_handling import model_generator
 from efficiencysubproblem.src.spec_handler import read_spec
 
-# from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 from bayota_settings.config_script import set_up_logger,\
-    get_run_specs_dir, get_model_specs_dir, get_model_instances_dir, get_experiment_specs_dir
+    get_run_specs_dir, get_model_specs_dir, get_model_instances_dir, get_experiment_specs_dir, \
+    get_output_dir
 
 set_up_logger()
 geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
 savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
+exp_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-10percentreduction_noUrbanNMPlanHR.yaml')
 
 
 #%% Model Generation
-geography_name = 'AdamsPA'
+geography_name = 'CalvertMD'
 geodict = read_spec(geo_spec_file)[geography_name]
 
-model_spec_file = os.path.join(get_model_specs_dir(), 'loadreductionmax.yaml')
-# model_spec_file = os.path.join(get_model_specs_dir(), 'costmin_total_percentreduction.yaml')
+# model_spec_file = os.path.join(get_model_specs_dir(), 'loadreductionmax.yaml')
+model_spec_file = os.path.join(get_model_specs_dir(), 'costmin_total_percentreduction.yaml')
 mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
                                               geoscale=geodict['scale'],
                                               geoentities=geodict['entities'],
                                               savedata2file=False)
 
+
+#%% Experiment Setup
+# from efficiencysubproblem.src.model_handling import utils
+# importlib.reload(utils)
+#
+# actionlist=read_spec(exp_spec_file)['exp_setup']
+# for a in actionlist:
+#     try:
+#         if a['name'] == 'p_ub':
+#             continue
+#     except KeyError:
+#         pass
+#     utils.modify_model(mdlhandler.model, actiondict=a)
+#
+#
+# mdlhandler.model.component('totalcostupperbound').pprint()
+
 #%% Save the model
 with open(savepath, 'wb') as f:
     cloudpickle.dump(mdlhandler, f)
+
+
 #%% Load the model
 with open(savepath, 'rb') as f:
     mdlhandler = cloudpickle.load(f)
 
-#%% Experiment Setup
-
-mdlhandler.model.component('totalcostupperbound').pprint()
+#%%
+# mdlhandler.model.x['UrbanNMPlanHR', :, :].pprint()
 
 # from IPython import display
 #%%
@@ -52,36 +69,87 @@ from efficiencysubproblem.src.solver_handling import solvehandler
 importlib.reload(solvehandler)
 from efficiencysubproblem.src.solver_handling import solvehandler
 
-mdl = mdlhandler.model
+experiment_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-20percentreduction.yaml')
+# experiment_spec_file = os.path.join(get_experiment_specs_dir(), 'loadreductionmax_100000-1mil_total_cost_bound.yaml')
 
-exp_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-10percentreduction.yaml')
-# exp_spec_file = os.path.join(get_experiment_specs_dir(), 'loadreductionmax_100000-1mil_total_cost_bound.yaml')
 
-trials_list = read_spec(exp_spec_file)['trials']
-for i, t in enumerate(trials_list):
-    print('trial set #%d: %s' % (i, t))
-    for k, v in t.items():
-        print('variable to modify: %s' % k)
-        mdl.component(k).pprint()
-        print('indices: %s' % mdl.component(k)._index)
-        if not not next(iter(mdl.component(k)._index)):
-            mdl.component(k)._index.pprint()
-        print('values: %s' % v)
-        for j, vi in enumerate(v):
-            print('trial #%d, setting <%s> to <%s>' % (j, k, vi))
-            mdl.component(k).value = vi  # ['N']
-            mdl.component(k).pprint()
+# Log the list of trial sets that will be conducted for this experiment
+list_of_trialdicts = read_spec(experiment_spec_file)['trials']
+tempstr = 'set' if len(list_of_trialdicts) == 1 else 'sets'
+print(f"trial {tempstr} to be conducted: {list_of_trialdicts}")
 
-            solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdl, )
+# Loop through and start each trial
+trialnum = 0
+for i, dictwithtrials in enumerate(list_of_trialdicts):
+    print(f'trial set #{i}: {dictwithtrials}')
 
-            break
-    break
+    modvar = dictwithtrials['variable']
+    print(f'variable to modify: {modvar}')
 
-print(solution_dict)
+    varvalue = dictwithtrials['value']
+    print('values: %s' % varvalue)
+
+    varindexer = None
+    try:
+        varindexer = dictwithtrials['indexer']
+        print(f'indexed over: {varindexer}')
+    except KeyError:
+        pass
+
+    for vi in varvalue:
+        trialnum += 1
+        trialstr = '{:04}'.format(trialnum)
+
+        print(f'trial #{trialstr}, setting <{modvar}> to <{vi}>')
+        if not varindexer:
+            print('not using varindexer')
+            setattr(mdlhandler.model, modvar, vi)
+        else:
+            print('using varindexer')
+            print(modvar)
+            mdlhandler.model.component(modvar)[varindexer] = vi
+
+
+        solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
+        print(f"Trial '{trialstr}' is DONE "
+              f"(@{solution_dict['timestamp']})! "
+              f"<Solution feasible? --> {solution_dict['feasible']}> ")
+
+        solution_dict['solution_df']['feasible'] = solution_dict['feasible']
+
+        ii = 0
+        for c in mdlhandler.model.component_objects(pe.Objective):
+            if ii < 1:
+                solution_dict['solution_df']['solution_objective'] = pe.value(getattr(mdlhandler.model, str(c)))
+                ii += 1
+            else:
+                print('more than one objective found, only using one')
+                break
+
+        solution_dict['solution_df'][modvar] = vi
+        solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
+
+        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{trialstr}_{solution_dict['timestamp']}.csv")
+        solution_dict['solution_df'].to_csv(outputdfpath)
+        print(f"<Solution written to: {outputdfpath}>")
+
+#%%
+
+ii=0
+for c in mdlhandler.model.component_objects(pe.Objective):
+    if ii > 0:
+        break
+    print(c)  # Prints the name of every Objective on the model
+    print(pe.value(getattr(mdlhandler.model, str(c))))
+    ii += 1
+
+for c in mdlhandler.model.component_objects(pe.Constraint):
+    print(c)
+# print(pe.value(mdlhandler.model.Percent_Reduction['N'].body))
 
 #%%
 # print constraint
-mdl.component('Percent_Reduction').pprint()
+mdlhandler.model.component('Percent_Reduction').pprint()
 
 #%%
 
