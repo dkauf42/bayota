@@ -264,7 +264,8 @@ def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4):
     solution_dict = {'output_file_name': output_file_name,
                      'solution_df': merged_df,
                      'timestamp': solvetimestamp,
-                     'feasible': feasible}
+                     'feasible': feasible,
+                     'solved_results': solved_results}
 
     return solution_dict
 
