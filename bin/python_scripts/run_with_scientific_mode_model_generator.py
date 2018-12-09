@@ -27,8 +27,8 @@ exp_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-10percentred
 geography_name = 'CalvertMD'
 geodict = read_spec(geo_spec_file)[geography_name]
 
-# model_spec_file = os.path.join(get_model_specs_dir(), 'loadreductionmax.yaml')
-model_spec_file = os.path.join(get_model_specs_dir(), 'costmin_total_percentreduction.yaml')
+model_spec_file = os.path.join(get_model_specs_dir(), 'loadreductionmax.yaml')
+# model_spec_file = os.path.join(get_model_specs_dir(), 'costmin_total_percentreduction.yaml')
 mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
                                               geoscale=geodict['scale'],
                                               geoentities=geodict['entities'],
@@ -69,9 +69,9 @@ from efficiencysubproblem.src.solver_handling import solvehandler
 importlib.reload(solvehandler)
 from efficiencysubproblem.src.solver_handling import solvehandler
 
-experiment_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-20percentreduction.yaml')
+# experiment_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-20percentreduction.yaml')
 # experiment_spec_file = os.path.join(get_experiment_specs_dir(), 'loadreductionmax_100000-1mil_total_cost_bound.yaml')
-
+experiment_spec_file = os.path.join(get_experiment_specs_dir(), 'loadreductionmax_1mil_total_cost_bound.yaml')
 
 # Log the list of trial sets that will be conducted for this experiment
 list_of_trialdicts = read_spec(experiment_spec_file)['trials']
@@ -118,9 +118,16 @@ for i, dictwithtrials in enumerate(list_of_trialdicts):
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
 
         ii = 0
-        for c in mdlhandler.model.component_objects(pe.Objective):
+        for objective_component in mdlhandler.model.component_objects(pe.Objective):
             if ii < 1:
-                solution_dict['solution_df']['solution_objective'] = pe.value(getattr(mdlhandler.model, str(c)))
+                # check whether Objective is an "indexed" component or not
+                if objective_component._index == {None}:
+                    solution_dict['solution_df']['solution_objective'] = pe.value(objective_component)
+                else:
+                    for cidxpart in objective_component:
+                        if objective_component[cidxpart].active:
+                            solution_dict['solution_df']['solution_objective'] = pe.value(objective_component)
+
                 ii += 1
             else:
                 print('more than one objective found, only using one')

@@ -73,9 +73,16 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=Fal
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
 
         ii = 0
-        for c in mdlhandler.model.component_objects(pe.Objective):
+        for objective_component in mdlhandler.model.component_objects(pe.Objective):
             if ii < 1:
-                solution_dict['solution_df']['solution_objective'] = pe.value(getattr(mdlhandler.model, str(c)))
+                # check whether Objective is an "indexed" component or not
+                if objective_component._index == {None}:
+                    solution_dict['solution_df']['solution_objective'] = pe.value(objective_component)
+                else:
+                    for cidxpart in objective_component:
+                        if objective_component[cidxpart].active:
+                            solution_dict['solution_df']['solution_objective'] = pe.value(objective_component)
+
                 ii += 1
             else:
                 print('more than one objective found, only using one')
