@@ -3,4 +3,4 @@ study_spec_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchS
 geographies:
   - expand: MarylandCounties
 study_specs:
-  - costmin_10percentreduction
+  - loadredmax_1milcostbound
