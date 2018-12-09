@@ -25,7 +25,7 @@ if not logger.hasHandlers():
     logger = logging.getLogger(__name__)
 
 
-def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun=False):
+def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=False):
     logprefix = '** Single Trial **: '
 
     mdlhandler = None
@@ -38,10 +38,16 @@ def main(saved_model_file=None, model_modification=None, trial_name=None, dryrun
                     (logprefix, timefor_modelload))
 
     # Make Modification
-    if not not model_modification:
-        modvar = model_modification['variable']
-        varvalue = model_modification['value']
-        varindexer = model_modification['indexer']
+    if not not dictwithtrials:
+        modvar = dictwithtrials['variable']
+        varvalue = dictwithtrials['value']
+
+        varindexer = None
+        try:
+            varindexer = dictwithtrials['indexer']
+            print(f'indexed over: {varindexer}')
+        except KeyError:
+            pass
 
         if not varindexer:
             if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
@@ -126,6 +132,6 @@ if __name__ == '__main__':
 
     # The main function is called.
     sys.exit(main(saved_model_file=opts.saved_model_file,
-                  model_modification=opts.model_modification,
+                  dictwithtrials=opts.model_modification,
                   trial_name=opts.trial_name,
                   dryrun=opts.dryrun))
