@@ -37,12 +37,14 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=Fal
         logger.info('%s model loading (from pickle) done* <- it took %f seconds>' %
                     (logprefix, timefor_modelload))
 
+    modvar = None
+    varvalue = None
+    varindexer = None
     # Make Modification
     if not not dictwithtrials:
         modvar = dictwithtrials['variable']
         varvalue = dictwithtrials['value']
 
-        varindexer = None
         try:
             varindexer = dictwithtrials['indexer']
             print(f'indexed over: {varindexer}')
@@ -89,7 +91,7 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=Fal
                 break
 
         solution_dict['solution_df'][modvar] = varvalue
-        solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
+        # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
 
         outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv")
         solution_dict['solution_df'].to_csv(outputdfpath)
