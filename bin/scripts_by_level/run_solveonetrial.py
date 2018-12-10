@@ -49,7 +49,7 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=Fal
         except KeyError:
             pass
 
-        if not varindexer:
+        if not varindexer or (varindexer == 'None'):
             if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
                                       'setting %s to %s (no index)' %
                                       (modvar, varvalue)):
