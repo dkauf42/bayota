@@ -81,7 +81,7 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=Fal
                 else:
                     for cidxpart in objective_component:
                         if objective_component[cidxpart].active:
-                            solution_dict['solution_df']['solution_objective'] = pe.value(objective_component)
+                            solution_dict['solution_df']['solution_objective'] = pe.value(objective_component[cidxpart])
 
                 ii += 1
             else:
