@@ -4,6 +4,7 @@ import re
 import sys
 import time
 import logging
+import tempfile
 from datetime import datetime
 
 import pyomo.environ as oe
@@ -201,16 +202,60 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
 
         return row
 
-    for line in fileinput.FileInput(options_file_path, inplace=1):
-        parsed = _parse_line(line)
-        if parsed:
-            if parsed['key'] == 'output_file':
-                if not not newoutputfilepath:
-                    line = line.replace(parsed['value'], newoutputfilepath)
-            if parsed['key'] == 'file_print_level':
-                if not not newfileprintlevel:
-                    line = line.replace(parsed['value'], str(newfileprintlevel))
-        sys.stdout.write(line)
+    # Create temporary file read/write
+    with tempfile.NamedTemporaryFile() as t:
+        # Open input file read-only
+        anyfilechange = False
+        with open(options_file_path, 'r') as f:
+            line = f.readline()
+            while line:
+                parsed = _parse_line(line)
+                if parsed:
+                    if parsed['key'] == 'output_file':
+                        if not not newoutputfilepath:
+                            line = line.replace(parsed['value'], newoutputfilepath)
+                            if not anyfilechange:
+                                anyfilechange = True
+                    if parsed['key'] == 'file_print_level':
+                        if not not newfileprintlevel:
+                            line = line.replace(parsed['value'], str(newfileprintlevel))
+                            if not anyfilechange:
+                                anyfilechange = True
+                # Copy input file to temporary file, modifying as we go
+                t.write(line.rstrip() + "\n")
+        t.seek(0)  # Rewind temporary file to beginning
+
+        # Check that there was a difference before modifying file
+        if anyfilechange:
+            with open(options_file_path, 'w') as f:  # Reopen input file writable
+                # Overwriting original file with temporary file contents
+                for line in t:
+                    f.write(line)
+        # Close temporary file, will cause it to be deleted
+
+    # for line in fileinput.FileInput(options_file_path, inplace=1):
+    #     parsed = _parse_line(line)
+    #     if parsed:
+    #         if parsed['key'] == 'output_file':
+    #             if not not newoutputfilepath:
+    #                 line = line.replace(parsed['value'], newoutputfilepath)
+    #         if parsed['key'] == 'file_print_level':
+    #             if not not newfileprintlevel:
+    #                 line = line.replace(parsed['value'], str(newfileprintlevel))
+    #     sys.stdout.write(line)
+
+    # # Check the contents are different before trying to modify
+    # with open(options_file_path, 'r') as f:
+    #     line = f.readline()
+    #     cnt = 1
+    #     while line:
+    #         parsed = _parse_line(line)
+    #         cnt += 1
+    #
+    # if any([key in content for key in wordDict.keys()]):  # check if old strings are found
+    #     with fileinput.FileInput(filename, inplace=True, backup='.bak') as file:
+    #         for line in file:
+    #             print(multipleReplace(line, myDict), end='')
 
 
 def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4):
