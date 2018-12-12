@@ -111,7 +111,7 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
         # Create a task to submit to the queue
         CMD = "srun "
         CMD += f"{move_to_s3_script} " \
-            f"-lp {outputdfpath} " \
+            f"-op {outputdfpath} " \
             f"-dp {_S3BUCKET + destination_name} " \
         # Submit the job
         logger.info(f'Job command is: "{CMD}"')
