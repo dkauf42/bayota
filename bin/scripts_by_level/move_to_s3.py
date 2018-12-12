@@ -25,7 +25,7 @@ def main(original_path, destination_path):
 
     s3 = boto3.client('s3')
     s3.upload_file(Key=destination_path,  # The name of the key to upload to.
-                   Bucket=_S3BUCKET,  # The name of the bucket to upload to.
+                   Bucket='modeling-data.chesapeakebay.net',  # The name of the bucket to upload to.
                    Filename=original_path)  # The path to the file to upload.
 
 
