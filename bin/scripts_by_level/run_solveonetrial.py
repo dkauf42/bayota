@@ -112,11 +112,14 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
         CMD = "srun "
         CMD += f"{move_to_s3_script} " \
             f"-op {outputdfpath} " \
-            f"-dp {_S3BUCKET + destination_name} " \
+            f"-dp {destination_name} " \
         # Submit the job
         logger.info(f'Job command is: "{CMD}"')
+        p1 = None
         if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-            subprocess.Popen([CMD], shell=True)
+            p1 = subprocess.Popen([CMD], shell=True)
+        if notdry(dryrun, logger, '--Dryrun-- Would wait'):
+            p1.wait()
 
 
 def parse_cli_arguments():
