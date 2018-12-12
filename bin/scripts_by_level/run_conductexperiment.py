@@ -26,7 +26,7 @@ if not logger.hasHandlers():
 solve_trial_script = os.path.join(get_scripts_dir(), 'run_solveonetrial.py')
 
 
-def main(experiment_spec_file, saved_model_file=None, dryrun=False):
+def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None, dryrun=False):
     logprefix = '** Single Experiment **: '
     expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
 
@@ -65,6 +65,8 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
     tempstr = 'set' if len(list_of_trialdicts) == 1 else 'sets'
     logger.info(f"{logprefix} {expname} - trial {tempstr} to be conducted: {list_of_trialdicts}")
 
+    solutions_folder_name = expname
+
     # Loop through and start each trial
     trialnum = 0
     p_list = []
@@ -97,6 +99,7 @@ def main(experiment_spec_file, saved_model_file=None, dryrun=False):
             CMD += f"{solve_trial_script} " \
                 f"-sf {saved_model_file} " \
                 f"-tn {'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialstr} " \
+                f"--solutions_folder_name {solutions_folder_name} " \
                 f"-m {modificationstr}"
             # Submit the job
             logger.info(f'Job command is: "{CMD}"')

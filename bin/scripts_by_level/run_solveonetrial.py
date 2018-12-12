@@ -8,6 +8,7 @@ import os
 import sys
 import time
 import logging
+import subprocess
 from argparse import ArgumentParser
 import cloudpickle
 import json
@@ -17,15 +18,19 @@ import pyomo.environ as pe
 from efficiencysubproblem.src.spec_handler import notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
-from bayota_settings.config_script import set_up_logger, get_model_instances_dir, get_output_dir
+from bayota_settings.config_script import set_up_logger, get_model_instances_dir, \
+    get_output_dir, get_scripts_dir
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
     set_up_logger()
     logger = logging.getLogger(__name__)
 
+move_to_s3_script = os.path.join(get_scripts_dir(), 'move_to_s3.py')
+_S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
-def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=False):
+
+def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_folder_name=None, dryrun=False):
     logprefix = '** Single Trial **: '
 
     mdlhandler = None
@@ -93,9 +98,24 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, dryrun=Fal
         solution_dict['solution_df'][modvar] = varvalue
         # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
 
-        outputdfpath = os.path.join(get_output_dir(), f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv")
+        solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
+        os.makedirs(solutions_dir)
+        solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
+        outputdfpath = os.path.join(solutions_dir, solution_name)
         solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
+
+        # Move solution file to s3
+        destination_name = solutions_folder_name + '/' + solution_name
+        # Create a task to submit to the queue
+        CMD = "srun "
+        CMD += f"{move_to_s3_script} " \
+            f"-lp {outputdfpath} " \
+            f"-dp {_S3BUCKET + destination_name} " \
+        # Submit the job
+        logger.info(f'Job command is: "{CMD}"')
+        if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
+            subprocess.Popen([CMD], shell=True)
 
 
 def parse_cli_arguments():
@@ -117,6 +137,9 @@ def parse_cli_arguments():
 
     parser.add_argument("-tn", "--trial_name", dest='trial_name',
                         help="unique name to identify this trial (used for saving results)")
+
+    parser.add_argument("--solutions_folder_name", dest='solutions_folder_name',
+                        help="the name of the folder to create and save the solution files to")
 
     parser.add_argument("-v", "--verbose", dest='verbose',
                         action="count", default=0)
@@ -143,4 +166,5 @@ if __name__ == '__main__':
     sys.exit(main(saved_model_file=opts.saved_model_file,
                   dictwithtrials=opts.model_modification,
                   trial_name=opts.trial_name,
-                  dryrun=opts.dryrun))
+                  dryrun=opts.dryrun,
+                  solutions_folder_name=opts.solutions_folder_name))
