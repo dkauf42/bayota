@@ -1,6 +1,0 @@
-model_spec: calvertMD_costmin
-
-experiments:
-  - costmin_1-10percentreduction
-  - costmin_11-20percentreduction
-  - onlyag_costmin_11-20percent
