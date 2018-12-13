@@ -1,10 +1,10 @@
 # Overview
 
 "BayOTA" (Bay Optimization Tools for Analysis) is a repository of
-optimization and analysis tools created to serve the
-Chesapeake Bay Program (CBP) Partners, as part of the Optimization Tool
+optimization and analysis tools, designed for use by the partners of the
+Chesapeake Bay Program (CBP) as well as the general public as part of the Optimization Tool
 Development Project (EPA-R3-CBP-16-03).
-Specifically, these tools are designed to add functionality to -
+Specifically, these tools extend the functionality of -
 and help users of - CAST (the Chesapeake Bay Assessement Scenario Tool),
 which is the CBP Phase 6 time-averaged watershed model.
 
@@ -38,28 +38,29 @@ bayota
 │   └── cli/
 │   └── jnotebooks/
 │   └── python_scripts/
-│   └── shell_scripts/
-│   └── studies/
+│   └── run_specs/
+│   └── scripts_by_level/
+│   └── shapefiles/
 │
 ├── data                   <- source data CSVs, excel files
 │
-├── CASTJEEVES             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+├── castjeeves             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
 │   ├── __init__.py
 │   └── ...
 │
-├── EFFICIENCYSUBPROBLEM   <- PACKAGE to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+├── efficiencysubproblem   <- PACKAGE to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── SANDBOX                <- PACKAGE for automated generation of valid BMP input files for use with CAST
+├── sandbox                <- PACKAGE for automated generation of valid BMP input files for use with CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── BAYOTA_SETTINGS        <- PACKAGE that configures directory paths (output, graphics, & logging). Contains example config files.
+├── bayota_settings        <- PACKAGE that configures directory paths (output, graphics, & logging). Contains example config files.
 │   ├── __init__.py
 │   └── ...
 │
-├── BAYOTA_UTIL            <- PACKAGE for utility methods that haven't yet found a home elsewhere
+├── bayota_util            <- PACKAGE for utility methods that haven't yet found a home elsewhere
 │   ├── __init__.py
 │   └── ...
 │
@@ -67,6 +68,7 @@ bayota
 ├── MANIFEST.in
 ├── Dockerfile_36
 ├── LICENSE
+├── VERSION
 ```
 
 #### Other paths used by this project
