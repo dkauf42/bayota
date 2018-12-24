@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from bayota_settings.config_script import get_instance_data_dir, get_raw_data_dir
+from bayota_settings.config_script import get_model_instances_dir, get_raw_data_dir
 
 from castjeeves.src.jeeves import Jeeves
 
@@ -29,7 +29,7 @@ class DataHandlerBase:
 
         # Save instance data to file?
         self.save2file = save2file
-        self.instdatadir = get_instance_data_dir()
+        self.instdatadir = get_model_instances_dir()
 
         """ Instance Specifiers """
         baseconditionid = 29

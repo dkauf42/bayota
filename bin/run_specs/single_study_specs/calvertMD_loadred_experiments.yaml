@@ -1,0 +1,4 @@
+model_spec: loadreductionmax
+
+experiments:
+  - loadreductionmax_100000-4mil_total_cost_bound

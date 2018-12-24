@@ -1,0 +1,6 @@
+model_spec: costmin_total_percentreduction
+
+experiments:
+  - costmin_1-10percentreduction
+  - costmin_11-20percentreduction
+  - costmin_1-10percentreduction_noUrbanNMPlanHR

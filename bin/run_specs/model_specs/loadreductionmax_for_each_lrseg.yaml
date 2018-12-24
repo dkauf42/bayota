@@ -1,0 +1,16 @@
+baseyear: 2010
+
+# objective dictionary
+objective:
+  name: Percent_Redution
+  sense: maximize
+  expression: percent_reduction_for_each_lrseg_expr
+
+# constraints list
+constraints:
+  - bound: upper
+    boundparamname: totalcostupperbound
+    expression: total_cost_expr
+
+other_components:
+  - name: Available_Acres_Constraint

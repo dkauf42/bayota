@@ -11,11 +11,15 @@ def get_bayota_version():
         version = pkg_resources.require("bayota")[0].version
         print('bayota_settings.base(): version = %s' % version)
     except pkg_resources.DistributionNotFound:
-        print('pkg_resources error: the "bayota" distribution was not found. Running from source.')
-        with open('VERSION', 'r') as f:
-            for line in f:
-                version = line
-                break
+        print('installed "bayota" pkg-resources not found. Running from source.')
+        try:
+            with open('VERSION', 'r') as f:
+                for line in f:
+                    version = line
+                    break
+        except FileNotFoundError:
+            print("bayota_settings.base.get_bayota_version(): unable to open VERSION file")
+            raise
     return version
 
 
