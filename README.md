@@ -213,7 +213,7 @@ Then, execute one of the following commands.
 
 #### 📓 From a jupyter notebook
 The approach to use in a notebook is the same as the python prompt.\
-Some example notebooks are provided in the bin/ directory.
+Some example notebooks are provided in the bin/jnotebooks/ directory.
 
 # 🚮️ How do I uninstall?
 
