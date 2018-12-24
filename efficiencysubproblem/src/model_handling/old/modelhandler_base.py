@@ -1,4 +1,5 @@
 import pyomo.environ as oe
+# from .model_expressions import generate_expressions
 
 
 class ModelHandlerBase:
@@ -10,10 +11,6 @@ class ModelHandlerBase:
         """ Overridden in Mixins """
         pass
 
-    def _specify_model_original_load(self, model):
-        """ Overridden in Mixins """
-        pass
-
     def _load_model_constraints_other(self, model, datahandler):
         """ Overridden in Mixins """
         pass
@@ -21,6 +18,21 @@ class ModelHandlerBase:
     def _load_model_objective(self, model):
         """ Overridden in Mixins """
         pass
+
+    def _specify_model_original_load(self, model):
+        """ Overridden in Mixins """
+        pass
+
+        # # loading before any new BMPs have been implemented
+        # if geoscale == 'county':
+        #     model.originalload = oe.Param(model.PLTNTS,
+        #                                   initialize=lambda m, p: m.original_load_expr[p])
+        # elif geoscale == 'lrseg':
+        #     model.originalload = oe.Param(model.LRSEGS,
+        #                                   model.PLTNTS,
+        #                                   initialize=lambda m, l, p: m.original_load_for_each_lrseg_expr[l, p])
+        # else:
+        #     raise ValueError('geoscale unrecognized')
 
     @staticmethod
     def _load_model_constraint_availableacres(model):
@@ -30,14 +42,15 @@ class ModelHandlerBase:
                         if (((b, gamma) in model.BMPGRPING) & ((b, lmbda) in model.BMPSRCLINKS))
                         else 0
                         for b in model.BMPS])
-            return (None, temp, model.T[l, lmbda])
+            return None, temp, model.T[l, lmbda]
 
         model.AdditiveBMPSAcreBound = oe.Constraint(model.BMPGRPS,
                                                     model.LRSEGS,
                                                     model.LOADSRCS,
                                                     rule=additive_bmps_acre_bound_rule)
 
-    def build_subproblem_model(self, datahandler):
+    def _define_sets(self, model, datahandler):
+        """ Sets """
 
         # pltnts = datahandler.PLTNTS,
         # counties = datahandler.COUNTIES,
@@ -49,16 +62,7 @@ class ModelHandlerBase:
         # loadsrcs = datahandler.LOADSRCS,
         # bmpsrclinks = datahandler.BMPSRCLINKS,
         # bmpgrpsrclinks = datahandler.BMPGRPSRCLINKS,
-        # c = datahandler.c,
-        # e = datahandler.E,
-        # tau = datahandler.tau,
-        # phi = datahandler.phi,
-        # t = datahandler.T,
-        # totalcostupperbound = datahandler.totalcostupperbound
 
-        model = oe.ConcreteModel()
-
-        """ Sets """
         model.PLTNTS = oe.Set(initialize=datahandler.PLTNTS,
                               ordered=True,
                               doc="""Pollutants (N, P, or S).""")
@@ -75,7 +79,12 @@ class ModelHandlerBase:
         model.BMPSRCLINKS = oe.Set(initialize=datahandler.BMPSRCLINKS, dimen=2)
         model.BMPGRPSRCLINKS = oe.Set(initialize=datahandler.BMPGRPSRCLINKS, dimen=2)
 
+    def _define_params(self, model, datahandler):
         """ Parameters """
+        # c = datahandler.c,
+        # e = datahandler.E,
+        # tau = datahandler.tau,
+        # phi = datahandler.phi,
         model.c = oe.Param(model.BMPS,
                            initialize=datahandler.c,
                            within=oe.NonNegativeReals,
@@ -99,6 +108,27 @@ class ModelHandlerBase:
                            within=oe.NonNegativeReals,
                            doc='total acres available in an lrseg/load source')
 
+    def build_subproblem_model(self, datahandler):
+        # t = datahandler.T,
+        # totalcostupperbound = datahandler.totalcostupperbound
+
+        model = oe.ConcreteModel()
+
+        self._define_sets(model, datahandler)
+
+        """ Variables """
+        model.x = oe.Var(model.BMPS,
+                         model.LRSEGS,
+                         model.LOADSRCS,
+                         within=model.BMPSRCLINKS,
+                         domain=oe.NonNegativeReals,
+                         doc='Amount of each BMP to implement.')
+
+        self._define_params(model, datahandler)
+
+        """ Expressions """
+        model = generate_expressions(model)
+
         self._specify_model_original_load(model)
 
         # # loading before any new BMPs have been implemented
@@ -119,14 +149,6 @@ class ModelHandlerBase:
         # model.totalcostupperbound = oe.Param(initialize=totalcostupperbound,
         #                                      within=oe.NonNegativeReals,
         #                                      mutable=True)
-
-        """ Variables """
-        model.x = oe.Var(model.BMPS,
-                         model.LRSEGS,
-                         model.LOADSRCS,
-                         within=model.BMPSRCLINKS,
-                         domain=oe.NonNegativeReals,
-                         doc='Amount of each BMP to implement.')
 
         """ Constraints """
         self._load_model_constraint_availableacres(model)

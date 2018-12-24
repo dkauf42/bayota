@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The PROJECT_HOME and SLURM_OUTPUT path variables are read from local configuration.
+# The PROJECT_HOME and SLURM_OUTPUT path variables are read_spec from local configuration.
 source ${HOME}/.config/${USER}/bayota_bash_config.con
 echo 'PROJECT_HOME is loaded: ' ${PROJECT_HOME}
 echo 'SLURM_OUTPUT is loaded: ' ${SLURM_OUTPUT}
@@ -17,7 +17,7 @@ else
 fi
 
 
-# The Study specification file is defined and its variables are read.
+# The Study specification file is defined and its variables are read_spec.
 STUDY_SPEC_FILE=${PROJECT_HOME}/bin/studies/${STUDY}.ini
 echo ''
 echo ${STUDY_SPEC_FILE}

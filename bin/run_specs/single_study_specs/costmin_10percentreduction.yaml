@@ -1,0 +1,4 @@
+model_spec: costmin_total_percentreduction
+
+experiments:
+  - costmin_10percentreduction

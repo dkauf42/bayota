@@ -3,19 +3,15 @@ import time
 import logging
 import configparser
 import pandas as pd
-import pkg_resources  # part of setuptools
 from datetime import datetime
 from collections import OrderedDict
 
 import pyomo.environ as oe
 
 from efficiencysubproblem.src.model_handling.interface import get_loaded_model_handler
-from efficiencysubproblem.src.solver_handling.solvehandler import SolveHandler
-from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
+from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
 
-from efficiencysubproblem.config import PROJECT_DIR
-
-from bayota_settings.config_script import get_output_dir, set_up_logger
+from bayota_settings.config_script import get_output_dir, set_up_logger, get_bayota_version
 
 set_up_logger()
 logger = logging.getLogger(__name__)
@@ -60,19 +56,25 @@ class Study:
 
         Definitions
         -----------
-            A Trial is a list of parameter values, 𝑥, that will lead to a
+        [modified from the Google Vizier paper (Golovin et al. 2017)]
+
+            An Iteration is a list of parameter values, 𝑥, that will lead to a
         single evaluation of 𝑓(𝑥). A trial can be “Completed”, which
         means that it has been evaluated and the objective value
         𝑓(𝑥) has been assigned to it, otherwise it is “Pending”.
-        [from the Google Vizier paper (Golovin et al. 2017)]
-        [In other words, each iteration of the solver that calculates a
-        single objective value is a trial]
-            A Run is a single optimization over a feasible space. Each Run
+        [In other words, each iteration of the solver calculates a
+        single objective value]
+
+            A Trial is a single optimization over a feasible space. Each Trial
         contains a configuration describing the feasible space, as well as
-        a set of Trials. It is assumed that 𝑓(𝑥) does not change in the
-        course of a Run.
-            A Study represents a series of one (or multiple) run(s),
-        with the same geography, but different constraints.
+        a set of iterations. It is assumed that 𝑓(𝑥) does not change in the
+        course of a Trial.
+
+            An Experiment is a series of one (or multiple) trial(s),
+        with the same geography (sets) and same objective, but different constraints.
+
+            A Study represents a series of one (or multiple) experiment(s),
+        with the same geography (sets).
         """
 
         self.modelhandler = None
@@ -92,7 +94,7 @@ class Study:
             self.geoscale = config['Defaults']['scale']
             self.geoentities = config['Defaults']['entities']
 
-        version = pkg_resources.require("bayota")[0].version
+        version = get_bayota_version()
         logger.info('----------------------------------------------')
         logger.info('*********** BayOTA version %s *************' % version)
         logger.info('----------------------------------------------\n')
@@ -145,6 +147,9 @@ class Study:
         formattedstr = "time of instantiation:    %s" % str(timestr)
         return formattedstr
 
+    def makemodel_from_file(self, modelspecfile):
+        pass
+
     def go(self, *, constraint, fileprintlevel=4):
         """
         Perform a single run - Solve the problem instance.
@@ -177,8 +182,9 @@ class Study:
         self._set_data_constraint_level(constraint)
 
         if self.objectivetype == 'costmin':
-            solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
-                                                                                             fileprintlevel=fileprintlevel)
+            solver_output_filepath, merged_df, solvetimestamp, feasible_solution = solve_problem_instance(
+                self.modelhandler, mdl,
+                fileprintlevel=fileprintlevel)
             solution_objective = oe.value(mdl.Total_Cost)
             merged_df['solution_objectives'] = oe.value(mdl.Total_Cost)
 
@@ -191,8 +197,9 @@ class Study:
             #                                 oe.value(mdl.originalload['N'])
 
         if self.objectivetype == 'loadreductionmax':
-            solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
-                                                                                             fileprintlevel=fileprintlevel)
+            solver_output_filepath, merged_df, solvetimestamp, feasible_solution = solve_problem_instance(
+                self.modelhandler, mdl,
+                fileprintlevel=fileprintlevel)
             solution_objective = oe.value(mdl.PercentReduction['N'])
             merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
             merged_df['totalcostupperbound'] = oe.value(mdl.totalcostupperbound)  # Label this run in the dataframe
@@ -254,9 +261,10 @@ class Study:
 
                 loopname = ''.join([self.studystr, 'tausequence', str(ii),
                                     '_tau', self.constraintstr])
-                solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
-                                                                                                 output_file_str=loopname,
-                                                                                                 fileprintlevel=fileprintlevel)
+                solver_output_filepath, merged_df, solvetimestamp, feasible_solution = solve_problem_instance(
+                    self.modelhandler, mdl,
+                    output_file_str=loopname,
+                    fileprintlevel=fileprintlevel)
 
                 # merged_df['originalload'] = oe.value(mdl.originalload['N'])
                 # merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
@@ -274,9 +282,10 @@ class Study:
                 logger.info('constraint = %s' % self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
-                solver_output_filepath, merged_df, solvetimestamp, feasible_solution = self._solve_problem_instance(mdl,
-                                                                                                 output_file_str=loopname,
-                                                                                                 fileprintlevel=fileprintlevel)
+                solver_output_filepath, merged_df, solvetimestamp, feasible_solution = solve_problem_instance(
+                    self.modelhandler, mdl,
+                    output_file_str=loopname,
+                    fileprintlevel=fileprintlevel)
 
                 # Save this run's objective value in a list
                 solution_objectives[newconstraint] = oe.value(mdl.PercentReduction['N'])
@@ -302,65 +311,6 @@ class Study:
         alldfs.to_csv(solution_csv_filepath)
 
         return solver_output_filepaths, solution_csv_filepath, alldfs, solution_objectives, feasibility_list
-
-    def _solve_problem_instance(self, mdl, randomstart=False, output_file_str='', fileprintlevel=4):
-        """
-
-        Args:
-            mdl:
-            data:
-            randomstart: If False, than the ipopt default is used.. zero for each variable
-
-        Returns:
-
-        """
-        # ---- Solver details ----
-        localsolver = True
-        solvername = 'ipopt'
-
-        if randomstart:
-            import random
-            # reinitialize the variables
-            for k in mdl.x:
-                mdl.x[k] = round(random.uniform(0, 6000), 2)
-
-        solvetimestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
-
-        solve_handler = SolveHandler(instance=mdl, localsolver=localsolver, solvername=solvername)
-
-        # ---- Output File Name ----
-        if not output_file_str:
-            output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', solvetimestamp, '.iters']))
-        else:
-            output_file_name = os.path.join(PROJECT_DIR, ''.join(['output/output_', output_file_str, '_', solvetimestamp, '.iters']))
-
-        solve_handler.modify_ipopt_options(newoutputfilepath=output_file_name)
-        # ---- Output Level-of-Detail ----
-        # file_print_levels:
-        #   4 for just # of iterations, and final objective, infeas,etc. values
-        #   6 for summary information about all iterations, but not variable values
-        #   8 for variable values at all iterations
-        #   10 for all iterations
-        solve_handler.modify_ipopt_options(newfileprintlevel=fileprintlevel)
-
-        # ---- SOLVE ----
-        get_suffixes = False
-        solved_instance, solved_results, feasible = solve_handler.solve(get_suffixes=get_suffixes)
-
-        # ---- PARSE SOLUTION OUTPUT ----
-        # Parse out only the optimal variable values that are nonzero
-        # nzvnames, nzvvalues = get_nonzero_var_names_and_values(self.instance)
-        solution_handler = SolutionHandler()
-        merged_df = solution_handler.get_nonzero_var_df(solved_instance,
-                                                        addcosttbldata=self.modelhandler.datahandler.costsubtbl)
-        if get_suffixes:
-            # Parse out the Lagrange Multipliers
-            lagrange_df = solution_handler.get_lagrangemult_df(solved_instance)
-            merged_df = lagrange_df.merge(merged_df,
-                                          how='right',
-                                          on=['bmpshortname', 'landriversegment', 'loadsource'])
-
-        return output_file_name, merged_df, solvetimestamp, feasible
 
     def _set_data_constraint_level(self, baseconstraint):
         # Check whether multiple runs are required

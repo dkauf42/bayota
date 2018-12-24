@@ -5,10 +5,27 @@ import pkg_resources
 
 import logging
 
-version = pkg_resources.require("bayota")[0].version
-print('bayota_settings.base(): version = %s' % version)
 
-install_config_path = os.path.join('bayota_settings','install_config.ini')
+def get_bayota_version():
+    try:
+        version = pkg_resources.require("bayota")[0].version
+        print('bayota_settings.base(): version = %s' % version)
+    except pkg_resources.DistributionNotFound:
+        print('installed "bayota" pkg-resources not found. Running from source.')
+        try:
+            with open('VERSION', 'r') as f:
+                for line in f:
+                    version = line
+                    break
+        except FileNotFoundError:
+            print("bayota_settings.base.get_bayota_version(): unable to open VERSION file")
+            raise
+    return version
+
+
+version = get_bayota_version()
+
+install_config_path = os.path.join('bayota_settings', 'install_config.ini')
 
 # The version number is updated in the config file.
 install_config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())

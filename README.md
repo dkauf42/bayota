@@ -1,10 +1,10 @@
 # Overview
 
 "BayOTA" (Bay Optimization Tools for Analysis) is a repository of
-optimization and analysis tools created to serve the
-Chesapeake Bay Program (CBP) Partners, as part of the Optimization Tool
+optimization and analysis tools, designed for use by the partners of the
+Chesapeake Bay Program (CBP) as well as the general public as part of the Optimization Tool
 Development Project (EPA-R3-CBP-16-03).
-Specifically, these tools are designed to add functionality to -
+Specifically, these tools extend the functionality of -
 and help users of - CAST (the Chesapeake Bay Assessement Scenario Tool),
 which is the CBP Phase 6 time-averaged watershed model.
 
@@ -38,28 +38,29 @@ bayota
 │   └── cli/
 │   └── jnotebooks/
 │   └── python_scripts/
-│   └── shell_scripts/
-│   └── studies/
+│   └── run_specs/
+│   └── scripts_by_level/
+│   └── shapefiles/
 │
 ├── data                   <- source data CSVs, excel files
 │
-├── CASTJEEVES             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+├── castjeeves             <- PACKAGE to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
 │   ├── __init__.py
 │   └── ...
 │
-├── EFFICIENCYSUBPROBLEM   <- PACKAGE to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+├── efficiencysubproblem   <- PACKAGE to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── SANDBOX                <- PACKAGE for automated generation of valid BMP input files for use with CAST
+├── sandbox                <- PACKAGE for automated generation of valid BMP input files for use with CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── BAYOTA_SETTINGS        <- PACKAGE that configures directory paths (output, graphics, & logging). Contains example config files.
+├── bayota_settings        <- PACKAGE that configures directory paths (output, graphics, & logging). Contains example config files.
 │   ├── __init__.py
 │   └── ...
 │
-├── BAYOTA_UTIL            <- PACKAGE for utility methods that haven't yet found a home elsewhere
+├── bayota_util            <- PACKAGE for utility methods that haven't yet found a home elsewhere
 │   ├── __init__.py
 │   └── ...
 │
@@ -67,14 +68,17 @@ bayota
 ├── MANIFEST.in
 ├── Dockerfile_36
 ├── LICENSE
+├── VERSION
 ```
 
-#### Other paths used by this project
+#### Other file paths used by this project
 
-(These paths are set during install by the `bayota_settings` package)
+Important filepaths are set (during install) by the `bayota_settings` package.\
+These paths include general output, logging, temporary files, etc.\
+Such filepaths are defined in the following three config files.
 
-***Note:*** *Three config files will be copied into `~/.config/${USER}/` during the first install (or first test run). \
-These files set up local paths and formatting and are central to conducting BayOTA optimization studies.*
+***Note:*** *These three config files will be copied into `~/.config/${USER}/` during the first install (or first test run). \
+These files define local paths (and log formatting) and are required for conducting BayOTA optimization studies.*
 
 - `user_config.ini` specifies output path stems (for stdout, graphics, and logs)
 - `bash_config.con` specifies the path of the project directory.
@@ -159,22 +163,43 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
 
-#### ⌨️ From the command line
-To run the standard bash script:
+Five 'run' scripts are provided.  They provide the ability to run a batch of optimization studies automatically, \
+or with individual steps run separately. They are, in order of their automated execution during a batch submission:
+1) run_batch_of_studies.py
+2) run_single_study.py
+3) run_generatemodel.py
+4) run_conductexperiment.py
+5) run_solveonetrial.py
 
+#### ⌨ From the command line
+First, change directory to the project root (`cd bayota/`).
+
+Then, execute one of the following commands.
+* -d (or --dryrun) argument can be included to only print the commands that would be submitted without running them
+* -h brings up command help
+
+
+***Batch of studies***
 ```
-cd bin/
-
-# set execute permission
-chmod +x bayota
-chmod +x bayota_efficiency.py
-
-# back up to the project root (bayota/)
-cd ..
-
-# run the script (and you can include --daemon argument to detach process and run with no hangup)
-./bin/bayota
+./bin/scripts_by_level/run_batch_of_studies.py -f ./bin/run_specs/batch_study_specs/calvertMD_cost_and_load_objective_experiments.yaml --dryrun
 ```
+***A single study***
+```
+./bin/scripts_by_level/run_single_study.py -g CalvertMD -n calvertMD_cost_experiments --dryrun
+```
+***Generate a study model***
+```
+./bin/scripts_by_level/run_generatemodel.py -g CalvertMD -n costmin_total_percentreduction -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
+```
+***Conduct an experiment***
+```
+./bin/scripts_by_level/run_conductexperiment.py -n ./bin/run_specs/experiment_specs/costmin_1-40percentreduction -sf /Users/Danny/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
+```
+***Solve a single trial***
+```
+./bin/scripts_by_level/run_solveonetrial.py -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle -tn experiment--costmin_1-40percentreduction--_modifiedvar--percent_reduction_minimum--_trial0040 --solutions_folder_name costmin_1-40percentreduction -m '{"variable": "percent_reduction_minimum", "value": 40, "indexer": "N"}' --dryrun
+```
+
 
 #### 🐍 From the python prompt
 
@@ -188,7 +213,7 @@ cd ..
 
 #### 📓 From a jupyter notebook
 The approach to use in a notebook is the same as the python prompt.\
-Some example notebooks are provided in the bin/ directory.
+Some example notebooks are provided in the bin/jnotebooks/ directory.
 
 # 🚮️ How do I uninstall?
 
@@ -232,6 +257,11 @@ Major dependencies:
 * [AMPLPY](https://github.com/ampl/amplpy)
 * [Pandas](https://pandas.pydata.org/)
 * [NumPy](https://www.numpy.org/)
+
+Funding Acknowledgment:
+
+* U.S. Federal Grant EPA-R3-CBP-16-03 -
+"Chesapeake Bay Program Office Fiscal Year 2016 Request for Proposals for Chesapeake Bay Optimization Tool Development"
 
 ## 🎓 License
 GNU General Public License

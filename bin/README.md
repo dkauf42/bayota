@@ -31,8 +31,9 @@ bin
 ├── cli                    <- command line interfaces written in python
 │   └── ...
 │
-├── jnotebooks             <- jupyter notebooks for easy access to optimization studies and results analyses.
-│   └── ...
+├── jnotebooks             <- Jupyter notebooks.
+│   └── ...                   Naming convention is a number (for ordering), the creator's initials,
+│                             and a short `_` delimited description, e.g. `1.0-jqp-initial_data_exploration`.
 │
 ├── python_scripts         <- python scripts for easy access to optimization studies and results analyses.
 │   └── ...
@@ -101,6 +102,14 @@ Then, execute `./bin/shell_scripts/conduct_study.bash`
 #### 📓 From a jupyter notebook
 The approach to use in a notebook is the same as the python prompt.\
 Some example notebooks are provided in the bin/ directory.
+
+They try to follow the guidance of http://pbpython.com/notebook-process.html:
+
+- "A good name for the notebook (as described above)
+- A summary header that describes the project
+- Free form description of the business reason for this notebook. I like to include names, dates and snippets of emails to make sure I remember the context.
+- A list of peoscple/systems where the data originated.
+- I include a simple change log. I find it helpful to record when I started and any major changes along the way. I do not update it with every single change but having some date history is very beneficial."
 
 # 🐛 Troubleshooting & debugging
 

@@ -26,6 +26,15 @@ logfilename = os.path.join(logdir, 'efficiencysubproblem_debug.log')
 #
 
 
+# # Output Path
+# today = datetime.now()
+# if today.hour < 12:
+#     h = "00"
+# else:
+#     h = "12"
+# dirname = os.path.join(outputdir_top_level, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
+
+
 def set_up_logger():
     make_log_config()
 
@@ -33,27 +42,34 @@ def set_up_logger():
                               disable_existing_loggers=False)
 
 
-def get_output_dir():
-    outputdir_top_level = parse_user_config()['output_directories']['general']
-    print('outputdir_top_level is %s' % outputdir_top_level)
+def _make_or_get_user_dir(section, key):
+    dir = parse_user_config()[section][key]
+    os.makedirs(dir, exist_ok=True)
+    return dir
 
-    # # Output Path
-    # today = datetime.now()
-    # if today.hour < 12:
-    #     h = "00"
-    # else:
-    #     h = "12"
-    # dirname = os.path.join(outputdir_top_level, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
-    os.makedirs(outputdir_top_level, exist_ok=True)
-    return outputdir_top_level
+
+def get_output_dir():
+    return _make_or_get_user_dir('output_directories', 'general')
+
+
+def get_scripts_dir():
+    return _make_or_get_user_dir('top_paths', 'scripts')
+
+
+def get_run_specs_dir():
+    return _make_or_get_user_dir('top_paths', 'run_specs_top')
+def get_single_study_specs_dir():
+    return _make_or_get_user_dir('run_specification_directories', 'single_studies')
+def get_batch_studies_specs_dir():
+    return _make_or_get_user_dir('run_specification_directories', 'batch_studies')
+def get_model_specs_dir():
+    return _make_or_get_user_dir('run_specification_directories', 'models')
+def get_experiment_specs_dir():
+    return _make_or_get_user_dir('run_specification_directories', 'experiments')
 
 
 def get_graphics_dir():
-    graphics_dir = parse_user_config()['output_directories']['graphics']
-
-    # dirname = os.path.join(graphics_dir, 'temp_bayota_out_' + today.strftime('%Y%m%d') + h)
-    os.makedirs(graphics_dir, exist_ok=True)
-    return graphics_dir
+    return _make_or_get_user_dir('output_directories', 'graphics')
 
 
 def get_source_csvs_dir():
@@ -73,14 +89,8 @@ def get_raw_data_dir():
 
 
 def get_source_pickles_dir():
-    source_pickles_top_level = parse_user_config()['temp_directories']['source_pickles']
-    os.makedirs(source_pickles_top_level, exist_ok=True)
-
-    return source_pickles_top_level
+    return _make_or_get_user_dir('temp_directories', 'source_pickles')
 
 
-def get_instance_data_dir():
-    instance_data_top_level = parse_user_config()['temp_directories']['model_instances']
-    os.makedirs(instance_data_top_level, exist_ok=True)
-
-    return instance_data_top_level
+def get_model_instances_dir():
+    return _make_or_get_user_dir('temp_directories', 'model_instances')

@@ -1,0 +1,8 @@
+# objective dictionary
+exp_setup:
+  - none
+
+# constraints list (key names must match model parameter names)
+trials:
+  - variable: totalcostupperbound
+    value: [1000000]

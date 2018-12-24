@@ -86,6 +86,8 @@ install_requires = ['pytest',
                     'pandas',
                     'pyomo',
                     'matplotlib',
+                    'pyyaml',
+                    'cloudpickle'
                     ]
 
 setup(name='bayota',
