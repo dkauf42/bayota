@@ -203,7 +203,7 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
         return row
 
     # Create temporary file read/write
-    with tempfile.NamedTemporaryFile() as t:
+    with tempfile.NamedTemporaryFile(mode='w+') as t:
         # Open input file read-only
         anyfilechange = False
         with open(options_file_path, 'r') as f:
@@ -223,6 +223,7 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
                                 anyfilechange = True
                 # Copy input file to temporary file, modifying as we go
                 t.write(line.rstrip() + "\n")
+                line = f.readline()
         t.seek(0)  # Rewind temporary file to beginning
 
         # Check that there was a difference before modifying file
