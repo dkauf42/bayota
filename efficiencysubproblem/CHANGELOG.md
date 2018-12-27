@@ -15,6 +15,13 @@ Each version should:
 
 ## Current Development
 ### Added
+### Changed
+### Fixed
+
+## v0.0.1-alpha.0.3 - 2018-10-23
+### Added
+- git source control to this project under 'BayOTA'
+- renamed top folder from 'OptSandbox' to 'sandbox'
 - top-level definitions file to specify root directory paths
 - error raised for unrecognized objective type passed to Study class
 - test cases for load reduction objective problem
@@ -32,8 +39,3 @@ eliminating the duplication of code for each type of objective/geoscale combinat
 - updated import paths
 - resolved filenotfound error with ouput directory
 - add posix path check in setup.py for windows OS
-
-## v0.0.1 - 2018-09-17
-### Added
-- git source control to this project under 'BayOTA'
-- renamed top folder from 'OptSandbox' to 'sandbox'

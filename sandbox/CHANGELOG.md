@@ -15,6 +15,11 @@ Each version should:
 
 ## [Current Development]
 ### Added
+### Changed
+### Fixed
+
+## v0.0.1-alpha.0.3 - 2018-10-23
+### Added
 - Ability to recognize running on AWS, and if so, read/write to s3
 - Reorder the CAST-input table headers priot to writing to file
 - Add ScenarioName column to CAST-input tables when lhs sampling
@@ -29,28 +34,23 @@ Each version should:
 - Use appropriate Base Condition (from year and name metadata info)
 - add posix path check in setup.py for windows OS
 
-## [0.3.0] - 2018-04-27
+## v0.0.1-alpha.0.2 - 2018-09-14
 ### Added
 - Ability to generate scenarios with a latin hypercube sampling method
-
-### Changed
-- improved application structure for better stability and maintenance
-
-### Fixed
-- Included TblBmpCategory.csv in directory with source data
-
-## [0.2.0] - 2018-04-18
-### Added
 - This changelog.md file
 - Two data subdirectories for holding the source and metadata .csv files
 
 ### Changed
+- improved application structure for better stability and maintenance
 - Use .csv files loaded from the CAST SQL Server database instead
 of the .xlsx files from CAST website.
+
+### Fixed
+- Included TblBmpCategory.csv in directory with source data
 
 ### Removed
 - unnecessary TblQuery modules
 
-## [0.1.0] - 2018-01-05
+## v0.0.1-alpha.0.1 - 2018-01-05
 ### Added
 - git source control to this project

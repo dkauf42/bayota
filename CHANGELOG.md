@@ -15,6 +15,14 @@ Each version should:
 
 ## Current Development
 ### Added
+### Changed
+### Fixed
+
+## v0.0.1-alpha.0.3 - 2018-10-23
+### Added
+- This release initializes the newly combined repository
+(merging code originally generated in the "OptSandbox",
+     "OptEfficiencySubProblem", and "CastJeeves" project repositories)
 - add bash script to run efficiency model counties as a daemon process
 
 ### Changed
@@ -25,8 +33,3 @@ to the project root level
 root level config/ folder
 
 ### Fixed
-
-## v0.0.1 - 2018-09-17
-- This release initializes the repository
-(merging code originally generated in the "OptSandbox",
-     "OptEfficiencySubProblem", and "CastJeeves" project repositories)
