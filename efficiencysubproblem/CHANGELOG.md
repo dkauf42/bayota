@@ -13,12 +13,32 @@ Each version should:
 *Fixed* for any bug fixes.
 *Security* to invite users to upgrade in case of vulnerabilities.
 
-## Current Development
+## [Current Development]
 ### Added
+- add modify_model method that will do specified experiment setup actions
+- include 'results' in solution dictionary from a basic solve
 ### Changed
 ### Fixed
 
-## v0.0.1-alpha.0.3 - 2018-10-23
+## [0.0.1-alpha.0.4] -- 2018-12-01
+### Added
+- add matplotlib function in vis module for plotting load reduction curve
+- add text to 'doc' arguments for model components
+- add 'backend' argument to plotting methods
+- add module with functions to read yaml specification files
+- add model_generator, expressions, and components to replace modelhandler
+- add utils.py file to model handling module
+### Changed
+- add offending value string to error message in datahandler for unacceptable objectives or geographies
+- updated test methods for Study class
+- use separately-defined Pyomo Expression components to build model instances
+- move solving methods to top of solvehandler (out of SolveHandler class)
+### Removed
+- remove multirun attribute variable from Study class
+### Fixed
+- check infeasible constraints only if solver termination condition is 'not feasible'
+
+## [0.0.1-alpha.0.3] -- 2018-10-23
 ### Added
 - git source control to this project under 'BayOTA'
 - renamed top folder from 'OptSandbox' to 'sandbox'

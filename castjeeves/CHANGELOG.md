@@ -18,7 +18,13 @@ Each version should:
 #### Changed
 #### Fixed
 
-## v0.0.1-alpha.0.3 - 2018-10-23
+## [0.0.1-alpha.0.4] -- 2018-12-01
+#### Added
+#### Changed
+#### Fixed
+- temp directory is now created if it doesn't exist
+
+## [0.0.1-alpha.0.3] -- 2018-10-23
 #### Added
 - include config file in castjeeves directory
 
@@ -33,7 +39,7 @@ Each version should:
 - removed docs folder in castjeeves that was a duplicate of sandbox docs
 - add posix path check in setup.py for windows OS
 
-## v0.0.1-alpha.0.2 - 2018-09-14
+## [0.0.1-alpha.0.2] -- 2018-09-14
 #### Added
 - included yaml file for Gitlab CI testing
 - added pytest-cov to test runner to generate coverage report
@@ -46,6 +52,6 @@ Each version should:
 - removed usage/dependency of 'tqdm' package
 
 
-## v0.0.1-alpha.0.1 - 2018-01-05
+## [0.0.1-alpha.0.1] -- 2018-01-05
 #### Added
 - git source control to this project
