@@ -3,5 +3,5 @@ study_spec_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchS
 geographies:
   - CalvertMD
 study_specs:
-  - calvertMD_cost_experiments
-  - calvertMD_loadred_experiments
+  - costmin_1-40_experiments
+  - loadred_hundredthou-4mil_experiments

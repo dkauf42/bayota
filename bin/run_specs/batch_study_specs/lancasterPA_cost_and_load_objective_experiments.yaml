@@ -1,0 +1,7 @@
+
+study_spec_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/single_study_specs'
+geographies:
+  - LancasterPA
+study_specs:
+  - costmin_1-40_experiments
+  - loadred_hundredthou-4mil_experiments

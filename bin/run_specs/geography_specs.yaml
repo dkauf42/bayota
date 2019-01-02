@@ -1,6 +1,9 @@
 AdamsPA:
   scale: county
   entities: 'Adams, PA'
+LancasterPA:
+  scale: county
+  entities: 'Lancaster, PA'
 
 NorthumberlandWV:
   scale: county
