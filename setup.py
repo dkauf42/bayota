@@ -80,14 +80,15 @@ with open('VERSION') as version_file:
 with open('LICENSE') as f:
     license_text = f.read()
 
-install_requires = ['pytest',
-                    'amplpy',
+install_requires = ['pyomo',
+                    'cloudpickle',
+                    'pyyaml',
                     'numpy',
                     'pandas',
-                    'pyomo',
                     'matplotlib',
-                    'pyyaml',
-                    'cloudpickle'
+                    'pytest'
+                    #'pyutilib',
+                    #'amplpy',
                     ]
 
 setup(name='bayota',
