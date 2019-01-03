@@ -33,6 +33,7 @@ def main(study_spec_file, geography_name, dryrun=False):
     studydict = read_spec(study_spec_file)
     model_spec_name = studydict['model_spec']
     EXPERIMENTS = studydict['experiments']
+    baseloadingfilename = studydict['base_loading_file_name']
 
     saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
                                                    'modelinstance_' + model_spec_name + '_' + geography_name + '.pickle')
@@ -47,10 +48,12 @@ def main(study_spec_file, geography_name, dryrun=False):
     logger.info(f"{logprefix} Model Generation - Geography = {geography_name}")
     logger.info(f"{logprefix} Model Generation - Spec name = {model_spec_name}")
     logger.info(f"{logprefix} Model Generation - Experiments = {EXPERIMENTS}")
+    logger.info(f"{logprefix} Model Generation - base_loading_file_name = {baseloadingfilename}")
 
     # Create a task to submit to the queue
     CMD = "srun "
-    CMD += f"{model_generator_script} -g {geography_name} -n {model_spec_name} -sf {saved_model_file_for_this_study}"
+    CMD += f"{model_generator_script} -g {geography_name} -n {model_spec_name} " \
+           f"-sf {saved_model_file_for_this_study} -bl {baseloadingfilename}"
     # Submit the job
     p1 = None
     logger.info(f'Job command is: "{CMD}"')

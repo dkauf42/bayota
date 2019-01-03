@@ -1,4 +1,6 @@
 model_spec: loadreductionmax
 
+base_loading_file_name: 2010NoActionLoads.csv
+
 experiments:
   - loadreductionmax_100000-4mil_total_cost_bound

@@ -12,13 +12,14 @@ logger = logging.getLogger('root')
 
 
 class ModelHandlerBase:
-    def __init__(self, model_spec_file, geoscale, geoentities, savedata2file):
+    def __init__(self, model_spec_file, geoscale, geoentities, savedata2file, baseloadingfilename=''):
 
         self.specdict = read_spec(model_spec_file)
 
         self.datahandler = get_loaded_data_handler_no_objective(geoscale=geoscale,
                                                                 geoentities=[geoentities],
-                                                                savedata2file=savedata2file)
+                                                                savedata2file=savedata2file,
+                                                                baseloadingfilename=baseloadingfilename)
 
         model = pe.ConcreteModel()
         self._define_sets(model, self.datahandler, geoscale=geoscale)

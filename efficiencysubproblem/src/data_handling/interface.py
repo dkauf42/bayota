@@ -4,11 +4,11 @@ from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 
 
-def get_loaded_data_handler_no_objective(geoscale, geoentities, savedata2file=False):
+def get_loaded_data_handler_no_objective(geoscale, geoentities, savedata2file=False, baseloadingfilename=''):
     if geoscale == 'lrseg':
-        datahandler = DataHandlerLrseg(savedata2file=savedata2file, geoentities=geoentities)
+        datahandler = DataHandlerLrseg(save2file=savedata2file, geolist=geoentities, baseloadingfilename=baseloadingfilename)
     elif geoscale == 'county':
-        datahandler = DataHandlerCounty(savedata2file=savedata2file, geoentities=geoentities)
+        datahandler = DataHandlerCounty(save2file=savedata2file, geolist=geoentities, baseloadingfilename=baseloadingfilename)
     else:
         raise ValueError('<%s> is an unrecognized "geoscale".' % geoscale)
 
@@ -16,19 +16,19 @@ def get_loaded_data_handler_no_objective(geoscale, geoentities, savedata2file=Fa
 
 
 class DataHandlerLrseg(DataLrsegGeoentitiesMixin, DataHandlerBase):
-    def __init__(self, savedata2file=None, geoentities=None):
-        DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
+    def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
+        DataHandlerBase.__init__(self, save2file=save2file, geolist=geolist, baseloadingfilename=baseloadingfilename)
 
 
 class DataHandlerCounty(DataCountyGeoentitiesMixin, DataHandlerBase):
-    def __init__(self, savedata2file=None, geoentities=None):
+    def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
 
         self.countysetlist = []
         self.countysetidlist = []
         self.COUNTIES = []
         self.CNTYLRSEGLINKS = []
 
-        DataHandlerBase.__init__(self, save2file=savedata2file, geolist=geoentities)
+        DataHandlerBase.__init__(self, save2file=save2file, geolist=geolist, baseloadingfilename=baseloadingfilename)
 
 
 # def get_loaded_data_handler(objectivetype, geoscale, geoentities, savedata2file=False):

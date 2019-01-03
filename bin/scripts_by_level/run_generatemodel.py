@@ -27,7 +27,7 @@ if not logger.hasHandlers():
 geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
 
 
-def main(model_spec_file, geography_name, saved_model_file=None, dryrun=False):
+def main(model_spec_file, geography_name, saved_model_file=None, dryrun=False, baseloadingfilename=''):
     geodict = read_spec(geo_spec_file)[geography_name]
 
     if not saved_model_file:
@@ -48,7 +48,8 @@ def main(model_spec_file, geography_name, saved_model_file=None, dryrun=False):
         mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
                                                       geoscale=geodict['scale'],
                                                       geoentities=geodict['entities'],
-                                                      savedata2file=False)
+                                                      savedata2file=False,
+                                                      baseloadingfilename=baseloadingfilename)
 
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
@@ -81,6 +82,9 @@ def parse_cli_arguments():
     one_or_the_other_savemodel.add_argument("-sf", "--saved_model_filepath", dest="saved_model_filepath",
                                             help="path for the saved (pickled) model file")
 
+    parser.add_argument("-bl", "--base_loading", dest="baseloadingfilename",
+                        help="name of the base loading file to read from data/raw")
+
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without sending any slurm commands")
 
@@ -109,4 +113,6 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(opts.model_spec_file, opts.geography_name, saved_model_file=opts.saved_model_file, dryrun=opts.dryrun))
+    sys.exit(main(opts.model_spec_file, opts.geography_name,
+                  saved_model_file=opts.saved_model_file, dryrun=opts.dryrun,
+                  baseloadingfilename=opts.baseloadingfilename))
