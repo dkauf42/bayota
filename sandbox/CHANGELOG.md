@@ -13,12 +13,12 @@ Each version should:
 *Fixed* for any bug fixes.
 *Security* to invite users to upgrade in case of vulnerabilities.
 
-## [0.0.1-alpha.0.4] -- 2018-12-01
+## [0.0alpha1.dev4] -- 2018-12-01
 ### Added
 ### Changed
 ### Fixed
 
-## [0.0.1-alpha.0.3] -- 2018-10-23
+## [0.0alpha1.dev3] -- 2018-10-23
 ### Added
 - Ability to recognize running on AWS, and if so, read/write to s3
 - Reorder the CAST-input table headers priot to writing to file
@@ -34,7 +34,7 @@ Each version should:
 - Use appropriate Base Condition (from year and name metadata info)
 - add posix path check in setup.py for windows OS
 
-## [0.0.1-alpha.0.2] -- 2018-09-14
+## [0.0alpha1.dev2] -- 2018-09-14
 ### Added
 - Ability to generate scenarios with a latin hypercube sampling method
 - This changelog.md file
@@ -51,6 +51,6 @@ of the .xlsx files from CAST website.
 ### Removed
 - unnecessary TblQuery modules
 
-## [0.0.1-alpha.0.1] -- 2018-01-05
+## [0.0alpha1.dev1] -- 2018-01-05
 ### Added
 - git source control to this project
