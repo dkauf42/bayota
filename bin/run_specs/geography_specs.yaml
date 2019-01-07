@@ -9,6 +9,7 @@ NorthumberlandWV:
   scale: county
   entities: 'Northumberland, VA'
 
+# Maryland counties
 AlleganyMD:
   scale: county
   entities: 'Allegany, MD'
@@ -81,6 +82,16 @@ WicomicoMD:
 WorcesterMD:
   scale: county
   entities: 'Worcester, MD'
+
+# Virginia counties
+AccomackVA:
+  scale: county
+  entities: 'Accomack, VA'
+NorthamptonVA:
+    scale: county
+    entities: 'Northampton, VA'
+
+
 
 Accomack_plus_Northhampton:
   scale: region
