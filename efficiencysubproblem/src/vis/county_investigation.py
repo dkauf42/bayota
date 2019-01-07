@@ -15,10 +15,9 @@ from bokeh.models import HoverTool, LogColorMapper, ColorBar, LogTicker, GeoJSON
 
 lrsegshapefiledir = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/data/shapefiles/P6Beta_v3_LRSegs_081516_Albers'
 
-output_dir = '/Users/Danny/bayota_ws_0.0.1/output/general/solutions_calvertMD_cost_and_load_20181210'
+# default namelist file = 'calvertMD_solutionlist_20181210.txt'
 
-
-def investigate_county(county_name='', state_abbrev=''):
+def investigate_county(county_name='', state_abbrev='', namelistfile=''):
     """
 
     Args:
@@ -31,7 +30,7 @@ def investigate_county(county_name='', state_abbrev=''):
     lrsegs_geometries_df, county_lrsegs_geometries_df = load_shapefiles(county_name=county_name,
                                                                         state_abbrev=state_abbrev)
 
-    df, df_single_row_for_each_solution = load_solution_data(namelistfile='calvertMD_solutionlist_20181210.txt')
+    df, df_single_row_for_each_solution = load_solution_data(namelistfile=namelistfile)
 
     # Merge Geodata with Solution data
     merged = county_lrsegs_geometries_df.set_index('LndRvrSeg').join(df.set_index('landriversegment'))
@@ -118,9 +117,9 @@ def load_solution_data(namelistfile=''):
     Returns:
 
     """
-    filelist = os.path.join(output_dir, namelistfile)
+    output_dir = os.path.dirname(namelistfile)
 
-    with open(os.path.join(output_dir, namelistfile)) as f:
+    with open(namelistfile) as f:
         content = f.readlines()
     filelist = [os.path.join(output_dir, x.strip()) for x in content]
 
