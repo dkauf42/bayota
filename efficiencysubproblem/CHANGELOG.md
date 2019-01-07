@@ -20,7 +20,7 @@ Each version should:
 ### Changed
 ### Fixed
 
-## [0.0alpha1.dev4] -- 2018-12-01
+## [0.0a1.dev4] -- 2018-12-01
 ### Added
 - add matplotlib function in vis module for plotting load reduction curve
 - add text to 'doc' arguments for model components
@@ -38,7 +38,7 @@ Each version should:
 ### Fixed
 - check infeasible constraints only if solver termination condition is 'not feasible'
 
-## [0.0alpha1.dev3] -- 2018-10-23
+## [0.0a1.dev3] -- 2018-10-23
 ### Added
 - git source control to this project under 'BayOTA'
 - renamed top folder from 'OptSandbox' to 'sandbox'

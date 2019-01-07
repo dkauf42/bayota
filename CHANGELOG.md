@@ -28,7 +28,7 @@ Each version should:
 - fix the check for whether any model modifications were specified
 - check whether Objective is 'indexed' Pyomo component when putting results into dictionary
 
-## [0.0alpha1.dev4] -- 2018-12-01
+## [0.0a1.dev4] -- 2018-12-01
 ### Added
 - add manifest file to ensure configuration example, data, and version files are included in build
 - add scripts for running optimization studies using SLURM workload manager on the AWS CBPO server, "Cloudfish"
@@ -63,7 +63,7 @@ Each version should:
 - remove unused shell script file 'run_slurm.sh'
 - remove Jeeves attribute from Datahandler so it can be pickled with a smaller file size
 
-## [0.0alpha1.dev3] -- 2018-10-23
+## [0.0a1.dev3] -- 2018-10-23
 ### Added
 - This release initializes the newly combined repository
 (merging code originally generated in the "OptSandbox",
