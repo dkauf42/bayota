@@ -1,3 +1,5 @@
 recursive-include data *.csv
 include VERSION
 include bayota_settings/install_config.ini
+include bayota_settings/example_logging_config.cfg
+include bayota_settings/example_bash_config.con
