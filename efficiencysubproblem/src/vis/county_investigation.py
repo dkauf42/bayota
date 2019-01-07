@@ -27,8 +27,10 @@ def investigate_county(county_name='', state_abbrev='', namelistfile=''):
     Returns:
 
     """
-    lrsegs_geometries_df, county_lrsegs_geometries_df = load_shapefiles(county_name=county_name,
-                                                                        state_abbrev=state_abbrev)
+    lrsegs_geometries_df,\
+    county_lrsegs_geometries_df,\
+    whole_county_geometry_df,\
+    county_bounds = load_shapefiles(county_name=county_name, state_abbrev=state_abbrev)
 
     df, df_single_row_for_each_solution = load_solution_data(namelistfile=namelistfile)
 
