@@ -9,7 +9,6 @@ import logging
 def get_bayota_version():
     try:
         version = pkg_resources.require("bayota")[0].version
-        print('bayota_settings.base(): version = %s' % version)
     except pkg_resources.DistributionNotFound:
         print('installed "bayota" pkg-resources not found. Running from source.')
         try:
@@ -20,30 +19,37 @@ def get_bayota_version():
         except FileNotFoundError:
             print("bayota_settings.base.get_bayota_version(): unable to open VERSION file")
             raise
+    print('bayota_settings.base.get_bayota_version(): version = %s' % version)
     return version
 
 
 version = get_bayota_version()
 
-install_config_path = os.path.join('bayota_settings', 'install_config.ini')
+
+def get_example_config_path():
+    example_config_path = pkg_resources.resource_filename('bayota_settings', 'install_config.ini')
+    return example_config_path
+
 
 # The version number is updated in the config file.
-install_config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
-install_config.read(install_config_path)
-install_config.set("version", "version", str(version))
+parser = configparser.ConfigParser(os.environ,
+                                   interpolation=configparser.ExtendedInterpolation(),
+                                   comment_prefixes=('#', ';'))
+parser.read(get_example_config_path())
+parser.set("version", "version", str(version))
 
-ws_dir = install_config['top_paths']['workspace_top']
+ws_dir = parser['top_paths']['workspace_top']
 print('bayota_settings.base(): ws_dir = %s' % ws_dir)
 os.makedirs(ws_dir, exist_ok=True)
 
-config_dir = install_config['workspace_directories']['config']
-user_config = install_config['other_config']['userconfigcopy']
-bash_config = install_config['other_config']['bashconfig']
-log_config = install_config['other_config']['logconfig']
+config_dir = parser['workspace_directories']['config']
+user_config = parser['other_config']['userconfigcopy']
+bash_config = parser['other_config']['bashconfig']
+log_config = parser['other_config']['logconfig']
 
-default_output_dir = install_config['output_directories']['general']
-default_graphics_dir = install_config['output_directories']['graphics']
-default_logging_dir = install_config['output_directories']['logs']
+default_output_dir = parser['output_directories']['general']
+default_graphics_dir = parser['output_directories']['graphics']
+default_logging_dir = parser['output_directories']['logs']
 
 path_to_examples = os.path.dirname(__file__)
 example_user_config = os.path.join(path_to_examples, "install_config.ini")
