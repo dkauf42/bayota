@@ -13,7 +13,7 @@ from argparse import ArgumentParser
 import cloudpickle
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
-from efficiencysubproblem.src.model_handling.utils import modify_model
+from efficiencysubproblem.src.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
 
 from bayota_settings.config_script import set_up_logger, get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir
@@ -40,25 +40,12 @@ def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None
             logger.info(f"{logprefix} {expname} - no model modifications made")
         else:
             # Load the model object
-            mdlhandler = None
-            if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
-                starttime_modelload = time.time()  # Wall time - clock starts.
-                with open(saved_model_file, "rb") as f:
-                    mdlhandler = cloudpickle.load(f)
-                timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
-                logger.info(
-                    f"{logprefix} {expname} - model load (from pickle) done* <- it took {timefor_modelload} seconds>")
+            mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun)
 
             for a in actionlist:
                 modify_model(mdlhandler.model, actiondict=a)
 
-            # Save the modified model object
-            if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % saved_model_file):
-                starttime_modelsave = time.time()  # Wall time - clock starts.
-                with open(saved_model_file, "wb") as f:
-                    cloudpickle.dump(mdlhandler, f)
-                timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
-                logger.info(f"{logprefix} {expname} - model pickling done* <- it took {timefor_modelsave} seconds>")
+            save_model_pickle(mdlhandler=mdlhandler, savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
 
     # Log the list of trial sets that will be conducted for this experiment
     list_of_trialdicts = read_spec(experiment_spec_file)['trials']

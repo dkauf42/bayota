@@ -18,6 +18,8 @@ import pyomo.environ as pe
 from efficiencysubproblem.src.spec_handler import notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
+from efficiencysubproblem.src.model_handling.utils import load_model_pickle
+
 from bayota_settings.config_script import set_up_logger, get_model_instances_dir, \
     get_output_dir, get_scripts_dir
 
@@ -33,14 +35,7 @@ _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_folder_name=None, dryrun=False):
     logprefix = '** Single Trial **: '
 
-    mdlhandler = None
-    if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % saved_model_file):
-        starttime_modelload = time.time()  # Wall time - clock starts.
-        with open(saved_model_file, "rb") as f:
-            mdlhandler = cloudpickle.load(f)
-        timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
-        logger.info('%s model loading (from pickle) done* <- it took %f seconds>' %
-                    (logprefix, timefor_modelload))
+    mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
 
     modvar = None
     varvalue = None

@@ -9,11 +9,11 @@ import sys
 import time
 import logging
 from argparse import ArgumentParser
-import cloudpickle
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
 from efficiencysubproblem.src.model_handling import model_generator
+from efficiencysubproblem.src.model_handling.utils import save_model_pickle
 
 from bayota_settings.config_script import set_up_logger, get_model_specs_dir,\
     get_run_specs_dir, get_model_instances_dir
@@ -54,12 +54,7 @@ def main(model_spec_file, geography_name, saved_model_file=None, dryrun=False, b
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
-    if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % savepath):
-        starttime_modelsave = time.time()  # Wall time - clock starts.
-        with open(savepath, "wb") as f:
-            cloudpickle.dump(mdlhandler, f)
-        timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
-        logger.info('*model pickling done* <- it took %f seconds>' % timefor_modelsave)
+    save_model_pickle(mdlhandler=mdlhandler, savepath=savepath, dryrun=dryrun)
 
 
 def parse_cli_arguments():

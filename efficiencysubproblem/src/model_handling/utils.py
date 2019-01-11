@@ -1,5 +1,9 @@
+import time
+import cloudpickle
 import pyomo.environ as pe
 from itertools import compress
+
+from efficiencysubproblem.src.spec_handler import notdry
 
 import logging
 logger = logging.getLogger('root')
@@ -44,3 +48,25 @@ def modify_model(model, actiondict=None):
             logger.info('model_handling.util.modify_model(): '
                         '%d values matching the index <%s> were fixed to %d' %
                         (ii, idxval, fix_value))
+
+
+def save_model_pickle(mdlhandler, savepath, dryrun=False, logprefix=''):
+    # Save the model handler object
+    if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % savepath):
+        starttime_modelsave = time.time()  # Wall time - clock starts.
+        with open(savepath, "wb") as f:
+            cloudpickle.dump(mdlhandler, f)
+        timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
+        logger.info(f"*{logprefix} - model pickling done* <- it took {timefor_modelsave} seconds>")
+
+
+def load_model_pickle(savepath, dryrun=False, logprefix=''):
+    mdlhandler = None
+    if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % savepath):
+        starttime_modelload = time.time()  # Wall time - clock starts.
+        with open(savepath, "rb") as f:
+            mdlhandler = cloudpickle.load(f)
+        timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
+        logger.info(
+            f"*{logprefix} - model load (from pickle) done* <- it took {timefor_modelload} seconds>")
+    return mdlhandler
