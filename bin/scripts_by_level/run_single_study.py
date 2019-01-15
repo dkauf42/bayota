@@ -97,7 +97,7 @@ def parse_cli_arguments():
                         help="name for a geography defined in geography_specs.yaml")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
-                        help="run through the script without sending any slurm commands")
+                        help="run through the script without triggering any other scripts")
 
     opts = parser.parse_args()
 

@@ -114,7 +114,7 @@ def parse_cli_arguments():
                                             help="path for the saved (pickled) model file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
-                        help="run through the script without sending any slurm commands")
+                        help="run through the script without triggering any other scripts")
 
     parser.add_argument("-v", "--verbose", dest='verbose',
                         action="count", default=0)

@@ -81,7 +81,7 @@ def parse_cli_arguments():
                         help="name of the base loading file to read from data/raw")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
-                        help="run through the script without sending any slurm commands")
+                        help="run through the script without triggering any other scripts")
 
     parser.add_argument("-v", "--verbose", dest='verbose',
                         action="count", default=0)

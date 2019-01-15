@@ -132,7 +132,10 @@ def parse_cli_arguments():
                         help="modifications to be made to the model after loading and before solving trial instance")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
-                        help="run through the script without sending any slurm commands")
+                        help="run through the script without triggering any other scripts")
+
+    parser.add_argument("--no_slurm", action='store_true',
+                        help="don't use AWS or slurm facilities")
 
     parser.add_argument("-tn", "--trial_name", dest='trial_name',
                         help="unique name to identify this trial (used for saving results)")
