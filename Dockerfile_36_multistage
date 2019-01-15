@@ -21,6 +21,13 @@
 #  Delete/remove existing image <by Image ID> listed in "docker images"
 #     >> docker rmi <imageID>
 #     >> docker rmi ef9a50d6e1a2
+#
+#
+#  Test commands to pass to docker container:
+#    -- Generate a model:
+#     >> docker run -it <imageID> ./bin/scripts_by_level/run_generatemodel.py -g CalvertMD -n costmin_total_percentreduction -sf ~/bayota_ws_0.0a1.dev4/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle -bl 2010NoActionLoads.csv
+#    -- Solve a model trial:
+#     >> docker run -it <imageID> ./bin/scripts_by_level/run_conductexperiment.py -n /root/bayota/bin/run_specs/experiment_specs/costmin_1-40percentreduction -sf /root/bayota_ws_0.0a1.dev4/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle
 
 
 # ######################################
