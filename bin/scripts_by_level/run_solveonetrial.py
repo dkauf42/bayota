@@ -102,7 +102,7 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
         logger.info(f"<Solution written to: {outputdfpath}>")
 
         # Move solution file to s3
-        destination_name = solutions_folder_name + '/' + solution_name
+        destination_name = 'optimization' + '/' + solutions_folder_name + '/' + solution_name
         # Create a task to submit to the queue
         CMD = "srun "
         CMD += f"{move_to_s3_script} " \
