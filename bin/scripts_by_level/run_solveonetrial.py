@@ -32,7 +32,8 @@ move_to_s3_script = os.path.join(get_scripts_dir(), 'move_to_s3.py')
 _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 
-def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_folder_name=None, dryrun=False):
+def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_folder_name=None,
+         dryrun=False, no_s3=False):
     logprefix = '** Single Trial **: '
 
     mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
@@ -101,20 +102,23 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
         solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
 
-        # Move solution file to s3
-        destination_name = 'optimization' + '/' + solutions_folder_name + '/' + solution_name
-        # Create a task to submit to the queue
-        CMD = "srun "
-        CMD += f"{move_to_s3_script} " \
-            f"-op {outputdfpath} " \
-            f"-dp {destination_name} " \
-        # Submit the job
-        logger.info(f'Job command is: "{CMD}"')
-        p1 = None
-        if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-            p1 = subprocess.Popen([CMD], shell=True)
-        if notdry(dryrun, logger, '--Dryrun-- Would wait'):
-            p1.wait()
+        if not no_s3:
+            pass
+        else:
+            # Move solution file to s3
+            destination_name = 'optimization' + '/' + solutions_folder_name + '/' + solution_name
+            # Create a task to submit to the queue
+            CMD = "srun "
+            CMD += f"{move_to_s3_script} " \
+                f"-op {outputdfpath} " \
+                f"-dp {destination_name} " \
+            # Submit the job
+            logger.info(f'Job command is: "{CMD}"')
+            p1 = None
+            if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
+                p1 = subprocess.Popen([CMD], shell=True)
+            if notdry(dryrun, logger, '--Dryrun-- Would wait'):
+                p1.wait()
 
 
 def parse_cli_arguments():
@@ -134,8 +138,8 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
-    parser.add_argument("--no_slurm", action='store_true',
-                        help="don't use AWS or slurm facilities")
+    parser.add_argument("--no_s3", action='store_true',
+                        help="don't move files to AWS S3 buckets")
 
     parser.add_argument("-tn", "--trial_name", dest='trial_name',
                         help="unique name to identify this trial (used for saving results)")
@@ -169,4 +173,5 @@ if __name__ == '__main__':
                   dictwithtrials=opts.model_modification,
                   trial_name=opts.trial_name,
                   dryrun=opts.dryrun,
+                  no_s3=opts.no_s3,
                   solutions_folder_name=opts.solutions_folder_name))
