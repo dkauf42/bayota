@@ -141,4 +141,6 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(opts.experiment_spec_file, saved_model_file=opts.saved_model_file, dryrun=opts.dryrun))
+    sys.exit(main(opts.experiment_spec_file,
+                  saved_model_file=opts.saved_model_file,
+                  dryrun=opts.dryrun))
