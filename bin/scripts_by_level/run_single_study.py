@@ -27,7 +27,8 @@ model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
 experiment_script = os.path.join(get_scripts_dir(), 'run_conductexperiment.py')
 
 
-def main(study_spec_file, geography_name, dryrun=False):
+def main(study_spec_file, geography_name,
+         dryrun=False, no_slurm=False):
     logprefix = '** Single Study **: '
 
     studydict = read_spec(study_spec_file)
@@ -50,10 +51,12 @@ def main(study_spec_file, geography_name, dryrun=False):
     logger.info(f"{logprefix} Model Generation - Experiments = {EXPERIMENTS}")
     logger.info(f"{logprefix} Model Generation - base_loading_file_name = {baseloadingfilename}")
 
-    # Create a task to submit to the queue
-    CMD = "srun "
-    CMD += f"{model_generator_script} -g {geography_name} -n {model_spec_name} " \
-           f"-sf {saved_model_file_for_this_study} -bl {baseloadingfilename}"
+    CMD = f"{model_generator_script} -g {geography_name} -n {model_spec_name} " \
+          f"-sf {saved_model_file_for_this_study} -bl {baseloadingfilename}"
+    if not no_slurm:
+        # Create a task to submit to the queue
+        CMD = "srun " + CMD
+
     # Submit the job
     p1 = None
     logger.info(f'Job command is: "{CMD}"')
@@ -67,9 +70,12 @@ def main(study_spec_file, geography_name, dryrun=False):
         logger.info(f"{logprefix} Exp. #{ii+1}: {exp}")
 
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
-        # Create a task to submit to the queue
-        CMD = "srun "
-        CMD += f"{experiment_script} -n {expspec_file} -sf {saved_model_file_for_this_study}"
+
+        CMD = f"{experiment_script} -n {expspec_file} -sf {saved_model_file_for_this_study}"
+        if not no_slurm:
+            # Create a task to submit to the queue
+            CMD = "srun " + CMD
+
         # Submit the job
         p1 = None
         logger.info(f'Job command is: "{CMD}"')
@@ -99,6 +105,9 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
+    parser.add_argument("--no_slurm", action='store_true',
+                        help="don't use AWS or slurm facilities")
+
     opts = parser.parse_args()
 
     if not opts.study_spec_filepath:  # study name was specified
@@ -112,4 +121,5 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    sys.exit(main(opts.study_spec_file, opts.geography_name, dryrun=opts.dryrun))
+    sys.exit(main(opts.study_spec_file, opts.geography_name,
+                  dryrun=opts.dryrun, no_slurm=opts.no_slurm))

@@ -26,7 +26,8 @@ if not logger.hasHandlers():
 solve_trial_script = os.path.join(get_scripts_dir(), 'run_solveonetrial.py')
 
 
-def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None, dryrun=False):
+def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None,
+         dryrun=False, no_slurm=False):
     logprefix = '** Single Experiment **: '
     expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
 
@@ -81,13 +82,16 @@ def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None
             modificationstr = f"\'{{\"variable\": \"{modvar}\", " \
                               f"\"value\": {vi}, " \
                               f"\"indexer\": \"{varindexer}\"}}\'"
-            # Create a task to submit to the queue
-            CMD = "srun "
-            CMD += f"{solve_trial_script} " \
+
+            CMD = f"{solve_trial_script} " \
                 f"-sf {saved_model_file} " \
                 f"-tn {'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialstr} " \
                 f"--solutions_folder_name {solutions_folder_name} " \
                 f"-m {modificationstr}"
+            if not no_slurm:
+                # Create a task to submit to the queue
+                CMD = "srun " + CMD
+
             # Submit the job
             logger.info(f'Job command is: "{CMD}"')
             if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
@@ -116,6 +120,9 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
+    parser.add_argument("--no_slurm", action='store_true',
+                        help="don't use AWS or slurm facilities")
+
     parser.add_argument("-v", "--verbose", dest='verbose',
                         action="count", default=0)
 
@@ -143,4 +150,5 @@ if __name__ == '__main__':
     # The main function is called.
     sys.exit(main(opts.experiment_spec_file,
                   saved_model_file=opts.saved_model_file,
-                  dryrun=opts.dryrun))
+                  dryrun=opts.dryrun,
+                  no_slurm=opts.no_slurm))

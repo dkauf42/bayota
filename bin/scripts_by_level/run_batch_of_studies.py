@@ -24,7 +24,7 @@ if not logger.hasHandlers():
 geo_expansion_file = os.path.join(get_run_specs_dir(), 'geography_expansions.yaml')
 
 
-def main(batch_spec_file, dryrun=False):
+def main(batch_spec_file, dryrun=False, no_slurm=False):
     batchdict = read_spec(batch_spec_file)
 
     version = get_bayota_version()
@@ -62,14 +62,16 @@ def main(batch_spec_file, dryrun=False):
         geoname = sp[0]
         studyspecname = sp[1]
         spname = geoname+'_'+studyspecname
-        # Create a job to submit to the HPC with sbatch
-        CMD = "sbatch "
-        CMD += f"--job-name={spname} "
-        CMD += f"--nice={PRIORITY} "
-        CMD += f"--nodes={NUMNODES} "  # nodes requested
-        CMD += f"--output={SLURM_OUTPUT} "
-        CMD += "--time=01:00:00 "  # time requested in hour:minute:second
-        CMD += f"{single_study_script} -g {geoname} -n {studyspecname}"
+
+        CMD = f"{single_study_script} -g {geoname} -n {studyspecname}"
+        if not no_slurm:
+            # Create a job to submit to the HPC with sbatch
+            sbatch_opts = f"--job-name={spname} " \
+                          f"--nice={PRIORITY} " \
+                          f"--nodes={NUMNODES} " \
+                          f"--output={SLURM_OUTPUT} " \
+                          f"--time=01:00:00 " # time requested in hour:minute:second
+            CMD = "sbatch " + sbatch_opts + CMD
 
         # Submit the job
         logger.info(f'Job command is: "{CMD}"')
@@ -91,6 +93,9 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
+    parser.add_argument("--no_slurm", action='store_true',
+                        help="don't use AWS or slurm facilities")
+
     opts = parser.parse_args()
 
     if not opts.batch_spec_filepath:  # name was specified
@@ -104,4 +109,5 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    sys.exit(main(opts.batch_spec_file, dryrun=opts.dryrun))
+    sys.exit(main(opts.batch_spec_file,
+                  dryrun=opts.dryrun, no_slurm=opts.no_slurm))
