@@ -61,8 +61,9 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
 
     for sp in study_pairs:
         geoname = sp[0]
+        filesafegeostring = geoname.replace(' ', '').replace(',', '')
         studyspecname = sp[1]
-        spname = geoname+'_'+studyspecname
+        spname = filesafegeostring+'_'+studyspecname
 
         # Generate a control file with a unique identifier (uuid4)
         dct = {"geography_scale": geo_scale, "geography_entity": geoname, "study_spec": studyspecname}
