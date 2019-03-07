@@ -27,33 +27,52 @@ if not logger.hasHandlers():
 geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
 
 
-def main(model_spec_file, geography_name, saved_model_file=None, dryrun=False, baseloadingfilename=''):
-    geodict = read_spec(geo_spec_file)[geography_name]
+def main(model_spec_file, geography_name, control_file=None,
+         saved_model_file=None, dryrun=False, baseloadingfilename=''):
+
+    logger.info('----------------------------------------------')
+    logger.info('************** Model Generation **************')
+    logger.info('----------------------------------------------')
+
+    if not not control_file:
+        control_dict = read_spec(control_file)
+        model_spec_file = os.path.join(get_model_specs_dir(), control_dict['model_spec'] + '.yaml')
+        geography_scale = control_dict['geography_scale']
+        geography_entity = control_dict['geography_entity']
+        saved_model_file = control_dict['saved_model_file_for_this_study']
+        baseloadingfilename = control_dict['base_loading_file_name']
+
+        try:
+            del control_dict["testing"]
+        except KeyError:
+            print("Key 'testing' not found")
+
+        logger.info('Geographies specification: %s' % geography_entity)
+    else:
+        geodict = read_spec(geo_spec_file)[geography_name]
+        geography_scale = geodict['scale']
+        geography_entity = geodict['entities']
+        logger.info('Geographies specification: %s' % geodict)
 
     if not saved_model_file:
         savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
     else:
         savepath = saved_model_file
 
-    logger.info('----------------------------------------------')
-    logger.info('************** Model Generation **************')
-    logger.info('----------------------------------------------')
-
-    logger.info('Geographies specification: %s' % geodict)
-
     mdlhandler = None
     if notdry(dryrun, logger, '--Dryrun-- Would generate model'):
         starttime_modelinstantiation = time.time()  # Wall time - clock starts.
 
         mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
-                                                      geoscale=geodict['scale'],
-                                                      geoentities=geodict['entities'],
+                                                      geoscale=geography_scale.lower(),
+                                                      geoentities=geography_entity,
                                                       savedata2file=False,
                                                       baseloadingfilename=baseloadingfilename)
 
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
+    aksjhgd
     save_model_pickle(mdlhandler=mdlhandler, savepath=savepath, dryrun=dryrun)
 
 
@@ -67,6 +86,8 @@ def parse_cli_arguments():
                                   help="name for this model, which should match the model specification file")
     one_or_the_other.add_argument("-f", "--model_spec_filepath", dest="model_spec_filepath", default=None,
                                   help="path for this model's specification file")
+    one_or_the_other.add_argument("-cf", "--control_filepath", dest="control_filepath", default=None,
+                                  help="path for this study's control file")
 
     parser.add_argument("-g", "--geography", dest="geography_name",
                         help="name for a geography defined in geography_specs.yaml")
@@ -88,17 +109,21 @@ def parse_cli_arguments():
 
     opts = parser.parse_args()
 
-    # MODEL SPEC
-    if not opts.model_spec_filepath:  # name was specified
-        opts.model_spec_file = os.path.join(get_model_specs_dir(), opts.model_name + '.yaml')
-    else:  # filepath was specified
-        opts.model_spec_file = opts.model_spec_filepath
+    if not opts.control_filepath: # control file was not specified
+        # MODEL SPEC
+        if not opts.model_spec_filepath:  # name was specified
+            opts.model_spec_file = os.path.join(get_model_specs_dir(), opts.model_name + '.yaml')
+        else:  # filepath was specified
+            opts.model_spec_file = opts.model_spec_filepath
 
-    # MODEL SAVE FILE
-    if not opts.saved_model_filepath:  # name was specified
-        opts.saved_model_file = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
-    else:  # filepath was specified
-        opts.saved_model_file = opts.saved_model_filepath
+        # MODEL SAVE FILE
+        if not opts.saved_model_filepath:  # name was specified
+            opts.saved_model_file = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
+        else:  # filepath was specified
+            opts.saved_model_file = opts.saved_model_filepath
+    else:
+        opts.model_spec_file = None
+        opts.saved_model_file = None
 
     print(opts)
     return opts
@@ -108,6 +133,6 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(opts.model_spec_file, opts.geography_name,
+    sys.exit(main(opts.model_spec_file, opts.geography_name, control_file=opts.control_filepath,
                   saved_model_file=opts.saved_model_file, dryrun=opts.dryrun,
                   baseloadingfilename=opts.baseloadingfilename))

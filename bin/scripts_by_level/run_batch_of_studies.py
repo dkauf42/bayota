@@ -7,6 +7,8 @@ Example usage command:
 
 import os
 import sys
+import uuid
+import yaml
 import logging
 import itertools
 import subprocess
@@ -32,24 +34,26 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
 
     version = get_bayota_version()
 
+    logger.info('----------------------------------------------')
+    logger.info('*********** BayOTA version %s *************' % version)
+    logger.info('************** Batch of studies **************')
+    logger.info('----------------------------------------------')
+
     # Process geographies, and expand any if necessary
     geo_scale = batchdict['geography_scale']
     areas = jeeves.geo.geonames_from_geotypename(geotype=geo_scale)
     strpattern = batchdict['geography_entities']['strmatch']
     GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
 
+    # Get study specification file names
     STUDIES = batchdict['study_specs']
-    study_pairs = list(itertools.product(GEOS, STUDIES))
-
-    logger.info('----------------------------------------------')
-    logger.info('*********** BayOTA version %s *************' % version)
-    logger.info('************** Batch of studies **************')
-    logger.info('----------------------------------------------')
+    study_pairs = list(itertools.product(GEOAREAS, STUDIES))
 
     tempstr = 'study' if len(study_pairs) == 1 else 'studies'
     logger.info('%d %s to be conducted: %s' %
                 (len(study_pairs), tempstr, study_pairs))
 
+    # Set SLURM parameters
     NUMNODES = 1
     PRIORITY = 5000
     SLURM_OUTPUT = 'slurm_out'
@@ -60,7 +64,13 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
         studyspecname = sp[1]
         spname = geoname+'_'+studyspecname
 
-        CMD = f"{single_study_script} -g {geoname} -n {studyspecname}"
+        # Generate a control file with a unique identifier (uuid4)
+        dct = {"geography_scale": geo_scale, "geography_entity": geoname, "study_spec": studyspecname}
+        unique_control_file = os.path.join(get_control_dir(), 'batch_con_' + str(uuid.uuid4()) + '.yaml')
+        with open(unique_control_file, "w") as f:
+            yaml.dump(dct, f, default_flow_style=False)
+
+        CMD = f"{single_study_script} -cf {unique_control_file}"
         if not no_slurm:
             # Create a job to submit to the HPC with sbatch
             sbatch_opts = f"--job-name={spname} " \
@@ -69,6 +79,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
                           f"--output={SLURM_OUTPUT} " \
                           f"--time=01:00:00 " # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD
+        else: CMD = CMD + " --no_slurm"
 
         # Submit the job
         logger.info(f'Job command is: "{CMD}"')
@@ -96,7 +107,7 @@ def parse_cli_arguments():
     opts = parser.parse_args()
 
     if not opts.batch_spec_filepath:  # name was specified
-        opts.batch_spec_file = os.path.join('study_model_specs', opts.batch_name + '.yaml')
+        opts.batch_spec_file = os.path.join(get_run_specs_dir(), 'batch_study_specs', opts.batch_name + '.yaml')
     else:  # filepath was specified
         opts.batch_spec_file = opts.batch_spec_filepath
 
