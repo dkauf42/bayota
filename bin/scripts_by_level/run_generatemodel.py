@@ -42,11 +42,6 @@ def main(model_spec_file, geography_name, control_file=None,
         saved_model_file = control_dict['saved_model_file_for_this_study']
         baseloadingfilename = control_dict['base_loading_file_name']
 
-        try:
-            del control_dict["testing"]
-        except KeyError:
-            print("Key 'testing' not found")
-
         logger.info('Geographies specification: %s' % geography_entity)
     else:
         geodict = read_spec(geo_spec_file)[geography_name]

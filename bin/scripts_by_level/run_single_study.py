@@ -45,10 +45,8 @@ def main(study_spec_file, geography_name, control_file=None,
 
         study_spec_file = os.path.join(get_single_study_specs_dir(), control_dict['study_spec'] + '.yaml')
         geography_name = control_dict['geography_entity']
-        try:
-            del control_dict["testing"]
-        except KeyError:
-            print("Key 'testing' not found")
+    else:
+        control_dict = dict()
 
     # read from study specification file (and add those entries to the unique control file)
     studydict = read_spec(study_spec_file)
