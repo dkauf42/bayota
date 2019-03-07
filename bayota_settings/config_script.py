@@ -56,6 +56,10 @@ def get_scripts_dir():
     return _make_or_get_user_dir('top_paths', 'scripts')
 
 
+def get_control_dir():
+    return _make_or_get_user_dir('workspace_directories', 'control')
+
+
 def get_run_specs_dir():
     return _make_or_get_user_dir('top_paths', 'run_specs_top')
 def get_single_study_specs_dir():
