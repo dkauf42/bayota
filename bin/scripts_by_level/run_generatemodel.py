@@ -72,7 +72,6 @@ def main(model_spec_file, geography_name, control_file=None,
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
-    aksjhgd
     save_model_pickle(mdlhandler=mdlhandler, savepath=savepath, dryrun=dryrun)
 
 
