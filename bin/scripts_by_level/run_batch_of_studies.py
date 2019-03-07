@@ -14,7 +14,8 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from bayota_settings.config_script import set_up_logger, get_bayota_version, \
-    get_scripts_dir, get_run_specs_dir
+    get_scripts_dir, get_run_specs_dir, get_control_dir
+from castjeeves.src.jeeves import Jeeves
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -23,6 +24,8 @@ if not logger.hasHandlers():
 
 geo_expansion_file = os.path.join(get_run_specs_dir(), 'geography_expansions.yaml')
 
+jeeves = Jeeves()
+
 
 def main(batch_spec_file, dryrun=False, no_slurm=False):
     batchdict = read_spec(batch_spec_file)
@@ -30,16 +33,10 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
     version = get_bayota_version()
 
     # Process geographies, and expand any if necessary
-    GEOS = batchdict['geographies']
-    expansiondict = read_spec(geo_expansion_file)
-    expandedGEOS = []
-    for g in GEOS:
-        if isinstance(g, dict):  # check if GEOS are expansions
-            expansion_name = g['expand']
-            expandedGEOS = expandedGEOS + expansiondict[expansion_name]
-        else:
-            expandedGEOS.append(g)
-    GEOS = expandedGEOS
+    geo_scale = batchdict['geography_scale']
+    areas = jeeves.geo.geonames_from_geotypename(geotype=geo_scale)
+    strpattern = batchdict['geography_entities']['strmatch']
+    GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
 
     STUDIES = batchdict['study_specs']
     study_pairs = list(itertools.product(GEOS, STUDIES))
