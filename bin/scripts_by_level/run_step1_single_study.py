@@ -7,6 +7,7 @@ Example usage command:
 
 import os
 import sys
+import uuid
 import yaml
 import logging
 import subprocess
@@ -96,13 +97,19 @@ def main(study_spec_file, geography_name, control_file=None,
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
         expactiondict = read_spec(expspec_file + '.yaml')
 
-        # The experiment details are added to the 'study' control file
-        control_dict['experiment' + str(ii)] = expactiondict
-        with open(control_file, "w") as f:
+        # Generate an experiment control file with a unique identifier (uuid4), by adding onto the study control file
+        unique_control_file = os.path.join(get_control_dir(), 'step3_experiment_control_' + str(uuid.uuid4()) + '.yaml')
+        try:
+            del control_dict["experiments"]
+        except KeyError:
+            logger.info("Key 'experiments' not found")
+        control_dict['experiment_file'] = expspec_file
+        control_dict['experiment'] = expactiondict
+        with open(unique_control_file, "w") as f:
             yaml.safe_dump(control_dict, f, default_flow_style=False)
 
         # Create a job to submit to the queue
-        CMD = f"{experiment_script} -n {expspec_file} -sf {saved_model_file_for_this_study}"
+        CMD = f"{experiment_script}  -cf {unique_control_file}"
         if not no_slurm:
             CMD = "srun " + CMD
         else:
@@ -144,16 +151,14 @@ def parse_cli_arguments():
 
     opts = parser.parse_args()
 
-    if not opts.study_spec_filepath:
-        if not opts.study_name:  # control file was specified
-            controldict = read_spec(opts.control_filepath)
-            opts.study_spec_file = os.path.join(get_single_study_specs_dir(),
-                                                controldict['study_spec'] + '.yaml')
-            opts.geography_name = controldict['geography_entity']
-        else:  # study name was specified
-            opts.study_spec_file = os.path.join(get_single_study_specs_dir(), opts.study_name + '.yaml')
-    else:  # study filepath was specified
-        opts.study_spec_file = opts.study_spec_filepath
+    if not not opts.control_filepath:
+        controldict = read_spec(opts.control_filepath)
+        opts.study_spec_file = os.path.join(get_single_study_specs_dir(),
+                                            controldict['study_spec'] + '.yaml')
+        opts.geography_name = controldict['geography_entity']
+    else:
+        if not opts.study_spec_filepath:  # name was specified instead
+            opts.study_spec_filepath = os.path.join(get_single_study_specs_dir(), opts.study_name + '.yaml')
 
     return opts
 
@@ -161,5 +166,6 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    sys.exit(main(opts.study_spec_file, opts.geography_name, control_file=opts.control_filepath,
+    sys.exit(main(opts.study_spec_file, opts.geography_name,
+                  control_file=opts.control_filepath,
                   dryrun=opts.dryrun, no_slurm=opts.no_slurm))

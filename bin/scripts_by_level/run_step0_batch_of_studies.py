@@ -118,9 +118,7 @@ def parse_cli_arguments():
     opts = parser.parse_args()
 
     if not opts.batch_spec_filepath:  # name was specified
-        opts.batch_spec_file = os.path.join(get_run_specs_dir(), 'batch_study_specs', opts.batch_name + '.yaml')
-    else:  # filepath was specified
-        opts.batch_spec_file = opts.batch_spec_filepath
+        opts.batch_spec_filepath = os.path.join(get_run_specs_dir(), 'batch_study_specs', opts.batch_name + '.yaml')
 
     return opts
 
@@ -128,5 +126,5 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    sys.exit(main(opts.batch_spec_file,
+    sys.exit(main(opts.batch_spec_filepath,
                   dryrun=opts.dryrun, no_slurm=opts.no_slurm))

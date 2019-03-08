@@ -6,16 +6,14 @@ Example usage command:
 """
 import os
 import sys
-import time
 import logging
 import subprocess
 from argparse import ArgumentParser
-import cloudpickle
 import json
 
 import pyomo.environ as pe
 
-from efficiencysubproblem.src.spec_handler import notdry
+from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.solver_handling import solvehandler
 
 from efficiencysubproblem.src.model_handling.utils import load_model_pickle
@@ -32,9 +30,26 @@ move_to_s3_script = os.path.join(get_scripts_dir(), 'move_to_s3.py')
 _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 
-def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_folder_name=None,
-         dryrun=False, no_s3=False, no_slurm=False):
+def main(saved_model_file=None, model_modification_string=None, trial_name=None,
+         control_file=None, solutions_folder_name=None, dryrun=False, no_s3=False, no_slurm=False):
     logprefix = '** Single Trial **: '
+
+    # Read the trial control file
+    if not not control_file:
+        control_dict = read_spec(control_file)
+
+        # convert modification string into a proper dictionary
+        model_modification_string = control_dict['trial']['modification'].lstrip('\'').rstrip('\'')
+
+        no_s3 = not bool(control_dict['control_options']['move_solution_to_s3'])
+        trial_name = control_dict['trial']['trial_name']
+        saved_model_file = control_dict['saved_model_file_for_this_study']
+        solutions_folder_name = control_dict['trial']['solutions_folder_name']
+    else:
+        pass
+
+    # convert modification string into a proper dictionary
+    dictwithtrials = json.loads(model_modification_string)
 
     mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
 
@@ -65,7 +80,7 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
 
     modelname = os.path.splitext(os.path.basename(saved_model_file))[0]
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(),
-                                f"solution_model--{modelname}--_{trial_name}_<timestamp>.csv")
+                                                    f"solution_model--{modelname}--_{trial_name}_<timestamp>.csv")
     if notdry(dryrun, logger, '--Dryrun-- Would run trial and save outputdf at: %s' %
                               notreal_notimestamp_outputdfpath):
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
@@ -132,13 +147,15 @@ def parse_cli_arguments():
     parser = ArgumentParser()
 
     # Arguments for top-level
-    one_or_the_other_savemodel = parser.add_mutually_exclusive_group()
-    one_or_the_other_savemodel.add_argument("-sn", "--saved_model_name", dest="saved_model_name",
+    one_or_the_other = parser.add_mutually_exclusive_group()
+    one_or_the_other.add_argument("-sn", "--saved_model_name", dest="saved_model_name",
                                             help="name for the saved (pickled) model file")
-    one_or_the_other_savemodel.add_argument("-sf", "--saved_model_filepath", dest="saved_model_filepath",
+    one_or_the_other.add_argument("-sf", "--saved_model_filepath", dest="saved_model_filepath",
                                             help="path for the saved (pickled) model file")
+    one_or_the_other.add_argument("-cf", "--control_filepath", dest="control_filepath", default=None,
+                                  help="path for this study's control file")
 
-    parser.add_argument("-m", "--model_modification", dest='model_modification',
+    parser.add_argument("-m", "--model_modification_string", dest='model_modification_string',
                         help="modifications to be made to the model after loading and before solving trial instance")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
@@ -161,14 +178,12 @@ def parse_cli_arguments():
 
     opts = parser.parse_args()
 
-    # MODEL SAVE FILE
-    if not opts.saved_model_filepath:  # name was specified
-        opts.saved_model_file = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
-    else:  # filepath was specified
-        opts.saved_model_file = opts.saved_model_filepath
-
-    # convert modification string into a proper dictionary
-    opts.model_modification = json.loads(opts.model_modification)
+    if not not opts.control_filepath:
+        pass
+    else:
+        # MODEL SAVE FILE
+        if not opts.saved_model_filepath:  # name was specified instead
+            opts.saved_model_filepath = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
 
     print(opts)
     return opts
@@ -178,8 +193,9 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(saved_model_file=opts.saved_model_file,
-                  dictwithtrials=opts.model_modification,
+    sys.exit(main(saved_model_file=opts.saved_model_filepath,
+                  model_modification_string=opts.model_modification_string,
+                  control_file=opts.control_filepath,
                   trial_name=opts.trial_name,
                   dryrun=opts.dryrun,
                   no_s3=opts.no_s3,
