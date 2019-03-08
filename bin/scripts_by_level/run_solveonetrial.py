@@ -102,7 +102,7 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
         solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
 
-        if not no_s3:
+        if no_s3:
             pass
         else:
             # Move solution file to s3
