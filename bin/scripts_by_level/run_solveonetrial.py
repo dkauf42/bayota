@@ -68,7 +68,8 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
                                 f"solution_model--{modelname}--_{trial_name}_<timestamp>.csv")
     if notdry(dryrun, logger, '--Dryrun-- Would run trial and save outputdf at: %s' %
                               notreal_notimestamp_outputdfpath):
-        solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model, )
+        solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
+                                                 translate_to_cast_format=True)
         logger.info(f"{logprefix} Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
                     f"<Solution feasible? --> {solution_dict['feasible']}> ")
