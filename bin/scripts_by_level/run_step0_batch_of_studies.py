@@ -36,17 +36,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
     logger.info('************** Batch of studies **************')
     logger.info('----------------------------------------------')
 
-    batchdict = read_spec(batch_spec_file)
-
-    # Process geographies, and expand any if necessary
-    geo_scale = batchdict['geography_scale']
-    areas = jeeves.geo.geonames_from_geotypename(geotype=geo_scale)
-    strpattern = batchdict['geography_entities']['strmatch']
-    GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
-
-    # Get study specification file names
-    STUDIES = batchdict['study_specs']
-    study_pairs = list(itertools.product(GEOAREAS, STUDIES))
+    geo_scale, study_pairs, control_options = read_batch_spec_file(batch_spec_file)
 
     tempstr = 'study' if len(study_pairs) == 1 else 'studies'
     logger.info('%d %s to be conducted: %s' %
@@ -65,14 +55,15 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
         spname = filesafegeostring+'_'+studyspecname
 
         # Generate a control file with a unique identifier (uuid4)
-        dct = {"geography_scale": geo_scale, "geography_entity": geoname, "study_spec": studyspecname}
+        dct = {"geography_scale": geo_scale, "geography_entity": geoname,
+               "study_spec": studyspecname, "control_options": control_options}
         unique_control_file = os.path.join(get_control_dir(), 'step1_study_control_' + str(uuid.uuid4()) + '.yaml')
         with open(unique_control_file, "w") as f:
-            yaml.dump(dct, f, default_flow_style=False)
+            yaml.safe_dump(dct, f, default_flow_style=False)
 
+        # Create a job to submit to the queue
         CMD = f"{single_study_script} -cf {unique_control_file}"
         if not no_slurm:
-            # Create a job to submit to the HPC with sbatch
             sbatch_opts = f"--job-name={spname} " \
                           f"--nice={PRIORITY} " \
                           f"--nodes={NUMNODES} " \
@@ -88,6 +79,25 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
             subprocess.Popen([CMD], shell=True)
 
     return 0  # a clean, no-issue, exit
+
+
+def read_batch_spec_file(batch_spec_file):
+    batchdict = read_spec(batch_spec_file)
+
+    # Process geographies, and expand any (by matching string pattern) if necessary
+    geo_scale = batchdict['geography_scale']
+    areas = jeeves.geo.geonames_from_geotypename(geotype=geo_scale)
+    strpattern = batchdict['geography_entities']['strmatch']
+    GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
+
+    # Get study specification file names
+    STUDIES = batchdict['study_specs']
+    study_pairs = list(itertools.product(GEOAREAS, STUDIES))
+
+    # read other options
+    control_options = batchdict['control_options']
+
+    return geo_scale, study_pairs, control_options
 
 
 def parse_cli_arguments():
