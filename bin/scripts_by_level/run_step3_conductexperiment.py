@@ -83,13 +83,13 @@ def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None
                               f"\"value\": {vi}, " \
                               f"\"indexer\": \"{varindexer}\"}}\'"
 
+            # Create a job to submit to the queue
             CMD = f"{solve_trial_script} " \
                 f"-sf {saved_model_file} " \
                 f"-tn {'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialstr} " \
                 f"--solutions_folder_name {solutions_folder_name} " \
                 f"-m {modificationstr}"
             if not no_slurm:
-                # Create a task to submit to the queue
                 CMD = "srun " + CMD
             else:
                 CMD = CMD + " --no_slurm"
