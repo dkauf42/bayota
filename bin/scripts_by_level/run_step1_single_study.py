@@ -34,12 +34,12 @@ def main(study_spec_file, geography_name, control_file=None,
     logprefix = '** Single Study **: '
 
     version = get_bayota_version()
-
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)
     logger.info('*************** Single Study *****************')
     logger.info('----------------------------------------------')
 
+    # Read the study control file
     if not not control_file:
         control_dict = read_spec(control_file)
 
@@ -65,9 +65,9 @@ def main(study_spec_file, geography_name, control_file=None,
                                                    'modelinstance_' + model_spec_name + '_' + filesafegeostring + '.pickle')
     control_dict['saved_model_file_for_this_study'] = saved_model_file_for_this_study
 
-    # Write (or replace existing) control file with updated dictionary entries
+    # Write (or replace existing) study control file with updated dictionary entries
     with open(control_file, "w") as f:
-        yaml.dump(control_dict, f, default_flow_style=False)
+        yaml.safe_dump(control_dict, f, default_flow_style=False)
 
     logger.info(f"{logprefix} Model Generation - Geography = {geography_name}")
     logger.info(f"{logprefix} Model Generation - Spec name = {model_spec_name}")
@@ -94,10 +94,16 @@ def main(study_spec_file, geography_name, control_file=None,
         logger.info(f"{logprefix} Exp. #{ii+1}: {exp}")
 
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
+        expactiondict = read_spec(expspec_file + '.yaml')
 
+        # The experiment details are added to the 'study' control file
+        control_dict['experiment' + str(ii)] = expactiondict
+        with open(control_file, "w") as f:
+            yaml.safe_dump(control_dict, f, default_flow_style=False)
+
+        # Create a job to submit to the queue
         CMD = f"{experiment_script} -n {expspec_file} -sf {saved_model_file_for_this_study}"
         if not no_slurm:
-            # Create a task to submit to the queue
             CMD = "srun " + CMD
         else:
             CMD = CMD + " --no_slurm"
