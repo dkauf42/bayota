@@ -91,6 +91,8 @@ def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None
             if not no_slurm:
                 # Create a task to submit to the queue
                 CMD = "srun " + CMD
+            else:
+                CMD = CMD + " --no_slurm"
 
             # Submit the job
             logger.info(f'Job command is: "{CMD}"')

@@ -80,7 +80,8 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
                           f"--output={SLURM_OUTPUT} " \
                           f"--time=01:00:00 " # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD
-        else: CMD = CMD + " --no_slurm"
+        else:
+            CMD = CMD + " --no_slurm"
 
         # Submit the job
         logger.info(f'Job command is: "{CMD}"')
