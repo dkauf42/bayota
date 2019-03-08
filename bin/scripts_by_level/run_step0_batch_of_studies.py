@@ -66,7 +66,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
 
         # Generate a control file with a unique identifier (uuid4)
         dct = {"geography_scale": geo_scale, "geography_entity": geoname, "study_spec": studyspecname}
-        unique_control_file = os.path.join(get_control_dir(), 'batch_con_' + str(uuid.uuid4()) + '.yaml')
+        unique_control_file = os.path.join(get_control_dir(), 'step0_batch_control_' + str(uuid.uuid4()) + '.yaml')
         with open(unique_control_file, "w") as f:
             yaml.dump(dct, f, default_flow_style=False)
 
