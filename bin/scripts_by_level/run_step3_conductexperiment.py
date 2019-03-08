@@ -23,7 +23,7 @@ if not logger.hasHandlers():
     set_up_logger()
     logger = logging.getLogger(__name__)
 
-solve_trial_script = os.path.join(get_scripts_dir(), 'run_solveonetrial.py')
+solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py')
 
 
 def main(experiment_spec_file, saved_model_file=None, solutions_folder_name=None,

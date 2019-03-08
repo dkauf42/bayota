@@ -2,7 +2,7 @@
 
 """
 Example usage command:
-    ./bin/scripts_by_level/run_batch_of_studies.py --dryrun -f /Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/batch_study_specs/maryland_counties.yaml
+    ./bin/scripts_by_level/run_step0_batch_of_studies.py --dryrun -f /Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/batch_study_specs/maryland_counties.yaml
 """
 
 import os
@@ -56,7 +56,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
     NUMNODES = 1
     PRIORITY = 5000
     SLURM_OUTPUT = 'slurm_out'
-    single_study_script = os.path.join(get_scripts_dir(), 'run_single_study.py')
+    single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
 
     for sp in study_pairs:
         geoname = sp[0]
@@ -77,7 +77,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
                           f"--nice={PRIORITY} " \
                           f"--nodes={NUMNODES} " \
                           f"--output={SLURM_OUTPUT} " \
-                          f"--time=01:00:00 " # time requested in hour:minute:second
+                          f"--time=01:00:00 "  # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD
         else:
             CMD = CMD + " --no_slurm"

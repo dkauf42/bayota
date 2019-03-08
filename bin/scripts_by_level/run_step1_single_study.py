@@ -25,8 +25,8 @@ if not logger.hasHandlers():
 
 outdir = get_output_dir()
 
-model_generator_script = os.path.join(get_scripts_dir(), 'run_generatemodel.py')
-experiment_script = os.path.join(get_scripts_dir(), 'run_conductexperiment.py')
+model_generator_script = os.path.join(get_scripts_dir(), 'run_step2_generatemodel.py')
+experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment.py')
 
 
 def main(study_spec_file, geography_name, control_file=None,
