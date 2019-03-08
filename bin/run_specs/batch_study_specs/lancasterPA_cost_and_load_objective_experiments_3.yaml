@@ -6,3 +6,5 @@ geography_entities:
 # strmatch: '.*MD'
 study_specs:
   - costmin_10percentreduction
+control_options:
+  move_solution_to_s3: False
