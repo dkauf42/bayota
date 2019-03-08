@@ -30,14 +30,13 @@ jeeves = Jeeves()
 
 
 def main(batch_spec_file, dryrun=False, no_slurm=False):
-    batchdict = read_spec(batch_spec_file)
-
     version = get_bayota_version()
-
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)
     logger.info('************** Batch of studies **************')
     logger.info('----------------------------------------------')
+
+    batchdict = read_spec(batch_spec_file)
 
     # Process geographies, and expand any if necessary
     geo_scale = batchdict['geography_scale']
