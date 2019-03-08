@@ -103,7 +103,7 @@ def parse_cli_arguments():
 
     opts = parser.parse_args()
 
-    if not opts.control_filepath: # control file was not specified
+    if not opts.control_filepath:  # control file was not specified
         # MODEL SPEC
         if not opts.model_spec_filepath:  # name was specified
             opts.model_spec_file = os.path.join(get_model_specs_dir(), opts.model_name + '.yaml')
