@@ -79,7 +79,7 @@ def main(study_spec_file, geography_name, control_file=None,
         # Create a task to submit to the queue
         CMD = "srun " + CMD
     else:
-        CMD = CMD + " --no_slurm"
+        pass
 
     # Submit the job
     p1 = None
