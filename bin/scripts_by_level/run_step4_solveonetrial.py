@@ -108,13 +108,12 @@ def main(saved_model_file=None, dictwithtrials=None, trial_name=None, solutions_
         else:
             # Move solution file to s3
             destination_name = 'optimization' + '/' + solutions_folder_name + '/' + solution_name
-            # Create a task to submit to the queue
+
+            # Create a job to submit to the queue
             CMD = f"{move_to_s3_script} " \
                   f"-op {outputdfpath} " \
-                  f"-dp {destination_name} " \
-
+                  f"-dp {destination_name} "
             if not no_slurm:
-                # Create a task to submit to the queue
                 CMD = "srun " + CMD
             else:
                 pass
