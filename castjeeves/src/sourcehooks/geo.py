@@ -111,3 +111,15 @@ class Geo(SourceHook):
     def countyids_from_lrsegids(self, lrsegids=None):
         return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
                                   fromtable=lrsegids, toname='countyid')
+
+    def statenames_from_lrsegids(self, lrsegids=None):
+        stateid_tbl = self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'stateid'],
+                                         fromtable=lrsegids, toname='stateid')
+
+
+        print(stateid_tbl.head())
+
+        return self.singleconvert(sourcetbl='TblState', toandfromheaders=['stateid', 'stateabbreviation'],
+                                  fromtable=stateid_tbl, toname='stateabbreviation')
+
+
