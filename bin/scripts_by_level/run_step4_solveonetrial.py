@@ -60,7 +60,10 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     modvar = None
     varvalue = None
     varindexer = None
+
+    # *********************
     # Make Modification
+    # *********************
     if not not dictwithtrials:
         modvar = dictwithtrials['variable']
         varvalue = dictwithtrials['value']
@@ -82,19 +85,24 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                       (modvar, varvalue, varindexer)):
                 mdlhandler.model.component(modvar)[varindexer] = varvalue
 
+    # *********************
+    # Solve
+    # *********************
     modelname = os.path.splitext(os.path.basename(saved_model_file))[0]
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(),
                                                     f"solution_model--{modelname}--_{trial_name}_<timestamp>.csv")
-    if notdry(dryrun, logger, '--Dryrun-- Would run trial and save outputdf at: %s' %
-                              notreal_notimestamp_outputdfpath):
+
+    if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
+
+        # The problem is solved.
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
                                                  translate_to_cast_format=translate_to_cast_format)
+        solution_dict['solution_df']['feasible'] = solution_dict['feasible']
         logger.info(f"{logprefix} Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
                     f"<Solution feasible? --> {solution_dict['feasible']}> ")
 
-        solution_dict['solution_df']['feasible'] = solution_dict['feasible']
-
+        # Optimization objective value is added to the solution table.
         ii = 0
         for objective_component in mdlhandler.model.component_objects(pe.Objective):
             if ii < 1:
@@ -111,22 +119,36 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                 print('more than one objective found, only using one')
                 break
 
+        # Value of modified variable is added to the solution table.
         solution_dict['solution_df'][modvar] = varvalue
         # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
 
-        # Solutions directory is created if it doesn't exist
+        # Solution is saved.
+        # Solutions directory is created if it doesn't exist.
         solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
         logger.debug(f"solutions_dir = {solutions_dir}")
         os.makedirs(solutions_dir, exist_ok=True)
-        # Solution table is written to file
-        if translate_to_cast_format:  # use tab-delimiter and .txt extention
-            solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.txt"
+
+        # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
+        if translate_to_cast_format:
+            solution_name = f"solutiondf_castformat_{modelname}_{trial_name}_{solution_dict['timestamp']}.txt"
             outputdfpath = os.path.join(solutions_dir, solution_name)
-            solution_dict['solution_df'].to_csv(outputdfpath, sep='\t')
-        else:  # use comma-delimiter and .csv extention
-            solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
-            outputdfpath = os.path.join(solutions_dir, solution_name)
-            solution_dict['solution_df'].to_csv(outputdfpath)
+            # solution_dict['cast_formatted_df'].to_csv(outputdfpath,
+            #                                           sep='\t', header=True, index=False, line_terminator='\r\n')
+
+            with open(outputdfpath, 'wb') as dst:
+                solution_dict['cast_formatted_df'].to_csv(outputdfpath,
+                                                          sep='\t', header=True,
+                                                          index=False, line_terminator='\r\n')
+                dst.seek(-1, os.SEEK_END)  # <---- 1 : len('\n') to remove blank line at end of file
+                dst.truncate()
+
+            logger.info(f"<CAST-formatted solution written to: {outputdfpath}>")
+
+        # Optimization info solution table is written to file (uses comma-delimiter and .csv extention)
+        solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
+        outputdfpath = os.path.join(solutions_dir, solution_name)
+        solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
 
         if no_s3:
