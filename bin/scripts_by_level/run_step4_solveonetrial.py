@@ -114,13 +114,19 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         solution_dict['solution_df'][modvar] = varvalue
         # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
 
-        # Write Solution Table to File
+        # Solutions directory is created if it doesn't exist
         solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
         logger.debug(f"solutions_dir = {solutions_dir}")
         os.makedirs(solutions_dir, exist_ok=True)
-        solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
-        outputdfpath = os.path.join(solutions_dir, solution_name)
-        solution_dict['solution_df'].to_csv(outputdfpath)
+        # Solution table is written to file
+        if translate_to_cast_format:  # use tab-delimiter and .txt extention
+            solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.txt"
+            outputdfpath = os.path.join(solutions_dir, solution_name)
+            solution_dict['solution_df'].to_csv(outputdfpath, sep='\t')
+        else:  # use comma-delimiter and .csv extention
+            solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
+            outputdfpath = os.path.join(solutions_dir, solution_name)
+            solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
 
         if no_s3:
