@@ -5,6 +5,7 @@ geography_entities:
   strmatch: 'Lancaster, PA'
 # strmatch: '.*MD'
 study_specs:
-  - costmin_1-40_experiments
+  - costmin_10percentreduction
 control_options:
   move_solution_to_s3: False
+  translate_solution_table_to_cast_format: True

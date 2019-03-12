@@ -271,6 +271,7 @@ def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4, transla
         mdl:
         output_file_str:
         fileprintlevel:
+        translate_to_cast_format:
 
     Returns:
 

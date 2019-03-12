@@ -31,7 +31,8 @@ _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 
 def main(saved_model_file=None, model_modification_string=None, trial_name=None,
-         control_file=None, solutions_folder_name=None, dryrun=False, no_s3=False, no_slurm=False):
+         control_file=None, solutions_folder_name=None,
+         dryrun=False, no_s3=False, no_slurm=False, translate_to_cast_format=False):
     logprefix = '** Single Trial **: '
 
     # Read the trial control file
@@ -41,10 +42,13 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         # convert modification string into a proper dictionary
         model_modification_string = control_dict['trial']['modification'].lstrip('\'').rstrip('\'')
 
-        no_s3 = not bool(control_dict['control_options']['move_solution_to_s3'])
         trial_name = control_dict['trial']['trial_name']
         saved_model_file = control_dict['saved_model_file_for_this_study']
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
+
+        # Control Options
+        no_s3 = not bool(control_dict['control_options']['move_solution_to_s3'])
+        translate_to_cast_format = control_dict['control_options']['translate_solution_table_to_cast_format']
     else:
         pass
 
@@ -84,7 +88,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     if notdry(dryrun, logger, '--Dryrun-- Would run trial and save outputdf at: %s' %
                               notreal_notimestamp_outputdfpath):
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
-                                                 translate_to_cast_format=True)
+                                                 translate_to_cast_format=translate_to_cast_format)
         logger.info(f"{logprefix} Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
                     f"<Solution feasible? --> {solution_dict['feasible']}> ")
@@ -167,6 +171,8 @@ def parse_cli_arguments():
     parser.add_argument("--no_slurm", action='store_true',
                         help="don't use AWS or slurm facilities")
 
+    parser.add_argument("--translate_to_cast_format", action='store_true')
+
     parser.add_argument("-tn", "--trial_name", dest='trial_name',
                         help="unique name to identify this trial (used for saving results)")
 
@@ -197,7 +203,8 @@ if __name__ == '__main__':
                   model_modification_string=opts.model_modification_string,
                   control_file=opts.control_filepath,
                   trial_name=opts.trial_name,
+                  solutions_folder_name=opts.solutions_folder_name,
                   dryrun=opts.dryrun,
                   no_s3=opts.no_s3,
                   no_slurm=opts.no_slurm,
-                  solutions_folder_name=opts.solutions_folder_name))
+                  translate_to_cast_format=opts.translate_to_cast_format))
