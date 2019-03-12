@@ -114,8 +114,9 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         solution_dict['solution_df'][modvar] = varvalue
         # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
 
+        # Write Solution Table to File
         solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
-        logger.info(f"solutions_dir = {solutions_dir}")
+        logger.debug(f"solutions_dir = {solutions_dir}")
         os.makedirs(solutions_dir, exist_ok=True)
         solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
         outputdfpath = os.path.join(solutions_dir, solution_name)
