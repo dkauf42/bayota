@@ -349,7 +349,8 @@ def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4, transla
                      'cast_formatted_df': cast_formatted_df,
                      'timestamp': solvetimestamp,
                      'feasible': feasible,
-                     'solved_results': solved_results}
+                     'solved_results': solved_results,
+                     'model_object': mdl}
 
     return solution_dict
 
