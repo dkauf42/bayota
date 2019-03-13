@@ -150,8 +150,11 @@ def load_solution_data(namelistfile=''):
     df['objective_cost'] = df['solution_objective']
     df['objective_loadreduction'] = df['solution_objective']
 
-    df.loc[np.isnan(df.totalcostupperbound), 'objective_loadreduction'] = np.nan
-    df.loc[np.isnan(df.percent_reduction_minimum), 'objective_cost'] = np.nan
+    if 'totalcostupperbound'  in df.columns:
+        df.loc[np.isnan(df.totalcostupperbound), 'objective_loadreduction'] = np.nan
+
+    if 'percent_reduction_minimum' in df.columns:
+        df.loc[np.isnan(df.percent_reduction_minimum), 'objective_cost'] = np.nan
 
     ''' ---------------- '''
     # Keep one row for each optimization trial, since we're just looking at objective and constraint values (rather than variable values)
