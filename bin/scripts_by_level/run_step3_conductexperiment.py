@@ -9,6 +9,7 @@ import sys
 import uuid
 import yaml
 import logging
+import datetime
 import subprocess
 from argparse import ArgumentParser
 
@@ -16,7 +17,7 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
 
 from bayota_settings.config_script import set_up_logger, get_experiment_specs_dir,\
-    get_scripts_dir, get_model_instances_dir, get_control_dir
+    get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -30,6 +31,7 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
          solutions_folder_name=None, dryrun=False, no_slurm=False):
     logprefix = '** Single Experiment **: '
 
+    version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('************ Experiment Launching ************')
     logger.info('----------------------------------------------')
@@ -104,6 +106,9 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
                                      'trial_name': 'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialstr,
                                      'modification': modificationstr,
                                      'solutions_folder_name': solutions_folder_name}
+            control_dict['code_version']: version
+            control_dict['run_timestamps']['step4_trial'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+
             with open(unique_control_file, "w") as f:
                 yaml.safe_dump(control_dict, f, default_flow_style=False)
 

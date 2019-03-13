@@ -10,6 +10,7 @@ import sys
 import uuid
 import yaml
 import logging
+import datetime
 import itertools
 import subprocess
 from argparse import ArgumentParser
@@ -56,7 +57,9 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
 
         # Generate a control file with a unique identifier (uuid4)
         dct = {"geography_scale": geo_scale, "geography_entity": geoname,
-               "study_spec": studyspecname, "control_options": control_options}
+               "study_spec": studyspecname, "control_options": control_options,
+               "code_version": version,
+               "run_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
         unique_control_file = os.path.join(get_control_dir(), 'step1_study_control_' + str(uuid.uuid4()) + '.yaml')
         with open(unique_control_file, "w") as f:
             yaml.safe_dump(dct, f, default_flow_style=False)

@@ -10,6 +10,7 @@ import sys
 import uuid
 import yaml
 import logging
+import datetime
 import subprocess
 from argparse import ArgumentParser
 
@@ -65,6 +66,9 @@ def main(study_spec_file, geography_name, control_file=None,
     saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
                                                    'modelinstance_' + model_spec_name + '_' + filesafegeostring + '.pickle')
     control_dict['saved_model_file_for_this_study'] = saved_model_file_for_this_study
+
+    control_dict['code_version']: version
+    control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
 
     # Write (or replace existing) study control file with updated dictionary entries
     with open(control_file, "w") as f:
