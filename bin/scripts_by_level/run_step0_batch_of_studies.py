@@ -91,7 +91,14 @@ def read_batch_spec_file(batch_spec_file):
     geo_scale = batchdict['geography_scale']
     areas = jeeves.geo.geonames_from_geotypename(geotype=geo_scale)
     strpattern = batchdict['geography_entities']['strmatch']
-    GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
+
+    if type(strpattern) is list:
+        GEOAREAS = []
+        for sp in strpattern:
+            for item in areas.loc[areas.str.match(sp)].tolist():
+                GEOAREAS.append(item)
+    else:
+        GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
 
     # Get study specification file names
     STUDIES = batchdict['study_specs']
