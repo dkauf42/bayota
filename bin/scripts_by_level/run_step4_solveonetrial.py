@@ -47,12 +47,15 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
 
         geography_entity_str = control_dict['geography']['entity'].replace(' ', '').replace(',', '')
+        objective_and_constraint_str = control_dict['model']['objectiveshortname'] + '_' + \
+                                       control_dict['model']['constraintshortname']
 
         # Control Options
         no_s3 = not bool(control_dict['control_options']['move_solution_to_s3'])
         translate_to_cast_format = control_dict['control_options']['translate_solution_table_to_cast_format']
     else:
         geography_entity_str = ''
+        objective_and_constraint_str = ''
 
     # convert modification string into a proper dictionary
     dictwithtrials = json.loads(model_modification_string)
@@ -157,7 +160,10 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             pass
         else:
             # Move solution file to s3
-            destination_name = 'optimization' + '/' + geography_entity_str + '/' + solution_name
+            destination_name = 'optimization' + '/' \
+                               + geography_entity_str + '/' \
+                               + objective_and_constraint_str + '/' \
+                               + solution_name
 
             # Create a job to submit to the queue
             CMD = f"{move_to_s3_script} " \
