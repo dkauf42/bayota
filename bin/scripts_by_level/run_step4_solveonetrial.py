@@ -46,11 +46,13 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         saved_model_file = control_dict['saved_model_file_for_this_study']
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
 
+        geography_entity_str = control_dict['geography_entity'].strip(',').strip(' ')
+
         # Control Options
         no_s3 = not bool(control_dict['control_options']['move_solution_to_s3'])
         translate_to_cast_format = control_dict['control_options']['translate_solution_table_to_cast_format']
     else:
-        pass
+        geography_entity_str = ''
 
     # convert modification string into a proper dictionary
     dictwithtrials = json.loads(model_modification_string)
@@ -146,7 +148,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             logger.info(f"<CAST-formatted solution written to: {outputdfpath}>")
 
         # Optimization info solution table is written to file (uses comma-delimiter and .csv extention)
-        solution_name = f"solutiondf_{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
+        solution_name = f"{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
         outputdfpath = os.path.join(solutions_dir, solution_name)
         solution_dict['solution_df'].to_csv(outputdfpath)
         logger.info(f"<Solution written to: {outputdfpath}>")
@@ -155,7 +157,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             pass
         else:
             # Move solution file to s3
-            destination_name = 'optimization' + '/' + solutions_folder_name + '/' + solution_name
+            destination_name = 'optimization' + '/' + geography_entity_str + '/' + solution_name
 
             # Create a job to submit to the queue
             CMD = f"{move_to_s3_script} " \
