@@ -37,9 +37,9 @@ def main(model_spec_file, geography_name, control_file=None,
     if not not control_file:
         control_dict = read_spec(control_file)
         model_spec_file = control_dict['model']['spec_file']
-        geography_scale = control_dict['geography_scale']
-        geography_entity = control_dict['geography_entity']
-        saved_model_file = control_dict['saved_model_file_for_this_study']
+        geography_scale = control_dict['geography']['scale']
+        geography_entity = control_dict['geography']['entity']
+        saved_model_file = control_dict['model']['saved_file_for_this_study']
         baseloadingfilename = control_dict['base_loading_file_name']
 
         logger.info('Geographies specification: %s' % geography_entity)

@@ -41,7 +41,7 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
         control_dict = read_spec(control_file)
 
         expname = os.path.splitext(os.path.basename(control_dict['experiment_file']))[0]
-        saved_model_file = control_dict['saved_model_file_for_this_study']
+        saved_model_file = control_dict['model']['saved_file_for_this_study']
         actionlist = control_dict['experiment']['exp_setup']
         list_of_trialdicts = control_dict['experiment']['trials']
     else:

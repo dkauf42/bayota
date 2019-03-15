@@ -46,19 +46,25 @@ def main(study_spec_file, geography_name, control_file=None,
         control_dict = read_spec(control_file)
 
         study_spec_file = os.path.join(get_single_study_specs_dir(), control_dict['study_spec'] + '.yaml')
-        geography_name = control_dict['geography_entity']
+        geography_name = control_dict['geography']['entity']
     else:
         control_dict = dict()
 
     # read from study specification file (and add those entries to the unique control file)
     studydict = read_spec(study_spec_file)
     #
+    filesafegeostring = geography_name.replace(' ', '').replace(',', '')
+    #
     model_spec_name = studydict['model_spec']
     model_spec_file = os.path.join(get_model_specs_dir(), model_spec_name + '.yaml')
     model_dict = read_spec(model_spec_file)  # Model generation details are saved to control file.
+
+    saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
+                                                   'modelinstance_' + model_spec_name + '_' + filesafegeostring + '.pickle')
     control_dict['model'] = {'spec_file': model_spec_file,
                              'objectiveshortname': model_dict['objectiveshortname'],
-                             'constraintshortname': model_dict['constraintshortname']}
+                             'constraintshortname': model_dict['constraintshortname'],
+                             'saved_file_for_this_study': saved_model_file_for_this_study}
     #
     EXPERIMENTS = studydict['experiments']
     control_dict['experiments'] = EXPERIMENTS
@@ -66,10 +72,6 @@ def main(study_spec_file, geography_name, control_file=None,
     baseloadingfilename = studydict['base_loading_file_name']
     control_dict['base_loading_file_name'] = baseloadingfilename
     #
-    filesafegeostring = geography_name.replace(' ', '').replace(',', '')
-    saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
-                                                   'modelinstance_' + model_spec_name + '_' + filesafegeostring + '.pickle')
-    control_dict['saved_model_file_for_this_study'] = saved_model_file_for_this_study
 
     control_dict['code_version']: version
     control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
@@ -163,7 +165,7 @@ def parse_cli_arguments():
         controldict = read_spec(opts.control_filepath)
         opts.study_spec_file = os.path.join(get_single_study_specs_dir(),
                                             controldict['study_spec'] + '.yaml')
-        opts.geography_name = controldict['geography_entity']
+        opts.geography_name = controldict['geography']['entity']
     else:
         if not opts.study_spec_filepath:  # name was specified instead
             opts.study_spec_filepath = os.path.join(get_single_study_specs_dir(), opts.study_name + '.yaml')

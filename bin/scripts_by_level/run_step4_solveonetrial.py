@@ -43,10 +43,10 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         model_modification_string = control_dict['trial']['modification'].lstrip('\'').rstrip('\'')
 
         trial_name = control_dict['trial']['trial_name']
-        saved_model_file = control_dict['saved_model_file_for_this_study']
+        saved_model_file = control_dict['model']['saved_file_for_this_study']
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
 
-        geography_entity_str = control_dict['geography_entity'].strip(',').strip(' ')
+        geography_entity_str = control_dict['geography']['entity'].replace(' ', '').replace(',', '')
 
         # Control Options
         no_s3 = not bool(control_dict['control_options']['move_solution_to_s3'])
