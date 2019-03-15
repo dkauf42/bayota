@@ -93,9 +93,9 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     # *********************
     # Solve
     # *********************
-    modelname = os.path.splitext(os.path.basename(saved_model_file))[0]
+    modelname_full = os.path.splitext(os.path.basename(saved_model_file))[0]
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(),
-                                                    f"solution_model--{modelname}--_{trial_name}_<timestamp>.csv")
+                                                    f"solution_{trial_name}_<timestamp>.csv")
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
 
@@ -136,25 +136,25 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
         if translate_to_cast_format:
-            solution_name = f"solutiondf_castformat_{modelname}_{trial_name}_{solution_dict['timestamp']}.txt"
-            outputdfpath = os.path.join(solutions_dir, solution_name)
+            solution_name = f"castformat_{trial_name}_{solution_dict['timestamp']}.txt"
+            outputdfpath_castformat = os.path.join(solutions_dir, solution_name)
             # solution_dict['cast_formatted_df'].to_csv(outputdfpath,
             #                                           sep='\t', header=True, index=False, line_terminator='\r\n')
 
-            with open(outputdfpath, 'wb') as dst:
-                solution_dict['cast_formatted_df'].to_csv(outputdfpath,
+            with open(outputdfpath_castformat, 'wb') as dst:
+                solution_dict['cast_formatted_df'].to_csv(outputdfpath_castformat,
                                                           sep='\t', header=True,
                                                           index=False, line_terminator='\r\n')
                 dst.seek(-1, os.SEEK_END)  # <---- 1 : len('\n') to remove blank line at end of file
                 dst.truncate()
 
-            logger.info(f"<CAST-formatted solution written to: {outputdfpath}>")
+            logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
         # Optimization info solution table is written to file (uses comma-delimiter and .csv extention)
-        solution_name = f"{modelname}_{trial_name}_{solution_dict['timestamp']}.csv"
-        outputdfpath = os.path.join(solutions_dir, solution_name)
-        solution_dict['solution_df'].to_csv(outputdfpath)
-        logger.info(f"<Solution written to: {outputdfpath}>")
+        solution_name = f"{trial_name}_{solution_dict['timestamp']}.csv"
+        outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_name)
+        solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
+        logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
 
         if no_s3:
             pass
@@ -167,7 +167,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
             # Create a job to submit to the queue
             CMD = f"{move_to_s3_script} " \
-                  f"-op {outputdfpath} " \
+                  f"-op {outputdfpath_bayotaformat} " \
                   f"-dp {destination_name} "
             if not no_slurm:
                 CMD = "srun " + CMD
