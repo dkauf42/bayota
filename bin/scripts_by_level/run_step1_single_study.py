@@ -18,7 +18,7 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
 from bayota_settings.config_script import get_output_dir, get_scripts_dir, get_model_instances_dir, \
     set_up_logger, get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir, \
-    get_control_dir
+    get_control_dir, get_model_specs_dir
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -54,7 +54,11 @@ def main(study_spec_file, geography_name, control_file=None,
     studydict = read_spec(study_spec_file)
     #
     model_spec_name = studydict['model_spec']
-    control_dict['model_spec'] = model_spec_name
+    model_spec_file = os.path.join(get_model_specs_dir(), model_spec_name + '.yaml')
+    model_dict = read_spec(model_spec_file)  # Model generation details are saved to control file.
+    control_dict['model'] = {'spec_file': model_spec_file,
+                             'objectiveshortname': model_dict['objectiveshortname'],
+                             'constraintshortname': model_dict['constraintshortname']}
     #
     EXPERIMENTS = studydict['experiments']
     control_dict['experiments'] = EXPERIMENTS

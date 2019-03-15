@@ -36,7 +36,7 @@ def main(model_spec_file, geography_name, control_file=None,
 
     if not not control_file:
         control_dict = read_spec(control_file)
-        model_spec_file = os.path.join(get_model_specs_dir(), control_dict['model_spec'] + '.yaml')
+        model_spec_file = control_dict['model']['spec_file']
         geography_scale = control_dict['geography_scale']
         geography_entity = control_dict['geography_entity']
         saved_model_file = control_dict['saved_model_file_for_this_study']
