@@ -5,8 +5,7 @@ geography_entities:
   strmatch: ['Lancaster, PA', 'Calvert, MD']
 # strmatch: '.*MD'
 study_specs:
-  - costmin_1-40N_experiments
-  - costmin_1-40P_experiments
+  - costmin_10percentreduction
 control_options:
   move_solution_to_s3: False
   translate_solution_table_to_cast_format: True
