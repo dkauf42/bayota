@@ -5,7 +5,7 @@ geography_entities:
   strmatch: ['.*MD', '.*PA']
 # strmatch: '.*MD'
 study_specs:
-  - costmin_20_Npercentreduction
+  - costmin_1-40N_experiments
 control_options:
   move_solution_to_s3: True
   translate_solution_table_to_cast_format: True
