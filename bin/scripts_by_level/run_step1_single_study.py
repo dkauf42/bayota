@@ -120,9 +120,10 @@ def main(study_spec_file, geography_name, control_file=None,
 
         # Create a job to submit to the queue
         CMD = f"{experiment_script}  -cf {unique_control_file}"
-        if not no_slurm:
-            CMD = "srun " + CMD
-        else:
+        # if not no_slurm:
+        #     CMD = "srun " + CMD
+        # else:
+        if no_slurm:
             CMD = CMD + " --no_slurm"
 
         # Submit the job
