@@ -136,8 +136,10 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
         if translate_to_cast_format:
-            solution_name = f"castformat_{trial_name}_{solution_dict['timestamp']}.txt"
-            outputdfpath_castformat = os.path.join(solutions_dir, solution_name)
+            solution_shortname_castformat = f"castformat_{trial_name}_{solution_dict['timestamp']}.txt"
+            solution_fullname_castformat = f"castformat_{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
+
+            outputdfpath_castformat = os.path.join(solutions_dir, solution_fullname_castformat)
             # solution_dict['cast_formatted_df'].to_csv(outputdfpath,
             #                                           sep='\t', header=True, index=False, line_terminator='\r\n')
 
@@ -151,8 +153,10 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
         # Optimization info solution table is written to file (uses comma-delimiter and .csv extention)
-        solution_name = f"{trial_name}_{solution_dict['timestamp']}.csv"
-        outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_name)
+        solution_shortname = f"{trial_name}_{solution_dict['timestamp']}.csv"
+        solution_fullname = f"{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
+
+        outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_fullname)
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
         logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
 
@@ -164,7 +168,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                + 'for_kevin_20190318' + '/' \
                                + geography_entity_str + '/' \
                                + objective_and_constraint_str + '/' \
-                               + solution_name
+                               + solution_shortname
 
             # Create a job to submit to the queue
             CMD = f"{move_to_s3_script} " \
