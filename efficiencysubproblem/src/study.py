@@ -6,7 +6,7 @@ import pandas as pd
 from datetime import datetime
 from collections import OrderedDict
 
-import pyomo.environ as oe
+import pyomo.environ as pe
 
 from efficiencysubproblem.src.model_handling.interface import get_loaded_model_handler
 from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
@@ -185,24 +185,24 @@ class Study:
             solver_output_filepath, merged_df, solvetimestamp, feasible_solution = solve_problem_instance(
                 self.modelhandler, mdl,
                 fileprintlevel=fileprintlevel)
-            solution_objective = oe.value(mdl.Total_Cost)
-            merged_df['solution_objectives'] = oe.value(mdl.Total_Cost)
+            solution_objective = pe.value(mdl.Total_Cost)
+            merged_df['solution_objectives'] = pe.value(mdl.Total_Cost)
 
             for k in mdl.tau:
                 merged_df['tau'] = mdl.tau[k]  # Label this run in the dataframe
                 break
 
-            # merged_df['originalload'] = oe.value(mdl.originalload['N'])
-            # merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
-            #                                 oe.value(mdl.originalload['N'])
+            # merged_df['originalload'] = pe.value(mdl.originalload['N'])
+            # merged_df['N_pounds_reduced'] = (pe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
+            #                                 pe.value(mdl.originalload['N'])
 
         if self.objectivetype == 'loadreductionmax':
             solver_output_filepath, merged_df, solvetimestamp, feasible_solution = solve_problem_instance(
                 self.modelhandler, mdl,
                 fileprintlevel=fileprintlevel)
-            solution_objective = oe.value(mdl.PercentReduction['N'])
-            merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
-            merged_df['totalcostupperbound'] = oe.value(mdl.totalcostupperbound)  # Label this run in the dataframe
+            solution_objective = pe.value(mdl.PercentReduction['N'])
+            merged_df['solution_objectives'] = pe.value(mdl.PercentReduction['N'])
+            merged_df['totalcostupperbound'] = pe.value(mdl.totalcostupperbound)  # Label this run in the dataframe
 
         merged_df['feasible'] = feasible_solution
 
@@ -266,19 +266,19 @@ class Study:
                     output_file_str=loopname,
                     fileprintlevel=fileprintlevel)
 
-                # merged_df['originalload'] = oe.value(mdl.originalload['N'])
-                # merged_df['N_pounds_reduced'] = (oe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
-                #                             oe.value(mdl.originalload['N'])
+                # merged_df['originalload'] = pe.value(mdl.originalload['N'])
+                # merged_df['N_pounds_reduced'] = (pe.value(mdl.TargetPercentReduction['N'].body) / 100) * \
+                #                             pe.value(mdl.originalload['N'])
 
                 # Save this run's objective value in a list
-                solution_objectives[newconstraint] = oe.value(mdl.Total_Cost)
-                merged_df['solution_objectives'] = oe.value(mdl.Total_Cost)
+                solution_objectives[newconstraint] = pe.value(mdl.Total_Cost)
+                merged_df['solution_objectives'] = pe.value(mdl.Total_Cost)
                 merged_df['tau'] = newconstraint  # Label this run in the dataframe
             if self.objectivetype == 'loadreductionmax':
                 # Reassign the cost bound values (C)
                 mdl.totalcostupperbound = newconstraint
                 mdl.totalcostupperbound = mdl.totalcostupperbound
-                self.constraintstr = str(round(oe.value(mdl.totalcostupperbound), 1))
+                self.constraintstr = str(round(pe.value(mdl.totalcostupperbound), 1))
                 logger.info('constraint = %s' % self.constraintstr)
                 loopname = ''.join([self.studystr, 'costboundsequence', str(ii),
                                     '_costbound', self.constraintstr])
@@ -288,8 +288,8 @@ class Study:
                     fileprintlevel=fileprintlevel)
 
                 # Save this run's objective value in a list
-                solution_objectives[newconstraint] = oe.value(mdl.PercentReduction['N'])
-                merged_df['solution_objectives'] = oe.value(mdl.PercentReduction['N'])
+                solution_objectives[newconstraint] = pe.value(mdl.PercentReduction['N'])
+                merged_df['solution_objectives'] = pe.value(mdl.PercentReduction['N'])
                 merged_df['totalcostupperbound'] = newconstraint  # Label this run in the dataframe
 
             self._iterate_numberofruns()
@@ -321,11 +321,11 @@ class Study:
             # ---- Set the tau target load, e.g. 12% reduction ----
             for k in self.modelhandler.model.tau:
                 self.modelhandler.model.tau[k] = baseconstraint
-                self.constraintstr = str(round(oe.value(self.modelhandler.model.tau[k]), 1))
+                self.constraintstr = str(round(pe.value(self.modelhandler.model.tau[k]), 1))
         elif self.objectivetype == 'loadreductionmax':
             # ---- Set the total capital available, e.g. $100,000 ----
             self.modelhandler.model.totalcostupperbound = baseconstraint
-            self.constraintstr = str(round(oe.value(self.modelhandler.model.totalcostupperbound), 1))
+            self.constraintstr = str(round(pe.value(self.modelhandler.model.totalcostupperbound), 1))
 
     def _iterate_numberofruns(self):
         self.numberofrunscompleted += 1
