@@ -3,12 +3,11 @@ import os
 import re
 import sys
 import time
-import logging
 import tempfile
 import pandas as pd
 from datetime import datetime
 
-import pyomo.environ as oe
+import pyomo.environ as pe
 from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, TerminationCondition
 
 from efficiencysubproblem.config import PROJECT_DIR
@@ -103,10 +102,10 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
         solver = SolverFactory(solvername)
 
         if get_suffixes:
-            instance.dual = oe.Suffix(direction=oe.Suffix.IMPORT)
-            instance.ipopt_zL_out = oe.Suffix(direction=oe.Suffix.IMPORT)
-            instance.ipopt_zU_out = oe.Suffix(direction=oe.Suffix.IMPORT)
-            setattr(instance, 'lambda', oe.Suffix(direction=oe.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
+            instance.dual = pe.Suffix(direction=pe.Suffix.IMPORT)
+            instance.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)
+            instance.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)
+            setattr(instance, 'lambda', pe.Suffix(direction=pe.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
         results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
                                keepfiles=False, logfile=logfilename)
@@ -114,10 +113,10 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
         opt = SolverFactory("cbc")
         solver_manager = SolverManagerFactory('neos')
 
-        instance.dual = oe.Suffix(direction=oe.Suffix.IMPORT)
-        instance.rc = oe.Suffix(direction=oe.Suffix.IMPORT)
-        instance.dual = oe.Suffix(direction=oe.Suffix.IMPORT_EXPORT)
-        # self.instance.slack = oe.Suffix(direction=oe.Suffix.IMPORT)
+        instance.dual = pe.Suffix(direction=pe.Suffix.IMPORT)
+        instance.rc = pe.Suffix(direction=pe.Suffix.IMPORT)
+        instance.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)
+        # self.instance.slack = pe.Suffix(direction=pe.Suffix.IMPORT)
 
         opt.options["display_width"] = 170
         opt.options["display"] = '_varname, _var.rc, _var.lb, _var, _var.ub, _var.slack'
@@ -311,6 +310,18 @@ def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4, transla
                                                       get_suffixes=get_suffixes)
 
     merged_df = initial_solution_parse_to_dataframe(modelhandler, get_suffixes, solved_instance)
+
+    # Add BMP full name
+    merged_df['bmpfullname'] = jeeves.bmp.fullnames_from_shortnames(merged_df)
+
+    # Add Nutrient Load information
+    merged_df['original_load_N'] = pe.value(solved_instance.original_load_expr['N'])
+    merged_df['original_load_P'] = pe.value(solved_instance.original_load_expr['P'])
+    merged_df['original_load_S'] = pe.value(solved_instance.original_load_expr['S'])
+    merged_df['new_load_N'] = pe.value(solved_instance.new_load_expr['N'])
+    merged_df['new_load_P'] = pe.value(solved_instance.new_load_expr['P'])
+    merged_df['new_load_S'] = pe.value(solved_instance.new_load_expr['S'])
+
     cast_formatted_df = None
     if translate_to_cast_format:
         # Add state abbreviations to the solution table
