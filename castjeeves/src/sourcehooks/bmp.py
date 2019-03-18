@@ -25,8 +25,9 @@ class Bmp(SourceHook):
         return TblBmp['bmpid'][TblBmp['bmpshortname'] == bmpshortname].tolist()
 
     def fullnames_from_shortnames(self, bmpshortname):
-        TblBmp = self.source.TblBmp  # get relevant source data
-        return TblBmp['bmpfullname'][TblBmp['bmpshortname'] == bmpshortname].tolist()
+        bmpshortname = self.forceToSingleColumnDataFrame(bmpshortname, colname='bmpshortname')
+        return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpfullname', 'bmpshortname'],
+                                  fromtable=bmpshortname, toname='bmpfullname')
 
     def single_bmptype_from_bmpid(self, bmpid):
         TblBmp = self.source.TblBmp  # get relevant source data
