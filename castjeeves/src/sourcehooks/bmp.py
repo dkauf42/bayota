@@ -24,6 +24,10 @@ class Bmp(SourceHook):
         TblBmp = self.source.TblBmp  # get relevant source data
         return TblBmp['bmpid'][TblBmp['bmpshortname'] == bmpshortname].tolist()
 
+    def fullnames_from_shortnames(self, bmpshortname):
+        TblBmp = self.source.TblBmp  # get relevant source data
+        return TblBmp['bmpfullname'][TblBmp['bmpshortname'] == bmpshortname].tolist()
+
     def single_bmptype_from_bmpid(self, bmpid):
         TblBmp = self.source.TblBmp  # get relevant source data
         TblBmpType = self.source.TblBmpType  # get relevant source data
