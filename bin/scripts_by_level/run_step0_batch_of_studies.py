@@ -44,7 +44,9 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
                 (len(study_pairs), tempstr, study_pairs))
 
     # Set SLURM parameters
-    NUMNODES = 1
+    NUM_NODES = 1
+    NUM_TASKS = 36
+    NUM_CORES = 36
     PRIORITY = 5000
     SLURM_OUTPUT = 'slurm_out'
     single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
@@ -69,7 +71,10 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
         if not no_slurm:
             sbatch_opts = f"--job-name={spname} " \
                           f"--nice={PRIORITY} " \
-                          f"--nodes={NUMNODES} " \
+                          f"--cpus-per-task={1} " \
+                          f"--nodes={NUM_NODES} " \
+                          f"--ntasks={NUM_TASKS} " \
+                          f"--ntasks-per-node={NUM_CORES} " \
                           f"--output={SLURM_OUTPUT} " \
                           f"--time=01:00:00 "  # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD

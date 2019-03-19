@@ -119,7 +119,10 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
                 # f"--solutions_folder_name {solutions_folder_name} " \
                 # f"-m {modificationstr}"
             if not no_slurm:
-                CMD = "srun " + CMD
+                srun_opts = f"--nodes={1} " \
+                            f"--ntasks={1} " \
+                            f"--exclusive "
+                CMD = "srun " + srun_opts + CMD
             else:
                 CMD = CMD + " --no_slurm"
 

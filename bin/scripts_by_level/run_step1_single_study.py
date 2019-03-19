@@ -88,7 +88,10 @@ def main(study_spec_file, geography_name, control_file=None,
     CMD = f"{model_generator_script} -cf {control_file} "
     if not no_slurm:
         # Create a task to submit to the queue
-        CMD = "srun " + CMD
+        srun_opts = f"--nodes={1} " \
+                    f"--ntasks={1} " \
+                    f"--exclusive "
+        CMD = "srun " + srun_opts + CMD
     else:
         pass
 
