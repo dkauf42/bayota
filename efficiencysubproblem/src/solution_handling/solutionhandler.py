@@ -2,7 +2,7 @@ import math
 import numpy as np
 import pandas as pd
 
-tol = 1e-6
+tol = 0.1
 
 
 class SolutionHandler:
