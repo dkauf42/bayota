@@ -1,0 +1,11 @@
+
+study_spec_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/single_study_specs'
+geography_scale: County
+geography_entities:
+  strmatch: 'Lancaster, PA'
+# strmatch: '.*MD'
+study_specs:
+  - costmin_0percentreduction_max
+control_options:
+  move_solution_to_s3: False
+  translate_solution_table_to_cast_format: True
