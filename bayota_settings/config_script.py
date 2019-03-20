@@ -60,16 +60,16 @@ def get_control_dir():
     return _make_or_get_user_dir('workspace_directories', 'control')
 
 
-def get_run_specs_dir():
+def get_spec_files_dir():
     return _make_or_get_user_dir('top_paths', 'run_specs_top')
 def get_single_study_specs_dir():
-    return _make_or_get_user_dir('run_specification_directories', 'single_studies')
+    return _make_or_get_user_dir('specification_file_directories', 'single_studies')
 def get_batch_studies_specs_dir():
-    return _make_or_get_user_dir('run_specification_directories', 'batch_studies')
+    return _make_or_get_user_dir('specification_file_directories', 'batch_studies')
 def get_model_specs_dir():
-    return _make_or_get_user_dir('run_specification_directories', 'models')
+    return _make_or_get_user_dir('specification_file_directories', 'models')
 def get_experiment_specs_dir():
-    return _make_or_get_user_dir('run_specification_directories', 'experiments')
+    return _make_or_get_user_dir('specification_file_directories', 'experiments')
 
 
 def get_graphics_dir():

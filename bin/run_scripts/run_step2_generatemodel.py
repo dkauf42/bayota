@@ -16,7 +16,7 @@ from efficiencysubproblem.src.model_handling import model_generator
 from efficiencysubproblem.src.model_handling.utils import save_model_pickle
 
 from bayota_settings.config_script import set_up_logger, get_model_specs_dir,\
-    get_run_specs_dir, get_model_instances_dir
+    get_spec_files_dir, get_model_instances_dir
 
 logger = logging.getLogger('root')
 if not logger.hasHandlers():
@@ -24,7 +24,7 @@ if not logger.hasHandlers():
     logger = logging.getLogger(__name__)
 
 
-geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
+geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
 
 
 def main(model_spec_file, geography_name, control_file=None,

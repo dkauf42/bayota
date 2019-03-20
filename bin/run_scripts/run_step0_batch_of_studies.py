@@ -17,7 +17,7 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from bayota_settings.config_script import set_up_logger, get_bayota_version, \
-    get_scripts_dir, get_run_specs_dir, get_control_dir
+    get_scripts_dir, get_spec_files_dir, get_control_dir
 from castjeeves.src.jeeves import Jeeves
 
 logger = logging.getLogger('root')
@@ -25,7 +25,7 @@ if not logger.hasHandlers():
     set_up_logger()
     logger = logging.getLogger(__name__)
 
-geo_expansion_file = os.path.join(get_run_specs_dir(), 'geography_expansions.yaml')
+geo_expansion_file = os.path.join(get_spec_files_dir(), 'geography_expansions.yaml')
 
 jeeves = Jeeves()
 
@@ -136,7 +136,7 @@ def parse_cli_arguments():
     opts = parser.parse_args()
 
     if not opts.batch_spec_filepath:  # name was specified
-        opts.batch_spec_filepath = os.path.join(get_run_specs_dir(), 'batch_study_specs', opts.batch_name + '.yaml')
+        opts.batch_spec_filepath = os.path.join(get_spec_files_dir(), 'batch_study_specs', opts.batch_name + '.yaml')
 
     return opts
 

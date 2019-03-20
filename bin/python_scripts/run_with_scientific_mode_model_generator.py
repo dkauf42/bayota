@@ -14,11 +14,11 @@ from efficiencysubproblem.src.spec_handler import read_spec
 from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 from bayota_settings.config_script import set_up_logger,\
-    get_run_specs_dir, get_model_specs_dir, get_model_instances_dir, get_experiment_specs_dir, \
+    get_spec_files_dir, get_model_specs_dir, get_model_instances_dir, get_experiment_specs_dir, \
     get_output_dir
 
 set_up_logger()
-geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
+geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
 savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
 exp_spec_file = os.path.join(get_experiment_specs_dir(), 'costmin_1-10percentreduction_noUrbanNMPlanHR.yaml')
 
