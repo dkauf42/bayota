@@ -114,10 +114,6 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
 
             # Create a job to submit to the queue
             CMD = f"{solve_trial_script}  -cf {unique_control_file}"
-                # f"-sf {saved_model_file} " \
-                # f"-tn {'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialstr} " \
-                # f"--solutions_folder_name {solutions_folder_name} " \
-                # f"-m {modificationstr}"
             if not no_slurm:
                 srun_opts = f"--nodes={1} " \
                             f"--ntasks={1} " \

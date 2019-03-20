@@ -174,10 +174,6 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             CMD = f"{move_to_s3_script} " \
                   f"-op {outputdfpath_bayotaformat} " \
                   f"-dp {destination_name} "
-            # if not no_slurm:
-            #     CMD = "srun " + CMD
-            # else:
-            #     pass
 
             # Submit the job
             logger.info(f'Job command is: "{CMD}"')
