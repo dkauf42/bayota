@@ -37,7 +37,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
     logger.info('************** Batch of studies **************')
     logger.info('----------------------------------------------')
 
-    # Specification File is read.
+    # Specification file is read.
     geo_scale, study_pairs, control_options = read_batch_spec_file(batch_spec_file)
 
     # SLURM job submission parameters are specified.
