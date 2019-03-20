@@ -5,8 +5,7 @@ designed to support decision making when using
 CAST (the Chesapeake Bay Assessement Scenario Tool), which
 is the Chesapeake Bay Program's (CBP) Phase 6 time-averaged watershed model 
 
-* Version Alpha
-* This release is undergoing continual development to reach a Beta version
+<br>
 
 This README will document the steps necessary to get the optimization model
 up and running.
