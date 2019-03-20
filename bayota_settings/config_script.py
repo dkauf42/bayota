@@ -61,7 +61,7 @@ def get_control_dir():
 
 
 def get_spec_files_dir():
-    return _make_or_get_user_dir('top_paths', 'run_specs_top')
+    return _make_or_get_user_dir('top_paths', 'spec_files_top')
 def get_single_study_specs_dir():
     return _make_or_get_user_dir('specification_file_directories', 'single_studies')
 def get_batch_studies_specs_dir():
