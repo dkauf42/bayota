@@ -25,6 +25,7 @@ logger = logging.getLogger('root')
 if not logger.hasHandlers():
     set_up_logger()
     logger = logging.getLogger(__name__)
+logprefix = '** Single Trial **: '
 
 move_to_s3_script = os.path.join(get_scripts_dir(), 'move_to_s3.py')
 _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
@@ -32,14 +33,12 @@ _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 def main(saved_model_file=None, model_modification_string=None, trial_name=None,
          control_file=None, solutions_folder_name=None,
-         dryrun=False, no_s3=False, no_slurm=False, translate_to_cast_format=False):
-    logprefix = '** Single Trial **: '
+         dryrun=False, no_s3=False, translate_to_cast_format=False):
 
-    # Read the trial control file
+    # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
 
-        # convert modification string into a proper dictionary
         model_modification_string = control_dict['trial']['modification'].lstrip('\'').rstrip('\'')
 
         trial_name = control_dict['trial']['trial_name']
@@ -57,48 +56,25 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         geography_entity_str = ''
         objective_and_constraint_str = ''
 
-    # convert modification string into a proper dictionary
-    dictwithtrials = json.loads(model_modification_string)
-
+    # *****************************
+    # Make Model Modification(s)
+    # *****************************
     mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
-
-    modvar = None
-    varvalue = None
-    varindexer = None
-
-    # *********************
-    # Make Modification
-    # *********************
-    if not not dictwithtrials:
-        modvar = dictwithtrials['variable']
-        varvalue = dictwithtrials['value']
-
-        try:
-            varindexer = dictwithtrials['indexer']
-            print(f'indexed over: {varindexer}')
-        except KeyError:
-            pass
-
-        if not varindexer or (varindexer == 'None'):
-            if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
-                                      'setting %s to %s (no index)' %
-                                      (modvar, varvalue)):
-                setattr(mdlhandler.model, modvar, varvalue)
-        else:
-            if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
-                                      'setting %s to %s (at index %s)' %
-                                      (modvar, varvalue, varindexer)):
-                mdlhandler.model.component(modvar)[varindexer] = varvalue
+    # Modification string is converted into a proper dictionary.
+    modification_dict_withtrials = json.loads(model_modification_string)
+    if not modification_dict_withtrials:
+        modvar = None
+        varvalue = None
+    else:
+        modvar, varvalue = make_model_modification(modification_dict_withtrials, dryrun, mdlhandler)
 
     # *********************
     # Solve
     # *********************
     modelname_full = os.path.splitext(os.path.basename(saved_model_file))[0]
-    notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(),
-                                                    f"solution_{trial_name}_<timestamp>.csv")
+    notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(), f"solution_{trial_name}_<timestamp>.csv")
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
-
         # The problem is solved.
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
                                                  translate_to_cast_format=translate_to_cast_format)
@@ -162,26 +138,51 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         if no_s3:
             pass
-        else:
-            # Move solution file to s3
+        else:  # Solution file is moved to s3.
             destination_name = 'optimization' + '/' \
                                + 'for_kevin_20190319' + '/' \
                                + geography_entity_str + '/' \
                                + objective_and_constraint_str + '/' \
                                + solution_shortname
 
-            # Create a job to submit to the queue
+            # A shell command is built for this job submission.
             CMD = f"{move_to_s3_script} " \
                   f"-op {outputdfpath_bayotaformat} " \
                   f"-dp {destination_name} "
 
-            # Submit the job
+            # Job is submitted.
             logger.info(f'Job command is: "{CMD}"')
             p1 = None
             if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
                 p1 = subprocess.Popen([CMD], shell=True)
             if notdry(dryrun, logger, '--Dryrun-- Would wait'):
                 p1.wait()
+
+
+def make_model_modification(dictwithtrials, dryrun, mdlhandler):
+    varindexer = None
+
+    modvar = dictwithtrials['variable']
+    varvalue = dictwithtrials['value']
+
+    try:
+        varindexer = dictwithtrials['indexer']
+        print(f'indexed over: {varindexer}')
+    except KeyError:
+        pass
+
+    if not varindexer or (varindexer == 'None'):
+        if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
+                                  'setting %s to %s (no index)' %
+                                  (modvar, varvalue)):
+            setattr(mdlhandler.model, modvar, varvalue)
+    else:
+        if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
+                                  'setting %s to %s (at index %s)' %
+                                  (modvar, varvalue, varindexer)):
+            mdlhandler.model.component(modvar)[varindexer] = varvalue
+
+    return modvar, varvalue
 
 
 def parse_cli_arguments():
@@ -205,9 +206,6 @@ def parse_cli_arguments():
 
     parser.add_argument("--no_s3", action='store_true',
                         help="don't move files to AWS S3 buckets")
-
-    parser.add_argument("--no_slurm", action='store_true',
-                        help="don't use AWS or slurm facilities")
 
     parser.add_argument("--translate_to_cast_format", action='store_true')
 
@@ -244,5 +242,4 @@ if __name__ == '__main__':
                   solutions_folder_name=opts.solutions_folder_name,
                   dryrun=opts.dryrun,
                   no_s3=opts.no_s3,
-                  no_slurm=opts.no_slurm,
                   translate_to_cast_format=opts.translate_to_cast_format))
