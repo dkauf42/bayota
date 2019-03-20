@@ -4,7 +4,6 @@
 accessing, querying, and parsing source data from
 the Chesapeake Bay Assessement Scenario Tool (CAST)
 
-* Version 0.0.2
 * This release initializes the repository
     (from code originally in the "sandbox" project)
 
@@ -30,7 +29,7 @@ application up and running.
 
 ###### A simple example (to run using GUI):
 
-    > from CastJeeves.jeeves import Jeeves
+    > from castjeeves.src.jeeves import Jeeves
     > cj = Jeeves()
     > print(cj.geo.all_geotypes())
 
