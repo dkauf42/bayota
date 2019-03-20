@@ -8,7 +8,7 @@ Specifically, these tools extend the functionality of -
 and help users of - CAST (the Chesapeake Bay Assessement Scenario Tool),
 which is the CBP Phase 6 time-averaged watershed model.
 
-* Version 0.0.1
+<br>
 
 This README documents steps necessary to get the application up and running.
 
@@ -242,6 +242,13 @@ pip uninstall bayota
 pip uninstall bayota
 rm -r bayota/
 ```
+
+# Other Notes
+
+To use pynumero package from Pyomo:
+- `scipy` is required
+- may need to run `conda install -c conda-forge pynumero_libraries` for ASL library
+
 
 # 🐛 Troubleshooting & debugging
 
