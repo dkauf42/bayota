@@ -23,20 +23,19 @@ logger = logging.getLogger('root')
 if not logger.hasHandlers():
     set_up_logger()
     logger = logging.getLogger(__name__)
+logprefix = '** Single Experiment **: '
 
 solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py')
 
 
 def main(experiment_spec_file, saved_model_file=None, control_file=None,
-         solutions_folder_name=None, dryrun=False, no_slurm=False):
-    logprefix = '** Single Experiment **: '
-
+         dryrun=False, no_slurm=False):
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('************ Experiment Launching ************')
     logger.info('----------------------------------------------')
 
-    # Read the experiment control file
+    # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
 
@@ -50,7 +49,7 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
         actionlist = read_spec(experiment_spec_file)['exp_setup']
         list_of_trialdicts = read_spec(experiment_spec_file)['trials']
 
-    # Modify the model according to any specified experiment set-up
+    # The model is modified according to specified experiment set-up
     logger.info(f"{logprefix} {expname} - modification action list = {actionlist}")
     if notdry(dryrun, logger, '--Dryrun-- Would modify model with action <%s>' % actionlist):
 
@@ -66,11 +65,9 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
 
             save_model_pickle(mdlhandler=mdlhandler, savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
 
-    # Log the list of trial sets that will be conducted for this experiment
+    # List of trial sets to be conducted for this experiment are logged.
     tempstr = 'set' if len(list_of_trialdicts) == 1 else 'sets'
     logger.info(f"{logprefix} {expname} - trial {tempstr} to be conducted: {list_of_trialdicts}")
-
-    solutions_folder_name = expname
 
     # Loop through and start each trial
     trialnum = 0
@@ -105,14 +102,14 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
             control_dict['trial'] = {'str': trialstr,
                                      'trial_name': 'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialstr,
                                      'modification': modificationstr,
-                                     'solutions_folder_name': solutions_folder_name}
+                                     'solutions_folder_name': expname}
             control_dict['code_version']: version
             control_dict['run_timestamps']['step4_trial'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
 
             with open(unique_control_file, "w") as f:
                 yaml.safe_dump(control_dict, f, default_flow_style=False)
 
-            # Create a job to submit to the queue
+            # A shell command is built for this job submission.
             CMD = f"{solve_trial_script}  -cf {unique_control_file}"
             if not no_slurm:
                 srun_opts = f"--nodes={1} " \
@@ -122,7 +119,7 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
             else:
                 CMD = CMD + " --no_slurm"
 
-            # Submit the job
+            # Job is submitted.
             logger.info(f'Job command is: "{CMD}"')
             if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
                 p_list.append(subprocess.Popen([CMD], shell=True))

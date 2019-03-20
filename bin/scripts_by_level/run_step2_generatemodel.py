@@ -29,11 +29,11 @@ geo_spec_file = os.path.join(get_run_specs_dir(), 'geography_specs.yaml')
 
 def main(model_spec_file, geography_name, control_file=None,
          saved_model_file=None, dryrun=False, baseloadingfilename=''):
-
     logger.info('----------------------------------------------')
     logger.info('************** Model Generation **************')
     logger.info('----------------------------------------------')
 
+    # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
         model_spec_file = control_dict['model']['spec_file']

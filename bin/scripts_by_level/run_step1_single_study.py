@@ -24,6 +24,7 @@ logger = logging.getLogger('root')
 if not logger.hasHandlers():
     set_up_logger()
     logger = logging.getLogger(__name__)
+logprefix = '** Single Study **: '
 
 outdir = get_output_dir()
 
@@ -33,15 +34,13 @@ experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment
 
 def main(study_spec_file, geography_name, control_file=None,
          dryrun=False, no_slurm=False):
-    logprefix = '** Single Study **: '
-
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)
     logger.info('*************** Single Study *****************')
     logger.info('----------------------------------------------')
 
-    # Read the study control file
+    # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
 
@@ -85,9 +84,9 @@ def main(study_spec_file, geography_name, control_file=None,
     logger.info(f"{logprefix} Model Generation - Experiments = {EXPERIMENTS}")
     logger.info(f"{logprefix} Model Generation - base_loading_file_name = {baseloadingfilename}")
 
+    # A shell command is built for this job submission.
     CMD = f"{model_generator_script} -cf {control_file} "
     if not no_slurm:
-        # Create a task to submit to the queue
         srun_opts = f"--nodes={1} " \
                     f"--ntasks={1} " \
                     f"--exclusive "
@@ -95,7 +94,7 @@ def main(study_spec_file, geography_name, control_file=None,
     else:
         pass
 
-    # Submit the job
+    # Job is submitted.
     p1 = None
     logger.info(f'Job command is: "{CMD}"')
     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
