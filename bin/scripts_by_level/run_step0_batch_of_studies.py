@@ -37,13 +37,10 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
     logger.info('************** Batch of studies **************')
     logger.info('----------------------------------------------')
 
+    # Specification File is read.
     geo_scale, study_pairs, control_options = read_batch_spec_file(batch_spec_file)
 
-    tempstr = 'study' if len(study_pairs) == 1 else 'studies'
-    logger.info('%d %s to be conducted: %s' %
-                (len(study_pairs), tempstr, study_pairs))
-
-    # Set SLURM parameters
+    # SLURM job submission parameters are specified.
     NUM_NODES = 1
     NUM_TASKS = 36
     NUM_CORES = 36
@@ -51,13 +48,14 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
     SLURM_OUTPUT = 'slurm_out'
     single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
 
+    # Study pairs (Geography, Model+Experiments) are submitted as SLURM "sbatch" jobs.
     for sp in study_pairs:
         geoname = sp[0]
         filesafegeostring = geoname.replace(' ', '').replace(',', '')
         studyspecname = sp[1]
         spname = filesafegeostring+'_'+studyspecname
 
-        # Generate a control file with a unique identifier (uuid4)
+        # A control file with a unique identifier (uuid4) is created.
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
                         "study_spec": studyspecname, "control_options": control_options,
                         "code_version": version,
@@ -66,7 +64,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
         with open(unique_control_file, "w") as f:
             yaml.safe_dump(control_dict, f, default_flow_style=False)
 
-        # Create a job to submit to the queue
+        # A shell command is built for this job submission.
         CMD = f"{single_study_script} -cf {unique_control_file}"
         if not no_slurm:
             sbatch_opts = f"--job-name={spname} " \
@@ -81,7 +79,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
         else:
             CMD = CMD + " --no_slurm"
 
-        # Submit the job
+        # Job is submitted.
         logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun- Would submit command'):
             subprocess.Popen([CMD], shell=True)
@@ -111,6 +109,11 @@ def read_batch_spec_file(batch_spec_file):
 
     # read other options
     control_options = batchdict['control_options']
+
+    logger.info('%d %s to be conducted: %s' %
+                (len(study_pairs),
+                 'study' if len(study_pairs) == 1 else 'studies',
+                 study_pairs))
 
     return geo_scale, study_pairs, control_options
 
