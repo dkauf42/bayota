@@ -63,12 +63,9 @@ class PostInstallCommand(setuptools.command.install.install):
     """Post-installation for installation mode."""
     def run(self):
 
-        from bayota_settings.base import BayotaConfigured
-        bayota_configured = BayotaConfigured()
+        from bayota_settings.base import create_workspace_directory_and_set_up_user_config_files
 
-        bayota_configured.make_user_config()
-        bayota_configured.make_bash_config()
-        bayota_configured.make_log_config()
+        create_workspace_directory_and_set_up_user_config_files()
 
         setuptools.command.install.install.run(self)
 

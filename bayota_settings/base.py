@@ -30,122 +30,101 @@ def get_bayota_version(verbose=False):
     return version
 
 
-def get_example_config_path():
-    example_config_path = pkg_resources.resource_filename('bayota_settings', 'install_config.ini')
-    return example_config_path
+# The version number is retrieved.
+version = get_bayota_version()
+
+# Example configuration files are retrieved from this directory.
+example_user_config = pkg_resources.resource_filename('bayota_settings', 'install_config.ini')
+example_bash_config = pkg_resources.resource_filename('bayota_settings', 'example_bash_config.con')
+example_log_config = pkg_resources.resource_filename('bayota_settings', 'example_logging_config.cfg')
+
+# A configuration object (for holding paths and settings) is generated from the example file.
+config_obj = configparser.ConfigParser(os.environ,
+                                       interpolation=configparser.ExtendedInterpolation(),
+                                       comment_prefixes=('#', ';'))
+config_obj.read(example_user_config)
+# The code version number is saved to the configuration object (note: other user config paths may depend on it).
+config_obj.set("version", "version", str(version))
+
+# Directories are retrieved from the example configuration.
+config_dir = config_obj['workspace_directories']['config']
+user_config = config_obj['other_config']['userconfigcopy']
+bash_config = config_obj['other_config']['bashconfig']
+log_config = config_obj['other_config']['logconfig']
+
+default_output_dir = config_obj['output_directories']['general']
+default_graphics_dir = config_obj['output_directories']['graphics']
+default_logging_dir = config_obj['output_directories']['logs']
 
 
-# Example Config Files
-path_to_examples = os.path.dirname(__file__)
-example_user_config = os.path.join(path_to_examples, "install_config.ini")
-example_bash_config = os.path.join(path_to_examples, "example_bash_config.con")
-example_log_config = os.path.join(path_to_examples, "example_logging_config.cfg")
+''' "Private" helper functions '''
 
 
-class BayotaConfigured:
-    def __init__(self, verbose=False):
+def _create_file_in_config_dir_if_doesnt_exist(file_path, example_file):
+    created = False
+    if not os.path.isfile(file_path):
+        os.makedirs(config_dir, exist_ok=True)
+        shutil.copyfile(example_file, file_path)
+        created = True
+    return created
 
-        self.version = get_bayota_version()
 
-        # The version number is updated in the config file.
-        parser = configparser.ConfigParser(os.environ,
-                                           interpolation=configparser.ExtendedInterpolation(),
-                                           comment_prefixes=('#', ';'))
-        parser.read(get_example_config_path())
-        parser.set("version", "version", str(self.version))
-
-        ws_dir = parser['top_paths']['workspace_top']
-        if verbose:
-            print('bayota_settings.base(): ws_dir = %s' % ws_dir)
-        os.makedirs(ws_dir, exist_ok=True)
-
-        self.config_dir = parser['workspace_directories']['config']
-        self.user_config = parser['other_config']['userconfigcopy']
-        self.bash_config = parser['other_config']['bashconfig']
-        self.log_config = parser['other_config']['logconfig']
-
-        self.default_output_dir = parser['output_directories']['general']
-        self.default_graphics_dir = parser['output_directories']['graphics']
-        self.default_logging_dir = parser['output_directories']['logs']
-
-    def make_config_file(self, file_path, example_file):
-        created = False
-        if not os.path.isfile(file_path):
-            os.makedirs(self.config_dir, exist_ok=True)
-            shutil.copyfile(example_file, file_path)
-            created = True
-        return created
-
-    def parse_user_config(self):
-        self.make_user_config()
-
-        config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
-        config.read(self.user_config)
-
-        return config
-
-    def make_user_config(self):
-        created = self.make_config_file(file_path=self.user_config,
-                                        example_file=example_user_config)
-        if created:
-            # Ensure version is up-to-date
-            config = configparser.ConfigParser()
-            config.read(self.user_config)
-
-            config.set("version", "version", str(self.version))
-
-            with open(self.user_config, 'w') as newini:
-                config.write(newini)
-
-    def make_bash_config(self):
-        self.make_config_file(file_path=self.bash_config,
-                              example_file=example_bash_config)
-
-    def make_log_config(self):
-        self.make_config_file(file_path=self.log_config,
-                              example_file=example_log_config)
-
-    def write_example_config(self):
+def _ensure_user_config_file_exists_with_current_version_number():
+    created = _create_file_in_config_dir_if_doesnt_exist(file_path=user_config, example_file=example_user_config)
+    if created:
+        # Ensure version is up-to-date
         config = configparser.ConfigParser()
+        config.read(user_config)
 
-        config.add_section('output_directories')
-        config['output_directories']['general'] = self.default_output_dir
-        config['output_directories']['graphics'] = self.default_graphics_dir
-        config['output_directories']['logs'] = self.default_logging_dir
+        config.set("version", "version", str(version))
 
-        # config.add_section('settings')
-        # config['settings']['logging'] = default_logging_dir
-
-        with open("install_config.ini", 'w') as f:
-            config.write(f)
+        with open(user_config, 'w') as newini:
+            config.write(newini)
 
 
-class MyLogFormatter(logging.Formatter):
-    """Note: this class is used in the log configuration file (typically stored in ~/.config/$USER/)
-    """
-    def format(self, record):
-        location = '%s.%s:%s' % (record.name, record.funcName, record.lineno)
-        msg = '%s %-100s %-8s %s' % (self.formatTime(record), location, record.levelname, record.msg)
-        record.msg = msg
-        return super(MyLogFormatter, self).format(record)
+def _parse_user_config():
+    _ensure_user_config_file_exists_with_current_version_number()
+
+    config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
+    config.read(user_config)
+
+    return config
 
 
-bayota_configured = BayotaConfigured()
-logdir = bayota_configured.parse_user_config()['output_directories']['logs']
-os.makedirs(logdir, exist_ok=True)
-logfilename = os.path.join(logdir, 'efficiencysubproblem_debug.log')
+def _make_or_get_user_dir(section, key):
+    dir = _parse_user_config()[section][key]
+    os.makedirs(dir, exist_ok=True)
+    return dir
+
+
+''' "Public" set-up and getter functions '''
+
+
+def create_workspace_directory_and_set_up_user_config_files(verbose=True):
+    ws_dir = config_obj['top_paths']['workspace_top']
+    if verbose:
+        print('bayota_settings.base(): ws_dir = %s' % ws_dir)
+    os.makedirs(ws_dir, exist_ok=True)
+
+    _ensure_user_config_file_exists_with_current_version_number()
+    _create_file_in_config_dir_if_doesnt_exist(file_path=bash_config, example_file=example_bash_config)
+    _create_file_in_config_dir_if_doesnt_exist(file_path=log_config, example_file=example_log_config)
 
 
 def set_up_logger():
-    bayota_configured.make_log_config()
+    logdir = _parse_user_config()['output_directories']['logs']
+    os.makedirs(logdir, exist_ok=True)
+    logfilename = os.path.join(logdir, 'efficiencysubproblem_debug.log')
 
-    logging.config.fileConfig(bayota_configured.log_config,
+    _create_file_in_config_dir_if_doesnt_exist(file_path=log_config, example_file=example_log_config)
+
+    logging.config.fileConfig(log_config,
                               defaults={'logfilename': logfilename},
                               disable_existing_loggers=False)
 
 
 def get_source_csvs_dir():
-    datadir_top_level = bayota_configured.parse_user_config()['data_directories']['sourcecsvs']
+    datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
     if not os.path.isdir(datadir_top_level):
         raise ValueError('Source CSVs directory (%s) specified in config does not exist!' % datadir_top_level)
 
@@ -153,17 +132,11 @@ def get_source_csvs_dir():
 
 
 def get_raw_data_dir():
-    rawdatadir = bayota_configured.parse_user_config()['data_directories']['rawdata']
+    rawdatadir = _parse_user_config()['data_directories']['rawdata']
     if not os.path.isdir(rawdatadir):
         raise ValueError('Raw data directory (%s) specified in config does not exist!' % rawdatadir)
 
     return rawdatadir
-
-
-def _make_or_get_user_dir(section, key):
-    dir = bayota_configured.parse_user_config()[section][key]
-    os.makedirs(dir, exist_ok=True)
-    return dir
 
 
 def get_output_dir():
@@ -188,3 +161,13 @@ def get_source_pickles_dir():
     return _make_or_get_user_dir('temp_directories', 'source_pickles')
 def get_model_instances_dir():
     return _make_or_get_user_dir('temp_directories', 'model_instances')
+
+
+class MyLogFormatter(logging.Formatter):
+    """Note: this class is used in the log configuration file (typically stored in ~/.config/$USER/)
+    """
+    def format(self, record):
+        location = '%s.%s:%s' % (record.name, record.funcName, record.lineno)
+        msg = '%s %-100s %-8s %s' % (self.formatTime(record), location, record.levelname, record.msg)
+        record.msg = msg
+        return super(MyLogFormatter, self).format(record)
