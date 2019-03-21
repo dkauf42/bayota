@@ -20,7 +20,7 @@ from argparse import ArgumentParser
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
 from bayota_settings.config_script import get_output_dir, get_scripts_dir, get_model_instances_dir, \
-    set_up_logger, get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir, \
+    set_up_logger, get_bayota_version, get_experiment_specs_dir, \
     get_control_dir, get_model_specs_dir
 
 logger = logging.getLogger('root')
@@ -35,56 +35,23 @@ model_generator_script = os.path.join(get_scripts_dir(), 'run_step2_generatemode
 experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment.py')
 
 
-def main(study_spec_file, geography_name, control_file=None,
-         dryrun=False, no_slurm=False):
+def main(control_file=None, dryrun=False, no_slurm=False):
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)
     logger.info('*************** Single Study *****************')
     logger.info('----------------------------------------------')
 
-    # The control file is read.
-    if not not control_file:
-        control_dict = read_spec(control_file)
-
-        study_spec_file = os.path.join(get_single_study_specs_dir(), control_dict['study_spec'] + '.yaml')
-        geography_name = control_dict['geography']['entity']
-    else:
-        control_dict = dict()
-
-    # read from study specification file (and add those entries to the unique control file)
-    studydict = read_spec(study_spec_file)
-    #
-    filesafegeostring = geography_name.replace(' ', '').replace(',', '')
-    #
-    model_spec_name = studydict['model_spec']
-    model_spec_file = os.path.join(get_model_specs_dir(), model_spec_name + '.yaml')
-    model_dict = read_spec(model_spec_file)  # Model generation details are saved to control file.
-
-    saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
-                                                   'modelinstance_' + model_spec_name + '_' + filesafegeostring + '.pickle')
-    control_dict['model'] = {'spec_file': model_spec_file,
-                             'objectiveshortname': model_dict['objectiveshortname'],
-                             'constraintshortname': model_dict['constraintshortname'],
-                             'saved_file_for_this_study': saved_model_file_for_this_study}
-    #
-    EXPERIMENTS = studydict['experiments']
-    control_dict['experiments'] = EXPERIMENTS
-    #
-    baseloadingfilename = studydict['base_loading_file_name']
-    control_dict['base_loading_file_name'] = baseloadingfilename
-    #
-
-    control_dict['code_version']: version
-    control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-
-    # Write (or replace existing) study control file with updated dictionary entries
-    with open(control_file, "w") as f:
-        yaml.safe_dump(control_dict, f, default_flow_style=False)
+    # Load and save new control file
+    experiments, \
+    baseloadingfilename, \
+    control_dict, \
+    geography_name, \
+    model_spec_name = read_control_file(control_file, version)
 
     logger.info(f"{logprefix} Model Generation - Geography = {geography_name}")
-    logger.info(f"{logprefix} Model Generation - Spec name = {model_spec_name}")
-    logger.info(f"{logprefix} Model Generation - Experiments = {EXPERIMENTS}")
+    logger.info(f"{logprefix} Model Generation - Model specification name = {model_spec_name}")
+    logger.info(f"{logprefix} Model Generation - Experiments = {experiments}")
     logger.info(f"{logprefix} Model Generation - base_loading_file_name = {baseloadingfilename}")
 
     # A shell command is built for this job submission.
@@ -94,10 +61,8 @@ def main(study_spec_file, geography_name, control_file=None,
                     f"--ntasks={1} " \
                     f"--exclusive "
         CMD = "srun " + srun_opts + CMD
-    else:
-        pass
 
-    # Job is submitted.
+    # Job is submitted (to generate the model).
     p1 = None
     logger.info(f'Job command is: "{CMD}"')
     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
@@ -105,8 +70,9 @@ def main(study_spec_file, geography_name, control_file=None,
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         p1.wait()
 
+    # A job is submitted for each experiment in the list.
     p_list = []
-    for ii, exp in enumerate(EXPERIMENTS):
+    for ii, exp in enumerate(experiments):
         logger.info(f"{logprefix} Exp. #{ii+1}: {exp}")
 
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
@@ -123,18 +89,15 @@ def main(study_spec_file, geography_name, control_file=None,
         with open(unique_control_file, "w") as f:
             yaml.safe_dump(control_dict, f, default_flow_style=False)
 
-        # Create a job to submit to the queue
+        # A shell command is built for this job submission.
         CMD = f"{experiment_script}  -cf {unique_control_file}"
-
         if no_slurm:
             CMD = CMD + " --no_slurm"
 
-        # Submit the job
+        # Job is submitted.
         logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
             p_list.append(subprocess.Popen([CMD], shell=True))
-        # if notdry(dryrun, logger, '--Dryrun-- Would wait'):
-        #     p_list.append(subprocess.Popen([CMD], shell=True))
 
     if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         [p.wait() for p in p_list]
@@ -142,19 +105,54 @@ def main(study_spec_file, geography_name, control_file=None,
     return 0  # a clean, no-issue, exit
 
 
+def read_control_file(control_file, version):
+    if not control_file:
+        raise ValueError('A control file must be specified.')
+
+    control_dict = read_spec(control_file)
+
+    studydict = control_dict['study_spec']
+    geography_name = control_dict['geography']['entity']
+
+    # Geography
+    filesafegeostring = geography_name.replace(' ', '').replace(',', '')
+
+    # Model Specification
+    model_spec_name = studydict['model_spec']
+    model_spec_file = os.path.join(get_model_specs_dir(), model_spec_name + '.yaml')
+    model_dict = read_spec(model_spec_file)  # Model generation details are saved to control file.
+    saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
+                                                   'modelinstance_' + model_spec_name + '_' + filesafegeostring + '.pickle')
+    control_dict['model'] = {'spec_file': model_spec_file,
+                             'objectiveshortname': model_dict['objectiveshortname'],
+                             'constraintshortname': model_dict['constraintshortname'],
+                             'saved_file_for_this_study': saved_model_file_for_this_study}
+
+    # Experiments
+    experiments = studydict['experiments']
+    control_dict['experiments'] = experiments
+
+    # Base Loading Condition
+    baseloadingfilename = studydict['base_loading_file_name']
+    control_dict['base_loading_file_name'] = baseloadingfilename
+
+    # Run log
+    control_dict['code_version']: version
+    control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+
+    # Write (or replace existing) study control file with updated dictionary entries
+    with open(control_file, "w") as f:
+        yaml.safe_dump(control_dict, f, default_flow_style=False)
+
+    return experiments, baseloadingfilename, control_dict, geography_name, model_spec_name
+
+
 def parse_cli_arguments():
     # Input arguments are parsed.
     parser = ArgumentParser()
-    one_or_the_other = parser.add_mutually_exclusive_group(required=True)
-    one_or_the_other.add_argument("-n", "--study_name", dest="study_name", default=None,
-                                  help="name for this study, which should match the study specification file")
-    one_or_the_other.add_argument("-f", "--study_spec_filepath", dest="study_spec_filepath", default=None,
-                                  help="path for this study's specification file")
-    one_or_the_other.add_argument("-cf", "--control_filepath", dest="control_filepath", default=None,
-                                  help="path for this study's control file")
 
-    parser.add_argument("-g", "--geography", dest="geography_name",
-                        help="name for a geography defined in geography_specs.yaml")
+    parser.add_argument("-cf", "--control_filepath", dest="control_filepath", required=True,
+                        help="path for this study's control file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
@@ -164,21 +162,11 @@ def parse_cli_arguments():
 
     opts = parser.parse_args()
 
-    if not not opts.control_filepath:
-        controldict = read_spec(opts.control_filepath)
-        opts.study_spec_file = os.path.join(get_single_study_specs_dir(),
-                                            controldict['study_spec'] + '.yaml')
-        opts.geography_name = controldict['geography']['entity']
-    else:
-        if not opts.study_spec_filepath:  # name was specified instead
-            opts.study_spec_filepath = os.path.join(get_single_study_specs_dir(), opts.study_name + '.yaml')
-
     return opts
 
 
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    sys.exit(main(opts.study_spec_file, opts.geography_name,
-                  control_file=opts.control_filepath,
+    sys.exit(main(control_file=opts.control_filepath,
                   dryrun=opts.dryrun, no_slurm=opts.no_slurm))

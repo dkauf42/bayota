@@ -52,11 +52,11 @@ def main(batch_spec_file, dryrun=False, no_slurm=False):
     single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
 
     # Study pairs (Geography, Model+Experiments) are submitted as SLURM "sbatch" jobs.
-    for sp in study_pairs:
+    for index, sp in enumerate(study_pairs):
         geoname = sp[0]
         filesafegeostring = geoname.replace(' ', '').replace(',', '')
         studyspecname = sp[1]
-        spname = filesafegeostring+'_'+studyspecname
+        spname = filesafegeostring + f"_study{index:03d}"
 
         # A control file with a unique identifier (uuid4) is created.
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
