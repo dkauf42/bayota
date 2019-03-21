@@ -1,8 +1,11 @@
 #!/usr/bin/env python
-
 """
-Example usage command:
+Note: This submits a SLURM "srun" command to launch the 'step4_solveonetrial' script,
+      if CLI argument '--no_slurm' is not passed.
 
+Example usage command:
+  >> ./bin/run_scripts/run_step3_conductexperiment.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step3_experiment_control_b940a328-bf05-4bc0-94e0-bb166eb5880a.yaml
+================================================================================
 """
 import os
 import sys

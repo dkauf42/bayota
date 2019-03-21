@@ -1,8 +1,11 @@
 #!/usr/bin/env python
-
 """
+Note: This submits a SLURM "sbatch" command to launch the 'step1_single_study' script,
+      if CLI argument '--no_slurm' is not passed.
+
 Example usage command:
-    ./bin/scripts_by_level/run_step0_batch_of_studies.py --dryrun -f /Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/batch_study_specs/maryland_counties.yaml
+  >> ./bin/run_scripts/run_step0_batch_of_studies.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
+================================================================================
 """
 
 import os

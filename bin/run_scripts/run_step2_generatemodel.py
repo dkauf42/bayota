@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-
 """
+Note: No SLURM commands are submitted within this script.
+
 Example usage command:
-
+  >> ./bin/run_scripts/run_step2_generatemodel.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938.yaml
+================================================================================
 """
+
 import os
 import sys
 import time
