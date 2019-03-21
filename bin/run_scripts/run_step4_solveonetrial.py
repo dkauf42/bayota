@@ -143,7 +143,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             pass
         else:  # Solution file is moved to s3.
             destination_name = 'optimization' + '/' \
-                               + 'for_kevin_20190319' + '/' \
+                               + 'for_kevin_20190321' + '/' \
                                + geography_entity_str + '/' \
                                + objective_and_constraint_str + '/' \
                                + solution_shortname
