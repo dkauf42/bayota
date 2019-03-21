@@ -28,9 +28,6 @@ bin
 │
 ├── README.md              <- README describing how to conduct optimization studies
 │
-├── cli                    <- command line interfaces written in python
-│   └── ...
-│
 ├── jnotebooks             <- Jupyter notebooks.
 │   └── ...                   Naming convention is a number (for ordering), the creator's initials,
 │                             and a short `_` delimited description, e.g. `1.0-jqp-initial_data_exploration`.
@@ -38,10 +35,10 @@ bin
 ├── python_scripts         <- python scripts for easy access to optimization studies and results analyses.
 │   └── ...
 │
-├── shell_scripts          <- scripts for batch optimization studies.
+├── run_scripts            <- scripts for batch optimization studies.
 │   └── ...
 │
-├── studies                <- .ini files that allow detailed specification of study parameters
+├── specification_files    <- .yaml files that allow detailed specification of study parameters
 │   └── ...
 │
 ```
