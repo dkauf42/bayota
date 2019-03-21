@@ -53,38 +53,20 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 
 #### ⌨️ Command Line Interface
 
-Several alternative CLI scripts are available with varying degrees of completeness:
+First, customize a specification file as desired in `./bin/specification_files`
 
-###### 1) a python cli: "conductor_cli.py"
+Then, execute...
+###### Step 0 - A batch of studies
+`>> ./bin/run_scripts/run_step0_batch_of_studies.py -n lancasterPA_noReduction --no_slurm`
 
---- Two commands are available for conductor_cli.py:
 
-* ```createinstance -f [CONFIG_FILE]``` - instantiate a model using options specified in FILE
-* ```solveinstance -i [INSTANCE_FILE]``` - solve a model instance with specified constraint
+*Note*: `--no_slurm` argument is used when not running studies in parallel 🔀, e.g. on a laptop
 
---- Some examples, executed from the project root (`cd bayota/`):
-- Bundle with main color changed to orange:\
-`$ ./bin/conductor_cli.py createinstance -f bin/studies/study_costmin_county_annearundelmd.ini
-- Serve with nativeScrollbars option set to true:\
-`$ ./bin/conductor_cli.py createinstance [spec] --options.nativeScrollbars`
-- Bundle using custom template (check default template for reference):\
-`$ ./bin/conductor_cli.py solveinstance -i saved_instance.pickle`
-
---- For more details run:\
-`conductor_cli.py --help`, or\
-`conductor_cli.py <command> --help`
-
-###### 2) a standard bash script
-
---- To run the script (from the project root (`cd bayota/`):\
-`> ./bin/conduct_study_on_login_node.bash`
-
-(and you can include --daemon argument to detach process and run with no hangup)
-
-#### 🔀 Run studies in parallel, using slurm
-
-First, customize a study .ini file as desired in./bin/studies,\
-Then, execute `./bin/shell_scripts/conduct_study.bash`
+This will trigger a cascade of four more steps (scripts):
+1) single study
+2) generate model
+3) conduct experiment 
+4) solve a trial
 
 #### 🐍 From the python prompt
 
