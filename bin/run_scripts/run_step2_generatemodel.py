@@ -30,7 +30,7 @@ if not logger.hasHandlers():
 geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
 
 
-def main(model_spec_file, geography_name, control_file=None,
+def main(geography_name, model_spec_file, control_file=None,
          saved_model_file=None, dryrun=False, baseloadingfilename=''):
     logger.info('----------------------------------------------')
     logger.info('************** Model Generation **************')
@@ -39,9 +39,9 @@ def main(model_spec_file, geography_name, control_file=None,
     # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
-        model_spec_file = control_dict['model']['spec_file']
         geography_scale = control_dict['geography']['scale']
         geography_entity = control_dict['geography']['entity']
+        model_spec_file = control_dict['model']['spec_file']
         saved_model_file = control_dict['model']['saved_file_for_this_study']
         baseloadingfilename = control_dict['base_loading_file_name']
 
@@ -130,6 +130,7 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(opts.model_spec_file, opts.geography_name, control_file=opts.control_filepath,
+    sys.exit(main(opts.geography_name, opts.model_spec_file,
+                  control_file=opts.control_filepath,
                   saved_model_file=opts.saved_model_file, dryrun=opts.dryrun,
                   baseloadingfilename=opts.baseloadingfilename))
