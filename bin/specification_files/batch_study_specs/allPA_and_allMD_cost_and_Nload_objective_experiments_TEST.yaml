@@ -11,6 +11,10 @@ study_specs:
     base_loading_file_name: 2010NoActionLoads.csv
     experiments:
       - costmin_20Npercentreduction
+  - model_spec: Nloadreductionmax_totalcostupper
+    base_loading_file_name: 2010NoActionLoads.csv
+    experiments:
+      - loadreductionmax_1mil_total_cost_bound
 control_options:
   move_solution_to_s3: False
   translate_solution_table_to_cast_format: True
