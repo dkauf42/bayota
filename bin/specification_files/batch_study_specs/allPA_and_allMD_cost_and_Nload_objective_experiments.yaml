@@ -5,7 +5,10 @@ geography_entities:
   strmatch: ['.*MD', '.*PA']
 # strmatch: '.*MD'
 study_specs:
-  - costmin_1-40N_experiments
+  - model_spec: costmin_total_Npercentreduction
+    base_loading_file_name: 2010NoActionLoads.csv
+    experiments:
+      - costmin_1-50Npercentreduction
 control_options:
   move_solution_to_s3: True
   translate_solution_table_to_cast_format: True

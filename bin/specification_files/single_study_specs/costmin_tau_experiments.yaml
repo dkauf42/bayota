@@ -1,8 +1,0 @@
-model_spec: costmin_total_percentreduction
-
-base_loading_file_name: 2010NoActionLoads.csv
-
-experiments:
-  - costmin_1-10percentreduction
-  - costmin_11-20percentreduction
-  - costmin_1-10percentreduction_noUrbanNMPlanHR

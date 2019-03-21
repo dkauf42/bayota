@@ -1,6 +1,0 @@
-model_spec: costmin_total_percentreduction_max
-
-base_loading_file_name: 2010NoActionLoads.csv
-
-experiments:
-  - costmin_0percentreduction_max

@@ -1,6 +1,0 @@
-model_spec: Nloadreductionmax_totalcostupper
-
-base_loading_file_name: 2010NoActionLoads.csv
-
-experiments:
-  - loadreductionmax_1mil_total_cost_bound

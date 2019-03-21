@@ -3,5 +3,11 @@ study_spec_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchS
 geographies:
   - CalvertMD
 study_specs:
-  - costmin_1-40_experiments
-  - loadred_hundredthou-4mil_experiments
+  - model_spec: costmin_total_Npercentreduction
+    base_loading_file_name: 2010NoActionLoads.csv
+    experiments:
+      - costmin_1-50Npercentreduction
+  - model_spec: Nloadreductionmax_totalcostupper
+    base_loading_file_name: 2010NoActionLoads.csv
+    experiments:
+      - loadreductionmax_100000-4mil_total_cost_bound
