@@ -119,8 +119,6 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
                             f"--ntasks={1} " \
                             f"--exclusive "
                 CMD = "srun " + srun_opts + CMD
-            else:
-                CMD = CMD + " --no_slurm"
 
             # Job is submitted.
             logger.info(f'Job command is: "{CMD}"')
