@@ -6,7 +6,7 @@ import os
 # access the filepath:
 # ROOT_DIR = pkg_resources.resource_filename('root', 'config.txt')
 # if __name__ == '__main__':
-from bayota_settings.config_script import get_graphics_dir
+from bayota_settings.base import get_graphics_dir
 graphicsdir = get_graphics_dir()
 
 from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj

@@ -21,7 +21,7 @@ from efficiencysubproblem.src.solver_handling import solvehandler
 
 from efficiencysubproblem.src.model_handling.utils import load_model_pickle
 
-from bayota_settings.config_script import set_up_logger, get_model_instances_dir, \
+from bayota_settings.base import set_up_logger, get_model_instances_dir, \
     get_output_dir, get_scripts_dir
 
 logger = logging.getLogger('root')

@@ -16,7 +16,7 @@ from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionH
 from castjeeves.src.jeeves import Jeeves
 
 from bayota_util.infeasible import *
-from bayota_settings.config_script import get_output_dir, get_raw_data_dir
+from bayota_settings.base import get_output_dir, get_raw_data_dir
 
 log = logging.getLogger(__name__)
 

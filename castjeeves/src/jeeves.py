@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 
-from bayota_settings.config_script import get_source_pickles_dir
+from bayota_settings.base import get_source_pickles_dir
 from . import get_sqlsourcetabledir
 from . import get_sqlmetadatatabledir
 

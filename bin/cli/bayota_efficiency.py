@@ -15,7 +15,7 @@ from efficiencysubproblem.src.vis.sequence_plot import plotlib_costobj
 from efficiencysubproblem.src.study import Study
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
 
-from bayota_settings.config_script import get_graphics_dir, set_up_logger
+from bayota_settings.base import get_graphics_dir, set_up_logger
 
 graphicsdir = get_graphics_dir()
 

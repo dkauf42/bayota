@@ -7,7 +7,7 @@ from itertools import product
 # import dask.dataframe as dd
 
 from sandbox.config import inaws, s3, _S3BUCKET
-from bayota_settings.config_script import get_output_dir
+from bayota_settings.base import get_output_dir
 
 outdir = get_output_dir()
 

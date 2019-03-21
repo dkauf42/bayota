@@ -13,7 +13,7 @@ from efficiencysubproblem.src.spec_handler import read_spec
 
 from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
 from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler
-from bayota_settings.config_script import set_up_logger,\
+from bayota_settings.base import set_up_logger,\
     get_spec_files_dir, get_model_specs_dir, get_model_instances_dir, get_experiment_specs_dir, \
     get_output_dir
 

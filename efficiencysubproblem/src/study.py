@@ -11,7 +11,7 @@ import pyomo.environ as pe
 from efficiencysubproblem.src.model_handling.interface import get_loaded_model_handler
 from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
 
-from bayota_settings.config_script import get_output_dir, set_up_logger, get_bayota_version
+from bayota_settings.base import get_output_dir, set_up_logger, get_bayota_version
 
 set_up_logger()
 logger = logging.getLogger(__name__)

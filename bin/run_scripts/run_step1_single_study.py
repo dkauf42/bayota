@@ -19,7 +19,7 @@ from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
-from bayota_settings.config_script import get_output_dir, get_scripts_dir, get_model_instances_dir, \
+from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_instances_dir, \
     set_up_logger, get_bayota_version, get_experiment_specs_dir, \
     get_control_dir, get_model_specs_dir
 

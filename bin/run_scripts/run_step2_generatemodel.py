@@ -18,7 +18,7 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.model_handling import model_generator
 from efficiencysubproblem.src.model_handling.utils import save_model_pickle
 
-from bayota_settings.config_script import set_up_logger, get_model_specs_dir,\
+from bayota_settings.base import set_up_logger, get_model_specs_dir,\
     get_spec_files_dir, get_model_instances_dir
 
 logger = logging.getLogger('root')

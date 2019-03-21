@@ -19,7 +19,7 @@ from argparse import ArgumentParser
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
 
-from bayota_settings.config_script import set_up_logger, get_experiment_specs_dir,\
+from bayota_settings.base import set_up_logger, get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
 
 logger = logging.getLogger('root')
