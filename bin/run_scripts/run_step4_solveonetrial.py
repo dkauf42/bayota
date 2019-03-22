@@ -36,7 +36,8 @@ _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 def main(saved_model_file=None, model_modification_string=None, trial_name=None,
          control_file=None, solutions_folder_name=None,
-         dryrun=False, no_s3=False, translate_to_cast_format=False) -> int:
+         dryrun=False, translate_to_cast_format=False,
+         move_solution_to_s3=False, move_CASTformatted_solution_to_s3=False) -> int:
 
     # The control file is read.
     if not not control_file:
@@ -53,7 +54,8 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                        control_dict['model']['constraintshortname']
 
         # Control Options
-        no_s3 = not bool(control_dict['control_options']['move_solution_to_s3'])
+        move_solution_to_s3 = bool(control_dict['control_options']['move_solution_to_s3'])
+        move_CASTformatted_solution_to_s3 = bool(control_dict['control_options']['move_CASTformmated_solution_to_s3'])
         translate_to_cast_format = control_dict['control_options']['translate_solution_table_to_cast_format']
     else:
         geography_entity_str = ''
@@ -113,6 +115,30 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         logger.debug(f"solutions_dir = {solutions_dir}")
         os.makedirs(solutions_dir, exist_ok=True)
 
+        # Optimization solution table is written to file (uses comma-delimiter and .csv extention)
+        solution_shortname = f"{trial_name}_{solution_dict['timestamp']}.csv"
+        solution_fullname = f"{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
+
+        outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_fullname)
+        solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
+        logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
+
+        s3_destination_dir = 'optimization/for_kevin_20190322/' \
+                             + geography_entity_str + '/' \
+                             + objective_and_constraint_str + '/'
+
+        if move_solution_to_s3:
+            # A shell command is built for this job submission.
+            CMD = f"{move_to_s3_script} " \
+                  f"-op {outputdfpath_bayotaformat} " \
+                  f"-dp {s3_destination_dir + solution_shortname} "
+
+            # Job is submitted.
+            logger.info(f'Job command is: "{CMD}"')
+            if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
+                p1 = subprocess.Popen([CMD], shell=True)
+                p1.wait()
+
         # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
         if translate_to_cast_format:
             solution_shortname_castformat = f"castformat_{trial_name}_{solution_dict['timestamp']}.txt"
@@ -128,38 +154,19 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                                           index=False, line_terminator='\r\n')
                 dst.seek(-1, os.SEEK_END)  # <---- 1 : len('\n') to remove blank line at end of file
                 dst.truncate()
-
             logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
-        # Optimization info solution table is written to file (uses comma-delimiter and .csv extention)
-        solution_shortname = f"{trial_name}_{solution_dict['timestamp']}.csv"
-        solution_fullname = f"{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
+            if move_CASTformatted_solution_to_s3:
+                # A shell command is built for this job submission.
+                CMD = f"{move_to_s3_script} " \
+                      f"-op {outputdfpath_castformat} " \
+                      f"-dp {s3_destination_dir + solution_shortname_castformat} "
 
-        outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_fullname)
-        solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
-        logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
-
-        if no_s3:
-            pass
-        else:  # Solution file is moved to s3.
-            destination_name = 'optimization' + '/' \
-                               + 'for_kevin_20190322' + '/' \
-                               + geography_entity_str + '/' \
-                               + objective_and_constraint_str + '/' \
-                               + solution_shortname
-
-            # A shell command is built for this job submission.
-            CMD = f"{move_to_s3_script} " \
-                  f"-op {outputdfpath_bayotaformat} " \
-                  f"-dp {destination_name} "
-
-            # Job is submitted.
-            logger.info(f'Job command is: "{CMD}"')
-            p1 = None
-            if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-                p1 = subprocess.Popen([CMD], shell=True)
-            if notdry(dryrun, logger, '--Dryrun-- Would wait'):
-                p1.wait()
+                # Job is submitted.
+                logger.info(f'Job command is: "{CMD}"')
+                if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
+                    p1 = subprocess.Popen([CMD], shell=True)
+                    p1.wait()
 
     return 0  # a clean, no-issue, exit
 
@@ -209,7 +216,7 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
-    parser.add_argument("--no_s3", action='store_true',
+    parser.add_argument("--no_s3", action='store_false',
                         help="don't move files to AWS S3 buckets")
 
     parser.add_argument("--translate_to_cast_format", action='store_true')
@@ -246,5 +253,6 @@ if __name__ == '__main__':
                   trial_name=opts.trial_name,
                   solutions_folder_name=opts.solutions_folder_name,
                   dryrun=opts.dryrun,
-                  no_s3=opts.no_s3,
+                  move_solution_to_s3=opts.no_s3,
+                  move_CASTformatted_solution_to_s3=opts.no_s3,
                   translate_to_cast_format=opts.translate_to_cast_format))
