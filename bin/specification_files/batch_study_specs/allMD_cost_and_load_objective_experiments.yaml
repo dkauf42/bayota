@@ -1,5 +1,4 @@
 
-study_spec_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/single_study_specs'
 geography_scale: County
 geography_entities:
   strmatch: ['.*MD']
