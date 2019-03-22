@@ -35,7 +35,7 @@ model_generator_script = os.path.join(get_scripts_dir(), 'run_step2_generatemode
 experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment.py')
 
 
-def main(control_file=None, dryrun=False, no_slurm=False):
+def main(control_file=None, dryrun=False, no_slurm=False) -> int:
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)

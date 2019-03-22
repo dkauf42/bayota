@@ -31,7 +31,7 @@ geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
 
 
 def main(geography_name, model_spec_file, control_file=None,
-         saved_model_file=None, dryrun=False, baseloadingfilename=''):
+         saved_model_file=None, dryrun=False, baseloadingfilename='') -> int:
     logger.info('----------------------------------------------')
     logger.info('************** Model Generation **************')
     logger.info('----------------------------------------------')
@@ -71,6 +71,8 @@ def main(geography_name, model_spec_file, control_file=None,
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
     save_model_pickle(mdlhandler=mdlhandler, savepath=savepath, dryrun=dryrun)
+
+    return 0  # a clean, no-issue, exit
 
 
 def parse_cli_arguments():

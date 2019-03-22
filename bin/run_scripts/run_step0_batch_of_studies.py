@@ -33,7 +33,7 @@ geo_expansion_file = os.path.join(get_spec_files_dir(), 'geography_expansions.ya
 jeeves = Jeeves()
 
 
-def main(batch_spec_file, dryrun=False, no_slurm=False):
+def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('*********** BayOTA version %s *************' % version)

@@ -32,7 +32,7 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py
 
 
 def main(experiment_spec_file, saved_model_file=None, control_file=None,
-         dryrun=False, no_slurm=False):
+         dryrun=False, no_slurm=False) -> int:
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('************ Experiment Launching ************')
@@ -126,6 +126,8 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
                 p_list.append(subprocess.Popen([CMD], shell=True))
 
     [p.wait() for p in p_list]
+
+    return 0  # a clean, no-issue, exit
 
 
 def parse_cli_arguments():

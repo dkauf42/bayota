@@ -36,7 +36,7 @@ _S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 def main(saved_model_file=None, model_modification_string=None, trial_name=None,
          control_file=None, solutions_folder_name=None,
-         dryrun=False, no_s3=False, translate_to_cast_format=False):
+         dryrun=False, no_s3=False, translate_to_cast_format=False) -> int:
 
     # The control file is read.
     if not not control_file:
@@ -160,6 +160,8 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                 p1 = subprocess.Popen([CMD], shell=True)
             if notdry(dryrun, logger, '--Dryrun-- Would wait'):
                 p1.wait()
+
+    return 0  # a clean, no-issue, exit
 
 
 def make_model_modification(dictwithtrials, dryrun, mdlhandler):
