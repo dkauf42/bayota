@@ -1,7 +1,7 @@
 import pyomo.environ as pe
 
 
-def total_cost_expr(mdl):
+def total_cost_expr(mdl) -> pe.ConcreteModel:
     """ Total Cost Expression """
     def total_cost_rule(model):
         return sum([(model.c[b] * model.x[b, l, lmbda])
@@ -15,7 +15,7 @@ def total_cost_expr(mdl):
     return mdl
 
 
-def original_load_expr(mdl):
+def original_load_expr(mdl) -> pe.ConcreteModel:
     """ Original Load Expression (with lrsegs aggregated together) """
     def original_load_rule(model, p):
         return sum([(model.phi[l, lmbda, p] * model.T[l, lmbda])
@@ -26,7 +26,7 @@ def original_load_expr(mdl):
     return mdl
 
 
-def original_load_for_each_lrseg_expr(mdl):
+def original_load_for_each_lrseg_expr(mdl) -> pe.ConcreteModel:
     """ Original Load Expression (quantified for each lrseg) """
     def original_load_rule_for_each_lrseg(model, l, p):
         return sum((model.phi[l, lmbda, p] * model.T[l, lmbda])
@@ -38,7 +38,7 @@ def original_load_for_each_lrseg_expr(mdl):
     return mdl
 
 
-def new_load_expr(mdl):
+def new_load_expr(mdl) -> pe.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(model, p):
         newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
@@ -60,7 +60,7 @@ def new_load_expr(mdl):
     return mdl
 
 
-def new_load_for_each_lrseg_expr(mdl):
+def new_load_for_each_lrseg_expr(mdl) -> pe.ConcreteModel:
     """ New Loa (quantified for each lrseg) """
     def new_load_rule_for_each_lrseg(model, l, p):
         newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
@@ -83,7 +83,7 @@ def new_load_for_each_lrseg_expr(mdl):
     return mdl
 
 
-def percent_reduction_expr(mdl):
+def percent_reduction_expr(mdl) -> pe.ConcreteModel:
     """ Percent Relative Load Reduction (with lrsegs aggregated together) """
 
     # The model parameters 'originalload[p]' and 'newload[p]' is required for this expression.
@@ -100,7 +100,7 @@ def percent_reduction_expr(mdl):
     return mdl
 
 
-def percent_reduction_for_each_lrseg_expr(mdl):
+def percent_reduction_for_each_lrseg_expr(mdl) -> pe.ConcreteModel:
     """ Percent Relative Load Reduction (quantified for each lrseg) """
 
     # The model parameter 'originalload[l, p]' is required for this expression.

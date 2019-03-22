@@ -1,7 +1,7 @@
 import pyomo.environ as pe
 
 
-def Available_Acres_Constraint(model):
+def Available_Acres_Constraint(model) -> pe.ConcreteModel:
     """ BMPs within a BMPGRP cannot use more than the acres in a LRSEG,LOADSRC """
 
     def additive_bmps_acre_bound_rule(model, gamma, l, lmbda):

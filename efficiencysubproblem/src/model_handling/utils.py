@@ -4,6 +4,7 @@ import pyomo.environ as pe
 from itertools import compress
 
 from efficiencysubproblem.src.spec_handler import notdry
+from efficiencysubproblem.src.model_handling.model_generator import ModelHandlerBase
 
 import logging
 logger = logging.getLogger('root')
@@ -60,7 +61,7 @@ def save_model_pickle(mdlhandler, savepath, dryrun=False, logprefix=''):
         logger.info(f"*{logprefix} - model pickling done* <- it took {timefor_modelsave} seconds>")
 
 
-def load_model_pickle(savepath, dryrun=False, logprefix=''):
+def load_model_pickle(savepath, dryrun=False, logprefix='') -> ModelHandlerBase:
     mdlhandler = None
     if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % savepath):
         starttime_modelload = time.time()  # Wall time - clock starts.
