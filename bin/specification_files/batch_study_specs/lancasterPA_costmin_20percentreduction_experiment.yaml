@@ -1,0 +1,14 @@
+
+geography_scale: County
+geography_entities:
+  strmatch: ['Lancaster, PA']
+# strmatch: '.*MD'
+study_specs:
+  - model_spec: costmin_total_Npercentreduction
+    base_loading_file_name: 2010NoActionLoads.csv
+    experiments:
+      - costmin_20Npercentreduction
+      - costmin_0percentreduction_max
+control_options:
+  move_solution_to_s3: True
+  translate_solution_table_to_cast_format: True
