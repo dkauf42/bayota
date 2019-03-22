@@ -12,7 +12,7 @@ import logging
 import logging.config
 
 
-def get_bayota_version(verbose=False):
+def get_bayota_version(verbose=False) -> str:
     try:
         version = pkg_resources.require("bayota")[0].version
     except pkg_resources.DistributionNotFound:
@@ -60,7 +60,7 @@ default_logging_dir = config_obj['output_directories']['logs']
 ''' "Private" helper functions '''
 
 
-def _create_file_in_config_dir_if_doesnt_exist(file_path, example_file):
+def _create_file_in_config_dir_if_doesnt_exist(file_path, example_file) -> bool:
     created = False
     if not os.path.isfile(file_path):
         os.makedirs(config_dir, exist_ok=True)
@@ -82,7 +82,7 @@ def _ensure_user_config_file_exists_with_current_version_number():
             config.write(newini)
 
 
-def _parse_user_config():
+def _parse_user_config() -> configparser.ConfigParser:
     _ensure_user_config_file_exists_with_current_version_number()
 
     config = configparser.ConfigParser(os.environ, interpolation=configparser.ExtendedInterpolation())
@@ -91,7 +91,7 @@ def _parse_user_config():
     return config
 
 
-def _make_or_get_user_dir(section, key):
+def _make_or_get_user_dir(section, key) -> str:
     dir = _parse_user_config()[section][key]
     os.makedirs(dir, exist_ok=True)
     return dir
@@ -123,7 +123,7 @@ def set_up_logger():
                               disable_existing_loggers=False)
 
 
-def get_source_csvs_dir():
+def get_source_csvs_dir() -> str:
     datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
     if not os.path.isdir(datadir_top_level):
         raise ValueError('Source CSVs directory (%s) specified in config does not exist!' % datadir_top_level)
@@ -131,7 +131,7 @@ def get_source_csvs_dir():
     return datadir_top_level
 
 
-def get_raw_data_dir():
+def get_raw_data_dir() -> str:
     rawdatadir = _parse_user_config()['data_directories']['rawdata']
     if not os.path.isdir(rawdatadir):
         raise ValueError('Raw data directory (%s) specified in config does not exist!' % rawdatadir)
@@ -139,27 +139,27 @@ def get_raw_data_dir():
     return rawdatadir
 
 
-def get_output_dir():
+def get_output_dir() -> str:
     return _make_or_get_user_dir('output_directories', 'general')
-def get_scripts_dir():
+def get_scripts_dir() -> str:
     return _make_or_get_user_dir('top_paths', 'scripts')
-def get_control_dir():
+def get_control_dir() -> str:
     return _make_or_get_user_dir('workspace_directories', 'control')
-def get_spec_files_dir():
+def get_spec_files_dir() -> str:
     return _make_or_get_user_dir('top_paths', 'spec_files_top')
-def get_single_study_specs_dir():
+def get_single_study_specs_dir() -> str:
     return _make_or_get_user_dir('specification_file_directories', 'single_studies')
-def get_batch_studies_specs_dir():
+def get_batch_studies_specs_dir() -> str:
     return _make_or_get_user_dir('specification_file_directories', 'batch_studies')
-def get_model_specs_dir():
+def get_model_specs_dir() -> str:
     return _make_or_get_user_dir('specification_file_directories', 'models')
-def get_experiment_specs_dir():
+def get_experiment_specs_dir() -> str:
     return _make_or_get_user_dir('specification_file_directories', 'experiments')
-def get_graphics_dir():
+def get_graphics_dir() -> str:
     return _make_or_get_user_dir('output_directories', 'graphics')
-def get_source_pickles_dir():
+def get_source_pickles_dir() -> str:
     return _make_or_get_user_dir('temp_directories', 'source_pickles')
-def get_model_instances_dir():
+def get_model_instances_dir() -> str:
     return _make_or_get_user_dir('temp_directories', 'model_instances')
 
 
