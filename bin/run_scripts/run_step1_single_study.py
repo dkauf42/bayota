@@ -63,11 +63,9 @@ def main(control_file=None, dryrun=False, no_slurm=False) -> int:
         CMD = "srun " + srun_opts + CMD
 
     # Job is submitted (to generate the model).
-    p1 = None
     logger.info(f'Job command is: "{CMD}"')
-    if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
+    if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
         p1 = subprocess.Popen([CMD], shell=True)
-    if notdry(dryrun, logger, '--Dryrun-- Would wait'):
         p1.wait()
 
     # A job is submitted for each experiment in the list.
