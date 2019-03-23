@@ -21,6 +21,8 @@ study_specs:
     experiments:
       - loadreductionmax_100000-5mil_total_cost_bound
 control_options:
-  move_solution_to_s3: True
   translate_solution_table_to_cast_format: True
-  move_CASTformmated_solution_to_s3: True
+  move_files_to_s3:
+    basic_solution: True
+    CASTformmated_solution: True
+    base_path_from_modeling-data: optimization/for_testing_20190323/

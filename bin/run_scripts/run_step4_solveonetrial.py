@@ -54,12 +54,15 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                        control_dict['model']['constraintshortname']
 
         # Control Options
-        move_solution_to_s3 = bool(control_dict['control_options']['move_solution_to_s3'])
-        move_CASTformatted_solution_to_s3 = bool(control_dict['control_options']['move_CASTformmated_solution_to_s3'])
         translate_to_cast_format = control_dict['control_options']['translate_solution_table_to_cast_format']
+        s3_dict = control_dict['control_options']['move_files_to_s3']
+        move_solution_to_s3 = bool(s3_dict['basic_solution'])
+        move_CASTformatted_solution_to_s3 = bool(s3_dict['CASTformmated_solution'])
+        s3_base_path = s3_dict['base_path_from_modeling-data']
     else:
         geography_entity_str = ''
         objective_and_constraint_str = ''
+        s3_base_path = ''
 
     # *****************************
     # Make Model Modification(s)
@@ -123,9 +126,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
         logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
 
-        s3_destination_dir = 'optimization/for_kevin_20190322/' \
-                             + geography_entity_str + '/' \
-                             + objective_and_constraint_str + '/'
+        s3_destination_dir = s3_base_path + geography_entity_str + '/' + objective_and_constraint_str + '/'
 
         if move_solution_to_s3:
             # A shell command is built for this job submission.

@@ -10,5 +10,8 @@ study_specs:
     experiments:
       - costmin_0percentreduction_max
 control_options:
-  move_solution_to_s3: False
   translate_solution_table_to_cast_format: True
+  move_files_to_s3:
+    basic_solution: False
+    CASTformmated_solution: False
+    base_path_from_modeling-data: optimization/for_testing_20190323/
