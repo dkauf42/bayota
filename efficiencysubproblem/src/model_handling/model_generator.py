@@ -5,7 +5,6 @@ from efficiencysubproblem.src.spec_handler import read_spec
 
 from efficiencysubproblem.src.model_handling import model_expressions
 from efficiencysubproblem.src.model_handling import model_components
-from efficiencysubproblem.src.model_handling.utils import extract_indexed_expression_values
 
 import logging
 logger = logging.getLogger('root')
