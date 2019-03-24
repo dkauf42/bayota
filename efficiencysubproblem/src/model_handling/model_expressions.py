@@ -60,6 +60,27 @@ def new_load_expr(mdl) -> pe.ConcreteModel:
     return mdl
 
 
+def new_load_for_each_loadsource_expr(mdl) -> pe.ConcreteModel:
+    """ New Load (with lrsegs aggregated together) """
+    def new_load_rule(model, p, lmbda):
+        newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
+                       pe.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
+                                          if ((model.T[l, lmbda] > 1e-6) &
+                                              ((b, gamma) in model.BMPGRPING) &
+                                              ((b, lmbda) in model.BMPSRCLINKS))
+                                          else 0
+                                          for b in model.BMPS]))
+                                if (gamma, lmbda) in model.BMPGRPSRCLINKS
+                                else 1
+                                for gamma in model.BMPGRPS])
+                       for l in model.LRSEGS])
+
+        return newload
+
+    mdl.new_load_for_each_loadsource_expr = pe.Expression(mdl.PLTNTS, mdl.LOADSRCS, rule=new_load_rule)
+    return mdl
+
+
 def new_load_for_each_lrseg_expr(mdl) -> pe.ConcreteModel:
     """ New Loa (quantified for each lrseg) """
     def new_load_rule_for_each_lrseg(model, l, p):
