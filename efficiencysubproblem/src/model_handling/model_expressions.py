@@ -26,6 +26,16 @@ def original_load_expr(mdl) -> pe.ConcreteModel:
     return mdl
 
 
+def original_load_for_each_loadsource_expr(mdl) -> pe.ConcreteModel:
+    """ Original Load Expression (with lrsegs aggregated together) """
+    def original_load_rule(model, p, lmbda):
+        return sum([(model.phi[l, lmbda, p] * model.T[l, lmbda])
+                    for l in model.LRSEGS])
+
+    mdl.original_load_for_each_loadsource_expr = pe.Expression(mdl.PLTNTS, mdl.LOADSRCS, rule=original_load_rule)
+    return mdl
+
+
 def original_load_for_each_lrseg_expr(mdl) -> pe.ConcreteModel:
     """ Original Load Expression (quantified for each lrseg) """
     def original_load_rule_for_each_lrseg(model, l, p):
