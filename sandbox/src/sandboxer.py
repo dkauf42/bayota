@@ -6,7 +6,6 @@ Test various BMP-load source combinations
 import os
 import sys
 import timeit
-import logging
 import argparse
 import textwrap
 import tkinter as tk
@@ -14,13 +13,12 @@ import tkinter as tk
 from sandbox.src.util.OptCase import OptCase
 from sandbox.src.gui.toplevelframes.MainWindow import MainWindow
 
-from bayota_settings.base import set_up_logger
+from bayota_settings.log_setup import root_logger_setup
 
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
 
-set_up_logger()
-logger = logging.getLogger(__name__)
+logger = root_logger_setup()
 
 
 def main(numinstances=1, testcase=None, scale='', areanames=None):

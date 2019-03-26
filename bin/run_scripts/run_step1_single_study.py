@@ -12,7 +12,6 @@ import os
 import sys
 import uuid
 import yaml
-import logging
 import datetime
 import subprocess
 from argparse import ArgumentParser
@@ -20,13 +19,11 @@ from argparse import ArgumentParser
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 
 from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_instances_dir, \
-    set_up_logger, get_bayota_version, get_experiment_specs_dir, \
+    get_bayota_version, get_experiment_specs_dir, \
     get_control_dir, get_model_specs_dir
+from bayota_settings.log_setup import root_logger_setup
 
-logger = logging.getLogger('root')
-if not logger.hasHandlers():
-    set_up_logger()
-    logger = logging.getLogger(__name__)
+logger = root_logger_setup()
 logprefix = '** Single Study **: '
 
 outdir = get_output_dir()
@@ -38,7 +35,7 @@ experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment
 def main(control_file=None, dryrun=False, no_slurm=False) -> int:
     version = get_bayota_version()
     logger.info('----------------------------------------------')
-    logger.info('*********** BayOTA version %s *************' % version)
+    logger.info('******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
     logger.info('*************** Single Study *****************')
     logger.info('----------------------------------------------')
 

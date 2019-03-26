@@ -12,21 +12,18 @@ import os
 import sys
 import uuid
 import yaml
-import logging
 import datetime
 import itertools
 import subprocess
 from argparse import ArgumentParser
 
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
-from bayota_settings.base import set_up_logger, get_bayota_version, \
+from bayota_settings.base import get_bayota_version, \
     get_scripts_dir, get_spec_files_dir, get_control_dir
+from bayota_settings.log_setup import root_logger_setup
 from castjeeves.src.jeeves import Jeeves
 
-logger = logging.getLogger('root')
-if not logger.hasHandlers():
-    set_up_logger()
-    logger = logging.getLogger(__name__)
+logger = root_logger_setup()
 
 geo_expansion_file = os.path.join(get_spec_files_dir(), 'geography_expansions.yaml')
 
@@ -36,7 +33,7 @@ jeeves = Jeeves()
 def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
     version = get_bayota_version()
     logger.info('----------------------------------------------')
-    logger.info('*********** BayOTA version %s *************' % version)
+    logger.info('******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
     logger.info('************** Batch of studies **************')
     logger.info('----------------------------------------------')
 

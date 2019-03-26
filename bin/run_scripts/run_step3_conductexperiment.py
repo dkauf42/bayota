@@ -19,13 +19,15 @@ from argparse import ArgumentParser
 from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from efficiencysubproblem.src.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
 
-from bayota_settings.base import set_up_logger, get_experiment_specs_dir,\
+from bayota_settings.base import get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
+from bayota_settings.log_setup import set_up_detailedfilelogger
 
-logger = logging.getLogger('root')
-if not logger.hasHandlers():
-    set_up_logger()
-    logger = logging.getLogger(__name__)
+logger = set_up_detailedfilelogger(loggername='experiment',
+                                   filename='efficiencysubproblem_experiments.log',
+                                   level=logging.INFO,
+                                   also_logtoconsole=True)
+
 logprefix = '** Single Experiment **: '
 
 solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py')

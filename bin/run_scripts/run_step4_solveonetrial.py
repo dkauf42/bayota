@@ -21,13 +21,20 @@ from efficiencysubproblem.src.solver_handling import solvehandler
 
 from efficiencysubproblem.src.model_handling.utils import load_model_pickle
 
-from bayota_settings.base import set_up_logger, get_model_instances_dir, \
+from bayota_settings.base import get_model_instances_dir, \
     get_output_dir, get_scripts_dir
+from bayota_settings.log_setup import set_up_detailedfilelogger
 
-logger = logging.getLogger('root')
-if not logger.hasHandlers():
-    set_up_logger()
-    logger = logging.getLogger(__name__)
+logger_trial = set_up_detailedfilelogger(loggername='trial',
+                                         filename='efficiencysubproblem_trials.log',
+                                         level=logging.INFO,
+                                         also_logtoconsole=True)
+
+logger_feasibility = set_up_detailedfilelogger(loggername='feasibility',
+                                               filename='efficiencysubproblem_feasibility.log',
+                                               level=logging.INFO,
+                                               also_logtoconsole=True)
+
 logprefix = '** Single Trial **: '
 
 move_to_s3_script = os.path.join(get_scripts_dir(), 'move_to_s3.py')
@@ -100,14 +107,15 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     modelname_full = os.path.splitext(os.path.basename(saved_model_file))[0]
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(), f"solution_{trial_name}_<timestamp>.csv")
 
-    if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
+    if notdry(dryrun, logger_trial, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
         # The problem is solved.
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
                                                  translate_to_cast_format=translate_to_cast_format)
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
-        logger.info(f"{logprefix} Trial '{trial_name}' is DONE "
+        logger_trial.info(f"{logprefix} Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
                     f"<Solution feasible? --> {solution_dict['feasible']}> ")
+        logger_feasibility.info(f"<feasible: {solution_dict['feasible']}> for {modelname_full}_{trial_name}")
 
         # Optimization objective value is added to the solution table.
         ii = 0
@@ -123,7 +131,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
                 ii += 1
             else:
-                print('more than one objective found, only using one')
+                logger_trial.info('more than one objective found, only using one')
                 break
 
         # Value of modified variable is added to the solution table.
@@ -133,7 +141,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         # Solution is saved.
         # Solutions directory is created if it doesn't exist.
         solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
-        logger.debug(f"solutions_dir = {solutions_dir}")
+        logger_trial.debug(f"solutions_dir = {solutions_dir}")
         os.makedirs(solutions_dir, exist_ok=True)
 
         # Optimization solution table is written to file (uses comma-delimiter and .csv extention)
@@ -142,7 +150,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_fullname)
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
-        logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
+        logger_trial.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
 
         s3_destination_dir = s3_base_path + geography_entity_str + '/' + objective_and_constraint_str + '/'
 
@@ -153,8 +161,8 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                   f"-dp {s3_destination_dir + solution_shortname} "
 
             # Job is submitted.
-            logger.info(f'Job command is: "{CMD}"')
-            if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
+            logger_trial.info(f'Job command is: "{CMD}"')
+            if notdry(dryrun, logger_trial, '--Dryrun-- Would submit command, then wait.'):
                 p1 = subprocess.Popen([CMD], shell=True)
                 p1.wait()
                 # Get return code from process
@@ -178,7 +186,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                                           index=False, line_terminator='\r\n')
                 dst.seek(-1, os.SEEK_END)  # <---- 1 : len('\n') to remove blank line at end of file
                 dst.truncate()
-            logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
+            logger_trial.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
             if move_CASTformatted_solution_to_s3:
                 # A shell command is built for this job submission.
@@ -187,8 +195,8 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                       f"-dp {s3_destination_dir + solution_shortname_castformat} "
 
                 # Job is submitted.
-                logger.info(f'Job command is: "{CMD}"')
-                if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
+                logger_trial.info(f'Job command is: "{CMD}"')
+                if notdry(dryrun, logger_trial, '--Dryrun-- Would submit command, then wait.'):
                     p1 = subprocess.Popen([CMD], shell=True)
                     p1.wait()
                     # Get return code from process
@@ -213,14 +221,14 @@ def make_model_modification(dictwithtrials, dryrun, mdlhandler):
         pass
 
     if not varindexer or (varindexer == 'None'):
-        if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
+        if notdry(dryrun, logger_trial, '--Dryrun-- Would make model modification; '
                                   'setting %s to %s (no index)' %
-                                  (modvar, varvalue)):
+                                        (modvar, varvalue)):
             setattr(mdlhandler.model, modvar, varvalue)
     else:
-        if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
+        if notdry(dryrun, logger_trial, '--Dryrun-- Would make model modification; '
                                   'setting %s to %s (at index %s)' %
-                                  (modvar, varvalue, varindexer)):
+                                        (modvar, varvalue, varindexer)):
             mdlhandler.model.component(modvar)[varindexer] = varvalue
 
     return modvar, varvalue

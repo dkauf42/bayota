@@ -16,12 +16,10 @@ from efficiencysubproblem.src.model_handling.utils import load_model_pickle
 from bin.run_scripts import run_step2_generatemodel
 
 from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_instances_dir, \
-    set_up_logger, get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir
+    get_bayota_version, get_single_study_specs_dir, get_experiment_specs_dir
+from bayota_settings.log_setup import root_logger_setup
 
-logger = logging.getLogger('root')
-if not logger.hasHandlers():
-    set_up_logger()
-    logger = logging.getLogger(__name__)
+logger = root_logger_setup()
 
 outdir = get_output_dir()
 

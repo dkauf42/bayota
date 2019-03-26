@@ -1,0 +1,9 @@
+# Formatter constructors take two optional arguments: a message format string and a date format string.
+#   So the formatters are lists of length 2
+formatters:
+  reallysimple: ['%(levelname)-8s %(message)s',
+                 '']
+  simple: ['%(asctime)s:%(levelname)-8s- %(module)s - %(message)s',
+           '%H:%M:%S']
+  detailed: ["%(asctime)s %(name)s:%(levelname)-8s %(lineno)4d:%(module)-50s %(message)s",
+             "%Y-%m-%d %H:%M:%S"]
