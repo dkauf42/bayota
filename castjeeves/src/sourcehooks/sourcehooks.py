@@ -32,9 +32,15 @@ class SourceHook:
     def names_from_ids(self):
         pass
 
-    def singleconvert(self, sourcetbl=None, toandfromheaders=None, fromtable=None, toname=''):
+    def singleconvert(self, sourcetbl=None, toandfromheaders=None,
+                      fromtable=None, toname='',
+                      use_order_of_sourcetbl=True):
         sourcetable = getattr(self.source, sourcetbl)
-        tblsubset = sourcetable.loc[:, toandfromheaders].merge(fromtable, how='inner')
+
+        if use_order_of_sourcetbl:
+            tblsubset = sourcetable.loc[:, toandfromheaders].merge(fromtable, how='inner')
+        else:
+            tblsubset = fromtable.merge(sourcetable.loc[:, toandfromheaders], how='inner')
 
         return tblsubset.loc[:, [toname]]  # pass column name as list so return type is pandas.DataFrame
 
