@@ -16,6 +16,16 @@ class LoadSource(SourceHook):
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
         self.sector = Sector(sourcedata=sourcedata, metadata=metadata)
 
+    def ids_from_names(self, names=None):
+        names = self.forceToSingleColumnDataFrame(names, colname='loadsourceshortname')
+        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceid', 'loadsourceshortname'],
+                                  fromtable=names, toname='loadsourceid')
+
+    def names_from_ids(self, ids=None):
+        ids = self.forceToSingleColumnDataFrame(ids, colname='loadsourceid')
+        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceshortname', 'loadsourceid'],
+                                  fromtable=ids, toname='loadsourceshortname')
+
     def loadsourcegroupids_from(self, sectorids=None, loadsourceids=None):
         kwargs = (sectorids, loadsourceids)
         kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
@@ -38,6 +48,12 @@ class LoadSource(SourceHook):
         return self.singleconvert(sourcetbl='TblLoadSourceGroupLoadSource',
                                     toandfromheaders=['loadsourcegroupid', 'loadsourceid'],
                                     fromtable=getfrom, toname='loadsourcegroupid')
+
+    def fullnames_from_shortnames(self, loadsourceshortname, use_order_of_sourcetbl=True):
+        loadsourceshortname = self.forceToSingleColumnDataFrame(loadsourceshortname, colname='loadsourceshortname')
+        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsource', 'loadsourceshortname'],
+                                  fromtable=loadsourceshortname, toname='loadsource',
+                                  use_order_of_sourcetbl=use_order_of_sourcetbl)
 
     def loadsourceids_from(self, sectorids=None):
         sectorids = self.forceToSingleColumnDataFrame(sectorids, colname='sectorid')
