@@ -39,6 +39,7 @@ class DataHandlerBase:
         """ Instance Specifiers """
         baseconditionid = 29
         costprofileid = 4
+        self.agencyid = jeeves.agency.ids_from_names(['NONFED'])['agencyid'][0]  # NONFED agency code
 
         """ Data tables for the set definitions """
         TblBmp = jeeves.source.TblBmp.copy()
@@ -409,10 +410,14 @@ class DataHandlerBase:
                               (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
 
         df.drop(columns=['baseconditionid'], inplace=True)
+
+        # Select only a single agency (NONFED)
+        df = df.loc[df['agencyid'] == self.agencyid, :]
         df.drop(columns=['agencyid'], inplace=True)  # and drop agency (for now!)
 
-        df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df)
-        df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df)
+        # add lrseg and loadsource names to table
+        df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df, how='inner')
+        df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df, how='inner')
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['landriversegment', 'loadsourceshortname'])
