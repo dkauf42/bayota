@@ -37,18 +37,21 @@ def main(geography_name, model_spec_file, control_file=None,
     # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
+
         geography_scale = control_dict['geography']['scale']
         geography_entity = control_dict['geography']['entity']
+        logger.info('Geographies specification: %s' % geography_entity)
+
         model_spec_file = control_dict['model']['spec_file']
         saved_model_file = control_dict['model']['saved_file_for_this_study']
         baseloadingfilename = control_dict['base_loading_file_name']
-
-        logger.info('Geographies specification: %s' % geography_entity)
+        savedata2file = control_dict['control_options']['save_model_instance_data_to_file']
     else:
         geodict = read_spec(geo_spec_file)[geography_name]
         geography_scale = geodict['scale']
         geography_entity = geodict['entities']
         logger.info('Geographies specification: %s' % geodict)
+        savedata2file = False
 
     if not saved_model_file:
         savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
@@ -62,7 +65,7 @@ def main(geography_name, model_spec_file, control_file=None,
         mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
                                                       geoscale=geography_scale.lower(),
                                                       geoentities=geography_entity,
-                                                      savedata2file=False,
+                                                      savedata2file=savedata2file,
                                                       baseloadingfilename=baseloadingfilename)
 
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
