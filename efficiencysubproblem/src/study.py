@@ -12,9 +12,10 @@ from efficiencysubproblem.src.model_handling.interface import get_loaded_model_h
 from efficiencysubproblem.src.solver_handling.solvehandler import solve_problem_instance
 
 from bayota_settings.base import get_output_dir, get_bayota_version
-from bayota_settings.log_setup import root_logger_setup
 
-logger = root_logger_setup()
+import logging
+logger = logging.getLogger(__name__)
+
 
 outdir = get_output_dir()
 

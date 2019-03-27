@@ -13,12 +13,11 @@ import tkinter as tk
 from sandbox.src.util.OptCase import OptCase
 from sandbox.src.gui.toplevelframes.MainWindow import MainWindow
 
-from bayota_settings.log_setup import root_logger_setup
-
 script_dir = os.path.dirname(os.path.realpath(__file__))  # <-- absolute dir of this script
 sys.path.append(script_dir)
 
-logger = root_logger_setup()
+import logging
+logger = logging.getLogger(__name__)
 
 
 def main(numinstances=1, testcase=None, scale='', areanames=None):
