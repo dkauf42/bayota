@@ -26,6 +26,7 @@ from castjeeves.src.jeeves import Jeeves
 
 def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
+    logger.debug(locals())
 
     version = get_bayota_version()
     logger.info('----------------------------------------------')

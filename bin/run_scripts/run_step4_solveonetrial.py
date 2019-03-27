@@ -36,6 +36,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
          move_solution_to_s3=False, move_CASTformatted_solution_to_s3=False,
          log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
+    logger.debug(locals())
     logger_feasibility = set_up_detailedfilelogger(loggername='feasibility',
                                                    filename='efficiencysubproblem_feasibility.log',
                                                    level='info',
@@ -272,7 +273,6 @@ def parse_cli_arguments():
         if not opts.saved_model_filepath:  # name was specified instead
             opts.saved_model_filepath = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
 
-    print(opts)
     return opts
 
 

@@ -30,6 +30,7 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py
 def main(experiment_spec_file, saved_model_file=None, control_file=None,
          dryrun=False, no_slurm=False, log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
+    logger.debug(locals())
 
     version = get_bayota_version()
     logger.info('----------------------------------------------')
@@ -169,7 +170,6 @@ def parse_cli_arguments():
         if not opts.saved_model_filepath:  # name was specified instead
             opts.saved_model_filepath = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
 
-    print(opts)
     return opts
 
 

@@ -28,6 +28,7 @@ geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
 def main(geography_name, model_spec_file, control_file=None,
          saved_model_file=None, dryrun=False, baseloadingfilename='', log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
+    logger.debug(locals())
 
     logger.info('----------------------------------------------')
     logger.info('************** Model Generation **************')
@@ -122,7 +123,6 @@ def parse_cli_arguments():
         opts.model_spec_file = None
         opts.saved_model_file = None
 
-    print(opts)
     return opts
 
 
