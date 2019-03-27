@@ -130,7 +130,7 @@ class DataHandlerBase:
         self.pltntslist = ['N', 'P', 'S']
         self.PLTNTS = self.pltntslist
         if self.save2file:
-            df = pd.DataFrame(self.pltntslist, columns=['PLTNTS']).to_csv(os.path.join(self.instdatadir, 'data_PLTNTS.tab'), sep=' ', index=False)
+            pd.DataFrame(self.pltntslist, columns=['PLTNTS']).to_csv(os.path.join(self.instdatadir, 'data_PLTNTS.tab'), sep=' ', index=False)
 
     def _load_set_geographies(self, jeeves, geolist=None):
         """ overridden in the Mixins """
