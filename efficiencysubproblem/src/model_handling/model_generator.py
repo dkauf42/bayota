@@ -55,7 +55,7 @@ class ModelHandlerBase:
                               ordered=True,
                               doc="""Pollutants (N, P, or S).""")
 
-        if geoscale=='lrseg':
+        if geoscale == 'lrseg':
             logger.debug('Loading lrseg geoentities')
             model.LRSEGS = pe.Set(initialize=datahandler.LRSEGS)
         elif geoscale == 'county':
