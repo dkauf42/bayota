@@ -21,6 +21,7 @@ study_specs:
     experiments:
       - loadreductionmax_100000-5mil_total_cost_bound
 control_options:
+  save_model_instance_data_to_file: False
   translate_solution_table_to_cast_format: True
   move_files_to_s3:
     basic_solution: True
