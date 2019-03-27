@@ -23,14 +23,10 @@ from bayota_settings.base import get_bayota_version, \
 from bayota_settings.log_setup import root_logger_setup
 from castjeeves.src.jeeves import Jeeves
 
-logger = root_logger_setup()
 
-geo_expansion_file = os.path.join(get_spec_files_dir(), 'geography_expansions.yaml')
+def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
+    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
 
-jeeves = Jeeves()
-
-
-def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
@@ -38,7 +34,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
     logger.info('----------------------------------------------')
 
     # Specification file is read.
-    geo_scale, study_pairs, control_options = read_batch_spec_file(batch_spec_file)
+    geo_scale, study_pairs, control_options = read_batch_spec_file(batch_spec_file, logger=logger)
 
     # SLURM job submission parameters are specified.
     NUM_NODES = 1
@@ -67,7 +63,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
             yaml.safe_dump(control_dict, f, default_flow_style=False)
 
         # A shell command is built for this job submission.
-        CMD = f"{single_study_script} -cf {unique_control_file}"
+        CMD = f"{single_study_script} -cf {unique_control_file} --log_level={log_level}"
         if not no_slurm:
             sbatch_opts = f"--job-name={spname} " \
                           f"--nice={PRIORITY} " \
@@ -90,7 +86,9 @@ def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
     return 0  # a clean, no-issue, exit
 
 
-def read_batch_spec_file(batch_spec_file):
+def read_batch_spec_file(batch_spec_file, logger):
+    jeeves = Jeeves()
+
     batchdict = read_spec(batch_spec_file)
 
     # Process geographies, and expand any (by matching string pattern) if necessary
@@ -136,6 +134,10 @@ def parse_cli_arguments():
     parser.add_argument("--no_slurm", action='store_true',
                         help="don't use AWS or slurm facilities")
 
+    parser.add_argument("--log_level", nargs=None, default='INFO',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="change logging level to {debug, info, warning, error, critical}")
+
     opts = parser.parse_args()
 
     if not opts.batch_spec_filepath:  # name was specified
@@ -148,4 +150,5 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     sys.exit(main(opts.batch_spec_filepath,
-                  dryrun=opts.dryrun, no_slurm=opts.no_slurm))
+                  dryrun=opts.dryrun, no_slurm=opts.no_slurm,
+                  log_level=opts.log_level))

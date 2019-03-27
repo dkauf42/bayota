@@ -23,7 +23,6 @@ from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_inst
     get_control_dir, get_model_specs_dir
 from bayota_settings.log_setup import root_logger_setup
 
-logger = root_logger_setup()
 logprefix = '** Single Study **: '
 
 outdir = get_output_dir()
@@ -32,7 +31,9 @@ model_generator_script = os.path.join(get_scripts_dir(), 'run_step2_generatemode
 experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment.py')
 
 
-def main(control_file=None, dryrun=False, no_slurm=False) -> int:
+def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> int:
+    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
+
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
@@ -44,7 +45,7 @@ def main(control_file=None, dryrun=False, no_slurm=False) -> int:
     baseloadingfilename, \
     control_dict, \
     geography_name, \
-    model_spec_name = read_control_file(control_file, version)
+    model_spec_name = read_control_file(control_file, version, logger)
 
     logger.info(f"{logprefix} Model Generation - Geography = {geography_name}")
     logger.info(f"{logprefix} Model Generation - Model specification name = {model_spec_name}")
@@ -52,7 +53,7 @@ def main(control_file=None, dryrun=False, no_slurm=False) -> int:
     logger.info(f"{logprefix} Model Generation - base_loading_file_name = {baseloadingfilename}")
 
     # A shell command is built for this job submission.
-    CMD = f"{model_generator_script} -cf {control_file} "
+    CMD = f"{model_generator_script} -cf {control_file} --log_level={log_level}"
     if not no_slurm:
         srun_opts = f"--nodes={1} " \
                     f"--ntasks={1} " \
@@ -90,7 +91,7 @@ def main(control_file=None, dryrun=False, no_slurm=False) -> int:
             yaml.safe_dump(control_dict, f, default_flow_style=False)
 
         # A shell command is built for this job submission.
-        CMD = f"{experiment_script}  -cf {unique_control_file}"
+        CMD = f"{experiment_script}  -cf {unique_control_file} --log_level={log_level}"
         if no_slurm:
             CMD = CMD + " --no_slurm"
 
@@ -105,7 +106,7 @@ def main(control_file=None, dryrun=False, no_slurm=False) -> int:
     return 0  # a clean, no-issue, exit
 
 
-def read_control_file(control_file, version):
+def read_control_file(control_file, version, logger):
     if not control_file:
         raise ValueError('A control file must be specified.')
 
@@ -160,6 +161,10 @@ def parse_cli_arguments():
     parser.add_argument("--no_slurm", action='store_true',
                         help="don't use AWS or slurm facilities")
 
+    parser.add_argument("--log_level", nargs=None, default='INFO',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="change logging level to {debug, info, warning, error, critical}")
+
     opts = parser.parse_args()
 
     return opts
@@ -169,4 +174,5 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     sys.exit(main(control_file=opts.control_filepath,
-                  dryrun=opts.dryrun, no_slurm=opts.no_slurm))
+                  dryrun=opts.dryrun, no_slurm=opts.no_slurm,
+                  log_level=opts.log_level))

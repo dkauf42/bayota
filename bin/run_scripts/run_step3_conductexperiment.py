@@ -11,7 +11,6 @@ import os
 import sys
 import uuid
 import yaml
-import logging
 import datetime
 import subprocess
 from argparse import ArgumentParser
@@ -21,12 +20,7 @@ from efficiencysubproblem.src.model_handling.utils import modify_model, save_mod
 
 from bayota_settings.base import get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
-from bayota_settings.log_setup import set_up_detailedfilelogger
-
-logger = set_up_detailedfilelogger(loggername='experiment',
-                                   filename='efficiencysubproblem_experiments.log',
-                                   level=logging.INFO,
-                                   also_logtoconsole=True)
+from bayota_settings.log_setup import root_logger_setup
 
 logprefix = '** Single Experiment **: '
 
@@ -34,7 +28,9 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py
 
 
 def main(experiment_spec_file, saved_model_file=None, control_file=None,
-         dryrun=False, no_slurm=False) -> int:
+         dryrun=False, no_slurm=False, log_level='INFO') -> int:
+    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
+
     version = get_bayota_version()
     logger.info('----------------------------------------------')
     logger.info('************ Experiment Launching ************')
@@ -115,7 +111,7 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
                 yaml.safe_dump(control_dict, f, default_flow_style=False)
 
             # A shell command is built for this job submission.
-            CMD = f"{solve_trial_script}  -cf {unique_control_file}"
+            CMD = f"{solve_trial_script}  -cf {unique_control_file} --log_level={log_level}"
             if not no_slurm:
                 srun_opts = f"--nodes={1} " \
                             f"--ntasks={1} " \
@@ -157,8 +153,9 @@ def parse_cli_arguments():
     parser.add_argument("--no_slurm", action='store_true',
                         help="don't use AWS or slurm facilities")
 
-    parser.add_argument("-v", "--verbose", dest='verbose',
-                        action="count", default=0)
+    parser.add_argument("--log_level", nargs=None, default='INFO',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="change logging level to {debug, info, warning, error, critical}")
 
     opts = parser.parse_args()
 
@@ -184,4 +181,5 @@ if __name__ == '__main__':
                   saved_model_file=opts.saved_model_filepath,
                   control_file=opts.control_filepath,
                   dryrun=opts.dryrun,
-                  no_slurm=opts.no_slurm))
+                  no_slurm=opts.no_slurm,
+                  log_level=opts.log_level))

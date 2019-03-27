@@ -21,52 +21,77 @@ simpleFormatter = logging.Formatter(log_format_config['formatters']['simple'][0]
 detailedFormatter = logging.Formatter(log_format_config['formatters']['detailed'][0],
                                       log_format_config['formatters']['detailed'][1])
 
+root_logfilename = 'efficiencysubproblem_debug.log'
+root_logfilename = os.path.join(get_logging_dir(), root_logfilename)
 
-def root_logger_setup():
-    root_logger = logging.getLogger('root')
+
+def level_from_str(levelstr):
+    return logging.getLevelName(levelstr)
+
+
+class MyCustomFormatter(logging.Formatter):
+
+    FORMATS = {
+        logging.ERROR: logging.Formatter("ERROR: %(msg)s"),
+        logging.WARNING: logging.Formatter("WARNING: %(msg)s"),
+        logging.DEBUG: logging.Formatter("DEBUG: %(module)s:%(lineno)s %(msg)s"),
+        "DEFAULT": reallysimpleFormatter,
+    }
+
+    def format(self, record):
+        formatter = self.FORMATS.get(record.levelno, self.FORMATS['DEFAULT'])
+        return formatter.format(record)
+
+
+def root_logger_setup(consolehandlerlevel='INFO', filehandlerlevel='DEBUG'):
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)  # set the logger itself to the lowest potential level
 
     if not root_logger.hasHandlers():
-        root_logfilename = 'efficiencysubproblem_debug.log'
-        logfilename = os.path.join(get_logging_dir(), root_logfilename)
-
+        """ set handlers to other, higher logging levels"""
         # Console Handler
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(reallysimpleFormatter)
-        console_handler.setLevel(logging.INFO)
+        console_handler.setFormatter(MyCustomFormatter())
+        console_handler.setLevel(getattr(logging, consolehandlerlevel.upper()))
         root_logger.addHandler(console_handler)
 
         # File Handler
-        file_handler = logging.handlers.TimedRotatingFileHandler(filename=logfilename, when='midnight',
+        file_handler = logging.handlers.TimedRotatingFileHandler(filename=root_logfilename, when='midnight',
                                                                  interval=1, backupCount=7)
         file_handler.setFormatter(detailedFormatter)
+        file_handler.setLevel(getattr(logging, filehandlerlevel.upper()))
         root_logger.addHandler(file_handler)
-
-        root_logger.setLevel(logging.DEBUG)
 
     return root_logger
 
 
-def set_up_detailedfilelogger(loggername: str, filename: str, level,
+def set_up_detailedfilelogger(loggername: str, level: str,
+                              filename=None,
                               also_logtoconsole: bool = False):
-    logfilename = os.path.join(get_logging_dir(), filename)
+    logging_level = getattr(logging, level.upper())
 
     logger = logging.getLogger(loggername)
+    logger.setLevel(logging_level)
 
-    if not logger.hasHandlers():
-        # File Handler
+    # File Handler
+    if not filename:
+        file_handler = logging.handlers.TimedRotatingFileHandler(filename=root_logfilename, when='midnight',
+                                                                 interval=1, backupCount=7)
+    else:
+        logfilename = os.path.join(get_logging_dir(), filename)
         file_handler = logging.handlers.TimedRotatingFileHandler(filename=logfilename, when='midnight',
                                                                  interval=1, backupCount=7)
-        file_handler.setFormatter(detailedFormatter)
-        logger.addHandler(file_handler)
 
-        if also_logtoconsole:
-            # Console Handler
-            console_handler = logging.StreamHandler(sys.stdout)
-            console_handler.setFormatter(reallysimpleFormatter)
-            console_handler.setLevel(logging.INFO)
-            logger.addHandler(console_handler)
+    file_handler.setFormatter(detailedFormatter)
+    file_handler.setLevel(logging_level)
+    logger.addHandler(file_handler)
 
-    logger.setLevel(level)
+    if also_logtoconsole:
+        # Console Handler
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(reallysimpleFormatter)
+        console_handler.setLevel(logging_level)
+        logger.addHandler(console_handler)
 
     return logger
 

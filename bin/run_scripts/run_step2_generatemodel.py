@@ -21,14 +21,14 @@ from bayota_settings.base import get_model_specs_dir,\
     get_spec_files_dir, get_model_instances_dir
 from bayota_settings.log_setup import root_logger_setup
 
-logger = root_logger_setup()
-
 
 geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
 
 
 def main(geography_name, model_spec_file, control_file=None,
-         saved_model_file=None, dryrun=False, baseloadingfilename='') -> int:
+         saved_model_file=None, dryrun=False, baseloadingfilename='', log_level='INFO') -> int:
+    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
+
     logger.info('----------------------------------------------')
     logger.info('************** Model Generation **************')
     logger.info('----------------------------------------------')
@@ -100,8 +100,9 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
-    parser.add_argument("-v", "--verbose", dest='verbose',
-                        action="count", default=0)
+    parser.add_argument("--log_level", nargs=None, default='INFO',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="change logging level to {debug, info, warning, error, critical}")
 
     opts = parser.parse_args()
 
@@ -132,4 +133,5 @@ if __name__ == '__main__':
     sys.exit(main(opts.geography_name, opts.model_spec_file,
                   control_file=opts.control_filepath,
                   saved_model_file=opts.saved_model_file, dryrun=opts.dryrun,
-                  baseloadingfilename=opts.baseloadingfilename))
+                  baseloadingfilename=opts.baseloadingfilename,
+                  log_level=opts.log_level))
