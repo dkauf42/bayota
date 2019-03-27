@@ -7,19 +7,20 @@ from bayota_settings.base import get_logging_dir, log_config
 
 from efficiencysubproblem.src.spec_handler import read_spec
 
-# reallysimpleFormatter = logging.Formatter("%(levelname)-8s %(message)s")
-#
-# simpleFormatter = logging.Formatter("%(asctime)s:%(levelname)-8s- %(module)s - %(message)s",
-#                                     "%H:%M:%S")
-
 log_format_config = read_spec(log_config)
 
-reallysimpleFormatter = logging.Formatter(log_format_config['formatters']['reallysimple'][0],
-                                          log_format_config['formatters']['reallysimple'][1])
-simpleFormatter = logging.Formatter(log_format_config['formatters']['simple'][0],
-                                    log_format_config['formatters']['simple'][1])
-detailedFormatter = logging.Formatter(log_format_config['formatters']['detailed'][0],
-                                      log_format_config['formatters']['detailed'][1])
+consoleINFOfmt = logging.Formatter(log_format_config['formatters']['console']['info'][0],
+                                   log_format_config['formatters']['console']['info'][1])
+consoleDEBUGfmt = logging.Formatter(log_format_config['formatters']['console']['debug'][0],
+                                    log_format_config['formatters']['console']['debug'][1])
+
+fileINFOfmt = logging.Formatter(log_format_config['formatters']['file']['info'][0],
+                                log_format_config['formatters']['file']['info'][1])
+fileDEBUGfmt = logging.Formatter(log_format_config['formatters']['file']['debug'][0],
+                                 log_format_config['formatters']['file']['debug'][1])
+
+defaultfmt = logging.Formatter(log_format_config['formatters']['default'][0],
+                               log_format_config['formatters']['default'][1])
 
 root_logfilename = 'efficiencysubproblem_debug.log'
 root_logfilename = os.path.join(get_logging_dir(), root_logfilename)
@@ -29,13 +30,25 @@ def level_from_str(levelstr):
     return logging.getLevelName(levelstr)
 
 
-class MyCustomFormatter(logging.Formatter):
+class MyCustomConsoleFormatter(logging.Formatter):
 
     FORMATS = {
-        logging.ERROR: logging.Formatter("ERROR: %(msg)s"),
-        logging.WARNING: logging.Formatter("WARNING: %(msg)s"),
-        logging.DEBUG: logging.Formatter("DEBUG: %(module)s:%(lineno)s %(msg)s"),
-        "DEFAULT": reallysimpleFormatter,
+        logging.INFO: consoleINFOfmt,
+        logging.DEBUG: consoleDEBUGfmt,
+        "DEFAULT": defaultfmt,
+    }
+
+    def format(self, record):
+        formatter = self.FORMATS.get(record.levelno, self.FORMATS['DEFAULT'])
+        return formatter.format(record)
+
+
+class MyCustomFileFormatter(logging.Formatter):
+
+    FORMATS = {
+        logging.INFO: fileINFOfmt,
+        logging.DEBUG: fileDEBUGfmt,
+        "DEFAULT": defaultfmt,
     }
 
     def format(self, record):
@@ -51,14 +64,14 @@ def root_logger_setup(consolehandlerlevel='INFO', filehandlerlevel='DEBUG'):
         """ set handlers to other, higher logging levels"""
         # Console Handler
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(MyCustomFormatter())
+        console_handler.setFormatter(MyCustomConsoleFormatter())
         console_handler.setLevel(getattr(logging, consolehandlerlevel.upper()))
         root_logger.addHandler(console_handler)
 
         # File Handler
         file_handler = logging.handlers.TimedRotatingFileHandler(filename=root_logfilename, when='midnight',
                                                                  interval=1, backupCount=7)
-        file_handler.setFormatter(detailedFormatter)
+        file_handler.setFormatter(MyCustomFileFormatter())
         file_handler.setLevel(getattr(logging, filehandlerlevel.upper()))
         root_logger.addHandler(file_handler)
 
@@ -82,14 +95,14 @@ def set_up_detailedfilelogger(loggername: str, level: str,
         file_handler = logging.handlers.TimedRotatingFileHandler(filename=logfilename, when='midnight',
                                                                  interval=1, backupCount=7)
 
-    file_handler.setFormatter(detailedFormatter)
+    file_handler.setFormatter(MyCustomFileFormatter())
     file_handler.setLevel(logging_level)
     logger.addHandler(file_handler)
 
     if also_logtoconsole:
         # Console Handler
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(reallysimpleFormatter)
+        console_handler.setFormatter(MyCustomConsoleFormatter())
         console_handler.setLevel(logging_level)
         logger.addHandler(console_handler)
 
