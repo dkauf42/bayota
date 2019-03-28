@@ -13,7 +13,7 @@ def resource_a(request):
 
 def test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation(resource_a):
     assert 11 in resource_a.county.countyid_from_countystatestrs(getfrom=['Adams, PA',
-                                                                         'Anne Arundel, MD']).countyid.tolist()
+                                                                          'Anne Arundel, MD']).countyid.tolist()
 
 
 def test_generic_lrsegid_query_returns_correct_from_countystatestrs(resource_a):
