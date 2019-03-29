@@ -45,8 +45,8 @@ def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
 
     # SLURM job submission parameters are specified.
     NUM_NODES = 1
-    NUM_TASKS = 36
-    NUM_CORES = 36
+    NUM_TASKS = 32
+    NUM_CORES = 32
     PRIORITY = 5000
     SLURM_OUTPUT = 'slurm_out'
     single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
