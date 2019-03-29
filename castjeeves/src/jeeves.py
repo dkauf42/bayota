@@ -21,6 +21,9 @@ from .sourcehooks.meta import Meta
 from .sourcehooks.sector import Sector
 from .sourcehooks.translator import Translator
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class Jeeves:
     def __init__(self):
@@ -45,7 +48,7 @@ class Jeeves:
             with open(savename, 'rb') as f:
                 sourcedata = pickle.load(f)
         else:
-            print('<%s object does not exist yet. Generating...>' % SourceData.__name__)
+            logger.info('<%s object does not exist yet. Generating...>' % SourceData.__name__)
             # Source tables are loaded.
             sourcedata = SourceData()
             tbllist = sourcedata.getTblList()
@@ -67,7 +70,7 @@ class Jeeves:
             with open(savename, 'rb') as f:
                 metadata = pickle.load(f)
         else:
-            print('<%s object does not exist yet. Generating...>' % sqlMetaData.__name__)
+            logger.info('<%s object does not exist yet. Generating...>' % sqlMetaData.__name__)
             # Source tables are loaded.
             metadata = sqlMetaData()
             tbllist = metadata.getTblList()
