@@ -48,7 +48,9 @@ def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
     NUM_TASKS = 32
     NUM_CORES = 32
     PRIORITY = 5000
-    SLURM_OUTPUT = 'slurm_out'
+    SLURM_STD_OUTPUT = 'slurm_job_%j-%2t.out'
+    SLURM_ERR_OUTPUT = 'slurm_job_%j-%2t.err'
+
     single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
 
     # Study pairs (Geography, Model+Experiments) are submitted as SLURM "sbatch" jobs.
@@ -76,7 +78,8 @@ def main(batch_spec_file, dryrun=False, no_slurm=False) -> int:
                           f"--nodes={NUM_NODES} " \
                           f"--ntasks={NUM_TASKS} " \
                           f"--ntasks-per-node={NUM_CORES} " \
-                          f"--output={SLURM_OUTPUT} " \
+                          f"--output={SLURM_STD_OUTPUT} " \
+                          f"--error={SLURM_ERR_OUTPUT} " \
                           f"--time=01:00:00 "  # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD
         else:
