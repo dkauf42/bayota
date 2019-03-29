@@ -49,7 +49,25 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         saved_model_file = control_dict['model']['saved_file_for_this_study']
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
 
-        geography_entity_str = control_dict['geography']['entity'].replace(' ', '').replace(',', '')
+        def compact_capitalized_geography_string(s):
+            """ Go from lowercase "county, state-abbrev" string to Capitalized string
+
+            Args:
+                s:
+
+            Returns:
+
+            Examples:
+                "lancaster, pa" --> "LancasterPA"
+                "anne arundel, md" --> "AnneArundelMD"
+                "st. mary's, md" --> "StMarysMD"
+
+            """
+            s = s.replace(',', '').replace('.', '').replace("'", '').title().replace(' ', '')
+            return s[:len(s)-1] + s[(len(s)-1):].capitalize()  # capitalize last letter (state abbreviation)
+
+        geography_entity_str = compact_capitalized_geography_string(control_dict['geography']['entity'])
+
         objective_and_constraint_str = control_dict['model']['objectiveshortname'] + '_' + \
                                        control_dict['model']['constraintshortname']
 
