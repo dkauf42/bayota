@@ -120,7 +120,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         # Optimization solution table is written to file (uses comma-delimiter and .csv extention)
         solution_shortname = f"{trial_name}_{solution_dict['timestamp']}.csv"
-        solution_fullname = f"{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
+        solution_fullname = f"{modelname_full}_{trial_name}_{solution_dict['timestamp']}.csv"
 
         outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_fullname)
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
@@ -139,6 +139,11 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
                 p1 = subprocess.Popen([CMD], shell=True)
                 p1.wait()
+                # Get return code from process
+                return_code = p1.returncode
+                if p1.returncode != 0:
+                    logger.error(f"Move-the-solution-to-s3 script exited with non-zero code <{return_code}>")
+                    return 1
 
         # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
         if translate_to_cast_format:
@@ -168,6 +173,11 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                 if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
                     p1 = subprocess.Popen([CMD], shell=True)
                     p1.wait()
+                    # Get return code from process
+                    return_code = p1.returncode
+                    if p1.returncode != 0:
+                        logger.error(f"Move-the-cast-formatted-solution-to-s3 script exited with non-zero code <{return_code}>")
+                        return 1
 
     return 0  # a clean, no-issue, exit
 
