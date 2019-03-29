@@ -67,6 +67,11 @@ def main(control_file=None, dryrun=False, no_slurm=False) -> int:
     if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
         p1 = subprocess.Popen([CMD], shell=True)
         p1.wait()
+        # Get return code from process
+        return_code = p1.returncode
+        if p1.returncode != 0:
+            logger.error(f"Model Generator finished with non-zero code <{return_code}>")
+            return 1
 
     # A job is submitted for each experiment in the list.
     p_list = []
