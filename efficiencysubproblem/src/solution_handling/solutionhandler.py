@@ -158,6 +158,9 @@ def initial_solution_parse_to_dataframe(modelhandler, get_suffixes, solved_insta
     solution_handler = SolutionHandler()
     merged_df = solution_handler.get_nonzero_var_df(solved_instance,
                                                     addcosttbldata=modelhandler.datahandler.costsubtbl)
+
+    merged_df['acres'] = merged_df['acres'].apply(lambda x: round(x, 1))
+
     if get_suffixes:
         # Parse out the Lagrange Multipliers
         lagrange_df = solution_handler.get_lagrangemult_df(solved_instance)
