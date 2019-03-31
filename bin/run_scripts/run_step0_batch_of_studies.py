@@ -42,21 +42,22 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
     NUM_TASKS = 32
     NUM_CORES = 32
     PRIORITY = 5000
-    SLURM_STD_OUTPUT = 'slurm_job_%j-%2t.out'
-    SLURM_ERR_OUTPUT = 'slurm_job_%j-%2t.err'
 
     single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
 
     # Study pairs (Geography, Model+Experiments) are submitted as SLURM "sbatch" jobs.
     for index, sp in enumerate(study_pairs):
+        studyid = '{:04}'.format(index+1)
         geoname = sp[0]
         filesafegeostring = geoname.replace(' ', '').replace(',', '')
-        studyspecname = sp[1]
-        spname = filesafegeostring + f"_study{index:03d}"
+        studyspecdict = sp[1]
+        spname = filesafegeostring + f"_study{studyid}_"
+        studyspecdict['studyshortname'] = spname
+        studyspecdict['id'] = studyid
 
         # A control file with a unique identifier (uuid4) is created.
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
-                        "study_spec": studyspecname, "control_options": control_options,
+                        "study": studyspecdict, "control_options": control_options,
                         "code_version": version,
                         "run_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
         unique_control_file = os.path.join(get_control_dir(), 'step1_study_control_' + str(uuid.uuid4()) + '.yaml')
@@ -72,8 +73,8 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
                           f"--nodes={NUM_NODES} " \
                           f"--ntasks={NUM_TASKS} " \
                           f"--ntasks-per-node={NUM_CORES} " \
-                          f"--output={SLURM_STD_OUTPUT} " \
-                          f"--error={SLURM_ERR_OUTPUT} " \
+                          f"--output=slurm_job_{spname}_%j-%2t.out " \
+                          f"--error=slurm_job_{spname}_%j-%2t.err " \
                           f"--time=01:00:00 "  # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD
         else:

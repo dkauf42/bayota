@@ -20,7 +20,7 @@ from efficiencysubproblem.src.model_handling.utils import modify_model, save_mod
 
 from bayota_settings.base import get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
-from bayota_settings.log_setup import root_logger_setup
+from bayota_settings.log_setup import root_logger_setup, set_up_detailedfilelogger
 
 logprefix = '** Single Experiment **: '
 
@@ -29,27 +29,39 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py
 
 def main(experiment_spec_file, saved_model_file=None, control_file=None,
          dryrun=False, no_slurm=False, log_level='INFO') -> int:
-    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
-    logger.debug(locals())
-
     version = get_bayota_version()
-    logger.info('----------------------------------------------')
-    logger.info('************ Experiment Launching ************')
-    logger.info('----------------------------------------------')
 
     # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
 
+        studyid = control_dict['study']['id']
+        expid = control_dict['experiment']['id']
+
         expname = os.path.splitext(os.path.basename(control_dict['experiment_file']))[0]
         saved_model_file = control_dict['model']['saved_file_for_this_study']
         actionlist = control_dict['experiment']['exp_setup']
         list_of_trialdicts = control_dict['experiment']['trials']
+        compact_geo_entity_str = control_dict['geography']['shortname']
     else:
         control_dict = dict()
+        studyid = '0000'
+        expid = '0000'
         expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
         actionlist = read_spec(experiment_spec_file)['exp_setup']
         list_of_trialdicts = read_spec(experiment_spec_file)['trials']
+        compact_geo_entity_str = ''
+
+    logger = set_up_detailedfilelogger(loggername=expname,  # same name as module, so logger is shared
+                                       filename=f"bayota_step3_s{studyid}_e{expid}_{compact_geo_entity_str}.log",
+                                       level=log_level,
+                                       also_logtoconsole=True,
+                                       add_filehandler_if_already_exists=True,
+                                       add_consolehandler_if_already_exists=False)
+
+    logger.info('----------------------------------------------')
+    logger.info('************ Experiment Launching ************')
+    logger.info('----------------------------------------------')
 
     # The model is modified according to specified experiment set-up
     logger.info(f"{logprefix} {expname} - modification action list = {actionlist}")
@@ -92,17 +104,17 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
 
         for vi in varvalue:
             trialnum += 1
-            trialstr = '{:04}'.format(trialnum)
+            trialidstr = '{:04}'.format(trialnum)
 
-            logger.info(f'trial #{trialstr}, setting <{modvar}> to <{vi}>')
+            logger.info(f'trial #{trialidstr}, setting <{modvar}> to <{vi}>')
             modificationstr = f"\'{{\"variable\": \"{modvar}\", " \
                               f"\"value\": {vi}, " \
                               f"\"indexer\": \"{varindexer}\"}}\'"
 
             # Generate a trial control file with a unique identifier (uuid4), by adding onto the experiment control file
             unique_control_file = os.path.join(get_control_dir(), 'step4_trial_control_' + str(uuid.uuid4()) + '.yaml')
-            control_dict['trial'] = {'str': trialstr,
-                                     'trial_name': 'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialstr,
+            control_dict['trial'] = {'id': trialidstr,
+                                     'trial_name': 'experiment--' + expname + '--_modifiedvar--' + modvar + '--_trial' + trialidstr,
                                      'modification': modificationstr,
                                      'solutions_folder_name': expname}
             control_dict['code_version']: version

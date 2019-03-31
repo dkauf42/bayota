@@ -21,8 +21,9 @@ from efficiencysubproblem.src.solver_handling import solvehandler
 from efficiencysubproblem.src.model_handling.utils import load_model_pickle
 
 from bayota_settings.base import get_model_instances_dir, \
-    get_output_dir, get_scripts_dir
-from bayota_settings.log_setup import root_logger_setup, set_up_detailedfilelogger
+    get_output_dir, get_scripts_dir, get_logging_dir
+from bayota_settings.log_setup import set_up_detailedfilelogger
+from bayota_util.str_manip import compact_capitalized_geography_string
 
 logprefix = '** Single Trial **: '
 
@@ -35,41 +36,21 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
          dryrun=False, translate_to_cast_format=False,
          move_solution_to_s3=False, move_CASTformatted_solution_to_s3=False,
          log_level='INFO') -> int:
-    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
-    logger.debug(locals())
-    logger_feasibility = set_up_detailedfilelogger(loggername='feasibility',
-                                                   filename='efficiencysubproblem_feasibility.log',
-                                                   level='info',
-                                                   also_logtoconsole=True)
 
     # The control file is read.
     if not not control_file:
         control_dict = read_spec(control_file)
 
+        studyid = control_dict['study']['id']
+        expid = control_dict['experiment']['id']
+
         model_modification_string = control_dict['trial']['modification'].lstrip('\'').rstrip('\'')
 
+        trialidstr = control_dict['trial']['id']
         trial_name = control_dict['trial']['trial_name']
         saved_model_file = control_dict['model']['saved_file_for_this_study']
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
-
-        def compact_capitalized_geography_string(s):
-            """ Go from lowercase "county, state-abbrev" string to Capitalized string
-
-            Args:
-                s:
-
-            Returns:
-
-            Examples:
-                "lancaster, pa" --> "LancasterPA"
-                "anne arundel, md" --> "AnneArundelMD"
-                "st. mary's, md" --> "StMarysMD"
-
-            """
-            s = s.replace(',', '').replace('.', '').replace("'", '').title().replace(' ', '')
-            return s[:len(s)-1] + s[(len(s)-1):].capitalize()  # capitalize last letter (state abbreviation)
-
-        geography_entity_str = compact_capitalized_geography_string(control_dict['geography']['entity'])
+        compact_geo_entity_str = control_dict['geography']['shortname']
 
         objective_and_constraint_str = control_dict['model']['objectiveshortname'] + '_' + \
                                        control_dict['model']['constraintshortname']
@@ -81,9 +62,26 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         move_CASTformatted_solution_to_s3 = bool(s3_dict['CASTformmated_solution'])
         s3_base_path = s3_dict['base_path_from_modeling-data']
     else:
-        geography_entity_str = ''
+        studyid = '0000'
+        expid = '0000'
+        trialidstr = '0000'
+        compact_geo_entity_str = ''
         objective_and_constraint_str = ''
         s3_base_path = ''
+
+    trial_logfilename = f"bayota_step4_s{studyid}_e{expid}_t{trialidstr}_{compact_geo_entity_str}"
+    logger = set_up_detailedfilelogger(loggername=trial_name,  # same name as module, so logger is shared
+                                       filename=trial_logfilename + '.log',
+                                       level=log_level,
+                                       also_logtoconsole=True,
+                                       add_filehandler_if_already_exists=True,
+                                       add_consolehandler_if_already_exists=False)
+    logger_feasibility = set_up_detailedfilelogger(loggername='feasibility',
+                                                   filename='bayota_feasibility.log',
+                                                   level='info',
+                                                   also_logtoconsole=True,
+                                                   add_filehandler_if_already_exists=False,
+                                                   add_consolehandler_if_already_exists=False)
 
     # *****************************
     # Make Model Modification(s)
@@ -106,7 +104,8 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
         # The problem is solved.
         solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
-                                                 translate_to_cast_format=translate_to_cast_format)
+                                                 translate_to_cast_format=translate_to_cast_format,
+                                                 solverlogfile=os.path.join(get_logging_dir(), trial_logfilename + '_ipopt.log'))
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
         logger.info(f"{logprefix} Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
@@ -148,7 +147,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
         logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
 
-        s3_destination_dir = s3_base_path + geography_entity_str + '/' + objective_and_constraint_str + '/'
+        s3_destination_dir = s3_base_path + compact_geo_entity_str + '/' + objective_and_constraint_str + '/'
 
         if move_solution_to_s3:
             # A shell command is built for this job submission.

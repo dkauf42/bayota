@@ -1,3 +1,6 @@
+import os
+import math
+import pandas as pd
 import pyomo.environ as pe
 
 from efficiencysubproblem.src.data_handling.interface import get_loaded_data_handler_no_objective
@@ -6,12 +9,17 @@ from efficiencysubproblem.src.spec_handler import read_spec
 from efficiencysubproblem.src.model_handling import model_expressions
 from efficiencysubproblem.src.model_handling import model_components
 
-import logging
-logger = logging.getLogger(__name__)
+from bayota_settings.log_setup import set_up_detailedfilelogger
 
 
 class ModelHandlerBase:
-    def __init__(self, model_spec_file, geoscale, geoentities, savedata2file, baseloadingfilename=''):
+    def __init__(self, model_spec_file, geoscale, geoentities, savedata2file, baseloadingfilename='', log_level='INFO'):
+        self.logger = set_up_detailedfilelogger(loggername=os.path.splitext(os.path.basename(model_spec_file))[0],
+                                                filename='bayota_model_generation.log',
+                                                level=log_level,
+                                                also_logtoconsole=True,
+                                                add_filehandler_if_already_exists=False,
+                                                add_consolehandler_if_already_exists=False)
 
         self.specdict = read_spec(model_spec_file)
 
@@ -36,8 +44,10 @@ class ModelHandlerBase:
         self._add_expression_to_model(model, expr_name='original_load_for_each_loadsource_expr')
         self._add_expression_to_model(model, expr_name='new_load_for_each_loadsource_expr')
 
-    @staticmethod
-    def _define_sets(model, datahandler, geoscale):
+        # The model is validated.
+        self.check_for_problems_in_model(model)
+
+    def _define_sets(self, model, datahandler, geoscale):
         """ Sets """
 
         # pltnts = datahandler.PLTNTS,
@@ -56,10 +66,10 @@ class ModelHandlerBase:
                               doc="""Pollutants (N, P, or S).""")
 
         if geoscale == 'lrseg':
-            logger.debug('Loading lrseg geoentities')
+            self.logger.debug('Loading lrseg geoentities')
             model.LRSEGS = pe.Set(initialize=datahandler.LRSEGS)
         elif geoscale == 'county':
-            logger.debug('Loading county geoentities')
+            self.logger.debug('Loading county geoentities')
             model.COUNTIES = pe.Set(initialize=datahandler.COUNTIES)
             model.LRSEGS = pe.Set(initialize=datahandler.LRSEGS)
             model.CNTYLRSEGLINKS = pe.Set(initialize=datahandler.CNTYLRSEGLINKS, dimen=2)
@@ -131,7 +141,7 @@ class ModelHandlerBase:
 
 
         # BUILD THE OBJECTIVE
-        logger.info('Loading objective {name="%s"} into the model object ' % objectivename)
+        self.logger.info('Loading objective {name="%s"} into the model object ' % objectivename)
         model = self._add_expression_to_model(model, expr_name=expr)
 
         # model.component(expr).pprint()
@@ -169,13 +179,13 @@ class ModelHandlerBase:
         try:
             didcs = self.specdict['objective']['deactivate_indices']
         except KeyError:
-            logger.info('no objective indices to deactivate')
+            self.logger.info('no objective indices to deactivate')
             pass
         for di in didcs:
             for k, valuelist in di.items():
                 for v in valuelist:
                     model.component(objectivename)[v].deactivate()
-                    logger.info('index <%s> deactivated in the model Objective' % v)
+                    self.logger.info('index <%s> deactivated in the model Objective' % v)
 
     def add_constraints_from_spec(self, model):
         for i, c in enumerate(self.specdict['constraints']):
@@ -190,7 +200,7 @@ class ModelHandlerBase:
             expr = c['expression']
 
             # BUILD THE CONSTRAINT
-            logger.info('Loading constraint #%d:{name="%s"} into the model object '
+            self.logger.info('Loading constraint #%d:{name="%s"} into the model object '
                         'with "%s" bound defined by <%s> parameter' %
                         (i, constraint_name, boundtype, boundparamname))
             model = self._add_expression_to_model(model, expr_name=expr)
@@ -208,7 +218,7 @@ class ModelHandlerBase:
                                              mutable=True)
                 setattr(model, boundparamname, boundparamobj)
             else:
-                logger.info('parameter <%s> already exists in model object' % boundparamname)
+                self.logger.info('parameter <%s> already exists in model object' % boundparamname)
 
             if boundtype == 'lower':
                 # Check if component is scalar (i.e. isn't indexed over any Sets)
@@ -243,7 +253,7 @@ class ModelHandlerBase:
             component_name = c['name']
 
             # BUILD THE CONSTRAINT
-            logger.info('Loading component #%d:{name="%s"} into the model object' % (i, component_name))
+            self.logger.info('Loading component #%d:{name="%s"} into the model object' % (i, component_name))
             model = self._add_component_to_model(model, comp_name=component_name)
 
     @staticmethod
@@ -267,3 +277,33 @@ class ModelHandlerBase:
             raise type(e)(msg).with_traceback(sys.exc_info()[2])
 
         return model
+
+    def check_for_problems_in_model(self, model):
+
+        def original_loadsource_problems_dataframe(mdl):
+            d = []
+            for k, v in mdl.original_load_for_each_loadsource_expr.items():
+                if math.isinf(pe.value(v)) | math.isnan(pe.value(v)):
+                    d.append({'pollutant': k[0],
+                              'loadsourceshortname': k[1],
+                              'v': pe.value(v)})
+
+            df = pd.DataFrame(d)
+            if df.empty:
+                pass  # Good, no Inf's or NaN's
+            else:
+                df = df.sort_values('loadsourceshortname', ascending=True).reset_index()
+            return df
+
+        original_load_error = False
+        # Check for Inf or NaN original loads
+        for p in model.PLTNTS:
+            if math.isinf(pe.value(model.original_load_expr[p])):
+                self.logger.error(f"Uh oh! original_load_expr for {p} is Inf")
+                original_load_error = True
+            elif math.isnan(pe.value(model.original_load_expr[p])):
+                self.logger.error(f"Uh oh! original_load_expr for {p} is NaN")
+                original_load_error = True
+
+        if original_load_error:
+            self.logger.debug(original_loadsource_problems_dataframe(model).head())

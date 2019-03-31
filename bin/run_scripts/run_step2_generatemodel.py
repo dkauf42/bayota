@@ -19,7 +19,8 @@ from efficiencysubproblem.src.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_specs_dir,\
     get_spec_files_dir, get_model_instances_dir
-from bayota_settings.log_setup import root_logger_setup
+from bayota_settings.log_setup import set_up_detailedfilelogger
+from bayota_util.str_manip import compact_capitalized_geography_string
 
 
 geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
@@ -27,12 +28,6 @@ geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
 
 def main(geography_name, model_spec_file, control_file=None,
          saved_model_file=None, dryrun=False, baseloadingfilename='', log_level='INFO') -> int:
-    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
-    logger.debug(locals())
-
-    logger.info('----------------------------------------------')
-    logger.info('************** Model Generation **************')
-    logger.info('----------------------------------------------')
 
     # The control file is read.
     if not not control_file:
@@ -40,7 +35,7 @@ def main(geography_name, model_spec_file, control_file=None,
 
         geography_scale = control_dict['geography']['scale']
         geography_entity = control_dict['geography']['entity']
-        logger.info('Geographies specification: %s' % geography_entity)
+        compact_geo_entity_str = control_dict['geography']['shortname']
 
         model_spec_file = control_dict['model']['spec_file']
         saved_model_file = control_dict['model']['saved_file_for_this_study']
@@ -50,8 +45,22 @@ def main(geography_name, model_spec_file, control_file=None,
         geodict = read_spec(geo_spec_file)[geography_name]
         geography_scale = geodict['scale']
         geography_entity = geodict['entities']
-        logger.info('Geographies specification: %s' % geodict)
+        compact_geo_entity_str = compact_capitalized_geography_string(geography_entity)
+
         savedata2file = False
+
+    logger = set_up_detailedfilelogger(loggername=os.path.splitext(os.path.basename(model_spec_file))[0],
+                                       filename=f"bayota_step2_modelgeneration_{compact_geo_entity_str}.log",
+                                       level=log_level,
+                                       also_logtoconsole=True,
+                                       add_filehandler_if_already_exists=True,
+                                       add_consolehandler_if_already_exists=False)
+
+    logger.info('----------------------------------------------')
+    logger.info('************** Model Generation **************')
+    logger.info('----------------------------------------------')
+
+    logger.info('Geographies specification: %s' % geography_entity)
 
     if not saved_model_file:
         savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')

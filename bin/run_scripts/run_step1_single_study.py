@@ -21,9 +21,8 @@ from efficiencysubproblem.src.spec_handler import read_spec, notdry
 from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_instances_dir, \
     get_bayota_version, get_experiment_specs_dir, \
     get_control_dir, get_model_specs_dir
-from bayota_settings.log_setup import root_logger_setup
-
-logprefix = '** Single Study **: '
+from bayota_settings.log_setup import set_up_detailedfilelogger
+from bayota_util.str_manip import compact_capitalized_geography_string
 
 outdir = get_output_dir()
 
@@ -32,26 +31,34 @@ experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment
 
 
 def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> int:
-    logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
-    logger.debug(locals())
-
     version = get_bayota_version()
-    logger.info('----------------------------------------------')
-    logger.info('******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
-    logger.info('*************** Single Study *****************')
-    logger.info('----------------------------------------------')
 
     # Load and save new control file
     experiments, \
     baseloadingfilename, \
     control_dict, \
     geography_name, \
-    model_spec_name = read_control_file(control_file, version, logger)
+    compact_geo_entity_str, \
+    model_spec_name, \
+    studyshortname, \
+    studyid = read_control_file(control_file, version)
 
-    logger.info(f"{logprefix} Model Generation - Geography = {geography_name}")
-    logger.info(f"{logprefix} Model Generation - Model specification name = {model_spec_name}")
-    logger.info(f"{logprefix} Model Generation - Experiments = {experiments}")
-    logger.info(f"{logprefix} Model Generation - base_loading_file_name = {baseloadingfilename}")
+    logger = set_up_detailedfilelogger(loggername=studyshortname,  # same name as module, so logger is shared
+                                       filename=f"bayota_step1_study{studyid}_{compact_geo_entity_str}.log",
+                                       level=log_level,
+                                       also_logtoconsole=True,
+                                       add_filehandler_if_already_exists=True,
+                                       add_consolehandler_if_already_exists=False)
+
+    logger.info('----------------------------------------------')
+    logger.info('******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
+    logger.info('*************** Single Study *****************')
+    logger.info('----------------------------------------------')
+
+    logger.info(f"Geography = {geography_name}")
+    logger.info(f"Model specification name = {model_spec_name}")
+    logger.info(f"Experiments = {experiments}")
+    logger.info(f"Base_loading_file_name = {baseloadingfilename}")
 
     # A shell command is built for this job submission.
     CMD = f"{model_generator_script} -cf {control_file} --log_level={log_level}"
@@ -75,7 +82,8 @@ def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> i
     # A job is submitted for each experiment in the list.
     p_list = []
     for ii, exp in enumerate(experiments):
-        logger.info(f"{logprefix} Exp. #{ii+1}: {exp}")
+        expid = '{:04}'.format(ii+1)
+        logger.info(f"Exp. #{expid}: {exp}")
 
         expspec_file = os.path.join(get_experiment_specs_dir(), exp)
         expactiondict = read_spec(expspec_file + '.yaml')
@@ -87,6 +95,7 @@ def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> i
         except KeyError:
             logger.info("Key 'experiments' not found")
         control_dict['experiment_file'] = expspec_file
+        expactiondict['id'] = expid
         control_dict['experiment'] = expactiondict
         with open(unique_control_file, "w") as f:
             yaml.safe_dump(control_dict, f, default_flow_style=False)
@@ -107,24 +116,29 @@ def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> i
     return 0  # a clean, no-issue, exit
 
 
-def read_control_file(control_file, version, logger):
+def read_control_file(control_file, version):
     if not control_file:
         raise ValueError('A control file must be specified.')
 
     control_dict = read_spec(control_file)
 
-    studydict = control_dict['study_spec']
-    geography_name = control_dict['geography']['entity']
+    studydict = control_dict['study']
+    studyshortname = studydict['studyshortname']
+    studyid = studydict['id']
 
     # Geography
-    filesafegeostring = geography_name.replace(' ', '').replace(',', '')
+    geodict = control_dict['geography']
+    geo_entity_name = geodict['entity']
+    compact_geo_entity_str = compact_capitalized_geography_string(geo_entity_name)
+    geodict['shortname'] = compact_geo_entity_str
+    control_dict['geography'] = geodict
 
     # Model Specification
     model_spec_name = studydict['model_spec']
     model_spec_file = os.path.join(get_model_specs_dir(), model_spec_name + '.yaml')
     model_dict = read_spec(model_spec_file)  # Model generation details are saved to control file.
     saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
-                                                   'modelinstance_' + model_spec_name + '_' + filesafegeostring + '.pickle')
+                                                   'modelinstance_' + model_spec_name + '_' + compact_geo_entity_str + '.pickle')
     control_dict['model'] = {'spec_file': model_spec_file,
                              'objectiveshortname': model_dict['objectiveshortname'],
                              'constraintshortname': model_dict['constraintshortname'],
@@ -146,7 +160,8 @@ def read_control_file(control_file, version, logger):
     with open(control_file, "w") as f:
         yaml.safe_dump(control_dict, f, default_flow_style=False)
 
-    return experiments, baseloadingfilename, control_dict, geography_name, model_spec_name
+    return experiments, baseloadingfilename, control_dict, \
+           geo_entity_name, compact_geo_entity_str, model_spec_name, studyshortname, studyid
 
 
 def parse_cli_arguments():
