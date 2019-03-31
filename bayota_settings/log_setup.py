@@ -80,31 +80,44 @@ def root_logger_setup(consolehandlerlevel='INFO', filehandlerlevel='DEBUG'):
 
 def set_up_detailedfilelogger(loggername: str, level: str,
                               filename=None,
-                              also_logtoconsole: bool = False):
+                              also_logtoconsole: bool = False,
+                              add_filehandler_if_already_exists: bool = True,
+                              add_consolehandler_if_already_exists: bool = True):
     logging_level = getattr(logging, level.upper())
 
     logger = logging.getLogger(loggername)
     logger.setLevel(logging_level)
 
-    # File Handler
-    if not filename:
-        file_handler = logging.handlers.TimedRotatingFileHandler(filename=root_logfilename, when='midnight',
-                                                                 interval=1, backupCount=7)
+    def addfilehandler():
+        # File Handler
+        if not filename:
+            file_handler = logging.handlers.TimedRotatingFileHandler(filename=root_logfilename, when='midnight',
+                                                                     interval=1, backupCount=7)
+        else:
+            logfilename = os.path.join(get_logging_dir(), filename)
+            file_handler = logging.handlers.TimedRotatingFileHandler(filename=logfilename, when='midnight',
+                                                                     interval=1, backupCount=7)
+
+        file_handler.setFormatter(MyCustomFileFormatter())
+        file_handler.setLevel(logging_level)
+        logger.addHandler(file_handler)
+
+    def addconsolehandler():
+        if also_logtoconsole:
+            # Console Handler
+            console_handler = logging.StreamHandler(sys.stdout)
+            console_handler.setFormatter(MyCustomConsoleFormatter())
+            console_handler.setLevel(logging_level)
+            logger.addHandler(console_handler)
+
+    if logger.hasHandlers():
+        if add_filehandler_if_already_exists:
+            addfilehandler()
+        if add_consolehandler_if_already_exists:
+            addconsolehandler()
     else:
-        logfilename = os.path.join(get_logging_dir(), filename)
-        file_handler = logging.handlers.TimedRotatingFileHandler(filename=logfilename, when='midnight',
-                                                                 interval=1, backupCount=7)
-
-    file_handler.setFormatter(MyCustomFileFormatter())
-    file_handler.setLevel(logging_level)
-    logger.addHandler(file_handler)
-
-    if also_logtoconsole:
-        # Console Handler
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(MyCustomConsoleFormatter())
-        console_handler.setLevel(logging_level)
-        logger.addHandler(console_handler)
+        addfilehandler()
+        addconsolehandler()
 
     return logger
 
