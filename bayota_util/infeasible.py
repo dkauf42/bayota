@@ -4,8 +4,10 @@ from pyomo.core import Constraint, Var, value, TraversalStrategy
 from math import fabs
 import logging
 
-logger = logging.getLogger('pyomo.util.infeasible')
-logger.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
+if not logger.hasHandlers():
+    logging.basicConfig(level=logging.DEBUG)
+    logger = logging.getLogger(__name__)
 
 
 def log_infeasible_constraints(m, tol=1E-6, logger=logger):
@@ -16,7 +18,7 @@ def log_infeasible_constraints(m, tol=1E-6, logger=logger):
         m (Block): Pyomo block or model to check
         tol (float): feasibility tolerance
     """
-    print('infeasible.log_infeasible_constraints(): in the method')
+    logger.debug('infeasible.log_infeasible_constraints(): in the method')
     for constr in m.component_data_objects(
             ctype=Constraint, active=True, descend_into=True):
         # if constraint is an equality, handle differently
@@ -51,7 +53,7 @@ def log_infeasible_bounds(m, tol=1E-6, logger=logger):
                 var.name, value(var), value(var.ub)))
 
 
-def log_close_to_bounds(m, tol=1E-6, logger=logger):
+def log_close_to_bounds(m, tol=1E-6, logger=logger, skip_nearzero_lowerbounds=False):
     """Print the variables and constraints that are near their bounds.
     Fixed variables and equality constraints are excluded from this analysis.
     Args:
@@ -63,6 +65,8 @@ def log_close_to_bounds(m, tol=1E-6, logger=logger):
         if var.stale:
             continue
         if var.fixed:
+            continue
+        if skip_nearzero_lowerbounds & (value(var.lb) == 0):
             continue
         if (var.has_lb() and var.has_ub() and
                 fabs(value(var.ub - var.lb)) <= 2 * tol):
