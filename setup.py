@@ -21,7 +21,7 @@ class CleanCommand(Command):
     @staticmethod
     def run():
         os.system('rm -vrf ./build ./dist ./*.egg-info '
-                  './*.col ./*nl ./*.row ./*.sol ./logfile_loadobjective.log')
+                  './*.col ./*nl ./*.row ./*.sol ./logfile_loadobjective.log ./slurm_*.out ./slurm_*.err')
 
     def initialize_options(self):
         pass
