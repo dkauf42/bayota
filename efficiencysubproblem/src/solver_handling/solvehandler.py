@@ -263,7 +263,8 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
     #             print(multipleReplace(line, myDict), end='')
 
 
-def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4, translate_to_cast_format=False):
+def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4,
+                translate_to_cast_format=False, solverlogfile=None):
     """
 
     Args:
@@ -284,14 +285,18 @@ def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4, transla
 
     solvetimestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    # ---- Output (Iterations and IPOPT Log) Filenames ----
-    if not output_file_str:
-        output_file_name = os.path.join(get_output_dir(),
-                                        'output_' + solvetimestamp + '.iters')
+    if not solverlogfile:
+        # ---- Output (Iterations and IPOPT Log) Filenames ----
+        if not output_file_str:
+            output_file_name = os.path.join(get_output_dir(),
+                                            'output_' + solvetimestamp + '.iters')
+        else:
+            output_file_name = os.path.join(get_output_dir(),
+                                            'output_' + output_file_str + '_' + solvetimestamp + '.iters')
+        ipopt_log_file = os.path.join(get_output_dir(), 'ipopt_logfile_' + solvetimestamp + '.log')
     else:
-        output_file_name = os.path.join(get_output_dir(),
-                                        'output_' + output_file_str + '_' + solvetimestamp + '.iters')
-    ipopt_log_file = os.path.join(get_output_dir(), 'ipopt_logfile_' + solvetimestamp + '.log')
+        output_file_name = solverlogfile
+        ipopt_log_file = solverlogfile
 
     # ---- MODIFY IPOPT OPTIONS ----
     modify_ipopt_options(options_file_path, newoutputfilepath=output_file_name)
