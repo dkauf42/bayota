@@ -8,7 +8,9 @@ class DataCountyGeoentitiesMixin(object):
     def _load_set_geographies(self, jeeves, geolist=None):
         logger.debug('loading county geoentities')
 
-        geodf = jeeves.county.add_lrsegs_to_counties(countystatestrs=geolist)
+        geodf = jeeves.county.add_lrsegs_to_counties(countystatestrs=[x.replace('Washington, DC',
+                                                                                'District of Columbia, DC')
+                                                                      for x in geolist])
 
         if geodf.empty:
             raise ValueError('** no matching geographies found. please check scale and entities **')
