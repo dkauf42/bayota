@@ -40,6 +40,7 @@ class DataHandlerBase:
         baseconditionid = 29
         costprofileid = 4
         self.agencyid = jeeves.agency.ids_from_names(['NONFED'])['agencyid'][0]  # NONFED agency code
+        self.agencyfullname = 'Non-Federal'
 
         """ Data tables for the set definitions """
         TblBmp = jeeves.source.TblBmp.copy()
@@ -347,7 +348,8 @@ class DataHandlerBase:
 
         # Go from load source table with geographyfullname to geographyid
         # (drops Agency, ...)
-        includecols = ['geography', 'loadsource', '2010 no action_amount',
+        includecols = ['geography', 'loadsource', 'agency', 'sector',
+                       '2010 no action_amount',
                        '2010 no action_nloadeot', '2010 no action_ploadeot',
                        '2010 no action_sloadeot']
         loadssubtbl = loadssubtbl.loc[:, includecols].merge(TblGeography, how='inner',
@@ -355,6 +357,12 @@ class DataHandlerBase:
                                                             right_on='geographyfullname')
         loadssubtbl.drop(columns=['geographyname', 'geographyfullname',
                                   'geography', 'geographytypeid'], inplace=True)
+
+        # Drop agencies that are not to be included
+        mask = loadssubtbl[(loadssubtbl['agency'] != self.agencyfullname)].index
+        if mask.empty:
+            logger.error('expected other agencies to be dropped')
+        loadssubtbl.drop(mask, inplace=True)
 
         loadssubtbl['eotn'] = (loadssubtbl['2010 no action_nloadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
         loadssubtbl["eotn"].replace([np.inf, -np.inf], 0)
