@@ -19,6 +19,16 @@ class Agency(SourceHook):
         return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
                                   fromtable=agencycodes, toname='agencyid')
 
+    def ids_from_fullnames(self, fullnames=None):
+        fullnames = self.forceToSingleColumnDataFrame(fullnames, colname='agencyfullname')
+        return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencyfullname', 'agencyid'],
+                                  fromtable=fullnames, toname='agencyid')
+
+    def fullnames_from_ids(self, ids=None):
+        ids = self.forceToSingleColumnDataFrame(ids, colname='agencyid')
+        return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencyid', 'agencyfullname'],
+                                  fromtable=ids, toname='agencyfullname')
+
     def append_agencyid_to_lrsegids(self, lrsegids=None):
         TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
 
