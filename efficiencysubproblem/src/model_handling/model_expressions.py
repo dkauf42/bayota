@@ -15,6 +15,18 @@ def total_cost_expr(mdl) -> pe.ConcreteModel:
     return mdl
 
 
+def original_load_for_one_parcel_expr(mdl) -> pe.ConcreteModel:
+    """ An expression to grab one parcel's base load """
+    def original_load_rule(model, p, l, lmbda):
+        return model.phi[l, lmbda, p] * model.T[l, lmbda]
+
+    mdl.original_load_for_one_parcel_expr = pe.Expression(mdl.PLTNTS,
+                                                          mdl.LRSEGS,
+                                                          mdl.LOADSRCS,
+                                                          rule=original_load_rule)
+    return mdl
+
+
 def original_load_expr(mdl) -> pe.ConcreteModel:
     """ Original Load Expression (with lrsegs aggregated together) """
     def original_load_rule(model, p):
