@@ -40,7 +40,8 @@ class SourceHook:
         if use_order_of_sourcetbl:
             tblsubset = sourcetable.loc[:, toandfromheaders].merge(fromtable, how='inner')
         else:
-            tblsubset = fromtable.merge(sourcetable.loc[:, toandfromheaders], how='inner')
+            # TODO: Instead of a "left" merge (which only keeps left keys), this really should be an "inner" merge (which only keeps shared keys) that still retains left table order of keys.
+            tblsubset = fromtable.merge(sourcetable.loc[:, toandfromheaders], how='left', sort=False)
 
         return tblsubset.loc[:, [toname]]  # pass column name as list so return type is pandas.DataFrame
 
