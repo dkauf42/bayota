@@ -14,17 +14,9 @@ from argparse import ArgumentParser
 
 def main(bucketname='s3://modeling-data.chesapeakebay.net/'):
     # Check if running on AWS
-    inaws = False
-    # s3 = None
-    _S3BUCKET = ''
     try:
         resp = requests.get('http://169.254.169.254', timeout=0.001)
         print('In AWS')
-        inaws = True
-
-        # import s3fs
-        # s3 = s3fs.core.S3FileSystem(anon=False)
-        _S3BUCKET = bucketname
     except:
         print('Not In AWS')
         return 1
@@ -32,7 +24,7 @@ def main(bucketname='s3://modeling-data.chesapeakebay.net/'):
     # s3 = boto3.client('s3')  # low-level
     s3 = boto3.resource('s3')  # high-level
 
-    bucket = s3.Bucket(_S3BUCKET)
+    bucket = s3.Bucket(bucketname)
     if bucket.creation_date:
         print("The bucket exists")
     else:
