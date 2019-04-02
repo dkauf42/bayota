@@ -19,3 +19,10 @@ class Sector(SourceHook):
         names = self.forceToSingleColumnDataFrame(names, colname='sector')
         return self.singleconvert(sourcetbl='TblSector', toandfromheaders=['sector', 'sectorid'],
                                   fromtable=names, toname='sectorid')
+
+    def sectors_from_loadsourceshortname(self, loadsourceshortnames):
+        names = self.forceToSingleColumnDataFrame(loadsourceshortnames, colname='loadsourceshortname')
+        sectorids = self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceshortname', 'sectorid'],
+                           fromtable=names, toname='sectorid', use_order_of_sourcetbl=False)
+        return self.singleconvert(sourcetbl='TblSector', toandfromheaders=['sectorid', 'sector'],
+                                  fromtable=sectorids, toname='sector', use_order_of_sourcetbl=False)
