@@ -1,7 +1,7 @@
 
 geography_scale: County
 geography_entities:
-  strmatch: ['Calvert, MD']
+  strmatch: ['Accomack, VA']
 # strmatch: '.*MD'
 study_specs:
   - model_spec: costmin_total_Npercentreduction
