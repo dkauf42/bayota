@@ -14,27 +14,80 @@ Each version should:
 *Security* to invite users to upgrade in case of vulnerabilities.
 
 [Current Development]
+
+## [0.1b1] -- 2019-04-02
+### Added
+- efficiencysubproblem
+    - expression is added to model for getting a single parcel's load
+    - functions are added for inspecting a model 
+- castjeeves
+    - add method to convert between agencyid and agencyfullname
+    - add method for getting sectors from loadsourceshortnames
+
+### Changed
+- general
+    - updated the 2010 No Action Loads report being used    
+        
+### Fixed
+- general
+    - agencies other than 'Non-Federal' are dropped when getting the base loading table
+- castjeeves
+    - single column conversions' preserve order option using a left join.
+
+## [0.1a1.dev6] -- 2019-03-31
+### Added
+- general
+    - add control option for moving the CAST formatted solution table to s3
+    - add input arguments to run scripts for setting a logging level
+- efficiencysubproblem
+    - expressions are added to model for more detailed investigation of loads
+- castjeeves
+    - single column converts now have an option to preserve order of the input table    
+    
+### Changed
+- general
+    - move-to-s3 options are combined into one key for specification files
+    - solution table acre values are now rounded to a single decimal point
+    - slurm 'ntasks' and 'ntasks-per-node' values are reduced to 32 to ease processing
+    - log formatting configuration file is now in yaml style  
+
+### Fixed
+- general
+    - study script is now exited early if model generation raises an error
+    - a sparse solution table is now generated even when solution is not feasible
+
+## [0.1a1.dev5] -- 2019-03-21
 ### Added
 - general
     - add U.S. grant funding acknowledgment to README
     - include spec option that deactivates unused objective expression indices
     - in the run experiment/trial scripts, start a script that moves the solution file to s3
     - include new script that moves solution file to s3 after solving.  s3 for the win!
+    - add directory for control files from batch, study, experiment, and trials
+    - add ability/option to translate solution table to CAST BMP-input file format
+    - allow for list type in geography_entities string matching for batch specifications
 - efficiencysubproblem
     - add modify_model method that will do specified experiment setup actions
     - include 'results' in solution dictionary from a basic solve
+- castjeeves
+    - add method to convert bmp shortnames to fullnames
 
 ### Changed
 - general
     - rename jupyter file names for better organization. Oh yeah.
     - move graphic files out of the repository and into the local workspace
     - improve log messaging from slurm scripts
+    - use castjeeves to parse geography entities from the batch specification
+    - rename run_scripts with 'step[#]' to clarify order
+    - make it so that a control file grows from each later step
+    - move study specifications into the batch specs, instead of having separate files  
 
 ### Fixed
 - general
     - only load and resave model when conducting experiments if model is being modified
     - fix the check for whether any model modifications were specified
     - check whether Objective is 'indexed' Pyomo component when putting results into dictionary
+    - fix the slurm run process, so srun commands are not calling other srun commands
 
 ## [0.1a1.dev4] -- 2018-12-01
 ### Added
