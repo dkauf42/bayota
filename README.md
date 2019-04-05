@@ -181,23 +181,23 @@ Then, execute one of the following commands.
 
 ***Batch of studies***
 ```
-./bin/scripts_by_level/run_batch_of_studies.py -f ./bin/run_specs/batch_study_specs/calvertMD_cost_and_load_objective_experiments.yaml --dryrun
+./bin/run_scripts/run_step0_batch_of_studies.py -f ./bin/run_specs/batch_study_specs/calvertMD_cost_and_load_objective_experiments.yaml --dryrun
 ```
 ***A single study***
 ```
-./bin/scripts_by_level/run_single_study.py -g CalvertMD -n calvertMD_cost_experiments --dryrun
+./bin/run_scripts/run_step1_single_study.py -g CalvertMD -n calvertMD_cost_experiments --dryrun
 ```
 ***Generate a study model***
 ```
-./bin/scripts_by_level/run_generatemodel.py -g CalvertMD -n costmin_total_percentreduction -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
+./bin/run_scripts/run_step2_generatemodel.py -g CalvertMD -n costmin_total_percentreduction -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
 ```
 ***Conduct an experiment***
 ```
-./bin/scripts_by_level/run_conductexperiment.py -n ./bin/run_specs/experiment_specs/costmin_1-40percentreduction -sf /Users/Danny/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
+./bin/run_scripts/run_step3_conductexperiment.py -n ./bin/run_specs/experiment_specs/costmin_1-40percentreduction -sf /Users/Danny/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
 ```
 ***Solve a single trial***
 ```
-./bin/scripts_by_level/run_solveonetrial.py -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle -tn experiment--costmin_1-40percentreduction--_modifiedvar--percent_reduction_minimum--_trial0040 --solutions_folder_name costmin_1-40percentreduction -m '{"variable": "percent_reduction_minimum", "value": 40, "indexer": "N"}' --dryrun
+./bin/run_scripts/run_step_4_solveonetrial.py -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle -tn experiment--costmin_1-40percentreduction--_modifiedvar--percent_reduction_minimum--_trial0040 --solutions_folder_name costmin_1-40percentreduction -m '{"variable": "percent_reduction_minimum", "value": 40, "indexer": "N"}' --dryrun
 ```
 
 
