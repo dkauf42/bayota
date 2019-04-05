@@ -33,7 +33,7 @@
 # ######################################
 # --- First-Stage Image: Build IPOPT ---
 # ######################################
-FROM python:alpine3.6 as builder
+FROM python:alpine3.7 as builder
 
 # --- Install basic requirements ---
 RUN apk update \
@@ -80,7 +80,7 @@ RUN apk update \
 # #################################################
 # --- Second-Stage Image: Build python packages ---
 # #################################################
-FROM python:alpine3.6 as builder2
+FROM python:alpine3.7 as builder2
 # Add the IPOPT directory generated in the `builder` container above
 COPY --from=builder /CoinIpopt /CoinIpopt
 
@@ -109,7 +109,7 @@ RUN apk add --no-cache \
 # ########################################
 # --- Third-Stage Image: Set up Bayota ---
 # ########################################
-FROM python:alpine3.6
+FROM python:alpine3.7
 # Add the IPOPT directory and python packages from `builder2` container above
 COPY --from=builder2 /CoinIpopt /CoinIpopt
 COPY --from=builder2 /root/.cache /root/.cache
