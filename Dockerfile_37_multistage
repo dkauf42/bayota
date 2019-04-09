@@ -12,16 +12,24 @@
 #    -- Create a second-stage docker image from the 'builder2' stage:
 #       >> docker build -f Dockerfile_37_multistage --tag bayota_app_builder2 . --target builder2
 #
+#
+#  MANAGE IMAGES
+#
 #  Inspect the available docker images:
 #     >> docker images
-#
-#  Run a docker image in interactive mode (to see file directory structure):
-#     >> docker run -it <iamgeID> sh
 #
 #  Delete/remove existing image <by Image ID> listed in "docker images"
 #     >> docker rmi <imageID>
 #     >> docker rmi ef9a50d6e1a2
 #
+#
+#  RUNNING
+#
+#  Run a docker image in interactive mode (to see file directory structure):
+#     >> docker run -it <imageID> sh
+#
+#  Mount a host directory when running (add -v argument):
+#     >> docker run -v /host/directory:/container/directory -it <imageID>
 #
 #  Test commands to pass to docker container:
 #    -- Generate a model:
