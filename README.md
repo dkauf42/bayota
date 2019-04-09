@@ -275,7 +275,7 @@ All users of BayOTA are advised to safeguard important data, to use caution, and
 Should you encounter any bugs, glitches, lack of functionality, or other problems on the website, please let us know. We can be reached at e-mail address dkaufman@chesapeakebay.net. Your help in this regard is greatly appreciated!
 
 ## 🎓 License
-GNU General Public License
+The 3-Clause BSD License
 
 ## 🗣️ Who do I talk to?
 
