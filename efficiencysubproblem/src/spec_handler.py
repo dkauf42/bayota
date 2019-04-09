@@ -18,7 +18,7 @@ def read_spec(spec_file):
     adict = None
     with open(spec_file, 'r') as stream:
         try:
-            adict = yaml.load(stream)
+            adict = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
 
