@@ -17,7 +17,7 @@
 #   -v  || --verbose      = (Optional) print "[In/Out] of AWS" statement
 #
 # Example:
-#   $ ./move_to_s3.py -op local_file -dp s3_folder --verbose
+#   $ ./move_to_s3.py -lp local_file -dp s3_folder --verbose
 #
 ##################################################
 
