@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-#
-# Example:
-#   $ move_to_s3.py --verbose
-
 ##################################################
 # Danny Kaufman
 # 2019 April 09
