@@ -59,17 +59,20 @@ def main(local_path, destination_path, move_directory=False, verbose=False):
                 relative_path = os.path.relpath(local_file, local_path)
                 s3_path = os.path.join(destination_path, relative_path)
 
-                print('Searching "%s" in "%s"' % (s3_path, bucketname))
+                if verbose:
+                    print('Searching "%s" in "%s"' % (s3_path, bucketname))
                 try:
                     s3.head_object(Bucket=bucketname, Key=s3_path)
-                    print("Path found on S3! Skipping %s..." % s3_path)
+                    if verbose:
+                        print("Path found on S3! Skipping %s..." % s3_path)
 
                     # try:
                     # client.delete_object(Bucket=bucket, Key=s3_path)
                     # except:
                     # print "Unable to delete %s..." % s3_path
                 except:
-                    print("Uploading %s..." % s3_path)
+                    if verbose:
+                        print("Uploading %s..." % s3_path)
                     s3.upload_file(Key=s3_path, Bucket=bucketname, Filename=local_file)
     else:
         # Upload a file
