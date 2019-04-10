@@ -49,10 +49,10 @@ def main(local_path, destination_path, move_directory=False, verbose=False):
             for filename in files:
 
                 # construct the full local path
-                local_path = os.path.join(root, filename)
+                local_file = os.path.join(root, filename)
 
                 # construct the full Dropbox path
-                relative_path = os.path.relpath(local_path, local_path)
+                relative_path = os.path.relpath(local_file, local_path)
                 s3_path = os.path.join(destination_path, relative_path)
 
                 # relative_path = os.path.relpath(os.path.join(root, filename))
@@ -68,7 +68,7 @@ def main(local_path, destination_path, move_directory=False, verbose=False):
                     # print "Unable to delete %s..." % s3_path
                 except:
                     print("Uploading %s..." % s3_path)
-                    s3.upload_file(Key=s3_path, Bucket=bucketname, Filename=local_path)
+                    s3.upload_file(Key=s3_path, Bucket=bucketname, Filename=local_file)
     else:
         # Upload a file
         s3.upload_file(Key=destination_path,  # The name of the key to upload to.
