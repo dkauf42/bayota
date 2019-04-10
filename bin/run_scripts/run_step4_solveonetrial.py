@@ -152,7 +152,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         if move_solution_to_s3:
             # A shell command is built for this job submission.
             CMD = f"{move_to_s3_script} " \
-                  f"-op {outputdfpath_bayotaformat} " \
+                  f"-lp {outputdfpath_bayotaformat} " \
                   f"-dp {s3_destination_dir + solution_shortname} "
 
             # Job is submitted.
@@ -186,7 +186,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             if move_CASTformatted_solution_to_s3:
                 # A shell command is built for this job submission.
                 CMD = f"{move_to_s3_script} " \
-                      f"-op {outputdfpath_castformat} " \
+                      f"-lp {outputdfpath_castformat} " \
                       f"-dp {s3_destination_dir + solution_shortname_castformat} "
 
                 # Job is submitted.
