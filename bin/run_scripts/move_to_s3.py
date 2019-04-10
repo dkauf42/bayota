@@ -13,6 +13,7 @@
 # Arguments:
 #   -lp || --local        = local path of file/dir to move
 #   -dp || --destination  = destination directory into which file will be moved (note: no leading or trailing '/'s)
+#   --recursive           = if local path is a directory, will move full directory recursively
 #   -v  || --verbose      = (Optional) print "[In/Out] of AWS" statement
 #
 # Example:
@@ -43,6 +44,10 @@ def main(local_path, destination_path, move_directory=False, verbose=False):
     s3 = boto3.client('s3')
 
     if move_directory:
+        if not os.path.isdir(local_path):
+            print('Local directory <%s> does not exist' % local_path)
+            return 1
+
         # enumerate local files recursively
         for root, dirs, files in os.walk(local_path):
 
@@ -50,12 +55,9 @@ def main(local_path, destination_path, move_directory=False, verbose=False):
 
                 # construct the full local path
                 local_file = os.path.join(root, filename)
-
-                # construct the full Dropbox path
+                # construct the full s3 path
                 relative_path = os.path.relpath(local_file, local_path)
                 s3_path = os.path.join(destination_path, relative_path)
-
-                # relative_path = os.path.relpath(os.path.join(root, filename))
 
                 print('Searching "%s" in "%s"' % (s3_path, bucketname))
                 try:
@@ -87,7 +89,7 @@ def parse_cli_arguments():
     parser.add_argument("-dp", "--destination", dest="destination_path", default=None,
                         help="destination path for files to move")
 
-    parser.add_argument("--dir", dest='move_directory', action='store_true',
+    parser.add_argument("--recursive", dest='move_directory', action='store_true',
                         help="use this flag to move an entire directory, retaining dir structure")
 
     parser.add_argument("-v", "--verbose", dest='verbose',
