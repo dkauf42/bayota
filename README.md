@@ -195,7 +195,7 @@ To use pynumero package from Pyomo:
 
 #### Components
 
-![run_organization](./images/code_organization_specification_files_colored_like_graph_simple.png)
+![run_organization](./.images/code_organization_specification_files_colored_like_graph_simple.png)
 
 #### Directory Tree
 ```
