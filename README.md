@@ -16,8 +16,8 @@ This README documents steps necessary to get the application up and running.
 * [How do I get set up?](#-how-do-i-get-set-up)
 * [Usage](#-usage)
 * [How do I uninstall?](#-how-do-i-uninstall)
-* [Troubleshooting & debugging](#-troubleshooting--debugging)
-* [Project structure](#project_structure)
+* [Troubleshooting & debugging](#-troubleshooting-or-debugging)
+* [Project structure](#-project-structure)
 * [Credits](#-credits)
 * [License](#-license)
 * [Who do I talk to?](#-who-do-i-talk-to)
@@ -187,12 +187,15 @@ To use pynumero package from Pyomo:
 - may need to run `conda install -c conda-forge pynumero_libraries` for ASL library
 
 
-# 🐛 Troubleshooting & debugging
+# 🐛 Troubleshooting or debugging
 
 * Use `--log_level=DEBUG` to output the most verbose logging messages.
 
-<a id='project_structure'></a>
 # 📁 Project Structure
+
+#### Components
+
+![run_organization](./images/code_organization_specification_files_colored_like_graph_simple.png)
 
 #### Directory Tree
 ```
