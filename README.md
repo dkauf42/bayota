@@ -10,11 +10,25 @@ which is the CBP Phase 6 time-averaged watershed model.
 <strong>Table of Contents</strong>
 
 * [How do I get set up?](#-how-do-i-get-set-up)
+    1. Ensure the IPOPT solver is installed and in $PATH
+    2. Clone the repository
+    3. Configure before installing
+    4. Install packages
+    5. Double-check the local paths
+    6. Test the installation
 * [Usage](#-usage)
+    - [From the command line](#-from-the-command-line)
+    - [From the python prompt](#-from-the-python-prompt)
+    - [From a jupyter notebook](#-from-a-jupyter-notebook)
 * [How do I uninstall?](#-how-do-i-uninstall)
+* [Other Notes](#-other-notes)
 * [Debugging or troubleshooting](#-debugging-or-troubleshooting)
 * [Project structure](#-project-structure)
+    - [Components](#components)
+    - [Run Sequence](#run-sequence)
+    - [Directory Tree](#directory-tree)
 * [Credits](#-credits)
+* [Disclaimer](#-disclaimer)
 * [License](#-license)
 * [Who do I talk to?](#-who-do-i-talk-to)
 
