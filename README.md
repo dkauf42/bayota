@@ -11,7 +11,6 @@ which is the CBP Phase 6 time-averaged watershed model.
 
 This README documents steps necessary to get the application up and running.
 
-<details>
 <strong>Table of Contents</strong>
 
 * [How do I get set up?](#-how-do-i-get-set-up)
@@ -22,7 +21,6 @@ This README documents steps necessary to get the application up and running.
 * [Credits](#-credits)
 * [License](#-license)
 * [Who do I talk to?](#-who-do-i-talk-to)
-</details>
 
 # ⚙ How do I get set up?
 
