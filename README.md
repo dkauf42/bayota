@@ -195,9 +195,9 @@ To use pynumero package from Pyomo:
 
 #### Components
 
-<img src="./.images/code_organization_specification_files_colored_like_graph_simple.png" alt="run_organization" width="250" height="400"/>
+<img src="./.images/code_organization_specification_files_colored_like_graph_simple.png" alt="run_organization" width="295" height="377"/>
 
-<img src="./.images/components_20190409.png" alt="components" width="400" height="400"/>
+<img src="./.images/components_20190409.png" alt="components" width="503" height="377"/>
 
 #### Directory Tree
 ```
