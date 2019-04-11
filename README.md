@@ -21,7 +21,7 @@ which is the CBP Phase 6 time-averaged watershed model.
     - [From the python prompt](#-from-the-python-prompt)
     - [From a jupyter notebook](#-from-a-jupyter-notebook)
     - [Cleaning up after installation and runs](#cleaning-up-after-intallation-and-runs)
-* [How do I uninstall?](#-how-do-i-uninstall)
+* [Uninstall](#-uninstall)
 * [Other Notes](#-other-notes)
 * [Debugging or troubleshooting](#-debugging-or-troubleshooting)
 * [Project structure](#-project-structure)
@@ -85,7 +85,7 @@ pip install .
 ```
 
 
-#### 5🛣️ Double-check the local paths
+#### 5🛣️ Double check the local paths
 
 During the first install (or first test run), default configuration files are generated.\
 -- In `bayota_ws_{version}/config/`, customize values within:
@@ -185,7 +185,7 @@ Some example notebooks are provided in the bin/jnotebooks/ directory.
 python setup.py clean
 ```
 
-# 🚮️ How do I uninstall?
+# 🚮️ Uninstall
 
 --- To uninstall the python packages from your environment (site-packages):
 
