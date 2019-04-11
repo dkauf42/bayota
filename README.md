@@ -153,7 +153,7 @@ solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler
                                          translate_to_cast_format='True')
                                              
 print("solving timestamp: %s      feasible: %s" %
-          (solution_dict['timestamp'], solution_dict['feasible']))
+      (solution_dict['timestamp'], solution_dict['feasible']))
 
 solution_data_frame = solution_dict['solution_df']
 ```
