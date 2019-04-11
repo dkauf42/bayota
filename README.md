@@ -10,16 +10,17 @@ which is the CBP Phase 6 time-averaged watershed model.
 <strong>Table of Contents</strong>
 
 * [How do I get set up?](#-how-do-i-get-set-up)
-    1. Ensure the IPOPT solver is installed and in $PATH
-    2. Clone the repository
-    3. Configure before installing
-    4. Install packages
-    5. Double-check the local paths
-    6. Test the installation
+    1. [Ensure the IPOPT solver is installed and in $PATH](#1-ensure-the-ipopt-solver-is-installed-and-in-path)
+    2. [Clone the repository](#2--clone-the-repository)
+    3. [Configure before installing](#3--configure-before-installing)
+    4. [Install packages](#4--install-packages)
+    5. [Double-check the local paths](#5--double-check-the-local-paths)
+    6. [Test the installation](#6--test-the-installation)
 * [Usage](#-usage)
     - [From the command line](#-from-the-command-line)
     - [From the python prompt](#-from-the-python-prompt)
     - [From a jupyter notebook](#-from-a-jupyter-notebook)
+    - [Cleaning up after intallation and runs](#cleaning-up-after-intallation-and-runs)
 * [How do I uninstall?](#-how-do-i-uninstall)
 * [Other Notes](#-other-notes)
 * [Debugging or troubleshooting](#-debugging-or-troubleshooting)
@@ -172,17 +173,17 @@ print("solving timestamp: %s      feasible: %s" %
 solution_data_frame = solution_dict['solution_df']
 ```
 
-### Cleaning up after intallation and runs
+#### 📓 From a jupyter notebook
+The approach to use in a notebook is the same as the python prompt.\
+Some example notebooks are provided in the bin/jnotebooks/ directory.
+
+## Cleaning up after intallation and runs
 
 --- To remove build files created by "`python setup.py install`" or to remove temporary files created in the project home during a run:
 
 ```
 python setup.py clean
 ```
-
-#### 📓 From a jupyter notebook
-The approach to use in a notebook is the same as the python prompt.\
-Some example notebooks are provided in the bin/jnotebooks/ directory.
 
 # 🚮️ How do I uninstall?
 
