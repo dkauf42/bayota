@@ -291,7 +291,7 @@ Should you encounter any bugs, glitches, lack of functionality, or other problem
 ## 🎓 License
 The 3-Clause BSD License
 
-## 🗣️ Who do I talk to?
+## 📧 Who do I talk to?
 
 * The U.S. EPA Chesapeake Bay Program
 * Daniel E. Kaufman: dkaufman@chesapeakebay.net
