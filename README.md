@@ -48,6 +48,19 @@ git pull
 
 #### 3. 🏡 Configure before installing
 
+***Note:*** Important filepaths are set (during install) by the `bayota_settings` package.\
+These paths include general output, logging, temporary files, etc., and are defined in the following three config files:
+
+- `bash_config.con` specifies the path of the project directory.
+- `logging_config.yaml` specifies the format and targets of log messages.
+- `user_config.ini` specifies output path stems (for stdout, graphics, and logs)
+
+*These three config files will be copied into `~/bayota_ws_{version}/config/` during the first install (or first test run). \
+These files define local paths (and log formatting) and are required for conducting BayOTA optimization studies.*
+
+*These files will not be programmatically changed by subsequent code executions after being generated.*\
+*Example config files can be found in the `bayota_settings` package.*
+
 -- Customize the following values in `bayota_settings/install_config.ini`:
 - `project_home`
 - `repo_top`
@@ -74,6 +87,8 @@ In `bayota_ws_{version}/config/`, customize values within:
 #### ✅ Test the installation
 
 -- From the project directory, run the automated test suites:
+
+***(Note, these are not yet set up completely)***
 
 ```
 cd bayota/
@@ -242,22 +257,6 @@ bayota
 ├── setup.py
 ├── VERSION
 ```
-
-#### Other file paths used by this project
-
-Important filepaths are set (during install) by the `bayota_settings` package.\
-These paths include general output, logging, temporary files, etc.\
-Such filepaths are defined in the following three config files.
-
-***Note:*** *These three config files will be copied into `~/bayota_ws_{version}/config/` during the first install (or first test run). \
-These files define local paths (and log formatting) and are required for conducting BayOTA optimization studies.*
-
-- `bash_config.con` specifies the path of the project directory.
-- `logging_config.yaml` specifies the format and targets of log messages.
-- `user_config.ini` specifies output path stems (for stdout, graphics, and logs)
-
-*These files will not be changed by subsequent code executions after being generated.*\
-*Example config files can be found in the `bayota_settings` package.*
 
 ## 💕 Credits
 
