@@ -1,6 +1,6 @@
 # BayOTA
 
-BayOTA (Bay Optimization Tool for Analyses) is designed for use by the partners of the
+BayOTA (Bay Optimization Tools for Analysis) is designed for use by the partners of the
 Chesapeake Bay Program (CBP) as well as the general public as part of the Optimization Tool
 Development Project (EPA-R3-CBP-16-03).
 Specifically, this extends the functionality of -
