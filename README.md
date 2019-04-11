@@ -185,7 +185,7 @@ Some example notebooks are provided in the bin/jnotebooks/ directory.
 python setup.py clean
 ```
 
-# 🚮️ Uninstall
+# 🚮 Uninstall
 
 --- To uninstall the python packages from your environment (site-packages):
 
