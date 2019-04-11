@@ -12,7 +12,7 @@ which is the CBP Phase 6 time-averaged watershed model.
 * [How do I get set up?](#-how-do-i-get-set-up)
 * [Usage](#-usage)
 * [How do I uninstall?](#-how-do-i-uninstall)
-* [Troubleshooting & debugging](#-troubleshooting-or-debugging)
+* [Debugging or troubleshooting](#-debugging-or-troubleshooting)
 * [Project structure](#-project-structure)
 * [Credits](#-credits)
 * [License](#-license)
@@ -158,18 +158,19 @@ print("solving timestamp: %s      feasible: %s" %
 solution_data_frame = solution_dict['solution_df']
 ```
 
-#### 📓 From a jupyter notebook
-The approach to use in a notebook is the same as the python prompt.\
-Some example notebooks are provided in the bin/jnotebooks/ directory.
+### Cleaning up after intallation and runs
 
-# 🚮️ How do I uninstall?
-
---- To remove build files created by "`python setup.py install`":
+--- To remove build files created by "`python setup.py install`" or to remove temporary files created in the project home during a run:
 
 ```
 python setup.py clean
 ```
 
+#### 📓 From a jupyter notebook
+The approach to use in a notebook is the same as the python prompt.\
+Some example notebooks are provided in the bin/jnotebooks/ directory.
+
+# 🚮️ How do I uninstall?
 
 --- To uninstall the python packages from your environment (site-packages):
 
@@ -177,7 +178,7 @@ python setup.py clean
 pip uninstall bayota
 ```
 
---- To remove development version of package (i.e., remove it from easy-install.pth and delete the .egg-link)
+--- *(less common) To remove development version of package (i.e., remove it from easy-install.pth and delete the .egg-link)*
 
 ```
 python setup.py develop --uninstall
@@ -196,8 +197,7 @@ To use pynumero package from Pyomo:
 - `scipy` is required
 - may need to run `conda install -c conda-forge pynumero_libraries` for ASL library
 
-
-# 🐛 Troubleshooting or debugging
+# 🐛 Debugging or troubleshooting
 
 * Use `--log_level=DEBUG` to output the most verbose logging messages.
 
