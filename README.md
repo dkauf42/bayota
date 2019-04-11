@@ -1,11 +1,10 @@
-# Overview
+# BayOTA
 
-"BayOTA" (Bay Optimization Tools for Analysis) is a repository of
-optimization and analysis tools, designed for use by the partners of the
+BayOTA (Bay Optimization Tool for Analyses) is designed for use by the partners of the
 Chesapeake Bay Program (CBP) as well as the general public as part of the Optimization Tool
 Development Project (EPA-R3-CBP-16-03).
-Specifically, these tools extend the functionality of -
-and help users of - CAST (the Chesapeake Bay Assessement Scenario Tool),
+Specifically, this extends the functionality of -
+and helps users of - CAST (the Chesapeake Bay Assessement Scenario Tool),
 which is the CBP Phase 6 time-averaged watershed model.
 
 <br>
@@ -13,77 +12,17 @@ which is the CBP Phase 6 time-averaged watershed model.
 This README documents steps necessary to get the application up and running.
 
 <details>
- <summary><strong>Table of Contents</strong> (click to expand)</summary>
+<strong>Table of Contents</strong>
 
-* [Project structure](#-project-structure)
 * [How do I get set up?](#-how-do-i-get-set-up)
 * [Usage](#-usage)
 * [How do I uninstall?](#-how-do-i-uninstall)
 * [Troubleshooting & debugging](#-troubleshooting--debugging)
+* [Project structure](#project_structure)
 * [Credits](#-credits)
 * [License](#-license)
 * [Who do I talk to?](#-who-do-i-talk-to)
 </details>
-
-# 📁 Project Structure
-
-#### Directory Tree
-```
-bayota
-│
-├── README.md              <- Top-level README for users/developers of this project.
-├── CHANGELOG.md           <- Documentation of notable changes to this project
-│
-├── bin                    <- scripts (python, bash, slurm, jupyter notebooks) for running from the command-line and performing analyses
-│   └── jnotebooks/
-│   └── python_scripts/
-│   └── run_scripts/
-│   └── specification_files/
-│
-├── data                   <- source data CSVs, excel files
-│
-├── castjeeves             <- Python *PACKAGE* to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
-│   ├── __init__.py
-│   └── ...
-│
-├── efficiencysubproblem   <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
-│   ├── __init__.py
-│   └── ...
-│
-├── sandbox                <- Python *PACKAGE* for automated generation of valid BMP input files for use with CAST
-│   ├── __init__.py
-│   └── ...
-│
-├── bayota_settings        <- Python *PACKAGE* that configures directory paths (output, graphics, & logging). Contains example config files.
-│   ├── __init__.py
-│   └── ...
-│
-├── bayota_util            <- Python *PACKAGE* for utility methods that haven't yet found a home elsewhere
-│   ├── __init__.py
-│   └── ...
-│
-├── Dockerfile_37_multistage
-├── LICENSE
-├── MANIFEST.in
-├── setup.py
-├── VERSION
-```
-
-#### Other file paths used by this project
-
-Important filepaths are set (during install) by the `bayota_settings` package.\
-These paths include general output, logging, temporary files, etc.\
-Such filepaths are defined in the following three config files.
-
-***Note:*** *These three config files will be copied into `~/bayota_ws_{version}/config/` during the first install (or first test run). \
-These files define local paths (and log formatting) and are required for conducting BayOTA optimization studies.*
-
-- `bash_config.con` specifies the path of the project directory.
-- `logging_config.yaml` specifies the format and targets of log messages.
-- `user_config.ini` specifies output path stems (for stdout, graphics, and logs)
-
-*These files will not be changed by subsequent code executions after being generated.*\
-*Example config files can be found in the `bayota_settings` package.*
 
 # ⚙ How do I get set up?
 
@@ -243,7 +182,7 @@ pip uninstall bayota
 rm -r bayota/
 ```
 
-# Other Notes
+# 📔 Other Notes
 
 To use pynumero package from Pyomo:
 - `scipy` is required
@@ -253,6 +192,67 @@ To use pynumero package from Pyomo:
 # 🐛 Troubleshooting & debugging
 
 * Use `--log_level=DEBUG` to output the most verbose logging messages.
+
+<a id='project_structure'></a>
+# 📁 Project Structure
+
+#### Directory Tree
+```
+bayota
+│
+├── README.md              <- Top-level README for users/developers of this project.
+├── CHANGELOG.md           <- Documentation of notable changes to this project
+│
+├── bin                    <- scripts (python, bash, slurm, jupyter notebooks) for running from the command-line and performing analyses
+│   └── jnotebooks/
+│   └── python_scripts/
+│   └── run_scripts/
+│   └── specification_files/
+│
+├── data                   <- source data CSVs, excel files
+│
+├── castjeeves             <- Python *PACKAGE* to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+│   ├── __init__.py
+│   └── ...
+│
+├── efficiencysubproblem   <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+│   ├── __init__.py
+│   └── ...
+│
+├── sandbox                <- Python *PACKAGE* for automated generation of valid BMP input files for use with CAST
+│   ├── __init__.py
+│   └── ...
+│
+├── bayota_settings        <- Python *PACKAGE* that configures directory paths (output, graphics, & logging). Contains example config files.
+│   ├── __init__.py
+│   └── ...
+│
+├── bayota_util            <- Python *PACKAGE* for utility methods that haven't yet found a home elsewhere
+│   ├── __init__.py
+│   └── ...
+│
+├── Dockerfile_37_multistage
+├── LICENSE
+├── MANIFEST.in
+├── setup.py
+├── VERSION
+```
+
+#### Other file paths used by this project
+
+Important filepaths are set (during install) by the `bayota_settings` package.\
+These paths include general output, logging, temporary files, etc.\
+Such filepaths are defined in the following three config files.
+
+***Note:*** *These three config files will be copied into `~/bayota_ws_{version}/config/` during the first install (or first test run). \
+These files define local paths (and log formatting) and are required for conducting BayOTA optimization studies.*
+
+- `bash_config.con` specifies the path of the project directory.
+- `logging_config.yaml` specifies the format and targets of log messages.
+- `user_config.ini` specifies output path stems (for stdout, graphics, and logs)
+
+*These files will not be changed by subsequent code executions after being generated.*\
+*Example config files can be found in the `bayota_settings` package.*
 
 ## 💕 Credits
 
