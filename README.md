@@ -7,10 +7,6 @@ Specifically, this extends the functionality of -
 and helps users of - CAST (the Chesapeake Bay Assessement Scenario Tool),
 which is the CBP Phase 6 time-averaged watershed model.
 
-<br>
-
-This README documents steps necessary to get the application up and running.
-
 <strong>Table of Contents</strong>
 
 * [How do I get set up?](#-how-do-i-get-set-up)
@@ -26,7 +22,7 @@ This README documents steps necessary to get the application up and running.
 
 #### 1. Ensure the IPOPT solver is installed and in $PATH
 
-The Ipopt solver must be compiled/installed separately in order to solve Efficiency BMP optimization problems.
+-- The Ipopt solver must be compiled/installed separately in order to solve Efficiency BMP optimization problems.
 - Instructions can be found at https://www.coin-or.org/Ipopt/documentation/node14.html
 - After installation, the Ipopt executable location must be added to the environment $PATH variable
 
@@ -48,18 +44,17 @@ git pull
 
 #### 3. 🏡 Configure before installing
 
-***Note:*** Important filepaths are set (during install) by the `bayota_settings` package.\
-These paths include general output, logging, temporary files, etc., and are defined in the following three config files:
+***Note:*** *Important filepaths are set (during install) by the `bayota_settings` package.\
+These paths include general output, logging, temporary files, etc., and are defined in the following three config files:*
 
-- `bash_config.con` specifies the path of the project directory.
-- `logging_config.yaml` specifies the format and targets of log messages.
-- `user_config.ini` specifies output path stems (for stdout, graphics, and logs)
+- `bash_config.con` *specifies the path of the project directory.*
+- `logging_config.yaml` *specifies the format and targets of log messages.*
+- `user_config.ini` *specifies output path stems (for stdout, graphics, and logs)*
 
-*These three config files will be copied into `~/bayota_ws_{version}/config/` during the first install (or first test run). \
-These files define local paths (and log formatting) and are required for conducting BayOTA optimization studies.*
+*These three config files are required for conducting BayOTA optimization studies, and will be copied into `~/bayota_ws_{version}/config/` during the first install (or first test run).*
 
 *These files will not be programmatically changed by subsequent code executions after being generated.*\
-*Example config files can be found in the `bayota_settings` package.*
+*The example/default config files can be found in the `bayota_settings` package.*
 
 -- Customize the following values in `bayota_settings/install_config.ini`:
 - `project_home`
@@ -75,20 +70,20 @@ pip install .
 ```
 
 
-#### 🛣️ Double-check the local paths
+#### 5. 🛣️ Double-check the local paths
 
-During the first install (or first test run), default configuration files will be generated.\
-In `bayota_ws_{version}/config/`, customize values within:
+During the first install (or first test run), default configuration files are generated.\
+-- In `bayota_ws_{version}/config/`, customize values within:
 
--- `user_config.ini` to direct output to the desired directories.\
--- `bash_config.con` to specify the project home.
+- `user_config.ini` to direct output to the desired directories.\
+- `bash_config.con` to specify the project home.
 
 
-#### ✅ Test the installation
+#### 6. ✅ Test the installation
 
 -- From the project directory, run the automated test suites:
 
-***(Note, these are not yet set up completely)***
+***(Note, these are currently out-of-sync with the packages, so will fail)***
 
 ```
 cd bayota/
@@ -113,6 +108,9 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
 
+#### ⌨ From the command line
+-- First, change directory to the project root (`cd bayota/`).
+
 Five 'run' scripts are provided.  They provide the ability to run a batch of optimization studies automatically, \
 or with individual steps run separately. They are, in order of their automated execution during a batch submission:
 1) `run_step0_batch_of_studies.py`
@@ -123,45 +121,42 @@ or with individual steps run separately. They are, in order of their automated e
 
 ###### Batch runs are set up using 'specification files'. These can be found in `bin/specification_files`.
 
-#### ⌨ From the command line
-First, change directory to the project root (`cd bayota/`).
-
-Then, execute one of the following commands.
+-- Example command for a batch of studies:
 * -d (or --dryrun) argument can be included to only print the commands that would be submitted without running them
-* -h brings up command help
+* --help for command syntax
 
-
-***Batch of studies***
 ```
-./bin/run_scripts/run_step0_batch_of_studies.py -f ./bin/run_specs/batch_study_specs/calvertMD_cost_and_load_objective_experiments.yaml --dryrun
-```
-***A single study***
-```
-./bin/run_scripts/run_step1_single_study.py -g CalvertMD -n calvertMD_cost_experiments --dryrun
-```
-***Generate a study model***
-```
-./bin/run_scripts/run_step2_generatemodel.py -g CalvertMD -n costmin_total_percentreduction -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
-```
-***Conduct an experiment***
-```
-./bin/run_scripts/run_step3_conductexperiment.py -n ./bin/run_specs/experiment_specs/costmin_1-40percentreduction -sf /Users/Danny/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle --dryrun
-```
-***Solve a single trial***
-```
-./bin/run_scripts/run_step_4_solveonetrial.py -sf ~/bayota_ws_0.0.1/temp/model_instances/modelinstance_costmin_total_percentreduction_CalvertMD.pickle -tn experiment--costmin_1-40percentreduction--_modifiedvar--percent_reduction_minimum--_trial0040 --solutions_folder_name costmin_1-40percentreduction -m '{"variable": "percent_reduction_minimum", "value": 40, "indexer": "N"}' --dryrun
+./bin/run_scripts/run_step0_batch_of_studies.py -n calvertMD_cost_and_load_objective_experiments.yaml --dryrun
 ```
 
 
 #### 🐍 From the python prompt
+```python
+from efficiencysubproblem.src.model_handling import model_generator
+from efficiencysubproblem.src.solver_handling import solvehandler
 
-    >>> from efficiencysubproblem.src.study import Study
+# Create a model instance
+model_spec_file = '/bayota/bin/specification_files/model_specs/costmin_total_Npercentreduction.yaml'
+mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
+                                              geoscale='county',
+                                              geoentities='Perry, PA',
+                                              savedata2file=False,
+                                              baseloadingfilename='2010NoActionLoads_20190325.csv',
+                                              log_level='INFO')
+mdl = mdlhandler.model
 
-    # Create a model instance
-    >>> s = Study(objectivetype='costmin', geoscale='county', geoentities=['Adams, PA'])
+# Set a constraint level
+mdl.percent_reduction_minimum['N'] = 20
 
-    # Solve the instance and get results
-    >>> solveroutpath, csvpath, df, objective, feasible = s.go(constraint=5)
+# Solve the instance and get results
+solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
+                                         translate_to_cast_format='True')
+                                             
+print("solving timestamp: %s      feasible: %s" %
+          (solution_dict['timestamp'], solution_dict['feasible']))
+
+solution_data_frame = solution_dict['solution_df']
+```
 
 #### 📓 From a jupyter notebook
 The approach to use in a notebook is the same as the python prompt.\
