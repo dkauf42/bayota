@@ -1,6 +1,6 @@
 #  ___________________________________________________________________________
 #
-#  bayota: Bay Optimization Tools for Analysis
+#  BayOTA: Bay Optimization Tools for Analysis
 #  Developed under a grant awarded to the Chesapeake Research Consortium, Inc.
 #  and work occurring at U.S. EPA Chesapeake Bay Program Office, Annapolis, MD
 #  ___________________________________________________________________________
