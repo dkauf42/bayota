@@ -21,7 +21,7 @@ which is the CBP Phase 6 time-averaged watershed model.
     - [From the command line](#1-from-the-command-line)
     - [From the python prompt](#2-from-the-python-prompt)
     - [From a jupyter notebook](#3-from-a-jupyter-notebook)
-    - [Cleaning up after installation and runs](#cleaning-up-after-intallation-and-runs)
+    - [Cleaning up after installation and runs](#-cleaning-up-after-intallation-and-runs)
 * [Uninstall](#-uninstall)
 * [Other Notes](#-other-notes)
 * [Debugging or troubleshooting](#-debugging-or-troubleshooting)
@@ -145,11 +145,12 @@ or with individual steps run separately. They are, in order of their automated e
 4) `run_step3_conductexperiment.py`
 5) `run_step4_solveonetrial.py`
 
-###### Batch runs are set up using 'specification files'. These can be found in `bin/specification_files`.
+###### Batch runs are set up using 'specification files'. These can be found in `bayota/bin/specification_files`.
 
 -- Example command for a batch of studies:
-* -d (or --dryrun) argument can be included to only print the commands that would be submitted without running them
-* --help for command syntax
+* `-d` (or `--dryrun`) argument can be included to only print the commands that would be submitted without running them
+* `--no_slurm` argument needed when not using the SLURM job manager
+* `--help` for command syntax
 
 ```
 ./bin/run_scripts/run_step0_batch_of_studies.py -n calvertMD_cost_and_load_objective_experiments.yaml --dryrun
@@ -188,7 +189,7 @@ solution_data_frame = solution_dict['solution_df']
 The approach to use in a notebook is the same as the python prompt.\
 Some example notebooks are provided in the bin/jnotebooks/ directory.
 
-## Cleaning up after intallation and runs
+### 🧹 Cleaning up after intallation and runs
 
 --- To remove build files created by "`python setup.py install`" or to remove temporary files created in the project home during a run:
 
