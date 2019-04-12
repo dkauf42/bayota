@@ -17,9 +17,10 @@ which is the CBP Phase 6 time-averaged watershed model.
     5. [Double-check the local paths](#5-double-check-the-local-paths)
     6. [Test the installation](#6-test-the-installation)
 * [Usage](#-usage)
-    - [From the command line](#-from-the-command-line)
-    - [From the python prompt](#-from-the-python-prompt)
-    - [From a jupyter notebook](#-from-a-jupyter-notebook)
+    - [Specification Files](#specification-files)
+    - [From the command line](#1-from-the-command-line)
+    - [From the python prompt](#2-from-the-python-prompt)
+    - [From a jupyter notebook](#3-from-a-jupyter-notebook)
     - [Cleaning up after installation and runs](#cleaning-up-after-intallation-and-runs)
 * [Uninstall](#-uninstall)
 * [Other Notes](#-other-notes)
@@ -123,16 +124,17 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
 
+#### Specification Files
 Typical usage requires setting up model and run configurations in 'specification files'. 
 These are defined in `bayota/bin/specification_files/`, and there are 3 types:
-1. **batch specs** - These set up one or more studies, by specifying:
+* **batch specs** - These set up one or more studies, by specifying:
     - geographies
     - names of model and experiment spec files to use
     - other options, such as moving/translating solution files after solving
-2. **model specs** - These set up the model objectives/constraints
-3. **experiment specs** - These allow modification of the model for particular experiments and running through different values of constraints.
+* **model specs** - These set up the model objectives/constraints
+* **experiment specs** - These allow modification of the model for particular experiments and running through different values of constraints.
 
-#### ⌨ From the command line
+#### 1⌨ From the command line
 -- First, change directory to the project root (`cd bayota/`).
 
 Five 'run' scripts are provided.  They provide the ability to run a batch of optimization studies automatically, \
@@ -154,7 +156,7 @@ or with individual steps run separately. They are, in order of their automated e
 ```
 
 
-#### 🐍 From the python prompt
+#### 2🐍 From the python prompt
 ```python
 from efficiencysubproblem.src.model_handling import model_generator
 from efficiencysubproblem.src.solver_handling import solvehandler
@@ -182,7 +184,7 @@ print("solving timestamp: %s      feasible: %s" %
 solution_data_frame = solution_dict['solution_df']
 ```
 
-#### 📓 From a jupyter notebook
+#### 3📓 From a jupyter notebook
 The approach to use in a notebook is the same as the python prompt.\
 Some example notebooks are provided in the bin/jnotebooks/ directory.
 
