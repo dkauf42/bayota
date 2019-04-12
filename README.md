@@ -222,12 +222,6 @@ pip uninstall bayota
 rm -r bayota/
 ```
 
-# 📔 Other Notes
-
-To use pynumero package from Pyomo:
-- `scipy` is required
-- may need to run `conda install -c conda-forge pynumero_libraries` for ASL library
-
 # 🐛 Debugging or troubleshooting
 
 * Use `--log_level=DEBUG` to output the most verbose logging messages.
@@ -279,6 +273,13 @@ bayota
 ├── setup.py
 ├── VERSION
 ```
+
+# 📔 Other Notes
+
+To use pynumero package from Pyomo:
+- `scipy` is required
+- may need to run `conda install -c conda-forge pynumero_libraries` for ASL library
+
 
 ## 💕 Credits
 
