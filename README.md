@@ -36,14 +36,14 @@ which is the CBP Phase 6 time-averaged watershed model.
 
 # ⚙ How do I get set up?
 
-#### 1📉 Ensure the IPOPT solver is installed and in $PATH
+##### 1📉 Ensure the IPOPT solver is installed and in $PATH
 
 -- The Ipopt solver must be compiled/installed separately in order to solve Efficiency BMP optimization problems.
 - Instructions can be found at https://www.coin-or.org/Ipopt/documentation/node14.html
 - After installation, the Ipopt executable location must be added to the environment $PATH variable
 
 
-#### 2👥 Clone the repository
+##### 2👥 Clone the repository
 
 -- Check out a clone of this repository to a location of your choice, e.g.
 ```
@@ -58,7 +58,7 @@ cd bayota/
 git pull
 ```
 
-#### 3🏡 Configure before installing
+##### 3🏡 Configure before installing
 
 ***Note:*** *Important filepaths are set (during install) by the `bayota_settings` package.\
 These paths include general output, logging, temporary files, etc., and are defined in the following three config files:*
@@ -77,7 +77,7 @@ These paths include general output, logging, temporary files, etc., and are defi
 - `repo_top`
 
 
-#### 4💾 Install packages
+##### 4💾 Install packages
 
 -- From the project dir (`bayota/`), enter:
 
@@ -86,7 +86,7 @@ pip install .
 ```
 
 
-#### 5🛣️ Double check the local paths
+##### 5🛣️ Double check the local paths
 
 During the first install (or first test run), default configuration files are generated.\
 -- In `bayota_ws_{version}/config/`, customize values within:
@@ -95,7 +95,7 @@ During the first install (or first test run), default configuration files are ge
 - `bash_config.con` to specify the project home.
 
 
-#### 6✅ Test the installation
+##### 6✅ Test the installation
 
 -- From the project directory, run the automated test suites:
 
