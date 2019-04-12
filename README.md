@@ -123,6 +123,15 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 2) Python prompt: batch or single run
 3) Jupyter notebook: batch or single run
 
+Typical usage requires setting up model and run configurations in 'specification files'. 
+These are defined in `bayota/bin/specification_files/`, and there are 3 types:
+1. **batch specs** - These set up one or more studies, by specifying:
+    - geographies
+    - names of model and experiment spec files to use
+    - other options, such as moving/translating solution files after solving
+2. **model specs** - These set up the model objectives/constraints
+3. **experiment specs** - These allow modification of the model for particular experiments and running through different values of constraints.
+
 #### ⌨ From the command line
 -- First, change directory to the project root (`cd bayota/`).
 
