@@ -203,7 +203,7 @@ python setup.py clean
 
 #### 🐛 Debugging or troubleshooting
 
-* Use `--log_level=DEBUG` to output the most verbose logging messages.
+* Add `--log_level=DEBUG` argument when running from the command line to output the most verbose logging messages.
 
 # 📁 Project Structure
 
