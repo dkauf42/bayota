@@ -18,17 +18,17 @@ which is the CBP Phase 6 time-averaged watershed model.
     6. [Test the installation](#6-test-the-installation)
 * [Usage](#-usage)
     - [Specification Files](#specification-files)
-    - [From the command line](#1-from-the-command-line)
-    - [From the python prompt](#2-from-the-python-prompt)
-    - [From a jupyter notebook](#3-from-a-jupyter-notebook)
+    - [Batch Sequence](#batch-sequence)
+    - [Running from the command line](#1-running-from-the-command-line)
+    - [Running from the python prompt](#2-running-from-the-python-prompt)
+    - [Running from a jupyter notebook](#3-running-from-a-jupyter-notebook)
     - [Cleaning up after installation and runs](#-cleaning-up-after-intallation-and-runs)
-* [Uninstall](#-uninstall)
-* [Other Notes](#-other-notes)
 * [Debugging or troubleshooting](#-debugging-or-troubleshooting)
 * [Project structure](#-project-structure)
     - [Components](#components)
-    - [Run Sequence](#run-sequence)
     - [Directory Tree](#directory-tree)
+* [Uninstall](#-uninstall)
+* [Other Notes](#-other-notes)
 * [Credits](#-credits)
 * [Disclaimer](#-disclaimer)
 * [License](#-license)
@@ -134,11 +134,11 @@ These are defined in `bayota/bin/specification_files/`, and there are 3 types:
 * **model specs** - These set up the model objectives/constraints
 * **experiment specs** - These allow modification of the model for particular experiments and running through different values of constraints.
 
-#### Run Sequence
+#### Batch Sequence
 
-<img src="./.images/code_organization_specification_files_colored_like_graph_simple.png" alt="run_sequence" width="295" height="377"/>
+<img src="./.images/code_organization_specification_files_colored_like_graph_simple.png" alt="batch_sequence" width="295" height="377"/>
 
-#### 1⌨ From the command line
+#### 1⌨ Running from the command line
 -- First, change directory to the project root (`cd bayota/`).
 
 Five 'run' scripts are provided.  They provide the ability to run a batch of optimization studies automatically, \
@@ -161,7 +161,7 @@ or with individual steps run separately. They are, in order of their automated e
 ```
 
 
-#### 2🐍 From the python prompt
+#### 2🐍 Running from the python prompt
 ```python
 from efficiencysubproblem.src.model_handling import model_generator
 from efficiencysubproblem.src.solver_handling import solvehandler
@@ -189,7 +189,7 @@ print("solving timestamp: %s      feasible: %s" %
 solution_data_frame = solution_dict['solution_df']
 ```
 
-#### 3📓 From a jupyter notebook
+#### 3📓 Running from a jupyter notebook
 The approach to use in a notebook is the same as the python prompt.\
 Some example notebooks are provided in the bin/jnotebooks/ directory.
 
@@ -199,27 +199,6 @@ Some example notebooks are provided in the bin/jnotebooks/ directory.
 
 ```
 python setup.py clean
-```
-
-# 🚮 Uninstall
-
---- To uninstall the python packages from your environment (site-packages):
-
-```
-pip uninstall bayota
-```
-
---- *(less common) To remove development version of package (i.e., remove it from easy-install.pth and delete the .egg-link)*
-
-```
-python setup.py develop --uninstall
-```
-
---- To remove everything (uninstall the python packages and then delete the source directory):
-
-```
-pip uninstall bayota
-rm -r bayota/
 ```
 
 # 🐛 Debugging or troubleshooting
@@ -273,6 +252,28 @@ bayota
 ├── setup.py
 ├── VERSION
 ```
+
+# 🚮 Uninstall
+
+--- To uninstall the python packages from your environment (site-packages):
+
+```
+pip uninstall bayota
+```
+
+--- *(less common) To remove development version of package (i.e., remove it from easy-install.pth and delete the .egg-link)*
+
+```
+python setup.py develop --uninstall
+```
+
+--- To remove everything (uninstall the python packages and then delete the source directory):
+
+```
+pip uninstall bayota
+rm -r bayota/
+```
+
 
 # 📔 Other Notes
 
