@@ -23,7 +23,7 @@ which is the CBP Phase 6 time-averaged watershed model.
     - [Running from the python prompt](#2-running-from-the-python-prompt)
     - [Running from a jupyter notebook](#3-running-from-a-jupyter-notebook)
     - [Cleaning up after installation and runs](#-cleaning-up-after-intallation-and-runs)
-* [Debugging or troubleshooting](#-debugging-or-troubleshooting)
+    - [Debugging or troubleshooting](#-debugging-or-troubleshooting)
 * [Project structure](#-project-structure)
     - [Components](#components)
     - [Directory Tree](#directory-tree)
@@ -193,7 +193,7 @@ solution_data_frame = solution_dict['solution_df']
 The approach to use in a notebook is the same as the python prompt.\
 Some example notebooks are provided in the bin/jnotebooks/ directory.
 
-### 🧹 Cleaning up after intallation and runs
+#### 🧹 Cleaning up after intallation and runs
 
 --- To remove build files created by "`python setup.py install`" or to remove temporary files created in the project home during a run:
 
@@ -201,7 +201,7 @@ Some example notebooks are provided in the bin/jnotebooks/ directory.
 python setup.py clean
 ```
 
-# 🐛 Debugging or troubleshooting
+#### 🐛 Debugging or troubleshooting
 
 * Use `--log_level=DEBUG` to output the most verbose logging messages.
 
