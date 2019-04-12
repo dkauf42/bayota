@@ -134,6 +134,10 @@ These are defined in `bayota/bin/specification_files/`, and there are 3 types:
 * **model specs** - These set up the model objectives/constraints
 * **experiment specs** - These allow modification of the model for particular experiments and running through different values of constraints.
 
+#### Run Sequence
+
+<img src="./.images/code_organization_specification_files_colored_like_graph_simple.png" alt="run_sequence" width="295" height="377"/>
+
 #### 1⌨ From the command line
 -- First, change directory to the project root (`cd bayota/`).
 
@@ -233,10 +237,6 @@ To use pynumero package from Pyomo:
 #### Components
 
 <img src="./.images/components_20190409.png" alt="components" width="503" height="377"/>
-
-#### Run Sequence
-
-<img src="./.images/code_organization_specification_files_colored_like_graph_simple.png" alt="run_sequence" width="295" height="377"/>
 
 #### Directory Tree
 ```
