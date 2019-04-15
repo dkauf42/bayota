@@ -1,9 +1,0 @@
-# objective dictionary
-exp_setup:
-  - none
-
-# constraints list (key names must match model parameter names)
-trials:
-  - variable: percent_reduction_minimum
-    value: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-    indexer: 'N'

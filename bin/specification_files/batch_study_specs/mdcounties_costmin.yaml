@@ -1,9 +1,0 @@
-
-study_spec_dir: '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/study_specs/single_study_specs'
-geographies:
-  - expand: MarylandCounties
-study_specs:
-  - model_spec: costmin_total_Npercentreduction
-    base_loading_file_name: 2010NoActionLoads.csv
-    experiments:
-      - costmin_20Npercentreduction
