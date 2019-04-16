@@ -44,7 +44,7 @@ def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> i
     studyid = read_control_file(control_file, version)
 
     logger = set_up_detailedfilelogger(loggername=studyshortname,  # same name as module, so logger is shared
-                                       filename=f"bayota_step1_study{studyid}_{compact_geo_entity_str}.log",
+                                       filename=f"bayota_step1_s{studyid}_{compact_geo_entity_str}.log",
                                        level=log_level,
                                        also_logtoconsole=True,
                                        add_filehandler_if_already_exists=True,
