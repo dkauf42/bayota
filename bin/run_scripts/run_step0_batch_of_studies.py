@@ -51,7 +51,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
         geoname = sp[0]
         filesafegeostring = geoname.replace(' ', '').replace(',', '')
         studyspecdict = sp[1]
-        spname = filesafegeostring + f"_study{studyid}"
+        spname = filesafegeostring + f"_s{studyid}"
         studyspecdict['studyshortname'] = spname
         studyspecdict['id'] = studyid
 
