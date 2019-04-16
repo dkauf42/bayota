@@ -107,7 +107,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                                  translate_to_cast_format=translate_to_cast_format,
                                                  solverlogfile=os.path.join(get_logging_dir(), trial_logfilename + '_ipopt.log'))
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
-        logger.info(f"{logprefix} Trial '{trial_name}' is DONE "
+        logger.info(f"Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
                     f"<Solution feasible? --> {solution_dict['feasible']}> ")
         logger_feasibility.info(f"<feasible: {solution_dict['feasible']}> for {modelname_full}_{trial_name}")
