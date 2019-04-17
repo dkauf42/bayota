@@ -1,7 +1,7 @@
 import pyomo.environ as oe
 
 import logging
-logger = logging.getLogger('root')
+logger = logging.getLogger(__name__)
 
 
 class ModelCountyGeoentitiesMixin(object):

@@ -2,12 +2,9 @@
 """Module with diagnostic utilities for infeasible models."""
 from pyomo.core import Constraint, Var, value, TraversalStrategy
 from math import fabs
-import logging
 
+import logging
 logger = logging.getLogger(__name__)
-if not logger.hasHandlers():
-    logging.basicConfig(level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
 
 
 def log_infeasible_constraints(m, tol=1E-6, logger=logger):
