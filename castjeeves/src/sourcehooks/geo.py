@@ -70,6 +70,19 @@ class Geo(SourceHook):
         tblsubset = TblGeography.loc[:, columnmask].merge(typeids, how='inner')
         return tblsubset.loc[:, 'geographyfullname']
 
+    def geonames_from_lrsegid(self, lrsegids=None):
+        geographyids = self.singleconvert(sourcetbl='TblGeographyLrSeg', toandfromheaders=['lrsegid', 'geographyid'],
+                                          fromtable=lrsegids, toname='geographyid', use_order_of_sourcetbl=False)
+
+        allgeofullnames_of_type = self.geonames_from_geotypename(['Land River Segment indicating if in or out of CBWS'])
+
+        geographyfullnames = self.singleconvert(sourcetbl='TblGeography', toandfromheaders=['geographyid', 'geographyfullname'],
+                                                fromtable=geographyids, toname='geographyfullname', use_order_of_sourcetbl=False)
+
+        # Get intersection of (1) all fullnames of lrseg type and (2) the input data fullnames
+        return pd.Series(list(set(allgeofullnames_of_type) & set(geographyfullnames['geographyfullname'])))
+
+
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
         kwargsNoDataFrames = [True if isinstance(x, pd.DataFrame) else x for x in kwargs]
