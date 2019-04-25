@@ -70,7 +70,7 @@ class PostInstallCommand(setuptools.command.install.install):
         setuptools.command.install.install.run(self)
 
 
-with open('README.md') as f:
+with open('README.md', encoding='utf-8') as f:
     readme_text = f.read()
 
 with open('VERSION') as version_file:
