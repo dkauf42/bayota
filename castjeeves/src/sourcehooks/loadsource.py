@@ -55,6 +55,12 @@ class LoadSource(SourceHook):
                                   fromtable=loadsourceshortname, toname='loadsource',
                                   use_order_of_sourcetbl=use_order_of_sourcetbl)
 
+    def shortnames_from_fullnames(self, loadsourcefullname, use_order_of_sourcetbl=True):
+        loadsource = self.forceToSingleColumnDataFrame(loadsourcefullname, colname='loadsource')
+        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceshortname', 'loadsource'],
+                                  fromtable=loadsource, toname='loadsourceshortname',
+                                  use_order_of_sourcetbl=use_order_of_sourcetbl)
+
     def loadsourceids_from(self, sectorids=None):
         sectorids = self.forceToSingleColumnDataFrame(sectorids, colname='sectorid')
         return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceid', 'sectorid'],
