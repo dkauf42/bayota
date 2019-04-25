@@ -361,7 +361,7 @@ class DataHandlerBase:
         # Drop agencies that are not to be included
         mask = loadssubtbl[(loadssubtbl['agency'] != self.agencyfullname)].index
         if mask.empty:
-            logger.error('expected other agencies to be dropped')
+            logger.warning("expected agencies besides 'Non-Federal' to be dropped")
         loadssubtbl.drop(mask, inplace=True)
 
         loadssubtbl['eotn'] = (loadssubtbl['2010 no action_nloadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
