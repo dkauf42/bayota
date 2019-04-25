@@ -74,7 +74,7 @@ These paths include general output, logging, temporary files, etc., and are defi
 
 -- Customize the following values in `bayota_settings/install_config.ini`:
 - `project_home`
-- `repo_top`
+- `repo_top` (should point to the directory where the bayota repo is located)
 
 
 ##### 4💾 Install packages
