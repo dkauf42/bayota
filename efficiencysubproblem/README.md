@@ -17,7 +17,6 @@ up and running.
 │
 ├── src                    <- Source code for use in this project.
 │   ├── __init__.py        <- Makes src a Python module
-│   ├── study.py           <- Main class for setting up optimization runs
 │   │
 │   ├── data_handling      <- Code to populate necessary source data
 │   │   ├── interface.py
@@ -41,8 +40,7 @@ up and running.
 │   │
 │   ├── tests              <- Scripts to test and validate code using pytest
 │   │   ├── test_datahandling.py
-│   │   ├── test_modelhandling.py
-│   │   └── test_study.py
+│   │   └── test_modelhandling.py
 │   │
 │   └── vis                <- Scripts to create exploratory and results oriented visualizations
 │       ├── acres_bars.py
