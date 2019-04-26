@@ -49,7 +49,7 @@ class TestCommand(setuptools.command.test.test):
         sys.exit(errno)
 
 
-with open('README.md') as f:
+with open('README.md', encoding='utf-8') as f:
     readme_text = f.read()
 
 with open('LICENSE') as f:
