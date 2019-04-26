@@ -218,11 +218,9 @@ bayota
 ├── README.md              <- Top-level README for users/developers of this project.
 ├── CHANGELOG.md           <- Documentation of notable changes to this project
 │
-├── bin                    <- scripts (python, bash, slurm, jupyter notebooks) for running from the command-line and performing analyses
-│   └── jnotebooks/
-│   └── python_scripts/
+├── bin                    <- scripts for running from the command-line and performing analyses
+│   ├── python_scripts/
 │   └── run_scripts/
-│   └── specification_files/
 │
 ├── data                   <- source data CSVs, excel files
 │
