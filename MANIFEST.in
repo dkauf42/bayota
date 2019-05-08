@@ -3,3 +3,4 @@ include VERSION
 include bayota_settings/install_config.ini
 include bayota_settings/example_logging_config.yaml
 include bayota_settings/example_bash_config.con
+include efficiencysubproblem/src/tests/costmin_total_Npercentreduction.yaml
