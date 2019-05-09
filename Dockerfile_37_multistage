@@ -141,4 +141,4 @@ WORKDIR /root/bayota
 RUN pip install .
 
 # --- Ensure IPOPT is in path variable ---
-ENV PATH="/CoinIpopt/build/bin"
+ENV PATH="${PATH}:/CoinIpopt/build/bin"
