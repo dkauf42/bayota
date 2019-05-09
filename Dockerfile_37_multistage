@@ -84,6 +84,9 @@ RUN apk update \
     && make test \
     && make install
 
+# --- add to path variable ---
+ENV PATH="/CoinIpopt/build/bin"
+
 
 # #################################################
 # --- Second-Stage Image: Build python packages ---
