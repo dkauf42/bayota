@@ -84,9 +84,6 @@ RUN apk update \
     && make test \
     && make install
 
-# --- add to path variable ---
-ENV PATH="/CoinIpopt/build/bin"
-
 
 # #################################################
 # --- Second-Stage Image: Build python packages ---
@@ -142,3 +139,6 @@ WORKDIR /root/bayota
 
 # RUN python setup.py develop
 RUN pip install .
+
+# --- Ensure IPOPT is in path variable ---
+ENV PATH="/CoinIpopt/build/bin"
