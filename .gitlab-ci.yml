@@ -2,14 +2,14 @@
 ## Official language image. Look for the different tagged releases at:
 ## https://hub.docker.com/r/library/python/tags/
 ##image: python:latest
-image: python:3.7
+#image: python:3.6
 #
 ## Change pip's cache directory to be inside the project directory since we can
 ## only cache local items.
-variables:
+#variables:
 ##  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
-  GIT_SUBMODULE_STRATEGY: recursive
-  CI_SERVER_URL: https://gitlab.com
+#  GIT_SUBMODULE_STRATEGY: recursive
+#  CI_SERVER_URL: https://gitlab.com
 
 ###### Pip's cache doesn't store the python packages
 ###### https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -21,12 +21,12 @@ variables:
 #####    - .cache/pip
 #####    - venv/
 
-before_script:
-  - python -V               # Print out python version for debugging
-  - pip install virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
-  - .monorepo.gitlab/last_green_commit.sh
+#before_script:
+#  - python -V               # Print out python version for debugging
+#  - pip install virtualenv
+#  - virtualenv venv
+#  - source venv/bin/activate
+#  - .monorepo.gitlab/last_green_commit.sh
 
 #####  - ls
 #####  - ls src/
@@ -36,10 +36,10 @@ before_script:
 ##### use submodule https://github.com/awesome-inc/monorepo.gitlab.git to
 ##### build each monorepo subcomponent separately
 
-test:
-  script:
-  - .monorepo.gitlab/build_if_changed.sh castjeeves python castjeeves/setup.py test
-  - .monorepo.gitlab/build_if_changed.sh efficiencysubproblem python efficiencysubproblem/setup.py test
+#test:
+#  script:
+#  - .monorepo.gitlab/build_if_changed.sh castjeeves python castjeeves/setup.py test
+#  - .monorepo.gitlab/build_if_changed.sh efficiencysubproblem python efficiencysubproblem/setup.py test
 #  - .monorepo.gitlab/build_if_changed.sh sandbox python sandbox/setup.py test
 #
 #####  - python setup.py test
