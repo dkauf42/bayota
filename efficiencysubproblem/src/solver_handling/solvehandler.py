@@ -206,6 +206,9 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
 
         return row
 
+    if not options_file_path:
+        raise FileNotFoundError('IPOPT options file path is not specified (should be on sys PATH)')
+
     # Create temporary file read/write
     with tempfile.NamedTemporaryFile(mode='w+') as t:
         # Open input file read-only
