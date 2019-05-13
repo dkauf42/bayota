@@ -286,7 +286,6 @@ Major dependencies:
 
 * [Pyomo](https://www.pyomo.org/)
 * [IPOPT solver](https://projects.coin-or.org/Ipopt)
-* [AMPLPY](https://github.com/ampl/amplpy)
 * [Pandas](https://pandas.pydata.org/)
 * [NumPy](https://www.numpy.org/)
 

@@ -56,7 +56,6 @@ with open('LICENSE') as f:
     license_text = f.read()
 
 install_requires = ['pytest',
-                    'amplpy',
                     'pandas',
                     'pyomo'
                     ]
