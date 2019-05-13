@@ -160,18 +160,26 @@ def get_solver_paths(solvername):
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
-    solver_path = None
-    fpath, fname = os.path.split(solvername)
-    if fpath:
-        if is_exe(solvername):
-            solver_path = solvername
-    else:
-        for path in os.environ["PATH"].split(os.pathsep):
-            exe_file = os.path.join(path, solvername)
-            if is_exe(exe_file):
-                solver_path = exe_file
+    def check_paths_for_solver(name):
+        fpath, _ = os.path.split(name)
+        solverpath = None
+        if fpath:
+            if is_exe(name):
+                solverpath = name
+        else:
+            for path in os.environ["PATH"].split(os.pathsep):
+                exe_file = os.path.join(path, name)
+                logger.debug('solver exe file====%s' % exe_file)
+                if is_exe(exe_file):
+                    solverpath = exe_file
+        return solverpath
+
+    solver_path = check_paths_for_solver(solvername)
+    if (not solver_path) & os.name == 'nt':  # if solver hasn't been found yet, and we're on windows
+        solver_path = check_paths_for_solver(solvername + '.exe')
 
     # If the solver executable is found on PATH, then we check for solver options file in same dir.
+    options_file_path = None
     if not not solver_path:
         options_file_path = os.path.join(os.path.dirname(solver_path), 'ipopt.opt')
         try:
@@ -180,8 +188,6 @@ def get_solver_paths(solvername):
             pass  # 'x': exclusive creation - operation fails if file already exists, but creates it if it does not.
 
         logger.debug('Solver_Path====%s' % options_file_path)
-    else:
-        options_file_path = None
 
     return solver_path, options_file_path
 
