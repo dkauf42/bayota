@@ -175,7 +175,7 @@ def get_solver_paths(solvername):
         return solverpath
 
     solver_path = check_paths_for_solver(solvername)
-    if (not solver_path) & os.name == 'nt':  # if solver hasn't been found yet, and we're on windows
+    if (not solver_path) & (os.name == 'nt'):  # if solver hasn't been found yet, and we're on windows
         solver_path = check_paths_for_solver(solvername + '.exe')
 
     # If the solver executable is found on PATH, then we check for solver options file in same dir.
