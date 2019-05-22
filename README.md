@@ -38,9 +38,11 @@ which is the CBP Phase 6 time-averaged watershed model.
 
 ##### 1📉 Ensure the IPOPT solver is installed and in $PATH
 
--- The Ipopt solver must be compiled/installed separately in order to solve Efficiency BMP optimization problems.
-- Instructions can be found at https://www.coin-or.org/Ipopt/documentation/node14.html
-- After installation, the Ipopt executable location must be added to the environment $PATH variable
+-- The Ipopt solver must be installed separately in order to solve Efficiency BMP optimization problems.
+- Option 1: compile/install using instructions found at https://www.coin-or.org/Ipopt/documentation/node14.html
+- Option 2: install using conda: `conda install ipopt`
+
+-- After installation, the Ipopt executable location must be added to the environment $PATH variable
 
 
 ##### 2👥 Clone the repository
