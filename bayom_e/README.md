@@ -1,6 +1,6 @@
 # Overview
 
-"efficiencysubproblem" is an optimization modeling toolbox
+"bayom_e" is an optimization modeling toolbox
 designed to support decision making when using
 CAST (the Chesapeake Bay Assessement Scenario Tool), which
 is the Chesapeake Bay Program's (CBP) Phase 6 time-averaged watershed model 

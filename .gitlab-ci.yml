@@ -39,7 +39,7 @@
 #test:
 #  script:
 #  - .monorepo.gitlab/build_if_changed.sh castjeeves python castjeeves/setup.py test
-#  - .monorepo.gitlab/build_if_changed.sh efficiencysubproblem python efficiencysubproblem/setup.py test
+#  - .monorepo.gitlab/build_if_changed.sh bayom_e python bayom_e/setup.py test
 #  - .monorepo.gitlab/build_if_changed.sh sandbox python sandbox/setup.py test
 #
 #####  - python setup.py test

@@ -1,6 +1,6 @@
 #  ___________________________________________________________________________
 #
-#  efficiencysubproblem: NLP for Efficiency BMPs in CAST.
+#  bayom_e: NLP for Efficiency BMPs in CAST.
 #  Developed under a grant awarded to the Chesapeake Research Consortium, Inc.
 #  and work occurring at U.S. EPA Chesapeake Bay Program Office, Annapolis, MD
 #  ___________________________________________________________________________
@@ -60,7 +60,7 @@ install_requires = ['pytest',
                     'pyomo'
                     ]
 
-setup(name='efficiencysubproblem',
+setup(name='bayom_e',
       version='0.0.1',
       description='Python package to set up and solve an NLP for efficiency BMPs of CAST',
       long_description=readme_text,

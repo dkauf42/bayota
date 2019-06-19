@@ -15,10 +15,10 @@ import json
 
 import pyomo.environ as pe
 
-from efficiencysubproblem.src.spec_handler import read_spec, notdry
-from efficiencysubproblem.src.solver_handling import solvehandler
+from bayom_e.src.spec_handler import read_spec, notdry
+from bayom_e.src.solver_handling import solvehandler
 
-from efficiencysubproblem.src.model_handling.utils import load_model_pickle
+from bayom_e.src.model_handling.utils import load_model_pickle
 
 from bayota_settings.base import get_model_instances_dir, \
     get_output_dir, get_scripts_dir, get_logging_dir

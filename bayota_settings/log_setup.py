@@ -5,7 +5,7 @@ import logging.handlers
 
 from bayota_settings.base import get_logging_dir, log_config
 
-from efficiencysubproblem.src.spec_handler import read_spec
+from bayom_e.src.spec_handler import read_spec
 
 log_format_config = read_spec(log_config)
 

@@ -16,7 +16,7 @@ import datetime
 import subprocess
 from argparse import ArgumentParser
 
-from efficiencysubproblem.src.spec_handler import read_spec, notdry
+from bayom_e.src.spec_handler import read_spec, notdry
 
 from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_instances_dir, \
     get_bayota_version, get_experiment_specs_dir, \

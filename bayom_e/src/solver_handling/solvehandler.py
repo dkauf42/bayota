@@ -10,8 +10,8 @@ from datetime import datetime
 import pyomo.environ as pe
 from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, TerminationCondition
 
-from efficiencysubproblem.config import PROJECT_DIR
-from efficiencysubproblem.src.solution_handling.solutionhandler import SolutionHandler, \
+from bayom_e.config import PROJECT_DIR
+from bayom_e.src.solution_handling.solutionhandler import SolutionHandler, \
     initial_solution_parse_to_dataframe
 from castjeeves.src.jeeves import Jeeves
 

@@ -2,7 +2,7 @@ import os
 import pytest
 import pyomo.environ as pe
 
-from efficiencysubproblem.src.model_handling import model_generator
+from bayom_e.src.model_handling import model_generator
 
 
 @pytest.fixture(scope='module')

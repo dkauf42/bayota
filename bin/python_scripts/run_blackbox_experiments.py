@@ -11,8 +11,8 @@ import logging
 import cloudpickle
 from argparse import ArgumentParser
 
-from efficiencysubproblem.src.spec_handler import notdry
-from efficiencysubproblem.src.model_handling.utils import load_model_pickle
+from bayom_e.src.spec_handler import notdry
+from bayom_e.src.model_handling.utils import load_model_pickle
 from bin.run_scripts import run_step2_generatemodel
 
 from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_instances_dir, \

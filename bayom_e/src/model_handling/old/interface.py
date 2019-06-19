@@ -5,7 +5,7 @@ from .model_constraint_mixins import ModelPercentLoadReductionConstraintAtCounty
     ModelPercentLoadReductionConstraintAtLrsegLevelMixin,\
     ModelTotalCostUpperBoundConstraintMixin
 
-from efficiencysubproblem.src.data_handling.interface import get_loaded_data_handler
+from bayom_e.src.data_handling.interface import get_loaded_data_handler
 
 
 def get_loaded_model_handler(objectivetype, geoscale, geoentities, savedata2file=False):
