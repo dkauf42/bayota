@@ -192,8 +192,7 @@ solution_data_frame = solution_dict['solution_df']
 ```
 
 #### 3📓 Running from a jupyter notebook
-The approach to use in a notebook is the same as the python prompt.\
-Some example notebooks are provided in the bin/jnotebooks/ directory.
+The approach to use in a notebook is the same as the python prompt.
 
 #### 🧹 Cleaning up after intallation and runs
 
@@ -211,7 +210,7 @@ python setup.py clean
 
 #### Components
 
-<img src="./.images/components_20190415.png" alt="components" width="503" height="377"/>
+<img src="./.images/components_20190621.png" alt="components" width="503" height="377"/>
 
 #### Directory Tree
 ```
