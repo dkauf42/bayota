@@ -17,14 +17,11 @@ def get_loaded_data_handler_no_objective(geoscale, geoentities, savedata2file=Fa
 
 class DataHandlerLrseg(DataLrsegGeoentitiesMixin, DataHandlerBase):
     def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
-        __doc__ = DataHandlerBase.__doc__ + ' *specificially for a land river segment*'
-
         DataHandlerBase.__init__(self, save2file=save2file, geolist=geolist, baseloadingfilename=baseloadingfilename)
 
 
 class DataHandlerCounty(DataCountyGeoentitiesMixin, DataHandlerBase):
     def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
-        __doc__ = DataHandlerBase.__doc__ + ' *specificially for a county*'
 
         self.countysetlist = []
         self.countysetidlist = []
