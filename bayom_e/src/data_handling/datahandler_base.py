@@ -129,13 +129,17 @@ class DataHandlerBase:
         logger.info('LRsegs loaded: %s' % self.lrsegsetlist)
 
     def __repr__(self):
+        obj_attributes = sorted([k for k in self.__dict__.keys()
+                                 if not k.startswith('_')])
 
         strrep = f"DATAHANDLER: \n" \
-                 f"\t- for the baseconditionid: <{self._baseconditionid}\n" \
-                 f"\t- for the costprofileid: <{self._costprofileid}\n" \
-                 f"\t- for the geolist: <{self._geolist}\n" \
-                 f"\t- for the agencies:<{self.agencyid}\n>" \
-                 f"\t- includes <{len(self.lrsegsetlist)}> land river segments\n"
+                 f"\t- for the baseconditionid: <{self._baseconditionid}>\n" \
+                 f"\t- for the costprofileid: <{self._costprofileid}>\n" \
+                 f"\t- for the geolist: <{self._geolist}>\n" \
+                 f"\t- for the agencies:<{self.agencyid}>\n" \
+                 f"\t- includes <{len(self.lrsegsetlist)}> land river segments\n" \
+                 f"\n" \
+                 f"\t all attributes: {obj_attributes}"
 
         return strrep
 
