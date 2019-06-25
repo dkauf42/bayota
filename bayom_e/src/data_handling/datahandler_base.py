@@ -29,6 +29,8 @@ class DataHandlerBase:
             baseloadingfilename:
 
         """
+        self._geolist = geolist
+
         logger.debug(locals())
         jeeves = Jeeves()
 
@@ -37,8 +39,9 @@ class DataHandlerBase:
         self.instdatadir = get_model_instances_dir()
 
         """ Instance Specifiers """
-        baseconditionid = 29
-        costprofileid = 4
+        self._baseconditionid = 29
+        self._costprofileid = 4
+
         self.agencyid = jeeves.agency.ids_from_names(['NONFED'])['agencyid'][0]  # NONFED agency code
         self.agencyfullname = 'Non-Federal'
 
@@ -103,17 +106,17 @@ class DataHandlerBase:
         # Populate the data - SETS
         self._load_set_pollutants()
 
-        self._load_set_geographies(jeeves, geolist=geolist)
+        self._load_set_geographies(jeeves, geolist=self._geolist)
 
         self._load_set_BMPs(jeeves, TblBmpLoadSourceGroup, TblBmpGroup)
-        self._load_set_LoadSources(TblLandUsePreBmp, singlelsgrpdf, baseconditionid)
+        self._load_set_LoadSources(TblLandUsePreBmp, singlelsgrpdf, self._baseconditionid)
         self._load_set_BmpLoadSourceAssociations(TblBmp, TblBmpEfficiency, TblBmpGroup,
                                                  TblBmpLoadSourceGroup, TblLoadSource, singlelsgrpdf)
 
         self.costsubtbl = pd.DataFrame()
 
         # Populate the data - PARAMETERS
-        self._load_param_CostPerAcreOfBmps(TblBmp, TblCostBmpLand, costprofileid)
+        self._load_param_CostPerAcreOfBmps(TblBmp, TblCostBmpLand, self._costprofileid)
         self._load_param_EffectivenessOfBmps(TblBmp, TblBmpEfficiency, TblLandRiverSegment, TblLoadSource)
 
         self._load_constraint()
@@ -121,9 +124,20 @@ class DataHandlerBase:
         self._load_param_PhiBaseLoadingRates(TblLandRiverSegment, TblGeography, TblGeographyType,
                                              TblGeographyLrSeg, TblLoadSource, BaseConditionLoadsTbl)
         self._load_param_TotalAcresAvailableForLoadSources(TblLandRiverSegment, TblLoadSource,
-                                                           TblLandUsePreBmp, baseconditionid)
+                                                           TblLandUsePreBmp, self._baseconditionid)
 
         logger.info('LRsegs loaded: %s' % self.lrsegsetlist)
+
+    def __repr__(self):
+
+        strrep = f"DATAHANDLER: \n" \
+                 f"\t- for the baseconditionid: <{self._baseconditionid}\n" \
+                 f"\t- for the costprofileid: <{self._costprofileid}\n" \
+                 f"\t- for the geolist: <{self._geolist}\n" \
+                 f"\t- for the agencies:<{self.agencyid}\n>" \
+                 f"\t- includes <{len(self.lrsegsetlist)}> land river segments\n"
+
+        return strrep
 
     def _load_constraint(self):
         """ overridden in the Mixins """
