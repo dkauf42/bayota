@@ -136,10 +136,10 @@ class DataHandlerBase:
                  f"\t- for the baseconditionid: <{self._baseconditionid}>\n" \
                  f"\t- for the costprofileid: <{self._costprofileid}>\n" \
                  f"\t- for the geolist: <{self._geolist}>\n" \
-                 f"\t- for the agencies:<{self.agencyid}>\n" \
+                 f"\t- for the agencies: <{self.agencyid}>\n" \
                  f"\t- includes <{len(self.lrsegsetlist)}> land river segments\n" \
                  f"\n" \
-                 f"\t all attributes: {obj_attributes}"
+                 f"\t all attributes:%s" % '\n\t\t\t'.join(obj_attributes)
 
         return strrep
 
