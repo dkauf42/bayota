@@ -12,7 +12,7 @@ import sys
 import time
 from argparse import ArgumentParser
 
-from bayom_e.src.spec_handler import read_spec, notdry
+from bayota_util.spec_handler import read_spec, notdry
 
 from bayom_e.src.model_handling import model_generator
 from bayom_e.src.model_handling.utils import save_model_pickle

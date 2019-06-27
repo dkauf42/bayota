@@ -3,7 +3,7 @@ import cloudpickle
 import pyomo.environ as pe
 from itertools import compress
 
-from bayom_e.src.spec_handler import notdry
+from bayota_util.spec_handler import notdry
 from bayom_e.src.model_handling.model_generator import ModelHandlerBase
 
 import logging

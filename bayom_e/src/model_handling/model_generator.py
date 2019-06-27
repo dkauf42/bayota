@@ -4,7 +4,7 @@ import pandas as pd
 import pyomo.environ as pe
 
 from bayom_e.src.data_handling.interface import get_loaded_data_handler_no_objective
-from bayom_e.src.spec_handler import read_spec
+from bayota_util.spec_handler import read_spec
 
 from bayom_e.src.model_handling import model_expressions
 from bayom_e.src.model_handling import model_components
