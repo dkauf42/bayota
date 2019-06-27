@@ -13,7 +13,8 @@ class County(SourceHook):
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self):
-        pass
+        TblCounty = self.source.TblCounty  # get relevant source data
+        return TblCounty.loc[:, 'countyname']
 
     def all_ids(self):
         pass

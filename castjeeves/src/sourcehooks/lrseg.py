@@ -10,7 +10,8 @@ class Lrseg(SourceHook):
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self):
-        pass
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
+        return TblLandRiverSegment.loc[:, 'landriversegment']
 
     def all_ids(self):
         pass
