@@ -36,6 +36,9 @@ which is the CBP Phase 6 time-averaged watershed model.
 
 # ⚙ How do I get set up?
 
+***Note: The CAST Source data is not included in this repository. \
+Full installation and usage is not possible without the source data.***
+
 ##### 1📉 Ensure the IPOPT solver is installed and in $PATH
 
 -- The Ipopt solver must be installed separately in order to solve Efficiency BMP optimization problems.
