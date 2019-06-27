@@ -11,24 +11,40 @@ logger = logging.getLogger(__name__)
 
 
 class DataHandlerBase:
+    """Base Class for data loader classes.
+
+    Attributes:
+        save2file ():
+        instdatadir ():
+        agencyid ():
+        agencyfullname ():
+        PLTNTS (pd.DataFrame):
+        LRSEGS (pd.DataFrame):
+        BMPS (pd.DataFrame):
+        BMPGRPS (pd.DataFrame):
+        BMPGRPING (pd.DataFrame):
+        LOADSRCS (pd.DataFrame):
+        BMPSRCLINKS (pd.DataFrame):
+        BMPGRPSRCLINKS (pd.DataFrame):
+        c (pd.DataFrame):
+        E (pd.DataFrame):
+        tau (pd.DataFrame):
+        phi (pd.DataFrame):
+        T (pd.DataFrame):
+        lrsegsetlist (list):
+        lrsegsetidlist (list):
+        bmpsetlist (list):
+        bmpsetidlist (list):
+        loadsrcsetidlist (list):
+        costsubtbl (pd.DataFrame):
+
+    Args:
+        save2file (bool): Defaults to True.
+        geolist (list): The list of geographic entities for which to pull data. Defaults to None.
+        baseloadingfilename (str):
+
+    """
     def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
-        """Base Class for data loader classes.
-
-        Attributes:
-            source (SourceData): The source object contains all of the data tables
-
-        Required Methods:
-            all_names()
-            all_ids()
-            ids_from_names()
-            names_from_ids()
-
-        Args:
-            save2file:
-            geolist:
-            baseloadingfilename:
-
-        """
         self._geolist = geolist
 
         logger.debug(locals())

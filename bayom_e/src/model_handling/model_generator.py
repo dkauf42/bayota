@@ -13,6 +13,23 @@ from bayota_settings.log_setup import set_up_detailedfilelogger
 
 
 class ModelHandlerBase:
+    """Base Class for generating a model for the efficiency BMPs.
+
+    Attributes:
+        model ():
+        specdict ():
+        datahandler ():
+        logger ():
+
+    Args:
+        model_spec_file (str): path to a model specification file
+        geoscale (str):
+        geoentities (list):
+        savedata2file (bool):
+        baseloadingfilename (str):
+        log_level (:obj:`str`, optional): The log-level for the model generation logger. Defaults to 'INFO'.
+
+    """
     def __init__(self, model_spec_file, geoscale, geoentities, savedata2file, baseloadingfilename='', log_level='INFO'):
         self.logger = set_up_detailedfilelogger(loggername=os.path.splitext(os.path.basename(model_spec_file))[0],
                                                 filename='bayota_model_generation.log',
