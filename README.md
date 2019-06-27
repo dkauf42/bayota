@@ -60,7 +60,20 @@ cd bayota/
 git pull
 ```
 
-##### 3🏡 Configure before installing
+-- Most work will be done in the 'develop' branch, so switch to it with git checkout
+
+```
+git checkout develop
+```
+
+##### 3🏡 Configure the workspace before installing
+
+Set up where you would like to have a bayota 'workspace',  \
+by specifying this in the install configuration before installing...
+
+-- Customize the following values in `bayota_settings/install_config.ini`:
+- `project_home`
+- `repo_top` (should point to the directory where the bayota repo is located)
 
 ***Note:*** *Important filepaths are set (during install) by the `bayota_settings` package.\
 These paths include general output, logging, temporary files, etc., and are defined in the following three config files:*
@@ -73,10 +86,6 @@ These paths include general output, logging, temporary files, etc., and are defi
 
 *These files will not be programmatically changed by subsequent code executions after being generated.*\
 *The example/default config files can be found in the `bayota_settings` package.*
-
--- Customize the following values in `bayota_settings/install_config.ini`:
-- `project_home`
-- `repo_top` (should point to the directory where the bayota repo is located)
 
 
 ##### 4💾 Install packages
