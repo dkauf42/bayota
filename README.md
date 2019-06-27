@@ -117,7 +117,7 @@ cd bayota/
 
 python castjeeves/setup.py test
 
-python efficiencysubproblem/setup.py test
+python bayom_e/setup.py test
 ```
 
 ***Note:*** *Tests can be run from the project directory (`bayota/`) even though they are located within each package.\
@@ -174,8 +174,8 @@ or with individual steps run separately. They are, in order of their automated e
 
 #### 2🐍 Running from the python prompt
 ```python
-from efficiencysubproblem.src.model_handling import model_generator
-from efficiencysubproblem.src.solver_handling import solvehandler
+from bayom_e.src.model_handling import model_generator
+from bayom_e.src.solver_handling import solvehandler
 
 # Create a model instance
 model_spec_file = '/bayota/bin/specification_files/model_specs/costmin_total_Npercentreduction.yaml'
@@ -238,7 +238,7 @@ bayota
 │   ├── __init__.py
 │   └── ...
 │
-├── efficiencysubproblem   <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+├── bayom_e                <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
 │   ├── __init__.py
 │   └── ...
 │
