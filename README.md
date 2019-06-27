@@ -12,7 +12,7 @@ which is the CBP Phase 6 time-averaged watershed model.
 * [How do I get set up?](#-how-do-i-get-set-up)
     1. [Ensure the IPOPT solver is installed and in $PATH](#1-ensure-the-ipopt-solver-is-installed-and-in-path)
     2. [Clone the repository](#2-clone-the-repository)
-    3. [Configure before installing](#3-configure-before-installing)
+    3. [Configure the workspace before installing](#3-configure-the-workspace-before-installing)
     4. [Install packages](#4-install-packages)
     5. [Double-check the local paths](#5-double-check-the-local-paths)
     6. [Test the installation](#6-test-the-installation)
