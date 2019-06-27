@@ -26,6 +26,25 @@ logger = logging.getLogger(__name__)
 
 
 class Jeeves:
+    """ This class provides a framework for querying the CAST source data files.
+
+    Access to parts of the source data is split among hopefully-intuitive groupings.
+
+    Attributes:
+        agency ():
+        animal ():
+        bmp ():
+        county ():
+        geo ():
+        loadsource ():
+        lrseg ():
+        sector ():
+
+        meta ():
+        translator ():
+        source (str): Description of `attr1`.
+        metadata_tables (:obj:`int`, optional): Description of `attr2`.
+    """
     def __init__(self):
         self.source = self.loadInSourceDataFromSQL()
         self.metadata_tables = self.loadInMetaDataFromSQL()
@@ -43,6 +62,12 @@ class Jeeves:
 
     @classmethod
     def loadInSourceDataFromSQL(cls):
+        """Loads in the source data from a pickle object,
+        or if it doesn't exist, makes a pickle file from the csv files.
+
+        Returns:
+            a SourceData object
+        """
         savename = os.path.join(get_source_pickles_dir(), 'SourceData.obj')
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
@@ -65,6 +90,12 @@ class Jeeves:
 
     @classmethod
     def loadInMetaDataFromSQL(cls):
+        """Loads in the metadata from a pickle object,
+        or if it doesn't exist, makes a pickle file from the csv files.
+
+        Returns:
+            a sqlMetaData object
+        """
         savename = os.path.join(get_source_pickles_dir(), 'MetaData.obj')
         if os.path.exists(savename):
             with open(savename, 'rb') as f:
@@ -87,6 +118,7 @@ class Jeeves:
 
     @staticmethod
     def loadDataframe(tblName, loc):
+        """ """
         dtype_dict = {}
         if tblName == "ImpBmpSubmittedManureTransport":
             dtype_dict["fipsfrom"] = np.str
