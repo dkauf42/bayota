@@ -130,7 +130,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         # Value of modified variable is added to the solution table.
         solution_dict['solution_df'][modvar] = varvalue
-        # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
+        # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pyo.value(mdlhandler.model.Percent_Reduction['N'].body)
 
         # Solution is saved.
         # Solutions directory is created if it doesn't exist.

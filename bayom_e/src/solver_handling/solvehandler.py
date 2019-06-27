@@ -7,7 +7,7 @@ import tempfile
 import pandas as pd
 from datetime import datetime
 
-import pyomo.environ as pe
+import pyomo.environ as pyo
 from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, TerminationCondition
 
 from bayom_e.config import PROJECT_DIR
@@ -103,10 +103,10 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
         solver = SolverFactory(solvername)
 
         if get_suffixes:
-            instance.dual = pe.Suffix(direction=pe.Suffix.IMPORT)
-            instance.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)
-            instance.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)
-            setattr(instance, 'lambda', pe.Suffix(direction=pe.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
+            instance.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT)
+            instance.ipopt_zL_out = pyo.Suffix(direction=pyo.Suffix.IMPORT)
+            instance.ipopt_zU_out = pyo.Suffix(direction=pyo.Suffix.IMPORT)
+            setattr(instance, 'lambda', pyo.Suffix(direction=pyo.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
         results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
                                keepfiles=False, logfile=logfilename)
@@ -114,10 +114,10 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
         opt = SolverFactory("cbc")
         solver_manager = SolverManagerFactory('neos')
 
-        instance.dual = pe.Suffix(direction=pe.Suffix.IMPORT)
-        instance.rc = pe.Suffix(direction=pe.Suffix.IMPORT)
-        instance.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)
-        # self.instance.slack = pe.Suffix(direction=pe.Suffix.IMPORT)
+        instance.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT)
+        instance.rc = pyo.Suffix(direction=pyo.Suffix.IMPORT)
+        instance.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT_EXPORT)
+        # self.instance.slack = pyo.Suffix(direction=pyo.Suffix.IMPORT)
 
         opt.options["display_width"] = 170
         opt.options["display"] = '_varname, _var.rc, _var.lb, _var, _var.ub, _var.slack'
@@ -358,12 +358,12 @@ def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4,
         merged_df['bmpfullname'] = jeeves.bmp.fullnames_from_shortnames(merged_df)
 
         # Add Nutrient Load information
-        merged_df['original_load_N'] = pe.value(solved_instance.original_load_expr['N'])
-        merged_df['original_load_P'] = pe.value(solved_instance.original_load_expr['P'])
-        merged_df['original_load_S'] = pe.value(solved_instance.original_load_expr['S'])
-        merged_df['new_load_N'] = pe.value(solved_instance.new_load_expr['N'])
-        merged_df['new_load_P'] = pe.value(solved_instance.new_load_expr['P'])
-        merged_df['new_load_S'] = pe.value(solved_instance.new_load_expr['S'])
+        merged_df['original_load_N'] = pyo.value(solved_instance.original_load_expr['N'])
+        merged_df['original_load_P'] = pyo.value(solved_instance.original_load_expr['P'])
+        merged_df['original_load_S'] = pyo.value(solved_instance.original_load_expr['S'])
+        merged_df['new_load_N'] = pyo.value(solved_instance.new_load_expr['N'])
+        merged_df['new_load_P'] = pyo.value(solved_instance.new_load_expr['P'])
+        merged_df['new_load_S'] = pyo.value(solved_instance.new_load_expr['S'])
 
         cast_formatted_df = None
         if translate_to_cast_format:

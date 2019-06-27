@@ -1,6 +1,6 @@
 import pandas as pd
 
-import pyomo.environ as pe
+import pyomo.environ as pyo
 
 from bayom_e.src.model_handling import model_generator
 from bayom_e.src.solver_handling import solvehandler
@@ -33,9 +33,9 @@ dh = DataHandlerCounty(geolist=['Adams, PA'], baseloadingfilename='2010NoActionL
 
 # import math
 # for p in mdl.PLTNTS:
-#     if math.isinf(pe.value(mdl.original_load_expr[p])):
+#     if math.isinf(pyo.value(mdl.original_load_expr[p])):
 #         print(f"Uh oh! original_load_expr for {p} is Inf")
-#     elif math.isnan(pe.value(mdl.original_load_expr[p])):
+#     elif math.isnan(pyo.value(mdl.original_load_expr[p])):
 #         print(f"Uh oh! original_load_expr for {p} is NaN")
 #     else:
-#         print("original_load_expr for %s is %s" % (p, numstr(pe.value(mdl.original_load_expr[p]), 2)))
+#         print("original_load_expr for %s is %s" % (p, numstr(pyo.value(mdl.original_load_expr[p]), 2)))

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-import pyomo.environ as pe
+import pyomo.environ as pyo
 
 from castjeeves.src.jeeves import Jeeves
 
@@ -35,7 +35,7 @@ def get_dataframe_of_original_load_for_each_loadsource(mdl, pltnt):
     for k, v in mdl.original_load_for_each_loadsource_expr.items():
         if k[0] == pltnt:
             d.append({'loadsourceshortname': k[1],
-                      'v': pe.value(v)})
+                      'v': pyo.value(v)})
 
     df = pd.DataFrame(d).sort_values('loadsourceshortname', ascending=True).reset_index()
     df['loadsource'] = jeeves.loadsource.fullnames_from_shortnames(df['loadsourceshortname'],
@@ -54,7 +54,7 @@ def get_dataframe_of_original_load_for_each_loadsource_for_a_specific_lrseg(mdl,
         if k[0] == pltnt:
             if k[1] == lrsegstr:
                 d.append({'loadsourceshortname': k[2],
-                          'v': pe.value(v)})
+                          'v': pyo.value(v)})
 
     df = pd.DataFrame(d).sort_values('loadsourceshortname', ascending=True).reset_index()
     df['loadsource'] = jeeves.loadsource.fullnames_from_shortnames(df['loadsourceshortname'],
@@ -68,7 +68,7 @@ def get_dataframe_of_phi_for_each_loadsource_for_a_specific_lrseg(mdl, pltnt, lr
         if k[0] == lrsegstr:
             if k[2] == pltnt:
                 d.append({'loadsourceshortname': k[1],
-                          'v': pe.value(v)})
+                          'v': pyo.value(v)})
 
     df = pd.DataFrame(d).sort_values('loadsourceshortname', ascending=True).reset_index()
     df['loadsource'] = jeeves.loadsource.fullnames_from_shortnames(df['loadsourceshortname'],
