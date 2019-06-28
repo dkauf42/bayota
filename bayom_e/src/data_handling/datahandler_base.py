@@ -27,7 +27,7 @@ class DataHandlerBase:
         BMPSRCLINKS (pd.DataFrame):
         BMPGRPSRCLINKS (pd.DataFrame):
         c (pd.DataFrame):
-        E (pd.DataFrame):
+        eta (pd.DataFrame):
         Theta (pd.DataFrame):
         phi (pd.DataFrame):
         alpha (pd.DataFrame):
@@ -104,7 +104,7 @@ class DataHandlerBase:
 
         # Data Parameters
         self.c = pd.DataFrame()
-        self.E = pd.DataFrame()
+        self.eta = pd.DataFrame()
         self.Theta = pd.DataFrame()
         self.phi = pd.DataFrame()
         # self.Theta = pd.DataFrame()
@@ -327,7 +327,7 @@ class DataHandlerBase:
 
     def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment,
                                         TblLoadSource):
-        """ (E) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
+        """ (eta) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
         # Pre-processing is necessary to build the parameter dictionary
         #  - get efficiency bmps that are in the landriversegments
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
@@ -354,12 +354,12 @@ class DataHandlerBase:
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['bmpshortname', 'pltnt', 'landriversegment', 'loadsourceshortname'])
-        self.E = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
+        self.eta = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             df.loc[:, ['bmpshortname', 'pltnt', 'landriversegment',
-                       'loadsourceshortname', 'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_E.tab'), sep=' ', index=False,
+                       'loadsourceshortname', 'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_eta.tab'), sep=' ', index=False,
                                                                   header=['BMPS', 'PLTNTS', 'LRSEGS', 'LOADSRCS',
-                                                                          'E'])
+                                                                          'eta'])
 
     def _load_param_PhiBaseLoadingRates(self, TblLandRiverSegment,
                                         TblGeography, TblGeographyType, TblGeographyLrSeg,

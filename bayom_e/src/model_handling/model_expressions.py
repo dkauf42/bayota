@@ -64,7 +64,7 @@ def new_load_expr(mdl) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(model, p):
         newload = sum([model.phi[l, lmbda, p] * model.alpha[l, lmbda] *
-                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.E[b, p, l, lmbda]
+                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.eta[b, p, l, lmbda]
                                           if ((model.alpha[l, lmbda] > 1e-6) &
                                               ((b, gamma) in model.BMPGRPING) &
                                               ((b, lmbda) in model.BMPSRCLINKS))
@@ -86,7 +86,7 @@ def new_load_for_each_loadsource_expr(mdl) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(model, p, lmbda):
         newload = sum([model.phi[l, lmbda, p] * model.alpha[l, lmbda] *
-                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.E[b, p, l, lmbda]
+                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.eta[b, p, l, lmbda]
                                           if ((model.alpha[l, lmbda] > 1e-6) &
                                               ((b, gamma) in model.BMPGRPING) &
                                               ((b, lmbda) in model.BMPSRCLINKS))
@@ -106,7 +106,7 @@ def new_load_for_each_lrseg_expr(mdl) -> pyo.ConcreteModel:
     """ New Loa (quantified for each lrseg) """
     def new_load_rule_for_each_lrseg(model, l, p):
         newload = sum([model.phi[l, lmbda, p] * model.alpha[l, lmbda] *
-                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.E[b, p, l, lmbda]
+                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.eta[b, p, l, lmbda]
                                           if ((model.alpha[l, lmbda] > 1e-6) &
                                               ((b, gamma) in model.BMPGRPING) &
                                               ((b, lmbda) in model.BMPSRCLINKS))

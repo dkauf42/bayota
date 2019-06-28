@@ -116,20 +116,20 @@ class ModelHandlerBase:
     def _define_params(model, datahandler):
         """ Parameters """
         # c = datahandler.c,
-        # e = datahandler.E,
+        # e = datahandler.eta,
         # Theta = datahandler.Theta,
         # phi = datahandler.phi,
         model.c = pyo.Param(model.BMPS,
                             initialize=datahandler.c,
                             within=pyo.NonNegativeReals,
                             doc="""cost per acre of BMP b.""")
-        model.E = pyo.Param(model.BMPS,
-                            model.PLTNTS,
-                            model.LRSEGS,
-                            model.LOADSRCS,
-                            initialize=datahandler.E,
-                            within=pyo.NonNegativeReals,
-                            doc='effectiveness per acre of BMP b')
+        model.eta = pyo.Param(model.BMPS,
+                              model.PLTNTS,
+                              model.LRSEGS,
+                              model.LOADSRCS,
+                              initialize=datahandler.eta,
+                              within=pyo.NonNegativeReals,
+                              doc='effectiveness per acre of BMP b')
         model.phi = pyo.Param(model.LRSEGS,
                               model.LOADSRCS,
                               model.PLTNTS,
@@ -137,10 +137,10 @@ class ModelHandlerBase:
                               within=pyo.NonNegativeReals,
                               doc='base nutrient load per load source')
         model.alpha = pyo.Param(model.LRSEGS,
-                            model.LOADSRCS,
-                            initialize=datahandler.alpha,
-                            within=pyo.NonNegativeReals,
-                            doc='total acres available in an lrseg/load source')
+                                model.LOADSRCS,
+                                initialize=datahandler.alpha,
+                                within=pyo.NonNegativeReals,
+                                doc='total acres available in an lrseg/load source')
 
     def add_objective_from_spec(self, model):
 
