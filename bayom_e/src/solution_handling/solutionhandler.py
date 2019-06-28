@@ -144,11 +144,11 @@ class SolutionHandler:
 #
 # tol = 1e-6
 # for b in mdl.BMPS:
-#     for lmbda in mdl.LOADSRCS:
-#         bval = mdl.x[b, 'N51133RL0_6450_0000', lmbda].value
+#     for u in mdl.LOADSRCS:
+#         bval = mdl.x[b, 'N51133RL0_6450_0000', u].value
 #         if not not bval:
 #             if abs(bval)>tol:
-#                 print('(%s, %s): %d' % (b, lmbda, bval))
+#                 print('(%s, %s): %d' % (b, u, bval))
 
 
 def initial_solution_parse_to_dataframe(modelhandler, get_suffixes, solved_instance):

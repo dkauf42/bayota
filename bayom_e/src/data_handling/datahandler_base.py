@@ -267,9 +267,9 @@ class DataHandlerBase:
         # Restrict membership to the land river segments in LRSEGS, so we can filter srcbmpsubtbl by effsubtable
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
 
-        # Include (b, lambda) pairs in BMPSRCLINKS only if the b has an efficiency value
-        # for that lambda (and its associated loadsourcegroup) in TblBmpEfficiency
-        # retain only the (b, lambda) pairs in the srcbmpsubtbl with effectiveness values
+        # Include (b, u) pairs in BMPSRCLINKS only if the b has an efficiency value
+        # for that u (and its associated loadsourcegroup) in TblBmpEfficiency
+        # retain only the (b, u) pairs in the srcbmpsubtbl with effectiveness values
         bmpsrclinkssubtbl = srcbmpsubtbl.loc[:, :].merge(effsubtable.loc[:, ['bmpid', 'loadsourceid']],
                                                          on=['bmpid', 'loadsourceid'])
 
@@ -328,7 +328,7 @@ class DataHandlerBase:
     def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment,
                                         TblLoadSource):
         """
-        (eta) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
+        (eta) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source u """
         # Pre-processing is necessary to build the parameter dictionary
         #  - get efficiency bmps that are in the landriversegments
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
@@ -450,7 +450,7 @@ class DataHandlerBase:
     def _load_param_TotalAcresAvailableForLoadSources(self, TblLandRiverSegment, TblLoadSource,
                                                       TblLandUsePreBmp, baseconditionid):
 
-        """ (alpha) total acres (ac) available for load source λ on land-river segment l (for year y) """
+        """ (alpha) total acres (ac) available for load source u on land-river segment l (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary
         df = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
                               (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
