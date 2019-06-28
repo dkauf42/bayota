@@ -9,7 +9,7 @@ def Available_Acres_Constraint(model) -> pyo.ConcreteModel:
                     if (((b, gamma) in model.BMPGRPING) & ((b, lmbda) in model.BMPSRCLINKS))
                     else 0
                     for b in model.BMPS])
-        return None, temp, model.T[l, lmbda]
+        return None, temp, model.alpha[l, lmbda]
 
     model.Available_Acres_Constraint = pyo.Constraint(model.BMPGRPS,
                                                       model.LRSEGS,

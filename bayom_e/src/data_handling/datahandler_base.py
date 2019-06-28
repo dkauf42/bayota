@@ -30,7 +30,7 @@ class DataHandlerBase:
         E (pd.DataFrame):
         tau (pd.DataFrame):
         phi (pd.DataFrame):
-        T (pd.DataFrame):
+        alpha (pd.DataFrame):
         lrsegsetlist (list):
         lrsegsetidlist (list):
         bmpsetlist (list):
@@ -109,7 +109,7 @@ class DataHandlerBase:
         self.phi = pd.DataFrame()
         # self.tau = pd.DataFrame()
         # self.totalcostupperbound = pd.DataFrame()
-        self.T = pd.DataFrame()
+        self.alpha = pd.DataFrame()
 
         # lists that will be populated by loading the Set data
         self.lrsegsetlist = []
@@ -449,7 +449,7 @@ class DataHandlerBase:
     def _load_param_TotalAcresAvailableForLoadSources(self, TblLandRiverSegment, TblLoadSource,
                                                       TblLandUsePreBmp, baseconditionid):
 
-        """ (T) total acres (ac) available for load source λ on land-river segment l (for year y) """
+        """ (alpha) total acres (ac) available for load source λ on land-river segment l (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary
         df = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
                               (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
@@ -466,12 +466,12 @@ class DataHandlerBase:
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['landriversegment', 'loadsourceshortname'])
-        self.T = grouped['acres'].apply(lambda x: list(x)[0]).to_dict()
+        self.alpha = grouped['acres'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             df.loc[:, ['landriversegment',
                        'loadsourceshortname',
-                       'acres']].to_csv(os.path.join(self.instdatadir, 'data_T.tab'), sep=' ', index=False,
-                                        header=['LRSEGS', 'LOADSRCS', 'T'])
+                       'acres']].to_csv(os.path.join(self.instdatadir, 'data_alpha.tab'), sep=' ', index=False,
+                                        header=['LRSEGS', 'LOADSRCS', 'alpha'])
 
 # dl = Lrseg(save2file=False, geolist=['N51059PL7_4960_0000'])
 # print(dl.lrsegsetlist)

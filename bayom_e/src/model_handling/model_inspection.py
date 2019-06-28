@@ -87,7 +87,7 @@ def get_dataframe_of_T_for_each_loadsource_aggregating_all_lrsegs(mdl):
 
     """
     d = []
-    for k, v in mdl.T.items():
+    for k, v in mdl.alpha.items():
         d.append({'lrseg': k[0],
                   'loadsourceshortname': k[1],
                   'v': v})

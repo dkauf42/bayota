@@ -18,7 +18,7 @@ def total_cost_expr(mdl) -> pyo.ConcreteModel:
 def original_load_for_one_parcel_expr(mdl) -> pyo.ConcreteModel:
     """ An expression to grab one parcel's base load """
     def original_load_rule(model, p, l, lmbda):
-        return model.phi[l, lmbda, p] * model.T[l, lmbda]
+        return model.phi[l, lmbda, p] * model.alpha[l, lmbda]
 
     mdl.original_load_for_one_parcel_expr = pyo.Expression(mdl.PLTNTS,
                                                            mdl.LRSEGS,
@@ -30,7 +30,7 @@ def original_load_for_one_parcel_expr(mdl) -> pyo.ConcreteModel:
 def original_load_expr(mdl) -> pyo.ConcreteModel:
     """ Original Load Expression (with lrsegs aggregated together) """
     def original_load_rule(model, p):
-        return sum([(model.phi[l, lmbda, p] * model.T[l, lmbda])
+        return sum([(model.phi[l, lmbda, p] * model.alpha[l, lmbda])
                     for l in model.LRSEGS
                     for lmbda in model.LOADSRCS])
 
@@ -41,7 +41,7 @@ def original_load_expr(mdl) -> pyo.ConcreteModel:
 def original_load_for_each_loadsource_expr(mdl) -> pyo.ConcreteModel:
     """ Original Load Expression (with lrsegs aggregated together) """
     def original_load_rule(model, p, lmbda):
-        return sum([(model.phi[l, lmbda, p] * model.T[l, lmbda])
+        return sum([(model.phi[l, lmbda, p] * model.alpha[l, lmbda])
                     for l in model.LRSEGS])
 
     mdl.original_load_for_each_loadsource_expr = pyo.Expression(mdl.PLTNTS, mdl.LOADSRCS, rule=original_load_rule)
@@ -51,7 +51,7 @@ def original_load_for_each_loadsource_expr(mdl) -> pyo.ConcreteModel:
 def original_load_for_each_lrseg_expr(mdl) -> pyo.ConcreteModel:
     """ Original Load Expression (quantified for each lrseg) """
     def original_load_rule_for_each_lrseg(model, l, p):
-        return sum((model.phi[l, lmbda, p] * model.T[l, lmbda])
+        return sum((model.phi[l, lmbda, p] * model.alpha[l, lmbda])
                    for lmbda in model.LOADSRCS)
 
     mdl.original_load_for_each_lrseg_expr = pyo.Expression(mdl.LRSEGS,
@@ -63,9 +63,9 @@ def original_load_for_each_lrseg_expr(mdl) -> pyo.ConcreteModel:
 def new_load_expr(mdl) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(model, p):
-        newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
-                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
-                                          if ((model.T[l, lmbda] > 1e-6) &
+        newload = sum([model.phi[l, lmbda, p] * model.alpha[l, lmbda] *
+                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.E[b, p, l, lmbda]
+                                          if ((model.alpha[l, lmbda] > 1e-6) &
                                               ((b, gamma) in model.BMPGRPING) &
                                               ((b, lmbda) in model.BMPSRCLINKS))
                                           else 0
@@ -85,9 +85,9 @@ def new_load_expr(mdl) -> pyo.ConcreteModel:
 def new_load_for_each_loadsource_expr(mdl) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(model, p, lmbda):
-        newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
-                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
-                                          if ((model.T[l, lmbda] > 1e-6) &
+        newload = sum([model.phi[l, lmbda, p] * model.alpha[l, lmbda] *
+                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.E[b, p, l, lmbda]
+                                          if ((model.alpha[l, lmbda] > 1e-6) &
                                               ((b, gamma) in model.BMPGRPING) &
                                               ((b, lmbda) in model.BMPSRCLINKS))
                                           else 0
@@ -105,9 +105,9 @@ def new_load_for_each_loadsource_expr(mdl) -> pyo.ConcreteModel:
 def new_load_for_each_lrseg_expr(mdl) -> pyo.ConcreteModel:
     """ New Loa (quantified for each lrseg) """
     def new_load_rule_for_each_lrseg(model, l, p):
-        newload = sum([model.phi[l, lmbda, p] * model.T[l, lmbda] *
-                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.T[l, lmbda]) * model.E[b, p, l, lmbda]
-                                          if ((model.T[l, lmbda] > 1e-6) &
+        newload = sum([model.phi[l, lmbda, p] * model.alpha[l, lmbda] *
+                       pyo.prod([(1 - sum([(model.x[b, l, lmbda] / model.alpha[l, lmbda]) * model.E[b, p, l, lmbda]
+                                          if ((model.alpha[l, lmbda] > 1e-6) &
                                               ((b, gamma) in model.BMPGRPING) &
                                               ((b, lmbda) in model.BMPSRCLINKS))
                                           else 0

@@ -136,9 +136,9 @@ class ModelHandlerBase:
                               initialize=datahandler.phi,
                               within=pyo.NonNegativeReals,
                               doc='base nutrient load per load source')
-        model.T = pyo.Param(model.LRSEGS,
+        model.alpha = pyo.Param(model.LRSEGS,
                             model.LOADSRCS,
-                            initialize=datahandler.T,
+                            initialize=datahandler.alpha,
                             within=pyo.NonNegativeReals,
                             doc='total acres available in an lrseg/load source')
 
