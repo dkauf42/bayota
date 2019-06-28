@@ -3,13 +3,13 @@
 Example:
     `python ExtractSourceTables.py <server> <databasename> <source dir>`
     `python ExtractSourceTables.py SQL2D ScenarioBuilderV3Source ../../data/test_source`
-
+    `python ExtractSourceTables.py SQL2T ScenarioBuilderV3Source ../../data/test_source userpwdfile
 """
 import sys
 import pyodbc
 import pandas as pd
 import time
-from .source_data import SourceData
+from castjeeves.src.sqltables.source_data import SourceData
 
 if len(sys.argv) < 4:
     raise ValueError("We need server, database name, and output directory value!")
@@ -18,11 +18,15 @@ if len(sys.argv) < 4:
 server = sys.argv[1]  # 'SQL2D' or 'localhost'
 database = sys.argv[2]  # 'ScenarioBuilderV3Source'
 SOURCE_PATH = sys.argv[3]
+userid = sys.argv[4]
+password = sys.argv[5]
 
-cnxn = pyodbc.connect('DRIVER={SQL Server Native Client 11.0}' +
+
+cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}' +
                       ';SERVER=' + server +
                       ';DATABASE=' + database +
-                      ';Trusted_Connection=yes')
+                      ';uid=' + userid +
+                      ';pwd=' + password)
 
 sourcedata = SourceData()
 skipLargest = True  # to skip the largest (>120 MB) files
