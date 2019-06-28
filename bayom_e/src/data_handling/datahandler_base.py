@@ -26,7 +26,7 @@ class DataHandlerBase:
         LOADSRCS (pd.DataFrame):
         BMPSRCLINKS (pd.DataFrame):
         BMPGRPSRCLINKS (pd.DataFrame):
-        c (pd.DataFrame):
+        tau (pd.DataFrame):
         eta (pd.DataFrame):
         Theta (pd.DataFrame):
         phi (pd.DataFrame):
@@ -103,7 +103,7 @@ class DataHandlerBase:
         self.BMPGRPSRCLINKS = pd.DataFrame()
 
         # Data Parameters
-        self.c = pd.DataFrame()
+        self.tau = pd.DataFrame()
         self.eta = pd.DataFrame()
         self.Theta = pd.DataFrame()
         self.phi = pd.DataFrame()
@@ -309,7 +309,7 @@ class DataHandlerBase:
     def _load_param_CostPerAcreOfBmps(self, TblBmp, TblCostBmpLand, costprofileid):
         """ ****************** Parameter Data ****************** """
 
-        """ (c) Cost per acre ($ ac^-1) of BMP b (for cost profile κ) """
+        """ (tau) Cost per acre ($ ac^-1) of BMP b (for cost profile κ) """
         # Get total annualized cost per unit data, and retain only:
         #  - those costs pertaining to bmps in our set
         costsdf = TblCostBmpLand[TblCostBmpLand['costprofileid'] == costprofileid]
@@ -319,15 +319,16 @@ class DataHandlerBase:
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = costsdf.groupby(['bmpshortname'])
-        self.c = grouped['totalannualizedcostperunit'].apply(lambda x: list(x)[0]).to_dict()
+        self.tau = grouped['totalannualizedcostperunit'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             costsdf.loc[:, ['bmpshortname',
-                            'totalannualizedcostperunit']].to_csv(os.path.join(self.instdatadir, 'data_c.tab'), sep=' ',
-                                                                  index=False, header=['BMPS', 'c'])
+                            'totalannualizedcostperunit']].to_csv(os.path.join(self.instdatadir, 'data_tau.tab'), sep=' ',
+                                                                  index=False, header=['BMPS', 'tau'])
 
     def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment,
                                         TblLoadSource):
-        """ (eta) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
+        """
+        (eta) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
         # Pre-processing is necessary to build the parameter dictionary
         #  - get efficiency bmps that are in the landriversegments
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]

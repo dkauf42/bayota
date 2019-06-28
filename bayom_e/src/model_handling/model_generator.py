@@ -115,14 +115,14 @@ class ModelHandlerBase:
     @staticmethod
     def _define_params(model, datahandler):
         """ Parameters """
-        # c = datahandler.c,
-        # e = datahandler.eta,
+        # tau = datahandler.tau,
+        # eta = datahandler.eta,
         # Theta = datahandler.Theta,
         # phi = datahandler.phi,
-        model.c = pyo.Param(model.BMPS,
-                            initialize=datahandler.c,
-                            within=pyo.NonNegativeReals,
-                            doc="""cost per acre of BMP b.""")
+        model.tau = pyo.Param(model.BMPS,
+                              initialize=datahandler.tau,
+                              within=pyo.NonNegativeReals,
+                              doc="""cost per acre of BMP b.""")
         model.eta = pyo.Param(model.BMPS,
                               model.PLTNTS,
                               model.LRSEGS,

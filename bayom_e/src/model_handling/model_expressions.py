@@ -4,7 +4,7 @@ import pyomo.environ as pyo
 def total_cost_expr(mdl) -> pyo.ConcreteModel:
     """ Total Cost Expression """
     def total_cost_rule(model):
-        return sum([(model.c[b] * model.x[b, l, lmbda])
+        return sum([(model.tau[b] * model.x[b, l, lmbda])
                     if ((b, lmbda) in model.BMPSRCLINKS)
                     else 0
                     for l in model.LRSEGS
