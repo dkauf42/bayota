@@ -153,7 +153,7 @@ def percent_reduction_for_each_lrseg_expr(mdl) -> pyo.ConcreteModel:
                                  mdl.PLTNTS,
                                  initialize=lambda m, l, p: m.original_load_for_each_lrseg_expr[l, p])
 
-    # Relative load reductions must be greater than the specified target percentages (tau)
+    # Relative load reductions must be greater than the specified target percentages (Theta)
     def percent_reduction_rule_for_each_lrseg(model, l, p):
 
         # Some lrsegs have 0 total load for some nutrients

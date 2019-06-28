@@ -28,7 +28,7 @@ class DataHandlerBase:
         BMPGRPSRCLINKS (pd.DataFrame):
         c (pd.DataFrame):
         E (pd.DataFrame):
-        tau (pd.DataFrame):
+        Theta (pd.DataFrame):
         phi (pd.DataFrame):
         alpha (pd.DataFrame):
         lrsegsetlist (list):
@@ -105,9 +105,9 @@ class DataHandlerBase:
         # Data Parameters
         self.c = pd.DataFrame()
         self.E = pd.DataFrame()
-        self.tau = pd.DataFrame()
+        self.Theta = pd.DataFrame()
         self.phi = pd.DataFrame()
-        # self.tau = pd.DataFrame()
+        # self.Theta = pd.DataFrame()
         # self.totalcostupperbound = pd.DataFrame()
         self.alpha = pd.DataFrame()
 

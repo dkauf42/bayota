@@ -117,7 +117,7 @@ class ModelHandlerBase:
         """ Parameters """
         # c = datahandler.c,
         # e = datahandler.E,
-        # tau = datahandler.tau,
+        # Theta = datahandler.Theta,
         # phi = datahandler.phi,
         model.c = pyo.Param(model.BMPS,
                             initialize=datahandler.c,
