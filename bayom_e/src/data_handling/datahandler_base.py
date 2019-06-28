@@ -11,24 +11,42 @@ logger = logging.getLogger(__name__)
 
 
 class DataHandlerBase:
+    """Base Class for data loader classes.
+
+    Attributes:
+        save2file ():
+        instdatadir ():
+        agencyid ():
+        agencyfullname ():
+        PLTNTS (pd.DataFrame):
+        LRSEGS (pd.DataFrame):
+        BMPS (pd.DataFrame):
+        BMPGRPS (pd.DataFrame):
+        BMPGRPING (pd.DataFrame):
+        LOADSRCS (pd.DataFrame):
+        BMPSRCLINKS (pd.DataFrame):
+        BMPGRPSRCLINKS (pd.DataFrame):
+        tau (pd.DataFrame):
+        eta (pd.DataFrame):
+        Theta (pd.DataFrame):
+        phi (pd.DataFrame):
+        alpha (pd.DataFrame):
+        lrsegsetlist (list):
+        lrsegsetidlist (list):
+        bmpsetlist (list):
+        bmpsetidlist (list):
+        loadsrcsetidlist (list):
+        costsubtbl (pd.DataFrame):
+
+    Args:
+        save2file (bool): Defaults to True.
+        geolist (list): The list of geographic entities for which to pull data. Defaults to None.
+        baseloadingfilename (str):
+
+    """
     def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
-        """Base Class for data loader classes.
+        self._geolist = geolist
 
-        Attributes:
-            source (SourceData): The source object contains all of the data tables
-
-        Required Methods:
-            all_names()
-            all_ids()
-            ids_from_names()
-            names_from_ids()
-
-        Args:
-            save2file:
-            geolist:
-            baseloadingfilename:
-
-        """
         logger.debug(locals())
         jeeves = Jeeves()
 
@@ -37,8 +55,9 @@ class DataHandlerBase:
         self.instdatadir = get_model_instances_dir()
 
         """ Instance Specifiers """
-        baseconditionid = 29
-        costprofileid = 4
+        self._baseconditionid = 29
+        self._costprofileid = 4
+
         self.agencyid = jeeves.agency.ids_from_names(['NONFED'])['agencyid'][0]  # NONFED agency code
         self.agencyfullname = 'Non-Federal'
 
@@ -84,13 +103,13 @@ class DataHandlerBase:
         self.BMPGRPSRCLINKS = pd.DataFrame()
 
         # Data Parameters
-        self.c = pd.DataFrame()
-        self.E = pd.DataFrame()
         self.tau = pd.DataFrame()
+        self.eta = pd.DataFrame()
+        self.Theta = pd.DataFrame()
         self.phi = pd.DataFrame()
-        # self.tau = pd.DataFrame()
+        # self.Theta = pd.DataFrame()
         # self.totalcostupperbound = pd.DataFrame()
-        self.T = pd.DataFrame()
+        self.alpha = pd.DataFrame()
 
         # lists that will be populated by loading the Set data
         self.lrsegsetlist = []
@@ -103,17 +122,17 @@ class DataHandlerBase:
         # Populate the data - SETS
         self._load_set_pollutants()
 
-        self._load_set_geographies(jeeves, geolist=geolist)
+        self._load_set_geographies(jeeves, geolist=self._geolist)
 
         self._load_set_BMPs(jeeves, TblBmpLoadSourceGroup, TblBmpGroup)
-        self._load_set_LoadSources(TblLandUsePreBmp, singlelsgrpdf, baseconditionid)
+        self._load_set_LoadSources(TblLandUsePreBmp, singlelsgrpdf, self._baseconditionid)
         self._load_set_BmpLoadSourceAssociations(TblBmp, TblBmpEfficiency, TblBmpGroup,
                                                  TblBmpLoadSourceGroup, TblLoadSource, singlelsgrpdf)
 
         self.costsubtbl = pd.DataFrame()
 
         # Populate the data - PARAMETERS
-        self._load_param_CostPerAcreOfBmps(TblBmp, TblCostBmpLand, costprofileid)
+        self._load_param_CostPerAcreOfBmps(TblBmp, TblCostBmpLand, self._costprofileid)
         self._load_param_EffectivenessOfBmps(TblBmp, TblBmpEfficiency, TblLandRiverSegment, TblLoadSource)
 
         self._load_constraint()
@@ -121,9 +140,24 @@ class DataHandlerBase:
         self._load_param_PhiBaseLoadingRates(TblLandRiverSegment, TblGeography, TblGeographyType,
                                              TblGeographyLrSeg, TblLoadSource, BaseConditionLoadsTbl)
         self._load_param_TotalAcresAvailableForLoadSources(TblLandRiverSegment, TblLoadSource,
-                                                           TblLandUsePreBmp, baseconditionid)
+                                                           TblLandUsePreBmp, self._baseconditionid)
 
         logger.info('LRsegs loaded: %s' % self.lrsegsetlist)
+
+    def __repr__(self):
+        obj_attributes = sorted([k for k in self.__dict__.keys()
+                                 if not k.startswith('_')])
+
+        strrep = f"DATAHANDLER: \n" \
+                 f"\t- for the baseconditionid: <{self._baseconditionid}>\n" \
+                 f"\t- for the costprofileid: <{self._costprofileid}>\n" \
+                 f"\t- for the geolist: <{self._geolist}>\n" \
+                 f"\t- for the agencies: <{self.agencyid}>\n" \
+                 f"\t- includes <{len(self.lrsegsetlist)}> land river segments\n" \
+                 f"\n" \
+                 f"\t all attributes:%s" % '\n\t\t\t'.join(obj_attributes)
+
+        return strrep
 
     def _load_constraint(self):
         """ overridden in the Mixins """
@@ -233,9 +267,9 @@ class DataHandlerBase:
         # Restrict membership to the land river segments in LRSEGS, so we can filter srcbmpsubtbl by effsubtable
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
 
-        # Include (b, lambda) pairs in BMPSRCLINKS only if the b has an efficiency value
-        # for that lambda (and its associated loadsourcegroup) in TblBmpEfficiency
-        # retain only the (b, lambda) pairs in the srcbmpsubtbl with effectiveness values
+        # Include (b, u) pairs in BMPSRCLINKS only if the b has an efficiency value
+        # for that u (and its associated loadsourcegroup) in TblBmpEfficiency
+        # retain only the (b, u) pairs in the srcbmpsubtbl with effectiveness values
         bmpsrclinkssubtbl = srcbmpsubtbl.loc[:, :].merge(effsubtable.loc[:, ['bmpid', 'loadsourceid']],
                                                          on=['bmpid', 'loadsourceid'])
 
@@ -275,7 +309,7 @@ class DataHandlerBase:
     def _load_param_CostPerAcreOfBmps(self, TblBmp, TblCostBmpLand, costprofileid):
         """ ****************** Parameter Data ****************** """
 
-        """ (c) Cost per acre ($ ac^-1) of BMP b (for cost profile κ) """
+        """ (tau) Cost per acre ($ ac^-1) of BMP b (for cost profile κ) """
         # Get total annualized cost per unit data, and retain only:
         #  - those costs pertaining to bmps in our set
         costsdf = TblCostBmpLand[TblCostBmpLand['costprofileid'] == costprofileid]
@@ -285,15 +319,16 @@ class DataHandlerBase:
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = costsdf.groupby(['bmpshortname'])
-        self.c = grouped['totalannualizedcostperunit'].apply(lambda x: list(x)[0]).to_dict()
+        self.tau = grouped['totalannualizedcostperunit'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             costsdf.loc[:, ['bmpshortname',
-                            'totalannualizedcostperunit']].to_csv(os.path.join(self.instdatadir, 'data_c.tab'), sep=' ',
-                                                                  index=False, header=['BMPS', 'c'])
+                            'totalannualizedcostperunit']].to_csv(os.path.join(self.instdatadir, 'data_tau.tab'), sep=' ',
+                                                                  index=False, header=['BMPS', 'tau'])
 
     def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment,
                                         TblLoadSource):
-        """ (E) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source λ """
+        """
+        (eta) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source u """
         # Pre-processing is necessary to build the parameter dictionary
         #  - get efficiency bmps that are in the landriversegments
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
@@ -320,12 +355,12 @@ class DataHandlerBase:
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['bmpshortname', 'pltnt', 'landriversegment', 'loadsourceshortname'])
-        self.E = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
+        self.eta = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             df.loc[:, ['bmpshortname', 'pltnt', 'landriversegment',
-                       'loadsourceshortname', 'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_E.tab'), sep=' ', index=False,
+                       'loadsourceshortname', 'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_eta.tab'), sep=' ', index=False,
                                                                   header=['BMPS', 'PLTNTS', 'LRSEGS', 'LOADSRCS',
-                                                                          'E'])
+                                                                          'eta'])
 
     def _load_param_PhiBaseLoadingRates(self, TblLandRiverSegment,
                                         TblGeography, TblGeographyType, TblGeographyLrSeg,
@@ -415,7 +450,7 @@ class DataHandlerBase:
     def _load_param_TotalAcresAvailableForLoadSources(self, TblLandRiverSegment, TblLoadSource,
                                                       TblLandUsePreBmp, baseconditionid):
 
-        """ (T) total acres (ac) available for load source λ on land-river segment l (for year y) """
+        """ (alpha) total acres (ac) available for load source u on land-river segment l (for year y) """
         # Some pre-processing is necessary to build the parameter dictionary
         df = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
                               (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
@@ -432,12 +467,12 @@ class DataHandlerBase:
 
         # Convert groups to dictionary ( with tuple->value structure )
         grouped = df.groupby(['landriversegment', 'loadsourceshortname'])
-        self.T = grouped['acres'].apply(lambda x: list(x)[0]).to_dict()
+        self.alpha = grouped['acres'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             df.loc[:, ['landriversegment',
                        'loadsourceshortname',
-                       'acres']].to_csv(os.path.join(self.instdatadir, 'data_T.tab'), sep=' ', index=False,
-                                        header=['LRSEGS', 'LOADSRCS', 'T'])
+                       'acres']].to_csv(os.path.join(self.instdatadir, 'data_alpha.tab'), sep=' ', index=False,
+                                        header=['LRSEGS', 'LOADSRCS', 'alpha'])
 
 # dl = Lrseg(save2file=False, geolist=['N51059PL7_4960_0000'])
 # print(dl.lrsegsetlist)

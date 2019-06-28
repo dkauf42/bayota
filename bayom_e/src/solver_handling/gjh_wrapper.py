@@ -1,5 +1,5 @@
 from pyomo.opt import SolverFactory
-import pyomo.environ as oe
+import pyomo.environ as pyo
 import pandas as pd
 import os
 import re
@@ -37,7 +37,7 @@ def gjh_solve(instance, keepfiles=True, amplenv=None, basegjhpath=''):
 def make_df(instance=None, filterbydf=None, g=None):
     dict_for_df = {}
 
-    for v in instance.component_objects(oe.Var, active=True):
+    for v in instance.component_objects(pyo.Var, active=True):
         print("Variable component object", v)
         i = 0
         for index in v:
@@ -46,7 +46,7 @@ def make_df(instance=None, filterbydf=None, g=None):
                    filterbydf['landriversegment'].str.contains(index[1]).any() & \
                    filterbydf['loadsource'].str.contains(index[2]).any():
                     try:
-                        x_value = oe.value(v[index])
+                        x_value = pyo.value(v[index])
                         i += 1
                         try:
                             # print (i,"   ", index, v[index].value, g[i])
@@ -57,7 +57,7 @@ def make_df(instance=None, filterbydf=None, g=None):
                         pass
             else:
                 try:
-                    x_value = oe.value(v[index])
+                    x_value = pyo.value(v[index])
                     i += 1
                     try:
                         # print (i,"   ", index, v[index].value, g[i])

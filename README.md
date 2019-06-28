@@ -12,7 +12,7 @@ which is the CBP Phase 6 time-averaged watershed model.
 * [How do I get set up?](#-how-do-i-get-set-up)
     1. [Ensure the IPOPT solver is installed and in $PATH](#1-ensure-the-ipopt-solver-is-installed-and-in-path)
     2. [Clone the repository](#2-clone-the-repository)
-    3. [Configure before installing](#3-configure-before-installing)
+    3. [Configure the workspace before installing](#3-configure-the-workspace-before-installing)
     4. [Install packages](#4-install-packages)
     5. [Double-check the local paths](#5-double-check-the-local-paths)
     6. [Test the installation](#6-test-the-installation)
@@ -35,6 +35,9 @@ which is the CBP Phase 6 time-averaged watershed model.
 * [Who do I talk to?](#-who-do-i-talk-to)
 
 # ⚙ How do I get set up?
+
+***Note: The CAST Source data is not included in this repository. \
+Full installation and usage is not possible without the source data.***
 
 ##### 1📉 Ensure the IPOPT solver is installed and in $PATH
 
@@ -60,7 +63,20 @@ cd bayota/
 git pull
 ```
 
-##### 3🏡 Configure before installing
+-- Most work will be done in the 'develop' branch, so switch to it with git checkout
+
+```
+git checkout develop
+```
+
+##### 3🏡 Configure the workspace before installing
+
+Set up where you would like to have a bayota 'workspace',  \
+by specifying this in the install configuration before installing...
+
+-- Customize the following values in `bayota_settings/install_config.ini`:
+- `project_home`
+- `repo_top` (should point to the directory where the bayota repo is located)
 
 ***Note:*** *Important filepaths are set (during install) by the `bayota_settings` package.\
 These paths include general output, logging, temporary files, etc., and are defined in the following three config files:*
@@ -73,10 +89,6 @@ These paths include general output, logging, temporary files, etc., and are defi
 
 *These files will not be programmatically changed by subsequent code executions after being generated.*\
 *The example/default config files can be found in the `bayota_settings` package.*
-
--- Customize the following values in `bayota_settings/install_config.ini`:
-- `project_home`
-- `repo_top` (should point to the directory where the bayota repo is located)
 
 
 ##### 4💾 Install packages
@@ -108,7 +120,7 @@ cd bayota/
 
 python castjeeves/setup.py test
 
-python efficiencysubproblem/setup.py test
+python bayom_e/setup.py test
 ```
 
 ***Note:*** *Tests can be run from the project directory (`bayota/`) even though they are located within each package.\
@@ -165,8 +177,8 @@ or with individual steps run separately. They are, in order of their automated e
 
 #### 2🐍 Running from the python prompt
 ```python
-from efficiencysubproblem.src.model_handling import model_generator
-from efficiencysubproblem.src.solver_handling import solvehandler
+from bayom_e.src.model_handling import model_generator
+from bayom_e.src.solver_handling import solvehandler
 
 # Create a model instance
 model_spec_file = '/bayota/bin/specification_files/model_specs/costmin_total_Npercentreduction.yaml'
@@ -192,8 +204,7 @@ solution_data_frame = solution_dict['solution_df']
 ```
 
 #### 3📓 Running from a jupyter notebook
-The approach to use in a notebook is the same as the python prompt.\
-Some example notebooks are provided in the bin/jnotebooks/ directory.
+The approach to use in a notebook is the same as the python prompt.
 
 #### 🧹 Cleaning up after intallation and runs
 
@@ -211,7 +222,7 @@ python setup.py clean
 
 #### Components
 
-<img src="./.images/components_20190415.png" alt="components" width="503" height="377"/>
+<img src="./.images/components_20190621.png" alt="components" width="503" height="377"/>
 
 #### Directory Tree
 ```
@@ -230,7 +241,7 @@ bayota
 │   ├── __init__.py
 │   └── ...
 │
-├── efficiencysubproblem   <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+├── bayom_e                <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
 │   ├── __init__.py
 │   └── ...
 │

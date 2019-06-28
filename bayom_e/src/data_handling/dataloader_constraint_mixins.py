@@ -23,41 +23,41 @@ class DataCostConstraintMixin(object):
 class DataLoadConstraintAtCountyLevelMixin(object):
     """
     Parameters:
-        tau indexed by [PLTNTS]
+        theta indexed by [PLTNTS]
     """
 
     def _load_constraint(self):
         logger.debug('loading county level load constraint')
-        """ (Tau) target percent load reductions (%) per pollutant p """
-        Taudict = {}
+        """ (Theta) target percent load reductions (%) per pollutant p """
+        Thetadict = {}
         for k in self.pltntslist:
-            Taudict[k] = 5
-        self.tau = Taudict
+            Thetadict[k] = 5
+        self.Theta = Thetadict
 
         if self.save2file:
-            tau_df = pd.DataFrame(list(Taudict.items()), columns=['tau'])
-            tau_df[['PLTNTS']] = tau_df.apply(pd.Series)
-            tau_df.loc[:, ['PLTNTS', 'tau']].to_csv(os.path.join(self.instdatadir, 'data_tau.tab'), sep=' ', index=False)
+            theta_df = pd.DataFrame(list(Thetadict.items()), columns=['theta'])
+            theta_df[['PLTNTS']] = theta_df.apply(pd.Series)
+            theta_df.loc[:, ['PLTNTS', 'theta']].to_csv(os.path.join(self.instdatadir, 'data_theta.tab'), sep=' ', index=False)
 
 
 class DataLoadConstraintAtLrsegLevelMixin(object):
     """
     Parameters:
-        tau indexed by [LRSEGS, PLTNTS]
+        theta indexed by [LRSEGS, PLTNTS]
     """
 
     def _load_constraint(self):
         logger.debug('loading lrseg level load constraint')
-        """ (Tau) target percent load reductions (%) per pollutant p and land river segment l """
-        Taudict = {}
+        """ (Theta) target percent load reductions (%) per pollutant p and land river segment l """
+        Thetadict = {}
         for l in self.lrsegsetlist:
             for k in self.pltntslist:
-                Taudict[(l, k)] = 5
-            # Taudict[(l, 'N')] = 5
-            # Taudict[(l, 'P')] = 5
-            # Taudict[(l, 'S')] = 5
-        self.tau = Taudict
+                Thetadict[(l, k)] = 5
+            # Thetadict[(l, 'N')] = 5
+            # Thetadict[(l, 'P')] = 5
+            # Thetadict[(l, 'S')] = 5
+        self.theta = Thetadict
         if self.save2file:
-            tau_df = pd.DataFrame(list(Taudict.items()), columns=['LRSEGS', 'tau'])
-            tau_df[['LRSEGS', 'PLTNTS']] = tau_df['LRSEGS'].apply(pd.Series)
-            tau_df.loc[:, ['LRSEGS', 'PLTNTS', 'tau']].to_csv(os.path.join(self.instdatadir, 'data_tau.tab'), sep=' ', index=False)
+            theta_df = pd.DataFrame(list(Thetadict.items()), columns=['LRSEGS', 'theta'])
+            theta_df[['LRSEGS', 'PLTNTS']] = theta_df['LRSEGS'].apply(pd.Series)
+            theta_df.loc[:, ['LRSEGS', 'PLTNTS', 'theta']].to_csv(os.path.join(self.instdatadir, 'data_theta.tab'), sep=' ', index=False)

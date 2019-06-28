@@ -3,7 +3,7 @@ import cloudpickle
 import pyomo.environ as pe
 from itertools import compress
 
-from bayom_e.src.spec_handler import notdry
+from bayota_util.spec_handler import notdry
 from bayom_e.src.model_handling.model_generator import ModelHandlerBase
 
 import logging
@@ -25,7 +25,7 @@ def modify_model(model, actiondict=None):
         # elif actiondict['component_type'] == 'Constraint':
         #     print(actiondict['args'])
         #     # Set the model Object
-        #     setattr(model, actiondict['name'], pe.Constraint(**actiondict['args']))
+        #     setattr(model, actiondict['name'], pyo.Constraint(**actiondict['args']))
     elif actiondict['action'] == 'fix_variable':
         idxset = actiondict['index']['set']
         idxval = actiondict['index']['value']

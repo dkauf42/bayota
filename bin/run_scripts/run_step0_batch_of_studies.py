@@ -17,7 +17,7 @@ import itertools
 import subprocess
 from argparse import ArgumentParser
 
-from bayom_e.src.spec_handler import read_spec, notdry
+from bayota_util.spec_handler import read_spec, notdry
 from bayota_settings.base import get_bayota_version, \
     get_scripts_dir, get_spec_files_dir, get_control_dir
 from bayota_settings.log_setup import root_logger_setup

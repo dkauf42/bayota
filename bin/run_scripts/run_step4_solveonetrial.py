@@ -15,7 +15,7 @@ import json
 
 import pyomo.environ as pe
 
-from bayom_e.src.spec_handler import read_spec, notdry
+from bayota_util.spec_handler import read_spec, notdry
 from bayom_e.src.solver_handling import solvehandler
 
 from bayom_e.src.model_handling.utils import load_model_pickle
@@ -23,7 +23,6 @@ from bayom_e.src.model_handling.utils import load_model_pickle
 from bayota_settings.base import get_model_instances_dir, \
     get_output_dir, get_scripts_dir, get_logging_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
-from bayota_util.str_manip import compact_capitalized_geography_string
 
 logprefix = '** Single Trial **: '
 
@@ -131,7 +130,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         # Value of modified variable is added to the solution table.
         solution_dict['solution_df'][modvar] = varvalue
-        # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pe.value(mdlhandler.model.Percent_Reduction['N'].body)
+        # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pyo.value(mdlhandler.model.Percent_Reduction['N'].body)
 
         # Solution is saved.
         # Solutions directory is created if it doesn't exist.

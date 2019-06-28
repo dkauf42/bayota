@@ -1,10 +1,10 @@
 import os
 import math
 import pandas as pd
-import pyomo.environ as pe
+import pyomo.environ as pyo
 
 from bayom_e.src.data_handling.interface import get_loaded_data_handler_no_objective
-from bayom_e.src.spec_handler import read_spec
+from bayota_util.spec_handler import read_spec
 
 from bayom_e.src.model_handling import model_expressions
 from bayom_e.src.model_handling import model_components
@@ -13,6 +13,23 @@ from bayota_settings.log_setup import set_up_detailedfilelogger
 
 
 class ModelHandlerBase:
+    """Base Class for generating a model for the efficiency BMPs.
+
+    Attributes:
+        model ():
+        specdict ():
+        datahandler ():
+        logger ():
+
+    Args:
+        model_spec_file (str): path to a model specification file
+        geoscale (str):
+        geoentities (list):
+        savedata2file (bool):
+        baseloadingfilename (str):
+        log_level (:obj:`str`, optional): The log-level for the model generation logger. Defaults to 'INFO'.
+
+    """
     def __init__(self, model_spec_file, geoscale, geoentities, savedata2file, baseloadingfilename='', log_level='INFO'):
         self.logger = set_up_detailedfilelogger(loggername=os.path.splitext(os.path.basename(model_spec_file))[0],
                                                 filename='bayota_model_generation.log',
@@ -28,7 +45,7 @@ class ModelHandlerBase:
                                                                 savedata2file=savedata2file,
                                                                 baseloadingfilename=baseloadingfilename)
 
-        model = pe.ConcreteModel()
+        model = pyo.ConcreteModel()
         self._define_sets(model, self.datahandler, geoscale=geoscale)
         self._define_variables(model)
         self._define_params(model, self.datahandler)
@@ -61,69 +78,69 @@ class ModelHandlerBase:
         # bmpsrclinks = datahandler.BMPSRCLINKS,
         # bmpgrpsrclinks = datahandler.BMPGRPSRCLINKS,
 
-        model.PLTNTS = pe.Set(initialize=datahandler.PLTNTS,
-                              ordered=True,
-                              doc="""Pollutants (N, P, or S).""")
+        model.PLTNTS = pyo.Set(initialize=datahandler.PLTNTS,
+                               ordered=True,
+                               doc="""Pollutants (N, P, or S).""")
 
         if geoscale == 'lrseg':
             self.logger.debug('Loading lrseg geoentities')
-            model.LRSEGS = pe.Set(initialize=datahandler.LRSEGS)
+            model.LRSEGS = pyo.Set(initialize=datahandler.LRSEGS)
         elif geoscale == 'county':
             self.logger.debug('Loading county geoentities')
-            model.COUNTIES = pe.Set(initialize=datahandler.COUNTIES)
-            model.LRSEGS = pe.Set(initialize=datahandler.LRSEGS)
-            model.CNTYLRSEGLINKS = pe.Set(initialize=datahandler.CNTYLRSEGLINKS, dimen=2)
+            model.COUNTIES = pyo.Set(initialize=datahandler.COUNTIES)
+            model.LRSEGS = pyo.Set(initialize=datahandler.LRSEGS)
+            model.CNTYLRSEGLINKS = pyo.Set(initialize=datahandler.CNTYLRSEGLINKS, dimen=2)
         else:
             raise ValueError('unrecognized geoscale <%s>' % geoscale)
 
-        model.BMPS = pe.Set(initialize=datahandler.BMPS, ordered=True)
-        model.BMPGRPS = pe.Set(initialize=datahandler.BMPGRPS)
-        model.BMPGRPING = pe.Set(initialize=datahandler.BMPGRPING, dimen=2)
+        model.BMPS = pyo.Set(initialize=datahandler.BMPS, ordered=True)
+        model.BMPGRPS = pyo.Set(initialize=datahandler.BMPGRPS)
+        model.BMPGRPING = pyo.Set(initialize=datahandler.BMPGRPING, dimen=2)
 
-        model.LOADSRCS = pe.Set(initialize=datahandler.LOADSRCS)
+        model.LOADSRCS = pyo.Set(initialize=datahandler.LOADSRCS)
 
-        model.BMPSRCLINKS = pe.Set(initialize=datahandler.BMPSRCLINKS, dimen=2)
-        model.BMPGRPSRCLINKS = pe.Set(initialize=datahandler.BMPGRPSRCLINKS, dimen=2)
+        model.BMPSRCLINKS = pyo.Set(initialize=datahandler.BMPSRCLINKS, dimen=2)
+        model.BMPGRPSRCLINKS = pyo.Set(initialize=datahandler.BMPGRPSRCLINKS, dimen=2)
 
     @staticmethod
     def _define_variables(model):
         """ Variables """
-        model.x = pe.Var(model.BMPS,
-                         model.LRSEGS,
-                         model.LOADSRCS,
-                         within=model.BMPSRCLINKS,
-                         domain=pe.NonNegativeReals,
-                         doc='Amount of each BMP to implement.')
+        model.x = pyo.Var(model.BMPS,
+                          model.LRSEGS,
+                          model.LOADSRCS,
+                          within=model.BMPSRCLINKS,
+                          domain=pyo.NonNegativeReals,
+                          doc='Amount of each BMP to implement.')
 
     @staticmethod
     def _define_params(model, datahandler):
         """ Parameters """
-        # c = datahandler.c,
-        # e = datahandler.E,
         # tau = datahandler.tau,
+        # eta = datahandler.eta,
+        # Theta = datahandler.Theta,
         # phi = datahandler.phi,
-        model.c = pe.Param(model.BMPS,
-                           initialize=datahandler.c,
-                           within=pe.NonNegativeReals,
-                           doc="""cost per acre of BMP b.""")
-        model.E = pe.Param(model.BMPS,
-                           model.PLTNTS,
-                           model.LRSEGS,
-                           model.LOADSRCS,
-                           initialize=datahandler.E,
-                           within=pe.NonNegativeReals,
-                           doc='effectiveness per acre of BMP b')
-        model.phi = pe.Param(model.LRSEGS,
-                             model.LOADSRCS,
-                             model.PLTNTS,
-                             initialize=datahandler.phi,
-                             within=pe.NonNegativeReals,
-                             doc='base nutrient load per load source')
-        model.T = pe.Param(model.LRSEGS,
-                           model.LOADSRCS,
-                           initialize=datahandler.T,
-                           within=pe.NonNegativeReals,
-                           doc='total acres available in an lrseg/load source')
+        model.tau = pyo.Param(model.BMPS,
+                              initialize=datahandler.tau,
+                              within=pyo.NonNegativeReals,
+                              doc="""cost per acre of BMP b.""")
+        model.eta = pyo.Param(model.BMPS,
+                              model.PLTNTS,
+                              model.LRSEGS,
+                              model.LOADSRCS,
+                              initialize=datahandler.eta,
+                              within=pyo.NonNegativeReals,
+                              doc='effectiveness per acre of BMP b')
+        model.phi = pyo.Param(model.LRSEGS,
+                              model.LOADSRCS,
+                              model.PLTNTS,
+                              initialize=datahandler.phi,
+                              within=pyo.NonNegativeReals,
+                              doc='base nutrient load per load source')
+        model.alpha = pyo.Param(model.LRSEGS,
+                                model.LOADSRCS,
+                                initialize=datahandler.alpha,
+                                within=pyo.NonNegativeReals,
+                                doc='total acres available in an lrseg/load source')
 
     def add_objective_from_spec(self, model):
 
@@ -131,9 +148,9 @@ class ModelHandlerBase:
         objectivename = self.specdict['objective']['name']
         # SENSE
         if self.specdict['objective']['sense'] in ['min', 'minimize', 'minimum']:
-            sense = pe.minimize
+            sense = pyo.minimize
         elif self.specdict['objective']['sense'] in ['max', 'maximize', 'maximum']:
-            sense = pe.maximize
+            sense = pyo.maximize
         else:
             raise ValueError('unrecognized objective sense <%s>' % self.specdict['objective']['sense'])
         # EXPRESSION
@@ -154,7 +171,7 @@ class ModelHandlerBase:
         #     model.component(expr)(args)
         #     return model
         #
-        # model.Objective = pe.Objective(model.component(expr)._index,
+        # model.Objective = pyo.Objective(model.component(expr)._index,
         #                                rule=lambda *m_with_indices: obj_rule(m_with_indices), sense=sense)
 
         # expr = 'my_expression_'
@@ -163,12 +180,12 @@ class ModelHandlerBase:
 
         # Check if component is scalar (i.e. isn't indexed over any Sets)
         if model.component(expr)._index == {None}:
-            objective_object = pe.Objective(rule=lambda m: m.component(expr),
-                                            sense=sense)
+            objective_object = pyo.Objective(rule=lambda m: m.component(expr),
+                                             sense=sense)
         else:
-            objective_object = pe.Objective(model.component(expr)._index,
-                                            rule=lambda *m_with_indices: m_with_indices[0].component(expr)[m_with_indices[1:]],
-                                            sense=sense)
+            objective_object = pyo.Objective(model.component(expr)._index,
+                                             rule=lambda *m_with_indices: m_with_indices[0].component(expr)[m_with_indices[1:]],
+                                             sense=sense)
 
         # Set the Objective into the model Object
         setattr(model, objectivename, objective_object)
@@ -208,14 +225,14 @@ class ModelHandlerBase:
             if not model.component(boundparamname):  # check if parameter already exists in model object
                 # Check if component is scalar (i.e. isn't indexed over any Sets)
                 if model.component(expr)._index == {None}:
-                    boundparamobj = pe.Param(initialize=0,
-                                             within=pe.NonNegativeReals,
-                                             mutable=True)
+                    boundparamobj = pyo.Param(initialize=0,
+                                              within=pyo.NonNegativeReals,
+                                              mutable=True)
                 else:
-                    boundparamobj = pe.Param(model.component(expr)._index,
-                                             initialize=0,
-                                             within=pe.NonNegativeReals,
-                                             mutable=True)
+                    boundparamobj = pyo.Param(model.component(expr)._index,
+                                              initialize=0,
+                                              within=pyo.NonNegativeReals,
+                                              mutable=True)
                 setattr(model, boundparamname, boundparamobj)
             else:
                 self.logger.info('parameter <%s> already exists in model object' % boundparamname)
@@ -223,23 +240,23 @@ class ModelHandlerBase:
             if boundtype == 'lower':
                 # Check if component is scalar (i.e. isn't indexed over any Sets)
                 if model.component(expr)._index == {None}:
-                    cobj = pe.Constraint(rule=lambda m: (m.component(boundparamname),
-                                                         m.component(expr),
-                                                         None))
+                    cobj = pyo.Constraint(rule=lambda m: (m.component(boundparamname),
+                                                          m.component(expr),
+                                                          None))
                 else:
-                    cobj = pe.Constraint(model.component(expr)._index,
-                                         rule=lambda *m_with_indices: (m_with_indices[0].component(boundparamname)[m_with_indices[1:]],
+                    cobj = pyo.Constraint(model.component(expr)._index,
+                                          rule=lambda *m_with_indices: (m_with_indices[0].component(boundparamname)[m_with_indices[1:]],
                                                                        m_with_indices[0].component(expr)[m_with_indices[1:]],
                                                                        None))
             elif boundtype == 'upper':
                 # Check if component is scalar (i.e. isn't indexed over any Sets)
                 if model.component(expr)._index == {None}:
-                    cobj = pe.Constraint(rule=lambda m: (None,
-                                                         m.component(expr),
-                                                         m.component(boundparamname)))
+                    cobj = pyo.Constraint(rule=lambda m: (None,
+                                                          m.component(expr),
+                                                          m.component(boundparamname)))
                 else:
-                    cobj = pe.Constraint(model.component(expr)._index,
-                                         rule=lambda *m_with_indices: (None,
+                    cobj = pyo.Constraint(model.component(expr)._index,
+                                          rule=lambda *m_with_indices: (None,
                                                                        m_with_indices[0].component(expr)[m_with_indices[1:]],
                                                                        m_with_indices[0].component(boundparamname)[m_with_indices[1:]]))
             else:
@@ -283,10 +300,10 @@ class ModelHandlerBase:
         def original_loadsource_problems_dataframe(mdl):
             d = []
             for k, v in mdl.original_load_for_each_loadsource_expr.items():
-                if math.isinf(pe.value(v)) | math.isnan(pe.value(v)):
+                if math.isinf(pyo.value(v)) | math.isnan(pyo.value(v)):
                     d.append({'pollutant': k[0],
                               'loadsourceshortname': k[1],
-                              'v': pe.value(v)})
+                              'v': pyo.value(v)})
 
             df = pd.DataFrame(d)
             if df.empty:
@@ -298,10 +315,10 @@ class ModelHandlerBase:
         original_load_error = False
         # Check for Inf or NaN original loads
         for p in model.PLTNTS:
-            if math.isinf(pe.value(model.original_load_expr[p])):
+            if math.isinf(pyo.value(model.original_load_expr[p])):
                 self.logger.error(f"Uh oh! original_load_expr for {p} is Inf")
                 original_load_error = True
-            elif math.isnan(pe.value(model.original_load_expr[p])):
+            elif math.isnan(pyo.value(model.original_load_expr[p])):
                 self.logger.error(f"Uh oh! original_load_expr for {p} is NaN")
                 original_load_error = True
 

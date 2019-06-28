@@ -114,7 +114,7 @@ class SolutionHandler:
 
         Args:
             solution_csv_filepath (str): full path to csv containing solutions at different constraint values
-            constraint_sequencing_var (str): 'tau' or 'totalcostupperbound'
+            constraint_sequencing_var (str): 'theta' or 'totalcostupperbound'
 
         Returns:
             Pandas.DataFrame: pivoted dataframe, containing one row for each constraint value in the sequence
@@ -123,7 +123,7 @@ class SolutionHandler:
 
         # Pivot table for acres
         df_piv = df.pivot(index=constraint_sequencing_var, columns='x', values='acres')
-        df_piv.reset_index(level=[constraint_sequencing_var], inplace=True)  # make tau into a regular column
+        df_piv.reset_index(level=[constraint_sequencing_var], inplace=True)  # make theta into a regular column
         df_piv['range'] = df_piv.drop(constraint_sequencing_var,
                                       axis=1).apply(lambda x: list((0, int(math.ceil(np.nanmax(x)) + 1))), 1)
         df_piv['objective'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
@@ -131,7 +131,7 @@ class SolutionHandler:
         df_piv['feasible'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
                                                                             df.feasible)))  # feasibility of solutions
 
-        if constraint_sequencing_var == 'tau':
+        if constraint_sequencing_var == 'theta':
             df_piv['originalload'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
                                                                                     df.originalload)))  # N load
             df_piv['N_pounds_reduced'] = df_piv[constraint_sequencing_var].map(dict(zip(df[constraint_sequencing_var],
@@ -144,11 +144,11 @@ class SolutionHandler:
 #
 # tol = 1e-6
 # for b in mdl.BMPS:
-#     for lmbda in mdl.LOADSRCS:
-#         bval = mdl.x[b, 'N51133RL0_6450_0000', lmbda].value
+#     for u in mdl.LOADSRCS:
+#         bval = mdl.x[b, 'N51133RL0_6450_0000', u].value
 #         if not not bval:
 #             if abs(bval)>tol:
-#                 print('(%s, %s): %d' % (b, lmbda, bval))
+#                 print('(%s, %s): %d' % (b, u, bval))
 
 
 def initial_solution_parse_to_dataframe(modelhandler, get_suffixes, solved_instance):

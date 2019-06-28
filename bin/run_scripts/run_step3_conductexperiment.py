@@ -15,12 +15,12 @@ import datetime
 import subprocess
 from argparse import ArgumentParser
 
-from bayom_e.src.spec_handler import read_spec, notdry
+from bayota_util.spec_handler import read_spec, notdry
 from bayom_e.src.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
 
 from bayota_settings.base import get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
-from bayota_settings.log_setup import root_logger_setup, set_up_detailedfilelogger
+from bayota_settings.log_setup import set_up_detailedfilelogger
 
 logprefix = '** Single Experiment **: '
 

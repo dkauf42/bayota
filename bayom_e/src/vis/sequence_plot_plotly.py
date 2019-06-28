@@ -36,7 +36,7 @@ def plotly_loadobj(df=None, savefig=True, savefilepathandname=None,
 
 
 def plotly_costobj(df=None, savefig=True, savefilepathandname=None,
-                   xname='tau',
+                   xname='theta',
                    title='Minimal Total Cost vs. Load Constraint',
                    xlabel='Load Reduction (%) Lower Bound Constraint',
                    ylabel='Minimal Total Cost ($)'):

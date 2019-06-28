@@ -1,6 +1,5 @@
 import os
 import pytest
-import pyomo.environ as pe
 
 from bayom_e.src.model_handling import model_generator
 from bayom_e.src.solver_handling import solvehandler
