@@ -107,7 +107,6 @@ RUN apk add --no-cache \
     \
     && pip install numpy \
     && pip install pandas \
-    && pip install matplotlib \
     \
     && rm /usr/include/xlocale.h \
     \
@@ -131,7 +130,8 @@ RUN apk update \
 RUN apk update \
     && apk add --no-cache --update-cache openblas \
     && apk add --no-cache --update-cache gcc gfortran libgfortran lapack-dev libexecinfo-dev \
-    && apk add --no-cache --update-cache g++ libgcc libc-dev libquadmath musl musl-dev
+    && apk add --no-cache --update-cache g++ libgcc libc-dev libquadmath musl musl-dev \
+    && apk add --no-cache --update-cache freetype-dev
 
 # --- Set up Bayota ---
 COPY . /root/bayota
