@@ -11,7 +11,7 @@ import pyomo.environ as pyo
 from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, TerminationCondition
 
 from bayom_e.config import PROJECT_DIR
-from bayom_e.src.solution_handling.solutionhandler import SolutionHandler, \
+from bayom_e.solution_handling.solutionhandler import SolutionHandler, \
     initial_solution_parse_to_dataframe
 from castjeeves.src.jeeves import Jeeves
 
