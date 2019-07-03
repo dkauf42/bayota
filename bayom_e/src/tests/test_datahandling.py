@@ -1,7 +1,8 @@
 import pytest
 
 # from bayom_e.src.data_handling.interface import *
-from bayom_e.src.data_handling.data_interface import get_loaded_data_handler_no_objective
+from bayom_e.data_handling.data_interface import get_loaded_data_handler_no_objective
+
 
 @pytest.fixture(scope='module')
 def resource_dh_adamsPA(request):
@@ -11,6 +12,7 @@ def resource_dh_adamsPA(request):
                                               savedata2file=False,
                                               baseloadingfilename='2010NoActionLoads_20190325.csv')
     return dh
+
 
 def test_default_County_DataHandler_ADAMSCounty(resource_dh_adamsPA):
     # Verify the lrseg list is populated correctly
@@ -43,6 +45,7 @@ def test_default_Lrseg_DataHandler_instantiation():
     # yo = DataHandlerLrsegWithCostConstraint(savedata2file=False, geoentities=['N51133RL0_6450_0000'])
     # Verify the lrseg list is populated correctly
     assert 'N51133RL0_6450_0000' in dh.LRSEGS
+
 
 def test_default_Lrseg_DataHandler_inMontgomeryCountyMD():
     dh = get_loaded_data_handler_no_objective(geoscale='lrseg',
