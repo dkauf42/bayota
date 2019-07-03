@@ -59,7 +59,7 @@ install_requires = ['pytest',
 
 setup(name='bayom_e',
       version='0.0.1',
-      description='Python package to set up and solve an NLP for efficiency BMPs of CAST',
+      description='Python package to set up and solve an optimization model for efficiency BMPs of CAST',
       long_description=readme_text,
       author='Daniel Kaufman',
       author_email='dkaufman@chesapeakebay.net',
