@@ -1,7 +1,7 @@
 import pytest
 
 # from bayom_e.src.data_handling.interface import *
-from bayom_e.src.data_handling.interface import get_loaded_data_handler_no_objective
+from bayom_e.src.data_handling.data_interface import get_loaded_data_handler_no_objective
 
 @pytest.fixture(scope='module')
 def resource_dh_adamsPA(request):

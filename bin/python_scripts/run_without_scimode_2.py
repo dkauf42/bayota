@@ -27,7 +27,7 @@ model_spec_file = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_Researc
 #                                               baseloadingfilename='2010NoActionLoads.csv')
 # mdl = mdlhandler.model
 
-from bayom_e.src.data_handling.interface import DataHandlerCounty
+from bayom_e.src.data_handling.data_interface import DataHandlerCounty
 
 dh = DataHandlerCounty(geolist=['Adams, PA'], baseloadingfilename='2010NoActionLoads_20190325.csv')
 
