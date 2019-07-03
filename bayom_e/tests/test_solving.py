@@ -2,7 +2,7 @@ import os
 import pytest
 
 from bayom_e.model_handling import model_generator
-from bayom_e.src.solver_handling import solvehandler
+from bayom_e.solver_handling import solvehandler
 
 
 @pytest.fixture(scope='module')
