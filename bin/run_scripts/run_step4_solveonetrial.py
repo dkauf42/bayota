@@ -16,7 +16,7 @@ import json
 import pyomo.environ as pe
 
 from bayota_util.spec_handler import read_spec, notdry
-from bayom_e.src.solver_handling import solvehandler
+from bayom_e.solver_handling import solvehandler
 
 from bayom_e.model_handling import load_model_pickle
 
