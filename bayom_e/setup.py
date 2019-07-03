@@ -52,9 +52,6 @@ class TestCommand(setuptools.command.test.test):
 with open('README.md', encoding='utf-8') as f:
     readme_text = f.read()
 
-with open('LICENSE') as f:
-    license_text = f.read()
-
 install_requires = ['pytest',
                     'pandas',
                     'pyomo'
@@ -67,7 +64,6 @@ setup(name='bayom_e',
       author='Daniel Kaufman',
       author_email='dkaufman@chesapeakebay.net',
       url='https://gitlab.com/daka42',
-      license=license_text,
       packages=find_packages(),  #['src', 'scripts', 'castjeeves', 'castjeeves.CastJeeves'],
       include_package_data=True,
       install_requires=install_requires,
