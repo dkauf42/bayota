@@ -1,10 +1,5 @@
 import pandas as pd
 
-import pyomo.environ as pyo
-
-from bayom_e.src.model_handling import model_generator
-from bayom_e.src.solver_handling import solvehandler
-
 from castjeeves.src.jeeves import Jeeves
 
 
@@ -27,7 +22,7 @@ model_spec_file = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_Researc
 #                                               baseloadingfilename='2010NoActionLoads.csv')
 # mdl = mdlhandler.model
 
-from bayom_e.src.data_handling.data_interface import DataHandlerCounty
+from bayom_e.data_handling.data_interface import DataHandlerCounty
 
 dh = DataHandlerCounty(geolist=['Adams, PA'], baseloadingfilename='2010NoActionLoads_20190325.csv')
 

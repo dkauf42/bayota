@@ -3,11 +3,11 @@ import math
 import pandas as pd
 import pyomo.environ as pyo
 
-from bayom_e.src.data_handling.data_interface import get_loaded_data_handler_no_objective
+from bayom_e.data_handling.data_interface import get_loaded_data_handler_no_objective
 from bayota_util.spec_handler import read_spec
 
-from bayom_e.src.model_handling import model_expressions
-from bayom_e.src.model_handling import model_components
+from bayom_e.model_handling import model_expressions
+from bayom_e.model_handling import model_components
 
 from bayota_settings.log_setup import set_up_detailedfilelogger
 

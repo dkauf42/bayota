@@ -7,7 +7,7 @@ Example usage command:
 
 import os
 
-from bayom_e.src.model_handling.utils import load_model_pickle
+from bayom_e.model_handling import load_model_pickle
 from bin.run_scripts import run_step2_generatemodel
 
 from bayota_settings.base import get_output_dir, get_model_instances_dir

@@ -4,7 +4,7 @@ import pyomo.environ as pe
 from itertools import compress
 
 from bayota_util.spec_handler import notdry
-from bayom_e.src.model_handling.model_generator import ModelHandlerBase
+from bayom_e.model_handling import ModelHandlerBase
 
 import logging
 logger = logging.getLogger('root')
