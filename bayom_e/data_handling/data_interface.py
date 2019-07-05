@@ -151,6 +151,7 @@ def randomly_assign_grps_to_loadsources(num_loadsources, bmpgroups_list, minload
 def get_random_dataplate(name='nlp',
                          num_bmps=8, num_bmpgroups=3, num_loadsources=2,
                          minbmpgrpsize=1, maxbmpgrpsize=10,
+                         minloadsrcgrpingsize=1, maxloadsrcgrpingsize=4,
                          savedata2file=False):
 
     bmplist, grpsizes, bmpgrplist, tau_dict, eta_dict = make_random_bmp_groupings(num_bmps=num_bmps,
@@ -162,8 +163,8 @@ def get_random_dataplate(name='nlp',
 
     loadsrclist, loadsrc_sizes, grploadsrc_list = randomly_assign_grps_to_loadsources(num_loadsources=num_loadsources,
                                                                                       bmpgroups_list=bmpgrplist,
-                                                                                      minloadsrcgrpingsize=1,
-                                                                                      maxloadsrcgrpingsize=4)
+                                                                                      minloadsrcgrpingsize=minloadsrcgrpingsize,
+                                                                                      maxloadsrcgrpingsize=maxloadsrcgrpingsize)
     # print(f"load source sizes are {loadsrc_sizes}.  sum={sum(loadsrc_sizes)}")
     # print(grploadsrc_list)
 
