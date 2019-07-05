@@ -106,6 +106,10 @@ def randomly_assign_grps_to_loadsources(num_loadsources, bmpgroups_list, minload
     bmpgrouplist = bmpgroups_list.copy()
     num_bmpgroups = len(bmpgrouplist)
     assert num_bmpgroups > 0
+    if num_bmpgroups < maxloadsrcgrpingsize:
+        raise ValueError(f"the specified maximum # of groups for a load source <{maxloadsrcgrpingsize}> "
+                         f"can never be met with only {num_bmpgroups} BMP groups.  "
+                         f"It is recommended to lower maxloadsrcgrpingsize to {num_bmpgroups}.")
 
     # A list of random load sources names is generated.
     loadsrc_list = []
@@ -117,7 +121,7 @@ def randomly_assign_grps_to_loadsources(num_loadsources, bmpgroups_list, minload
                 break
 
     # The sizes for each load source grouping are determined randomly.
-    loadsrc_sizes = np.random.choice(range(minloadsrcgrpingsize, maxloadsrcgrpingsize), size=num_loadsources).tolist()
+    loadsrc_sizes = np.random.choice(range(minloadsrcgrpingsize, maxloadsrcgrpingsize+1), size=num_loadsources).tolist()
 
     # BMPGRPS are assigned to load sources using the specified sizes.
     grploadsrc_list = []
