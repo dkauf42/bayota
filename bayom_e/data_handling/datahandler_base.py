@@ -42,9 +42,12 @@ class DataHandlerBase:
         save2file (bool): Defaults to True.
         geolist (list): The list of geographic entities for which to pull data. Defaults to None.
         baseloadingfilename (str):
+        landchangemodelscenario (str):
+        baseyear (int or str):
 
     """
-    def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
+    def __init__(self, save2file=True, geolist=None, baseloadingfilename='',
+                 landchangemodelscenario='Historic Trends', baseyear='2010'):
         self._geolist = geolist
 
         logger.debug(locals())
@@ -55,7 +58,11 @@ class DataHandlerBase:
         self.instdatadir = get_model_instances_dir()
 
         """ Instance Specifiers """
-        self._baseconditionid = 29
+        self._landchangemodelscenario = landchangemodelscenario  # typically 'Historic Trends' or "Current Zoning"
+        self._baseyear = baseyear
+        # self._baseconditionid = 29
+        self._baseconditionid = jeeves.scenario.get_baseconditionid(landchangemodelscenario=self._landchangemodelscenario,
+                                                                    baseyear=self._baseyear)
         self._costprofileid = 4
 
         self.agencyid = jeeves.agency.ids_from_names(['NONFED'])['agencyid'][0]  # NONFED agency code
