@@ -15,7 +15,7 @@ from argparse import ArgumentParser
 from bayota_util.spec_handler import read_spec, notdry
 
 from bayom_e.model_handling import model_generator
-from bayom_e.model_handling import save_model_pickle
+from bayom_e.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_specs_dir,\
     get_spec_files_dir, get_model_instances_dir
