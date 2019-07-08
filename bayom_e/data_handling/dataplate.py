@@ -1,3 +1,6 @@
+""" DATAPLATE class
+
+"""
 import pandas as pd
 from dataclasses import dataclass, InitVar
 from bayota_util.str_manip import numstr
