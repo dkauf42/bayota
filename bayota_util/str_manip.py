@@ -1,4 +1,10 @@
 
+def numstr(number, decimalpoints: int) -> str:
+    """ Add commas, and restrict decimal places """
+    fmtstr = '{:,.%sf}' % str(decimalpoints)
+    return fmtstr.format(number)
+
+
 def compact_capitalized_geography_string(s):
     """ Go from lowercase "county, state-abbrev" string to Capitalized string
 
