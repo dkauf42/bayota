@@ -50,3 +50,11 @@ class NLP_DataPlate:
                  f"\t all attributes:%s" % '\n\t\t\t'.join(obj_attributes)
 
         return strrep
+
+    def total_area(self):
+        """ Get the total area (ac) of the LRsegs in this dataplate, from the 'alpha' attribute
+
+        Returns:
+            total area in acres (int)
+        """
+        return sum(self.alpha.values())
