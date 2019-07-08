@@ -1,5 +1,6 @@
 import pandas as pd
 from dataclasses import dataclass, InitVar
+from bayota_util.str_manip import numstr
 
 
 @dataclass
@@ -46,6 +47,7 @@ class NLP_DataPlate:
 
         strrep = f"DATAPLATE: \n" \
                  f"\t- includes <{len(self.LRSEGS)}> land river segments\n" \
+                 f"\t- total area = {numstr(self.total_area(), 2)} acres (rounded to 2 decimal places)\n" \
                  f"\n" \
                  f"\t all attributes:%s" % '\n\t\t\t'.join(obj_attributes)
 
