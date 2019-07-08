@@ -90,12 +90,12 @@ tblList = ["TblAgency",
            # "TblFertilizerLbsInWatershed",
            # "TblFertilizerNutrientFractions",
            # "TblFertilizer",
-           "vwGeographyCounty",
-           "vwGeographyNameState",
-           "vwGeographyNpdesPointSourceData",
-           "vwLandEfficiencyBMPspt1",
-           "vwLandRiverSegmentDetails",
-           "vwLandRiverSegmentGeography",
+           # "vwGeographyCounty",
+           # "vwGeographyNameState",
+           # "vwGeographyNpdesPointSourceData",
+           # "vwLandEfficiencyBMPspt1",
+           # "vwLandRiverSegmentDetails",
+           # "vwLandRiverSegmentGeography",
            ]
 
 
