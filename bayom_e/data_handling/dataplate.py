@@ -6,7 +6,6 @@ from dataclasses import dataclass, InitVar
 class NLP_DataPlate:
     """Class for keeping track of data for a particular kind of model.
 
-
     """
 
     # Sets
@@ -40,3 +39,14 @@ class NLP_DataPlate:
 
     # def total_cost(self) -> float:
     #     return self.unit_price * self.quantity_on_hand
+
+    def __repr__(self):
+        obj_attributes = sorted([k for k in self.__dict__.keys()
+                                 if not k.startswith('_')])
+
+        strrep = f"DATAPLATE: \n" \
+                 f"\t- includes <{len(self.LRSEGS)}> land river segments\n" \
+                 f"\n" \
+                 f"\t all attributes:%s" % '\n\t\t\t'.join(obj_attributes)
+
+        return strrep
