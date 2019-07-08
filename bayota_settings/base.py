@@ -117,6 +117,14 @@ def get_source_csvs_dir() -> str:
     return datadir_top_level
 
 
+def get_metadata_csvs_dir() -> str:
+    datadir_top_level = _parse_user_config()['data_directories']['metadatacsvs']
+    if not os.path.isdir(datadir_top_level):
+        raise ValueError('Metadata CSVs directory (%s) specified in config does not exist!' % datadir_top_level)
+
+    return datadir_top_level
+
+
 def get_raw_data_dir() -> str:
     rawdatadir = _parse_user_config()['data_directories']['rawdata']
     if not os.path.isdir(rawdatadir):
