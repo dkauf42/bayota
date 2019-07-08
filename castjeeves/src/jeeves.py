@@ -18,6 +18,7 @@ from .sourcehooks.geo import Geo
 from .sourcehooks.loadsource import LoadSource
 from .sourcehooks.lrseg import Lrseg
 from .sourcehooks.meta import Meta
+from .sourcehooks.scenario import Scenario
 from .sourcehooks.sector import Sector
 from .sourcehooks.translator import Translator
 
@@ -57,6 +58,7 @@ class Jeeves:
         self.loadsource = LoadSource(sourcedata=self.source)
         self.lrseg = Lrseg(sourcedata=self.source)
         self.meta = Meta(sourcedata=self.source, metadata=self.metadata_tables)
+        self.scenario = Scenario(sourcedata=self.source)
         self.sector = Sector(sourcedata=self.source)
         self.translator = Translator(sourcedata=self.source)
 
