@@ -16,6 +16,7 @@ class Agency(SourceHook):
 
     def ids_from_names(self, agencycodes=None):
         agencycodes = self.forceToSingleColumnDataFrame(agencycodes, colname='agencycode')
+        agencycodes['agencycode'] = agencycodes['agencycode'].str.lower()
         return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
                                   fromtable=agencycodes, toname='agencyid')
 
