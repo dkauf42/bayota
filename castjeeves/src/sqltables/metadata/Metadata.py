@@ -13,7 +13,7 @@ tblList = [# "ImpBmpSubmittedAnimal",
            "TblCostBmpAnimal",
            "TblCostBmpLand",
            "TblCostProfile",
-           "TblPointSourceDataSets",
+           # "TblPointSourceDataSets",
            "TblScenario",
            "TblScenarioGeography"
            ]
