@@ -60,7 +60,6 @@ class DataHandlerBase:
         """ Instance Specifiers """
         self._landchangemodelscenario = landchangemodelscenario  # typically 'Historic Trends' or "Current Zoning"
         self._baseyear = baseyear
-        # self._baseconditionid = 29
         self._baseconditionid = jeeves.scenario.get_baseconditionid(landchangemodelscenario=self._landchangemodelscenario,
                                                                     baseyear=self._baseyear)
         self._costprofileid = 4
