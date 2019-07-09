@@ -405,11 +405,11 @@ class DataHandlerBase:
         loadssubtbl.drop(mask, inplace=True)
 
         loadssubtbl['eotn'] = (loadssubtbl['2010 no action_nloadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
-        loadssubtbl["eotn"].replace([np.inf, -np.inf], 0)
+        loadssubtbl["eotn"].replace([np.inf, -np.inf], 0, inplace=True)
         loadssubtbl['eotp'] = (loadssubtbl['2010 no action_ploadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
-        loadssubtbl["eotp"].replace([np.inf, -np.inf], 0)
+        loadssubtbl["eotp"].replace([np.inf, -np.inf], 0, inplace=True)
         loadssubtbl['eots'] = (loadssubtbl['2010 no action_sloadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
-        loadssubtbl["eots"].replace([np.inf, -np.inf], 0)
+        loadssubtbl["eots"].replace([np.inf, -np.inf], 0, inplace=True)
         loadssubtbl.drop(columns=['2010 no action_nloadeot', '2010 no action_ploadeot',
                                   '2010 no action_sloadeot'], inplace=True)
 
