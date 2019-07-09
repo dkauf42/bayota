@@ -12,9 +12,10 @@ def resource_a(request):
 
 
 def test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY(resource_a):
-    assert 'Legume Hay' in resource_a.loadsources_from_lrseg_agency_sector(lrsegs=['N42001PU2_2790_3290'],
-                                                                           agencies=['NONFED', 'FWS'],
-                                                                           sectors=['Agriculture']).loadsource.tolist()
+    retval = resource_a.loadsources_from_lrseg_agency_sector(lrsegs=['N42001PU2_2790_3290'],
+                                                             agencies=['NONFED', 'FWS'],
+                                                             sectors=['Agriculture']).loadsource.tolist()
+    assert 'Leguminous Hay' in retval
 
 
 def test_loadsourceshortnames_query_from_fullnames(resource_a):
