@@ -12,8 +12,9 @@ def resource_geo(request):
 
 
 def test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation(resource_geo):
-    assert 11 in resource_geo.county.countyid_from_countystatestrs(getfrom=['Adams, PA',
-                                                                          'Anne Arundel, MD']).countyid.tolist()
+    retval = resource_geo.county.countyid_from_countystatestrs(getfrom=['Adams, PA',
+                                                               'Anne Arundel, MD']).countyid.tolist()
+    assert 11 in retval
 
 
 def test_generic_lrsegid_query_returns_correct_from_countystatestrs(resource_geo):
@@ -31,7 +32,7 @@ def test_generic_lrsegid_query_returns_correct_from_countyids(resource_geo):
 def test_generic_lrsegid_query_raises_error_for_more_than_one_keyword_argument(resource_geo):
     with pytest.raises(ValueError):
         resource_geo.lrsegids_from(countystatestrs=['Adams, PA', 'Anne Arundel, MD'],
-                          lrsegnames=['N42001PU2_2790_3290'])
+                                   lrsegnames=['N42001PU2_2790_3290'])
 
 
 def test_lrsegs_query_from_geoscale_with_names(resource_geo):
