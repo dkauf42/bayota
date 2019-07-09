@@ -1,3 +1,6 @@
+""" Expressions that are defined here will be added as components to a Pyomo model
+
+"""
 import pyomo.environ as pyo
 
 
