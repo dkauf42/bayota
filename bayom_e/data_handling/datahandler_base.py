@@ -182,7 +182,6 @@ class DataHandlerBase:
         pass
 
     def _load_set_lrsegs_from_lrseg_list(self, jeeves, lrsegs_list):
-        """ """
         """ Land River Segments """
         if not lrsegs_list:
             # lrsegs_list = ['N51133RL0_6450_0000']
