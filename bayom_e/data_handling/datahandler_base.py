@@ -65,7 +65,7 @@ class DataHandlerBase:
                                                                     baseyear=self._baseyear)
         self._costprofileid = 4
 
-        self.agencyid = jeeves.agency.ids_from_names(['nonfed'])['agencyid'][0]  # NONFED agency code
+        self.agencyid = jeeves.agency.ids_from_names(['NONFED'])['agencyid'][0]  # NONFED agency code
         self.agencyfullname = 'Non-Federal'
 
         """ Data tables for the set definitions """
