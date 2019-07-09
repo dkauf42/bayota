@@ -102,6 +102,7 @@ def new_load_for_each_loadsource_expr(mdl) -> pyo.ConcreteModel:
     mdl.new_load_for_each_loadsource_expr = pyo.Expression(mdl.PLTNTS, mdl.LOADSRCS, rule=new_load_rule)
     return mdl
 
+
 def new_load_for_each_lrseg_expr(mdl) -> pyo.ConcreteModel:
     """ New Loa (quantified for each lrseg) """
     def new_load_rule_for_each_lrseg(model, l, p):
