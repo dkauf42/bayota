@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 from bayota_settings.base import get_model_instances_dir, get_raw_data_dir
+from .bmp_exclusions import excluded_bmps_list
 
 from castjeeves.src.jeeves import Jeeves
 
@@ -214,6 +215,7 @@ class DataHandlerBase:
         # Get efficiency bmps, and then restrict by:
         #  - Only include b if it has a load source group on which it can be implemented
         bmpsdf = jeeves.bmp.efficiency_bmps()
+        bmpsdf = bmpsdf[~bmpsdf['bmpshortname'].isin(excluded_bmps_list())]  # remove excluded bmps
         bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
 
         # Convert bmp names and ids into python lists
