@@ -263,9 +263,8 @@ class DataHandlerBase:
             pd.DataFrame(loadsrc_list, columns=['LOADSRCS']).to_csv(os.path.join(self.instdatadir, 'data_LOADSRCS.tab'),
                                                                     sep=' ', index=False)
 
-    def _load_set_BmpLoadSourceAssociations(self, TblBmp, TblBmpEfficiency,
-                                            TblBmpGroup, TblBmpLoadSourceGroup,
-                                            TblLoadSource, singlelsgrpdf):
+    def _load_set_BmpLoadSourceAssociations(self, TblBmp, TblBmpEfficiency, TblBmpGroup,
+                                            TblBmpLoadSourceGroup, TblLoadSource, singlelsgrpdf):
         """ Correspondence between BMPs and LoadSources """
         # Get correspondences between BMPS, BMPGRPS, LOADSRCS, and LOADSRCGRPS, and
         #   - restrict membership to those bmps and loadsources within the sets: BMPS and LOADSRCS
@@ -275,7 +274,7 @@ class DataHandlerBase:
         srcbmpsubtbl = srcbmpsubtbl[srcbmpsubtbl['loadsourceid'].isin(self.loadsrcsetidlist)]
         srcbmpsubtbl = TblBmp.loc[:, ['bmpid', 'bmpgroupid']].merge(srcbmpsubtbl)
 
-        # Restrict membership to the land river segments in LRSEGS, so we can filter srcbmpsubtbl by effsubtable
+        # Membership is restricted to land river segments in self.LRSEGS, so we can filter srcbmpsubtbl by effsubtable
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
 
         # Include (b, u) pairs in BMPSRCLINKS only if the b has an efficiency value
@@ -284,14 +283,14 @@ class DataHandlerBase:
         bmpsrclinkssubtbl = srcbmpsubtbl.loc[:, :].merge(effsubtable.loc[:, ['bmpid', 'loadsourceid']],
                                                          on=['bmpid', 'loadsourceid'])
 
-        # Add BMP, bmpgroup, and loadsource names to table
+        # BMP, bmpgroup, and loadsource names are added to the table.
         bmpsrclinkssubtbl = TblBmp.loc[:, ['bmpid', 'bmpshortname']].merge(bmpsrclinkssubtbl)
         bmpsrclinkssubtbl = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(bmpsrclinkssubtbl)
         bmpsrclinkssubtbl = TblBmpGroup.loc[:, ['bmpgroupid', 'bmpgroupname']].merge(bmpsrclinkssubtbl)
         if self.save2file:
             bmpsrclinkssubtbl.to_csv(os.path.join(self.instdatadir, 'tempBMPSRCLINKS.csv'))
 
-        # Remove duplicate pairs
+        # Duplicate pairs are removed.
         bmpsrclinkssubtbl.drop_duplicates(['bmpshortname', 'loadsourceshortname'], inplace=True)
         bmpsrclinkssubtbl['BMPSRCLINKS'] = list(zip(bmpsrclinkssubtbl.bmpshortname.tolist(),
                                                     bmpsrclinkssubtbl.loadsourceshortname.tolist()))
