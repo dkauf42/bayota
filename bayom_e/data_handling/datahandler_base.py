@@ -219,9 +219,10 @@ class DataHandlerBase:
         bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
 
         # Bmp names and ids are converted into python lists.
-        self.bmpsetlist = list([x for x in bmpsdf.bmpshortname.tolist()])
-        self.bmpsetidlist = bmpsdf.bmpid.tolist()
-        self.BMPS = list(self.bmpsetlist)
+        bmp_list = bmpsdf.bmpshortname.tolist()
+        self.bmpsetlist = bmp_list.copy()
+        self.bmpsetidlist = bmpsdf['bmpid'].tolist()
+        self.BMPS = bmp_list
         if self.save2file:
             pd.DataFrame(self.bmpsetlist, columns=['BMPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPS.tab'), sep=' ', index=False)
 
