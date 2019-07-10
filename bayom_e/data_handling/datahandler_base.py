@@ -78,8 +78,6 @@ class DataHandlerBase:
         TblLoadSource['loadsource'] = TblLoadSource[
             'loadsource'].str.strip()  # There is an extra space after "Specialty Crop Low" that needs to be removed.
 
-        # TblLoadSourceGroup = pd.read_csv(os.path.join(sourcedatadir, 'TblLoadSourceGroup.csv'))
-        # TblLoadSourceGroupLoadSource = pd.read_csv(os.path.join(sourcedatadir, 'TblLoadSourceGroupLoadSource.csv'))
         TblLandRiverSegment = jeeves.source.TblLandRiverSegment.copy()
 
         TblGeography = jeeves.source.TblGeography.copy()
