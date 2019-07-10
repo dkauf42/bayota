@@ -212,27 +212,27 @@ class DataHandlerBase:
         # efftypeid = TblBmpType[TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
         # bmpsdf = TblBmp[TblBmp['bmptypeid'] == efftypeid]
 
-        # Get efficiency bmps, and then restrict by:
+        # Efficiency bmps are retrieved as a dataframe, and then they are restricted by:
         #  - Only include b if it has a load source group on which it can be implemented
         bmpsdf = jeeves.bmp.efficiency_bmps()
         bmpsdf = bmpsdf[~bmpsdf['bmpshortname'].isin(excluded_bmps_list())]  # remove excluded bmps
         bmpsdf = bmpsdf[bmpsdf['bmpid'].isin(TblBmpLoadSourceGroup.bmpid.tolist())]
 
-        # Convert bmp names and ids into python lists
+        # Bmp names and ids are converted into python lists.
         self.bmpsetlist = list([x for x in bmpsdf.bmpshortname.tolist()])
         self.bmpsetidlist = bmpsdf.bmpid.tolist()
         self.BMPS = list(self.bmpsetlist)
         if self.save2file:
             pd.DataFrame(self.bmpsetlist, columns=['BMPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPS.tab'), sep=' ', index=False)
 
-        # Get BMP group names (and group ids) for bmps in the set
+        # BMP group names (and group ids) are retrieved for Bmps in the set.
         bmpgrpsdf = TblBmpGroup.loc[:, ['bmpgroupid', 'bmpgroupname']].merge(bmpsdf[['bmpgroupid', 'bmpshortname']])
         bmpgrpsetlist = list([int(x) for x in set(bmpgrpsdf.bmpgroupid)])
         self.BMPGRPS = bmpgrpsetlist
         if self.save2file:
             pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPGRPS.tab'), sep=' ', index=False)
 
-        # Get correspondences between bmp names and group names (and group ids)
+        # Correspondences between bmp names and group names (and group ids) are retrieved.
         bmpgrpsdf['BMPGRPING'] = list(zip(bmpgrpsdf.bmpshortname, bmpgrpsdf.bmpgroupid))
         self.BMPGRPING = list(bmpgrpsdf.BMPGRPING)
         if self.save2file:
