@@ -334,14 +334,13 @@ class DataHandlerBase:
                             'totalannualizedcostperunit']].to_csv(os.path.join(self.instdatadir, 'data_tau.tab'),
                                                                   sep=' ', index=False, header=['BMPS', 'tau'])
 
-    def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment,
-                                        TblLoadSource):
+    def _load_param_EffectivenessOfBmps(self, TblBmp, TblBmpEfficiency, TblLandRiverSegment, TblLoadSource):
         """ (eta) effectiveness (unitless) of BMP b on reducing pollutant p, in land-river segment l and load source u
         """
         # Pre-processing is necessary to build the parameter dictionary
         #  - get efficiency bmps that are in the landriversegments
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
-        # make the pollutant names into an index instead of separate columns
+        # Pollutant names are made into an index instead of separate columns.
         listofdataframes = []
         pltntdict = {'tn': 'N', 'tp': 'P', 'sed': 'S'}
         for ps in ['tn', 'tp', 'sed']:
@@ -351,23 +350,22 @@ class DataHandlerBase:
             listofdataframes.append(bmpeff)
         df = pd.concat(listofdataframes)
 
-        # Retain only those effectivenesses pertaining to:
-        #  - loadsources in our set, and bmps in our set
+        # Only those effectivenesses pertaining to - loadsources in our set, and bmps in our set - are retained.
         df = df[df['loadsourceid'].isin(self.loadsrcsetidlist)]
         df = df[df['bmpid'].isin(self.bmpsetidlist)]
 
-        # Add names (of bmps, lrsegs, and loadsources) to the table
+        # Names (of bmps, lrsegs, and loadsources) are added to the table.
         df = TblBmp.loc[:, ['bmpid', 'bmpshortname']].merge(df)
         df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df)
         df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df)
-        # display(df[df['bmpid'] == 48])
 
-        # Convert groups to dictionary ( with tuple->value structure )
+        # Groupby groups are converted to a dictionary ( with tuple->value structure ).
         grouped = df.groupby(['bmpshortname', 'pltnt', 'landriversegment', 'loadsourceshortname'])
         self.eta = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             df.loc[:, ['bmpshortname', 'pltnt', 'landriversegment',
-                       'loadsourceshortname', 'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_eta.tab'), sep=' ', index=False,
+                       'loadsourceshortname', 'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_eta.tab'),
+                                                                  sep=' ', index=False,
                                                                   header=['BMPS', 'PLTNTS', 'LRSEGS', 'LOADSRCS',
                                                                           'eta'])
 
