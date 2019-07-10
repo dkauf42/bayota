@@ -224,14 +224,16 @@ class DataHandlerBase:
         self.bmpsetidlist = bmpsdf['bmpid'].tolist()
         self.BMPS = bmp_list
         if self.save2file:
-            pd.DataFrame(self.bmpsetlist, columns=['BMPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPS.tab'), sep=' ', index=False)
+            pd.DataFrame(self.bmpsetlist, columns=['BMPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPS.tab'),
+                                                                   sep=' ', index=False)
 
         # BMP group names (and group ids) are retrieved for Bmps in the set.
         bmpgrpsdf = TblBmpGroup.loc[:, ['bmpgroupid', 'bmpgroupname']].merge(bmpsdf[['bmpgroupid', 'bmpshortname']])
         bmpgrpsetlist = list([int(x) for x in set(bmpgrpsdf.bmpgroupid)])
         self.BMPGRPS = bmpgrpsetlist
         if self.save2file:
-            pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPGRPS.tab'), sep=' ', index=False)
+            pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPGRPS.tab'),
+                                                                    sep=' ', index=False)
 
         # Correspondences between bmp names and group names (and group ids) are retrieved.
         bmpgrpsdf['BMPGRPING'] = list(zip(bmpgrpsdf.bmpshortname, bmpgrpsdf.bmpgroupid))
@@ -240,8 +242,8 @@ class DataHandlerBase:
             BMPGRPING_df_asseparatecolumns = bmpgrpsdf.loc[:, ['bmpshortname', 'bmpgroupid']].rename(
                 columns={'bmpshortname': 'BMPS',
                          'bmpgroupid': 'BMPGRPS'})
-            BMPGRPING_df_asseparatecolumns.to_csv(os.path.join(self.instdatadir, 'data_BMPGRPING.tab'), sep=' ', index=False,
-                                                  header=['BMPS', 'BMPGRPS'])
+            BMPGRPING_df_asseparatecolumns.to_csv(os.path.join(self.instdatadir, 'data_BMPGRPING.tab'),
+                                                  sep=' ', index=False, header=['BMPS', 'BMPGRPS'])
 
     def _load_set_LoadSources(self, TblLandUsePreBmp, singlelsgrpdf, baseconditionid):
         """ Load Sources """
@@ -258,7 +260,9 @@ class DataHandlerBase:
         self.loadsrcsetidlist = landusedf.loadsourceid.tolist()
         self.LOADSRCS = loadsrcsetlist
         if self.save2file:
-            pd.DataFrame(loadsrcsetlist, columns=['LOADSRCS']).to_csv(os.path.join(self.instdatadir, 'data_LOADSRCS.tab'), sep=' ', index=False)
+            pd.DataFrame(loadsrcsetlist, columns=['LOADSRCS']).to_csv(os.path.join(self.instdatadir,
+                                                                                   'data_LOADSRCS.tab'),
+                                                                      sep=' ', index=False)
 
     def _load_set_BmpLoadSourceAssociations(self, TblBmp, TblBmpEfficiency,
                                             TblBmpGroup, TblBmpLoadSourceGroup,
