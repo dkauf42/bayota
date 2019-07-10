@@ -147,7 +147,7 @@ class DataHandlerBase:
                                              TblGeographyLrSeg, TblLoadSource, BaseConditionLoadsTbl,
                                              TblAgency)
         self._load_param_TotalAcresAvailableForLoadSources(TblLandRiverSegment, TblLoadSource,
-                                                           TblLandUsePreBmp, self._baseconditionid)
+                                                           TblLandUsePreBmp, TblAgency, self._baseconditionid)
 
         logger.info('LRsegs loaded: %s' % self.lrsegsetlist)
 
@@ -459,35 +459,40 @@ class DataHandlerBase:
         self.phi = grouped['loadratelbsperyear'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             df.loc[:, ['landriversegment', 'loadsourceshortname', 'agencycode',
-                       'pltnt', 'loadratelbsperyear']].to_csv(os.path.join(self.instdatadir, 'data_phi.tab'), sep=' ', index=False,
-                                                              header=['LRSEGS', 'LOADSRCS', 'PLTNTS', 'phi'])
+                       'pltnt', 'loadratelbsperyear']].to_csv(os.path.join(self.instdatadir, 'data_phi.tab'),
+                                                              sep=' ', index=False,
+                                                              header=['LRSEGS', 'LOADSRCS', 'AGENCIES', 'PLTNTS', 'phi'])
 
     def _load_param_TotalAcresAvailableForLoadSources(self, TblLandRiverSegment, TblLoadSource,
-                                                      TblLandUsePreBmp, baseconditionid):
+                                                      TblLandUsePreBmp, TblAgency, baseconditionid):
+        """ (alpha) total acres (ac) available for load source u on land-river segment l (for year y)
 
-        """ (alpha) total acres (ac) available for load source u on land-river segment l (for year y) """
-        # Some pre-processing is necessary to build the parameter dictionary
+        Some pre-processing is necessary to build the parameter dictionary
+
+        """
         df = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
                               (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
 
         df.drop(columns=['baseconditionid'], inplace=True)
 
-        # Select only a single agency (NONFED)
-        df = df.loc[df['agencyid'] == self.agencyid, :]
-        df.drop(columns=['agencyid'], inplace=True)  # and drop agency (for now!)
+        # # Select only a single agency (NONFED)
+        # df = df.loc[df['agencyid'] == self.agencyid, :]
+        # df.drop(columns=['agencyid'], inplace=True)  # and drop agency (for now!)
 
-        # add lrseg and loadsource names to table
+        # Land river segment names, loadsource names, and agency codes are added to the table.
         df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df, how='inner')
         df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df, how='inner')
+        df = TblAgency.loc[:, ['agencyid', 'agencycode']].merge(df, how='inner')
 
-        # Convert groups to dictionary ( with tuple->value structure )
-        grouped = df.groupby(['landriversegment', 'loadsourceshortname'])
+        # Groupby groups are converted to a dictionary ( with tuple->value structure ).
+        grouped = df.groupby(['landriversegment', 'loadsourceshortname', 'agencycode'])
         self.alpha = grouped['acres'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
             df.loc[:, ['landriversegment',
                        'loadsourceshortname',
+                       'agencycode',
                        'acres']].to_csv(os.path.join(self.instdatadir, 'data_alpha.tab'), sep=' ', index=False,
-                                        header=['LRSEGS', 'LOADSRCS', 'alpha'])
+                                        header=['LRSEGS', 'LOADSRCS', 'AGENCIES', 'alpha'])
 
 # dl = Lrseg(save2file=False, geolist=['N51059PL7_4960_0000'])
 # print(dl.lrsegsetlist)
