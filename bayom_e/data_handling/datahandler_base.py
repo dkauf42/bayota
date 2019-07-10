@@ -254,15 +254,14 @@ class DataHandlerBase:
         landusedf = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
                                      (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
         landusedf = singlelsgrpdf[singlelsgrpdf['loadsourceid'].isin(landusedf['loadsourceid'])]
+        loadsrc_list = landusedf['loadsourceshortname'].tolist()
 
-        # Get load sources list
-        loadsrcsetlist = list([x for x in landusedf.loadsourceshortname.tolist()])
-        self.loadsrcsetidlist = landusedf.loadsourceid.tolist()
-        self.LOADSRCS = loadsrcsetlist
+        # The load sources list is retrieved.
+        self.loadsrcsetidlist = landusedf['loadsourceid'].tolist()
+        self.LOADSRCS = loadsrc_list.copy()
         if self.save2file:
-            pd.DataFrame(loadsrcsetlist, columns=['LOADSRCS']).to_csv(os.path.join(self.instdatadir,
-                                                                                   'data_LOADSRCS.tab'),
-                                                                      sep=' ', index=False)
+            pd.DataFrame(loadsrc_list, columns=['LOADSRCS']).to_csv(os.path.join(self.instdatadir, 'data_LOADSRCS.tab'),
+                                                                    sep=' ', index=False)
 
     def _load_set_BmpLoadSourceAssociations(self, TblBmp, TblBmpEfficiency,
                                             TblBmpGroup, TblBmpLoadSourceGroup,
