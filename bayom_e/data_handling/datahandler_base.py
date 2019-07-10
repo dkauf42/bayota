@@ -85,6 +85,7 @@ class DataHandlerBase:
         TblGeographyType = jeeves.source.TblGeographyType.copy()
 
         # Data tables for the parameter definitions
+        TblAgency = jeeves.source.TblAgency.copy()
         TblBmpEfficiency = jeeves.source.TblBmpEfficiency.copy()
         # Target load reductions ???  (set this ourselves??)
         TblLandUsePreBmp = jeeves.source.TblLandUsePreBmp.copy()
@@ -143,7 +144,8 @@ class DataHandlerBase:
         self._load_constraint()
 
         self._load_param_PhiBaseLoadingRates(TblLandRiverSegment, TblGeography, TblGeographyType,
-                                             TblGeographyLrSeg, TblLoadSource, BaseConditionLoadsTbl)
+                                             TblGeographyLrSeg, TblLoadSource, BaseConditionLoadsTbl,
+                                             TblAgency)
         self._load_param_TotalAcresAvailableForLoadSources(TblLandRiverSegment, TblLoadSource,
                                                            TblLandUsePreBmp, self._baseconditionid)
 
@@ -369,7 +371,7 @@ class DataHandlerBase:
 
     def _load_param_PhiBaseLoadingRates(self, TblLandRiverSegment,
                                         TblGeography, TblGeographyType, TblGeographyLrSeg,
-                                        TblLoadSource, Tbl2010NoActionLoads):
+                                        TblLoadSource, Tbl2010NoActionLoads, TblAgency):
         """ (Phi) base loading rate (lb. ac-1) of pollutant p per load source per land river segment (for year y)
 
         Some pre-processing is necessary to build the parameter dictionary
@@ -390,7 +392,6 @@ class DataHandlerBase:
         loadssubtbl = Tbl2010NoActionLoads[Tbl2010NoActionLoads['geography'].isin(lrsegfullnames)]
 
         # The load source table 'geographyfullname' column is translated to geographyid.
-        # (drops Agency, ...)
         includecols = ['geography', 'loadsource', 'agency', 'sector',
                        '2010 no action_amount',
                        '2010 no action_nloadeot', '2010 no action_ploadeot',
@@ -401,11 +402,11 @@ class DataHandlerBase:
         loadssubtbl.drop(columns=['geographyname', 'geographyfullname',
                                   'geography', 'geographytypeid'], inplace=True)
 
-        # Drop agencies that are not to be included
-        mask = loadssubtbl[(loadssubtbl['agency'] != self.agencyfullname)].index
-        if mask.empty:
-            logger.warning("expected agencies besides 'Non-Federal' to be dropped")
-        loadssubtbl.drop(mask, inplace=True)
+        # # Drop agencies that are not to be included
+        # mask = loadssubtbl[(loadssubtbl['agency'] != self.agencyfullname)].index
+        # if mask.empty:
+        #     logger.warning("expected agencies besides 'Non-Federal' to be dropped")
+        # loadssubtbl.drop(mask, inplace=True)
 
         # If division by zero occurs, those values are set to zero.
         loadssubtbl['eotn'] = (loadssubtbl['2010 no action_nloadeot'] / loadssubtbl['2010 no action_amount']).fillna(0)
@@ -427,6 +428,12 @@ class DataHandlerBase:
         loadssubtbl = TblLoadSource.loc[:, includecols].merge(loadssubtbl, how='inner', on='loadsource')
         loadssubtbl.drop(columns=['loadsource'], inplace=True)
 
+        # The load source table 'agency' column is translated to 'agencycode' and is then removed.
+        loadssubtbl.rename(columns={"agency": "agencyfullname"}, inplace=True)
+        includecols = ['agencycode', 'agencyfullname']
+        loadssubtbl = TblAgency.loc[:, includecols].merge(loadssubtbl, how='inner', on='agencyfullname')
+        loadssubtbl.drop(columns=['agencyfullname'], inplace=True)
+
         # Only loadsources that are represented by a single-ls loadsource group are retained.
         loadssubtbl = loadssubtbl[loadssubtbl['loadsourceid'].isin(self.loadsrcsetidlist)]
 
@@ -437,7 +444,7 @@ class DataHandlerBase:
                      pcolnames[1]: 'P',
                      pcolnames[2]: 'S'}
         for ps in [pcolnames[0], pcolnames[1], pcolnames[2]]:
-            llload = loadssubtbl.loc[:, ['lrsegid', 'loadsourceid', ps]]
+            llload = loadssubtbl.loc[:, ['lrsegid', 'loadsourceid', 'agencycode', ps]]
             llload['pltnt'] = pltntdict[ps]
             llload.rename(columns={ps: 'loadratelbsperyear'}, inplace=True)
             listofdataframes.append(llload)
@@ -448,10 +455,10 @@ class DataHandlerBase:
         df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df)
 
         # Groupby groups are converted to a dictionary ( with tuple->value structure ).
-        grouped = df.groupby(['landriversegment', 'loadsourceshortname', 'pltnt'])
+        grouped = df.groupby(['landriversegment', 'loadsourceshortname', 'agencycode', 'pltnt'])
         self.phi = grouped['loadratelbsperyear'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
-            df.loc[:, ['landriversegment', 'loadsourceshortname',
+            df.loc[:, ['landriversegment', 'loadsourceshortname', 'agencycode',
                        'pltnt', 'loadratelbsperyear']].to_csv(os.path.join(self.instdatadir, 'data_phi.tab'), sep=' ', index=False,
                                                               header=['LRSEGS', 'LOADSRCS', 'PLTNTS', 'phi'])
 
