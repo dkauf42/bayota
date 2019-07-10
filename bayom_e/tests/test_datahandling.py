@@ -38,13 +38,15 @@ def test_default_County_DataHandler_instantiation_BroomeNYCounty():
 
 
 def test_default_Lrseg_DataHandler_instantiation():
+    testlrseg = 'N42027SW1_1890_1830'
+    # testlrseg = 'N51133RL0_6450_0000'
     dh = get_loaded_data_handler_no_objective(geoscale='lrseg',
-                                              geoentities=['N51133RL0_6450_0000'],
+                                              geoentities=[testlrseg],
                                               savedata2file=False,
                                               baseloadingfilename='2010NoActionLoads_20190325.csv')
     # yo = DataHandlerLrsegWithCostConstraint(savedata2file=False, geoentities=['N51133RL0_6450_0000'])
     # Verify the lrseg list is populated correctly
-    assert 'N51133RL0_6450_0000' in dh.LRSEGS
+    assert testlrseg in dh.LRSEGS
 
 
 def test_default_Lrseg_DataHandler_inMontgomeryCountyMD():
