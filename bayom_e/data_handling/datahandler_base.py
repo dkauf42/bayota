@@ -193,8 +193,8 @@ class DataHandlerBase:
         totalacres = jeeves.lrseg.totalacres_for(lrsegnames=lrsegs_list)
         lrsegs_list = [a for a, b in zip(lrsegs_list, totalacres) if b != 0]
 
-        # lrsegids = TblLandRiverSegment[TblLandRiverSegment['landriversegment'] == lrsegs_list[0]].lrsegid.tolist()
-        self.lrsegsetlist = list([x for x in lrsegs_list])
+        # The list of land river segments is saved as object attributes.
+        self.lrsegsetlist = lrsegs_list.copy()
         self.lrsegsetidlist = jeeves.geo.lrsegids_from(lrsegnames=lrsegs_list)['lrsegid'].tolist()
 
         if not self.lrsegsetidlist:
