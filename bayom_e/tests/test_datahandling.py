@@ -37,13 +37,25 @@ def test_default_County_DataHandler_instantiation_BroomeNYCounty():
     assert set(dh.lrsegsetlist) == {'N36007SU5_0420_0500', 'N36007SU4_0430_0420', 'N36007SU2_0440_0550', 'N36007SU5_0460_0480', 'N36007SU6_0480_0520', 'N36007SU6_0520_0500', 'N36007SU7_0550_0540', 'N36007SU6_0500_0550', 'N36007SU1_0410_0480', 'N36007SU3_0240_0350', 'N36007SU2_0280_0430', 'N36007SU4_0260_0350', 'N36007SU4_0350_0420'}
 
 
+def test_default_County_DataHandler_AnneArundelMDCounty():
+    dh = get_loaded_data_handler_no_objective(geoscale='county',
+                                              geoentities=['Anne Arundel, MD'],
+                                              savedata2file=False,
+                                              baseloadingfilename='2010NoActionLoads_updated.csv')
+    # yo = DataHandlerLrsegWithCostConstraint(savedata2file=False, geoentities=['N51133RL0_6450_0000'])
+    # Verify the lrseg list is populated correctly
+    assert 'N24003WL0_4390_0000' in dh.LRSEGS
+
+
 def test_default_Lrseg_DataHandler_instantiation():
     testlrseg = 'N42027SW1_1890_1830'
+    testlrseg = 'N24003WL0_4390_0000'  # MD
     # testlrseg = 'N51133RL0_6450_0000'
     dh = get_loaded_data_handler_no_objective(geoscale='lrseg',
                                               geoentities=[testlrseg],
                                               savedata2file=False,
-                                              baseloadingfilename='2010NoActionLoads_20190325.csv')
+                                              baseloadingfilename='2010NoActionLoads_updated.csv')
+                                              # baseloadingfilename='2010NoActionLoads_20190325.csv')
     # yo = DataHandlerLrsegWithCostConstraint(savedata2file=False, geoentities=['N51133RL0_6450_0000'])
     # Verify the lrseg list is populated correctly
     assert testlrseg in dh.LRSEGS
