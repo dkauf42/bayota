@@ -25,6 +25,7 @@ class DataHandlerBase:
         BMPGRPS (pd.DataFrame):
         BMPGRPING (pd.DataFrame):
         LOADSRCS (pd.DataFrame):
+        AGENCIES (pd.DataFrame):
         BMPSRCLINKS (pd.DataFrame):
         BMPGRPSRCLINKS (pd.DataFrame):
         tau (pd.DataFrame):
@@ -101,10 +102,11 @@ class DataHandlerBase:
         # Data Sets
         self.PLTNTS = pd.DataFrame()
         self.LRSEGS = pd.DataFrame()
+        self.LOADSRCS = pd.DataFrame()
+        self.AGENCIES = pd.DataFrame()
         self.BMPS = pd.DataFrame()
         self.BMPGRPS = pd.DataFrame()
         self.BMPGRPING = pd.DataFrame()
-        self.LOADSRCS = pd.DataFrame()
         self.BMPSRCLINKS = pd.DataFrame()
         self.BMPGRPSRCLINKS = pd.DataFrame()
 
@@ -131,7 +133,12 @@ class DataHandlerBase:
         self._load_set_geographies(jeeves, geolist=self._geolist)
 
         self._load_set_BMPs(jeeves, TblBmpLoadSourceGroup, TblBmpGroup)
+
+        df_parcels = self._load_set_Parcels(TblLandUsePreBmp, TblLandRiverSegment,
+                                            TblLoadSource, TblAgency, self._baseconditionid)
+
         self._load_set_LoadSources(TblLandUsePreBmp, singlelsgrpdf, self._baseconditionid)
+        self._load_set_Agencies(TblLandUsePreBmp, TblAgency, self._baseconditionid)
         self._load_set_BmpLoadSourceAssociations(TblBmp, TblBmpEfficiency, TblBmpGroup,
                                                  TblBmpLoadSourceGroup, TblLoadSource, singlelsgrpdf)
 
@@ -263,6 +270,51 @@ class DataHandlerBase:
             pd.DataFrame(loadsrc_list, columns=['LOADSRCS']).to_csv(os.path.join(self.instdatadir, 'data_LOADSRCS.tab'),
                                                                     sep=' ', index=False)
 
+    def _load_set_Agencies(self, TblLandUsePreBmp, TblAgency, baseconditionid):
+        """ Agencies """
+        landusedf = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
+                                     (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
+
+        # Agency codes are added to the table.
+        landusedf = TblAgency.loc[:, ['agencyid', 'agencycode']].merge(landusedf, how='inner')
+
+        # The agencies list is retrieved.
+        agencies_set = set(landusedf['agencycode'].tolist())
+        self.AGENCIES = agencies_set
+        if self.save2file:
+            pd.DataFrame(agencies_set, columns=['AGENCIES']).to_csv(os.path.join(self.instdatadir, 'data_AGENCIES.tab'),
+                                                                    sep=' ', index=False)
+
+    def _load_set_Parcels(self, TblLandUsePreBmp, TblLandRiverSegment, TblLoadSource,
+                          TblAgency, baseconditionid):
+        """ Parcels
+
+        These are made up of land-river segment, load source, agency index combinations that are present
+        in the specified geography
+
+        """
+        df_parcels = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
+                                     (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
+        df_parcels.drop(columns=['baseconditionid'], inplace=True)
+
+        # Land river segment names, loadsource names, and agency codes are added to the table.
+        df_parcels = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df_parcels, how='inner')
+        df_parcels = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df_parcels, how='inner')
+        df_parcels = TblAgency.loc[:, ['agencyid', 'agencycode']].merge(df_parcels, how='inner')
+
+        # Groupby groups are converted to a dictionary ( with tuple->value structure ).
+        self.PARCELS = list(zip(df_parcels['landriversegment'],
+                                df_parcels['loadsourceshortname'],
+                                df_parcels['agencycode']))
+        if self.save2file:
+            df_parcels.loc[:, ['landriversegment',
+                               'loadsourceshortname',
+                               'agencycode']].to_csv(os.path.join(self.instdatadir, 'data_PARCELS.tab'),
+                                                     sep=' ', index=False,
+                                                     header=['LRSEGS', 'LOADSRCS', 'AGENCIES'])
+        return df_parcels
+
+
     def _load_set_BmpLoadSourceAssociations(self, TblBmp, TblBmpEfficiency, TblBmpGroup,
                                             TblBmpLoadSourceGroup, TblLoadSource, singlelsgrpdf):
         """ Correspondence between BMPs and LoadSources """
@@ -277,9 +329,8 @@ class DataHandlerBase:
         # Membership is restricted to land river segments in self.LRSEGS, so we can filter srcbmpsubtbl by effsubtable
         effsubtable = TblBmpEfficiency[TblBmpEfficiency['lrsegid'].isin(self.lrsegsetidlist)]
 
-        # Include (b, u) pairs in BMPSRCLINKS only if the b has an efficiency value
-        # for that u (and its associated loadsourcegroup) in TblBmpEfficiency
-        # retain only the (b, u) pairs in the srcbmpsubtbl with effectiveness values
+        # (bmp, loadsource) pairs are included in BMPSRCLINKS only if the bmp has an efficiency value
+        # for that loadsource (and its associated loadsourcegroup) in TblBmpEfficiency
         bmpsrclinkssubtbl = srcbmpsubtbl.loc[:, :].merge(effsubtable.loc[:, ['bmpid', 'loadsourceid']],
                                                          on=['bmpid', 'loadsourceid'])
 
@@ -472,12 +523,7 @@ class DataHandlerBase:
         """
         df = TblLandUsePreBmp[(TblLandUsePreBmp['baseconditionid'] == baseconditionid) &
                               (TblLandUsePreBmp['lrsegid'].isin(self.lrsegsetidlist))].copy()
-
         df.drop(columns=['baseconditionid'], inplace=True)
-
-        # # Select only a single agency (NONFED)
-        # df = df.loc[df['agencyid'] == self.agencyid, :]
-        # df.drop(columns=['agencyid'], inplace=True)  # and drop agency (for now!)
 
         # Land river segment names, loadsource names, and agency codes are added to the table.
         df = TblLandRiverSegment.loc[:, ['lrsegid', 'landriversegment']].merge(df, how='inner')
