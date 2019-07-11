@@ -279,7 +279,7 @@ class DataHandlerBase:
         bmpgrpsdf['BMPGRPING'] = list(zip(bmpgrpsdf.bmpshortname, bmpgrpsdf.bmpgroupid))
         # then, also as a {grp: bmps} dictionary
         grouped = bmpgrpsdf.groupby(['bmpgroupid'])
-        bmpgrping_dict = grouped['bmpshortname'].apply(lambda x: list(x)[0]).to_dict()
+        bmpgrping_dict = grouped['bmpshortname'].apply(lambda x: list(x)).to_dict()
         self.BMPGRPING = bmpgrping_dict
         if self.save2file:
             BMPGRPING_df_asseparatecolumns = bmpgrpsdf.loc[:, ['bmpshortname', 'bmpgroupid']].rename(
