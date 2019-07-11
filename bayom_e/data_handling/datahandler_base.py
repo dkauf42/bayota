@@ -226,8 +226,12 @@ class DataHandlerBase:
             pd.DataFrame(bmpgrpsetlist, columns=['BMPGRPS']).to_csv(os.path.join(self.instdatadir, 'data_BMPGRPS.tab'), sep=' ', index=False)
 
         # Get correspondences between bmp names and group names (and group ids)
+        # first, as dataframe column
         bmpgrpsdf['BMPGRPING'] = list(zip(bmpgrpsdf.bmpshortname, bmpgrpsdf.bmpgroupid))
-        self.BMPGRPING = list(bmpgrpsdf.BMPGRPING)
+        # then, also as a {grp: bmps} dictionary
+        grouped = bmpgrpsdf.groupby(['bmpgroupid'])
+        bmpgrping_dict = grouped['bmpshortname'].apply(lambda x: list(x)[0]).to_dict()
+        self.BMPGRPING = bmpgrping_dict
         if self.save2file:
             BMPGRPING_df_asseparatecolumns = bmpgrpsdf.loc[:, ['bmpshortname', 'bmpgroupid']].rename(
                 columns={'bmpshortname': 'BMPS',
