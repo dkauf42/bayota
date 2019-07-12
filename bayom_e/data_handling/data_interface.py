@@ -115,7 +115,7 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
     # Groups are randomly selected to have their size incrementally increased by 1.
     #   (while not exceeding max group size, and up to the total number of BMPs)
     remainingtoadd = num_bmps - (mingrpsize * num_bmpgroups)
-    timeout = time.time() + 60 * 2  # 2 minutes from now
+    timeout = time.time() + 60 * 1  # 1 minute from now
     while remainingtoadd > 0:
         # grptoaddto = random.randint(0, num_bmpgroups - 1)  # this gives an approximate uniform distribution
         # grptoaddto = np.random.choice(num_bmpgroups, size=1, p=prob)[0]  # this can be used to choose groups unevenly
@@ -128,7 +128,10 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
                 remainingtoadd -= howmanytoaddtogroup
                 # print(f"*added {howmanytoaddtogroup} to group {grptoaddto}")
         if time.time() > timeout:
-            raise ValueError(f"dataplate bmpgroup random generator timed out after {timeout} seconds")
+            msg = 'dataplate bmpgroup random generator timed out after {timeout} seconds '
+            msg += f"with these parameters: num_bmps={num_bmps}, num_bmpgroups={num_bmpgroups}, " \
+                   f"mingrpsize={mingrpsize}, maxgrpsize={maxgrpsize}"
+            raise ValueError(msg)
 
     # BMPs are assigned to groups using the specified sizes.
     bmpgroups_list = []
