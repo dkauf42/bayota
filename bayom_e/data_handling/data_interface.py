@@ -63,7 +63,7 @@ def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integer
     random_list = (random_list * desired_range) + min_value
 
     if integers:
-        random_list = list(np.round(random_list, 0).astype(int))
+        random_list = np.round(random_list, 0).astype(int)
 
     return list(random_list)
 
@@ -121,7 +121,7 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
         # grptoaddto = np.random.choice(num_bmpgroups, size=1, p=prob)[0]  # this can be used to choose groups unevenly
         grptoaddto = np.random.choice(num_bmpgroups, size=1)[0]
         if grp_sizes[grptoaddto] <= maxgrpsize:
-            howmanytoaddtogroup = int(np.random.choice(random_list, size=1)[0])
+            howmanytoaddtogroup = np.random.choice(random_list, size=1)[0]
             if ((remainingtoadd - howmanytoaddtogroup) >= 0) and \
                     ((grp_sizes[grptoaddto] + howmanytoaddtogroup) <= maxgrpsize):
                 grp_sizes[grptoaddto] += howmanytoaddtogroup
