@@ -47,6 +47,26 @@ def random_list_of_names(n, name_length=3, chars=string.ascii_uppercase) -> list
                 break
     return name_list
 
+
+def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integers=False):
+    """ generate skewed distribution """
+    # Negative skewness values are left skewed (long right tail), positive values are right skewed (left tail).
+    skewness_val = skewness
+    desired_range = max_value - min_value
+
+    random_list = skewnorm.rvs(a=skewness_val, loc=max_value, size=num_values)
+    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
+    random_list = random_list - min(random_list)
+    # Values are standardized to be between 0 and 1.
+    random_list = random_list / max(random_list)
+    # The standardized values are rescaled to the desired minimum - maximum range
+    random_list = (random_list * desired_range) + min_value
+
+    if integers:
+        random_list = list(np.round(random_list, 0).astype(int))
+
+    return list(random_list)
+
 def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
                               num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
     """
@@ -89,15 +109,7 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
     """ The sizes for each group are determined randomly. 
     """
     # generate skewed distribution
-    numValues = 10000
-    maxValue = maxgrpsize  # 10
-    skewness = 5  # Negative values are left skewed (long right tail), positive values are right skewed (left tail).
-    random_list = skewnorm.rvs(a=skewness, loc=maxValue, size=numValues)  # Skewnorm function
-    random_list = random_list - min(random_list)  # Shift the set so the minimum value is equal to zero.
-    random_list = random_list / max(random_list)  # Standadize all the vlues between 0 and 1.
-    random_list = random_list * maxValue  # Multiply the standardized values by the maximum value.
-    random_list = np.round(random_list, 0)  # Make integers
-
+    random_list = skewed_dist(max_value=maxgrpsize, min_value=0, num_values=10000, skewness=5, integers=True)
     # The minimum group size is used as a starting point to which we will add.
     grp_sizes = {i: mingrpsize for i in range(0, num_bmpgroups)}
     # Groups are randomly selected to have their size incrementally increased by 1.
@@ -141,8 +153,9 @@ def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrc
                          f"It is recommended to lower maxloadsrcgrpingsize to {num_bmpgroups}.")
 
     # The sizes for each load source grouping are determined randomly.
-    loadsrc_sizes = np.random.choice(range(minloadsrcgrpingsize, maxloadsrcgrpingsize+1),
-                                     size=len(loadsrc_list)).tolist()
+    random_list = skewed_dist(max_value=maxloadsrcgrpingsize+1, min_value=minloadsrcgrpingsize,
+                              num_values=10000, skewness=5, integers=True)
+    loadsrc_sizes = np.random.choice(random_list, size=len(loadsrc_list)).tolist()
 
     # BMPGRPS are assigned to load sources using the specified sizes.
     grploadsrc_list = []
@@ -159,6 +172,7 @@ def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrc
                         thisloadsourcesgrps.append(bmpgrouplist.pop(bmpgrpchoicelistidx).index)
                         break
                 else:
+                    # once depleted, keep putting random bmps in loadsources until desired loadsource sizes are met
                     bmpgrpchoicelistidx = random.randint(0, num_bmpgroups - 1)
                     if bmpgrpchoicelistidx not in thisloadsourcesgrps:
                         thisloadsourcesgrps.append(bmpgrpchoicelistidx)
