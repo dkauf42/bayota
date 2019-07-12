@@ -7,7 +7,7 @@ import time
 import string
 import random
 import numpy as np
-from scipy.stats import skewnorm
+from scipy.stats import skewnorm, expon
 from collections import namedtuple
 
 Group = namedtuple("Group", ['index', 'size', 'bmps'])
@@ -55,6 +55,24 @@ def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integer
     desired_range = max_value - min_value
 
     random_list = skewnorm.rvs(a=skewness_val, loc=max_value, size=num_values)
+    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
+    random_list = random_list - min(random_list)
+    # Values are standardized to be between 0 and 1.
+    random_list = random_list / max(random_list)
+    # The standardized values are rescaled to the desired minimum - maximum range
+    random_list = (random_list * desired_range) + min_value
+
+    if integers:
+        random_list = np.round(random_list, 0).astype(int)
+
+    return list(random_list)
+
+
+def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False):
+    """ generate exponentially decaying distribution """
+    desired_range = max_value - min_value
+
+    random_list = expon.rvs(scale=1, loc=0, size=num_values)
     # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
     random_list = random_list - min(random_list)
     # Values are standardized to be between 0 and 1.
@@ -156,9 +174,9 @@ def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrc
                          f"It is recommended to lower maxloadsrcgrpingsize to {num_bmpgroups}.")
 
     # The sizes for each load source grouping are determined randomly.
-    random_list = skewed_dist(max_value=maxloadsrcgrpingsize+1, min_value=minloadsrcgrpingsize,
-                              num_values=10000, skewness=5, integers=True)
-    loadsrc_sizes = np.random.choice(random_list, size=len(loadsrc_list)).tolist()
+    random_list = exp_dist(max_value=maxloadsrcgrpingsize, min_value=minloadsrcgrpingsize,
+                           num_values=10000, integers=True)
+    loadsrc_sizes = list(np.random.choice(random_list, size=len(loadsrc_list)))
 
     # BMPGRPS are assigned to load sources using the specified sizes.
     grploadsrc_dict = {}
