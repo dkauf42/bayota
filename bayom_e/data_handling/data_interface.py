@@ -3,9 +3,11 @@ from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGe
 from .dataplate import NLP_DataPlate
 
 import math
+import time
 import string
 import random
 import numpy as np
+from scipy.stats import skewnorm
 from collections import namedtuple
 
 Group = namedtuple("Group", ['index', 'size', 'bmps'])
@@ -73,10 +75,10 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
     # A list of random bmp names is generated [of length 'num_bmps'].
     bmp_list = random_list_of_names(n=num_bmps, name_length=6, chars=string.ascii_uppercase + string.ascii_lowercase)
 
-    # generate random costs for each bmp
+    # Random costs are generated for each bmp.
     tau_dict = {b: random.randint(0, 1000) for b in bmp_list}
 
-    # generate a random effectiveness for each bmp
+    # Random effectiveness values are generated for each bmp.
     eta_dict = {}
     for b in bmp_list:
         for p in pollutants_list:
@@ -84,21 +86,37 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
                 for u in loadsrc_list:
                     eta_dict[(b, p, l, u)] = round(random.random(), 2)
 
-    # The sizes for each group are determined randomly.
+    """ The sizes for each group are determined randomly. 
+    """
+    # generate skewed distribution
+    numValues = 10000
+    maxValue = maxgrpsize  # 10
+    skewness = 5  # Negative values are left skewed (long right tail), positive values are right skewed (left tail).
+    random_list = skewnorm.rvs(a=skewness, loc=maxValue, size=numValues)  # Skewnorm function
+    random_list = random_list - min(random_list)  # Shift the set so the minimum value is equal to zero.
+    random_list = random_list / max(random_list)  # Standadize all the vlues between 0 and 1.
+    random_list = random_list * maxValue  # Multiply the standardized values by the maximum value.
+    random_list = np.round(random_list, 0)  # Make integers
+
+    # The minimum group size is used as a starting point to which we will add.
     grp_sizes = {i: mingrpsize for i in range(0, num_bmpgroups)}
-    # randomly assign weights to each group, so that assignments are not uniformly distributed among the groups
-    bias_weights = np.random.choice(range(1, 10), size=num_bmpgroups)
-    prob = np.array(bias_weights) / np.sum(bias_weights)
-    # Starting from the specified minimum group size ['mingrpsize'],
-    #    groups are randomly selected to have their size incrementally increased by 1.
+    # Groups are randomly selected to have their size incrementally increased by 1.
     #   (while not exceeding max group size, and up to the total number of BMPs)
-    howmanytoadd = num_bmps - (mingrpsize * num_bmpgroups)
-    while howmanytoadd > 0:
+    remainingtoadd = num_bmps - (mingrpsize * num_bmpgroups)
+    timeout = time.time() + 60 * 2  # 2 minutes from now
+    while remainingtoadd > 0:
         # grptoaddto = random.randint(0, num_bmpgroups - 1)  # this gives an approximate uniform distribution
-        grptoaddto = np.random.choice(num_bmpgroups, size=1, p=prob)[0]
+        # grptoaddto = np.random.choice(num_bmpgroups, size=1, p=prob)[0]  # this can be used to choose groups unevenly
+        grptoaddto = np.random.choice(num_bmpgroups, size=1)[0]
         if grp_sizes[grptoaddto] <= maxgrpsize:
-            grp_sizes[grptoaddto] += 1
-            howmanytoadd -= 1
+            howmanytoaddtogroup = int(np.random.choice(random_list, size=1)[0])
+            if ((remainingtoadd - howmanytoaddtogroup) >= 0) and \
+                    ((grp_sizes[grptoaddto] + howmanytoaddtogroup) <= maxgrpsize):
+                grp_sizes[grptoaddto] += howmanytoaddtogroup
+                remainingtoadd -= howmanytoaddtogroup
+                # print(f"*added {howmanytoaddtogroup} to group {grptoaddto}")
+        if time.time() > timeout:
+            raise ValueError(f"dataplate bmpgroup random generator timed out after {timeout} seconds")
 
     # BMPs are assigned to groups using the specified sizes.
     bmpgroups_list = []
