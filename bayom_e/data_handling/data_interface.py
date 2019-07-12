@@ -109,7 +109,7 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
     """ The sizes for each group are determined randomly. 
     """
     # generate skewed distribution
-    random_list = skewed_dist(max_value=maxgrpsize, min_value=0, num_values=10000, skewness=5, integers=True)
+    random_list = skewed_dist(max_value=maxgrpsize, min_value=1, num_values=10000, skewness=5, integers=True)
     # The minimum group size is used as a starting point to which we will add.
     grp_sizes = {i: mingrpsize for i in range(0, num_bmpgroups)}
     # Groups are randomly selected to have their size incrementally increased by 1.
