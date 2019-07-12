@@ -17,7 +17,14 @@ def build_model(dataplate, target_load=1):
     # *************************
     model.BMPS = pyo.Set(initialize=dataplate.BMPS, ordered=True)
     model.BMPGRPS = pyo.Set(initialize=dataplate.BMPGRPS)
-    model.BMPGRPING = pyo.Set(initialize=dataplate.BMPGRPING, dimen=2)
+    if isinstance(dataplate.BMPGRPING, dict):
+        bmpgrpinglist = []
+        for grp, bmps in dataplate.BMPGRPING.items():
+            for b in bmps:
+                bmpgrpinglist.append((grp, b))
+        model.BMPGRPING = pyo.Set(initialize=bmpgrpinglist, dimen=2)
+    else:
+        model.BMPGRPING = pyo.Set(initialize=dataplate.BMPGRPING, dimen=2)
     model.BMPSRCLINKS = pyo.Set(initialize=dataplate.BMPSRCLINKS, dimen=2)
     model.BMPGRPSRCLINKS = pyo.Set(initialize=dataplate.BMPGRPSRCLINKS, dimen=2)
 
