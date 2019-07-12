@@ -158,7 +158,7 @@ def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrc
     loadsrc_sizes = np.random.choice(random_list, size=len(loadsrc_list)).tolist()
 
     # BMPGRPS are assigned to load sources using the specified sizes.
-    grploadsrc_list = []
+    grploadsrc_dict = {}
     for ls_index, ls_size in enumerate(loadsrc_sizes):
         thisloadsourcesgrps = []
         for i in range(ls_size):
@@ -177,10 +177,9 @@ def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrc
                     if bmpgrpchoicelistidx not in thisloadsourcesgrps:
                         thisloadsourcesgrps.append(bmpgrpchoicelistidx)
                         break
-        grploadsrc_list.append(LoadSrc(index=ls_index, name=loadsrc_list[ls_index],
-                                       size=len(thisloadsourcesgrps), bmpgroups=thisloadsourcesgrps))
+        grploadsrc_dict[loadsrc_list[ls_index]] = thisloadsourcesgrps
 
-    return loadsrc_sizes, grploadsrc_list
+    return loadsrc_sizes, grploadsrc_dict
 
 
 def get_random_dataplate(name='nlp', num_lrsegs=1,
@@ -203,22 +202,23 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
     # print(f"bmp group sizes are {grpsizes}.  sum={sum([s for _, s in grpsizes.items()])}")
     # print('\n')
 
-    loadsrc_sizes, grploadsrc_list = randomly_assign_grps_to_loadsources(loadsrc_list=loadsrc_list,
+    loadsrc_sizes, grploadsrc_dict = randomly_assign_grps_to_loadsources(loadsrc_list=loadsrc_list,
                                                                          bmpgroups_list=bmpgrplist,
                                                                          minloadsrcgrpingsize=minloadsrcgrpingsize,
                                                                          maxloadsrcgrpingsize=maxloadsrcgrpingsize)
     # print(f"load source sizes are {loadsrc_sizes}.  sum={sum(loadsrc_sizes)}")
     # print(grploadsrc_list)
 
-    # generate list of tuples with format: (bmpgroup, loadsource)
-    bmpgrpsrc_tuples = []
-    [[bmpgrpsrc_tuples.append((g, ls.name)) for g in ls.bmpgroups] for ls in grploadsrc_list]
+    # Each load source is assigned a list of bmps according to the bmpgroup(s) already associated with the loadsource.
+    bmpsrc_dict = {}
+    for ls, grps in grploadsrc_dict.items():
+        bmpsrc_list = []
+        for g in grps:
+            for b in bmpgrplist[g].bmps:
+                bmpsrc_list.append(b)
+        bmpsrc_dict[ls] = bmpsrc_list
 
-    # generate list of tuples with format: (bmp, loadsource)
-    bmpsrc_tuples = []
-    [[[bmpsrc_tuples.append((b, ls.name)) for b in bmpgrplist[g].bmps] for g in ls.bmpgroups] for ls in grploadsrc_list]
-
-    # generate random acreages (alpha) and base loadings (phi)
+    # Random acreages (alpha) and base loadings (phi) are generated
     alpha_dict = {}
     phi_dict = {}
     for l in lrseg_list:
@@ -234,8 +234,8 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
                              BMPS=bmplist,
                              BMPGRPS=[g.index for g in bmpgrplist],
                              BMPGRPING={g.index: g.bmps for g in bmpgrplist},
-                             BMPSRCLINKS=bmpsrc_tuples,
-                             BMPGRPSRCLINKS=bmpgrpsrc_tuples,
+                             BMPSRCLINKS=bmpsrc_dict,
+                             BMPGRPSRCLINKS=grploadsrc_dict,
                              theta=1,
                              alpha=alpha_dict,
                              phi=phi_dict,
