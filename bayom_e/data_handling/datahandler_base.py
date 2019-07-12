@@ -379,9 +379,14 @@ class DataHandlerBase:
 
         # Duplicate pairs are removed.
         bmpsrclinkssubtbl.drop_duplicates(['bmpshortname', 'loadsourceshortname'], inplace=True)
+        # Get correspondences between bmp names and loadsource names
+        # first, as dataframe column
         bmpsrclinkssubtbl['BMPSRCLINKS'] = list(zip(bmpsrclinkssubtbl.bmpshortname.tolist(),
                                                     bmpsrclinkssubtbl.loadsourceshortname.tolist()))
-        self.BMPSRCLINKS = list(bmpsrclinkssubtbl.BMPSRCLINKS)
+        # then, also as a {loadsource: bmps} dictionary
+        grouped = bmpsrclinkssubtbl.groupby(['loadsourceshortname'])
+        bmpsrclinks_dict = grouped['bmpshortname'].apply(lambda x: list(x)).to_dict()
+        self.BMPSRCLINKS = bmpsrclinks_dict
         if self.save2file:
             bmpsrclinkssubtbl.loc[:, ['bmpshortname',
                                       'loadsourceshortname']].to_csv(os.path.join(self.instdatadir, 'data_BMPSRCLINKS.tab'),
@@ -394,9 +399,14 @@ class DataHandlerBase:
                                                                                                   'loadsourceshortname']).copy()
         if self.save2file:
             bmpsrcgrplinkssubtbl.to_csv(os.path.join(self.instdatadir, 'tempBMPGRPSRCLINKS.csv'))
+        # Get correspondences between bmpgrp ids and loadsource names
+        # first, as dataframe column
         bmpsrcgrplinkssubtbl['BMPGRPSRCLINKS'] = list(zip(bmpsrcgrplinkssubtbl.bmpgroupid.tolist(),
                                                           bmpsrcgrplinkssubtbl.loadsourceshortname.tolist()))
-        self.BMPGRPSRCLINKS = list(bmpsrcgrplinkssubtbl.BMPGRPSRCLINKS)
+        # then, also as a {loadsource: bmps} dictionary
+        grouped = bmpsrcgrplinkssubtbl.groupby(['loadsourceshortname'])
+        bmpgrpsrclinks_dict = grouped['bmpgroupid'].apply(lambda x: list(x)).to_dict()
+        self.BMPGRPSRCLINKS = bmpgrpsrclinks_dict
         if self.save2file:
             bmpsrcgrplinkssubtbl.loc[:, ['bmpgroupid',
                                          'loadsourceshortname']].to_csv(os.path.join(self.instdatadir, 'data_BMPGRPSRCLINKS.tab'),
