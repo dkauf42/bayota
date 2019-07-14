@@ -1,5 +1,4 @@
-from bayom_e.data_handling.randomizer import random_list_of_names, random_bmp_groupings, \
-    randomly_assign_grps_to_loadsources
+from .randomizer import random_list_of_names, random_bmp_groupings, randomly_assign_grps_to_loadsources
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
