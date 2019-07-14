@@ -1,4 +1,4 @@
-from bayom_e.data_handling.randomizer import random_list_of_names, make_random_bmp_groupings, \
+from bayom_e.data_handling.randomizer import random_list_of_names, random_bmp_groupings, \
     randomly_assign_grps_to_loadsources
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
@@ -22,13 +22,13 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
     lrseg_list = random_list_of_names(n=num_lrsegs, name_length=19, chars=string.ascii_uppercase + string.digits)
     loadsrc_list = random_list_of_names(n=num_loadsources, name_length=3, chars=string.ascii_lowercase)
 
-    bmplist, grpsizes, bmpgrplist, tau_dict, eta_dict = make_random_bmp_groupings(pollutants_list=pollutants_list,
-                                                                                  lrseg_list=lrseg_list,
-                                                                                  loadsrc_list=loadsrc_list,
-                                                                                  num_bmps=num_bmps,
-                                                                                  num_bmpgroups=num_bmpgroups,
-                                                                                  mingrpsize=minbmpgrpsize,
-                                                                                  maxgrpsize=maxbmpgrpsize)
+    bmplist, grpsizes, bmpgrplist, tau_dict, eta_dict = random_bmp_groupings(pollutants_list=pollutants_list,
+                                                                             lrseg_list=lrseg_list,
+                                                                             loadsrc_list=loadsrc_list,
+                                                                             num_bmps=num_bmps,
+                                                                             num_bmpgroups=num_bmpgroups,
+                                                                             mingrpsize=minbmpgrpsize,
+                                                                             maxgrpsize=maxbmpgrpsize)
     # print(f"bmp group sizes are {grpsizes}.  sum={sum([s for _, s in grpsizes.items()])}")
     # print('\n')
 

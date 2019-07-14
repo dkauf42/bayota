@@ -108,8 +108,8 @@ def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False) -> lis
     return list(random_list)
 
 
-def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
-                              num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
+def random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
+                         num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
     """
 
     Args:
