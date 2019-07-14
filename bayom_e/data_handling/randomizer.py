@@ -1,3 +1,10 @@
+"""
+Generate pseudo-random data similar to the CAST source data, useful for testing and experimentation.
+
+Todo:
+    * Try to speed up the random generation computational time
+
+"""
 import math
 import random
 import string
@@ -9,17 +16,14 @@ from scipy.stats import skewnorm, expon
 from bayom_e.data_handling.data_interface import Group
 
 
-def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
-
-
-def word_generator(size=6, chars=string.ascii_uppercase):
+def word_generator(size=6, chars=string.ascii_uppercase) -> str:
+    """ Generate a 'size'-length random string. """
     return ''.join(random.choice(chars) for _ in range(size))
 
 
 def random_ints_with_sum(n):
     """
-    Generate positive random integers summing to `n`, sampled
+    Yield positive random integers summing to `n`, sampled
     uniformly from the ordered integer partitions of `n`.
     """
     p = 0
@@ -32,7 +36,7 @@ def random_ints_with_sum(n):
 
 
 def random_list_of_names(n, name_length=3, chars=string.ascii_uppercase) -> list:
-    # A list of random names is generated.
+    """ Generate an n-length list of random strings. """
     name_list = []
     for i in range(n):
         while True:  # generate a new name until we find one not already in the list.
@@ -43,8 +47,20 @@ def random_list_of_names(n, name_length=3, chars=string.ascii_uppercase) -> list
     return name_list
 
 
-def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integers=False):
-    """ generate skewed distribution """
+def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integers=False) -> list:
+    """ Generate a skewed distribution.
+
+    Args:
+        max_value:
+        min_value:
+        num_values:
+        skewness:
+        integers:
+
+    Returns:
+        a list of numbers
+
+    """
     # Negative skewness values are left skewed (long right tail), positive values are right skewed (left tail).
     skewness_val = skewness
     desired_range = max_value - min_value
@@ -63,8 +79,19 @@ def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integer
     return list(random_list)
 
 
-def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False):
-    """ generate exponentially decaying distribution """
+def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False) -> list:
+    """ Generate an exponentially decaying distribution.
+
+    Args:
+        max_value:
+        min_value:
+        num_values:
+        integers:
+
+    Returns:
+        a list of numbers
+
+    """
     desired_range = max_value - min_value
 
     random_list = expon.rvs(scale=1, loc=0, size=num_values)
