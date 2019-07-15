@@ -15,20 +15,16 @@ class Agency(SourceHook):
         return TblAgency.loc[:, 'agencycode']
 
     def ids_from_names(self, agencycodes=None):
-        return self._map_using_sourcetbl(agencycodes,
-                                         tocol='agencyid',
-                                         fromcol='agencycode',
-                                         tbl='TblAgency')
+        return self._map_using_sourcetbl(agencycodes, tbl='TblAgency',
+                                         fromcol='agencycode', tocol='agencyid')
 
     def ids_from_fullnames(self, fullnames=None):
-        fullnames = self.forceToSingleColumnDataFrame(fullnames, colname='agencyfullname')
-        return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencyfullname', 'agencyid'],
-                                  fromtable=fullnames, toname='agencyid')
+        return self._map_using_sourcetbl(fullnames, tbl='TblAgency',
+                                         fromcol='agencyfullname', tocol='agencyid')
 
     def fullnames_from_ids(self, ids=None):
-        ids = self.forceToSingleColumnDataFrame(ids, colname='agencyid')
-        return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencyid', 'agencyfullname'],
-                                  fromtable=ids, toname='agencyfullname')
+        return self._map_using_sourcetbl(ids, tbl='TblAgency',
+                                         fromcol='agencyid', tocol='agencyfullname')
 
     def append_agencyid_to_lrsegids(self, lrsegids=None):
         TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
