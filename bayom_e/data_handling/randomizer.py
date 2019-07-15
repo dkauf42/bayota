@@ -9,11 +9,13 @@ import math
 import random
 import string
 import time
+from collections import namedtuple
 
 import numpy as np
 from scipy.stats import skewnorm, expon
 
-from bayom_e.data_handling.data_interface import Group
+Group = namedtuple("Group", ['index', 'size', 'bmps'])
+LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
 
 
 def word_generator(size=6, chars=string.ascii_uppercase) -> str:
