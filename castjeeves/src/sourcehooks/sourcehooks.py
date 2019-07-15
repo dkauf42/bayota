@@ -52,19 +52,19 @@ class SourceHook:
 
     @staticmethod
     def _map_LIST_using_sourcetbl(values, tbl, tocol, fromcol) -> list:
-        """ Return a list of ids, if values argument is a list """
+        """ Return a list of values that have been translated using two columns in a source table """
         translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
         return [translate_dict[v] for v in values]
 
     @staticmethod
     def _map_DATAFRAME_using_sourcetbl(values, tbl, tocol, fromcol) -> pd.DataFrame:
-        """ Return a DataFrame of ids, if values argument is a DataFrame """
+        """ Return a DataFrame of values that have been translated using two columns in a source table """
         tblsubset = tbl.loc[:, [tocol, fromcol]].merge(values, how='inner')
         return tblsubset.loc[:, [tocol]]  # pass column name as list so return type is pandas.DataFrame
 
     @staticmethod
     def _map_SERIES_using_sourcetbl(values, tbl, tocol, fromcol) -> pd.Series:
-        """ Return a Series of ids, if values argument is a Series """
+        """ Return a Series of values that have been translated using two columns in a source table """
         translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
         return values.map(translate_dict)
 
