@@ -6,10 +6,6 @@ from .dataplate import NLP_DataPlate
 
 import string
 import random
-from collections import namedtuple
-
-Group = namedtuple("Group", ['index', 'size', 'bmps'])
-LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
 
 
 def get_random_dataplate(name='nlp', num_lrsegs=1,
