@@ -15,9 +15,10 @@ class Agency(SourceHook):
         return TblAgency.loc[:, 'agencycode']
 
     def ids_from_names(self, agencycodes=None):
-        agencycodes = self.forceToSingleColumnDataFrame(agencycodes, colname='agencycode')
-        return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
-                                  fromtable=agencycodes, toname='agencyid')
+        return self._map_using_sourcetbl(agencycodes,
+                                         tocol='agencyid',
+                                         fromcol='agencycode',
+                                         tbl='TblAgency')
 
     def ids_from_fullnames(self, fullnames=None):
         fullnames = self.forceToSingleColumnDataFrame(fullnames, colname='agencyfullname')

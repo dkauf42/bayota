@@ -23,12 +23,51 @@ class SourceHook:
         self.source = sourcedata
         self.metadata_tables = metadata
 
+        self.id_from_names_map = {list: self._map_LIST_using_sourcetbl,
+                                  pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
+                                  pd.Series: self._map_SERIES_using_sourcetbl}
+
     def all_names(self):
         pass
     def all_ids(self):
         pass
-    def ids_from_names(self):
-        pass
+
+    def _map_using_sourcetbl(self, values, tbl, tocol, fromcol):
+        """ Convert values in 's' using a mapping based on the correspondences in the Source table 'tbl'
+
+        This is the main method that will call a type-specific submethod
+
+        Args:
+            values (list, pd.DataFrame, or pd.Series): the values to be converted
+            tbl (str): name of the source table that will be used for the conversion
+            tocol (str): name of the dataframe column that has values to convert TO
+            fromcol (str): name of the dataframe column that has values to convert FROM
+
+        Returns:
+            a collection that matches the input type and is the same length as the input
+        """
+        sourcetable = getattr(self.source, tbl)
+
+        return self.id_from_names_map[type(values)](values, sourcetable, tocol, fromcol)
+
+    @staticmethod
+    def _map_LIST_using_sourcetbl(values, tbl, tocol, fromcol) -> list:
+        """ Return a list of ids, if values argument is a list """
+        translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
+        return [translate_dict[v] for v in values]
+
+    @staticmethod
+    def _map_DATAFRAME_using_sourcetbl(values, tbl, tocol, fromcol) -> pd.DataFrame:
+        """ Return a DataFrame of ids, if values argument is a DataFrame """
+        tblsubset = tbl.loc[:, [tocol, fromcol]].merge(values, how='inner')
+        return tblsubset.loc[:, [tocol]]  # pass column name as list so return type is pandas.DataFrame
+
+    @staticmethod
+    def _map_SERIES_using_sourcetbl(values, tbl, tocol, fromcol) -> pd.Series:
+        """ Return a Series of ids, if values argument is a Series """
+        translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
+        return values.map(translate_dict)
+
     def names_from_ids(self):
         pass
 
