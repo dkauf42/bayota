@@ -15,19 +15,21 @@ class Bmp(SourceHook):
         TblBmp = self.source.TblBmp  # get relevant source data]
         return TblBmp.loc[:, 'bmpshortname']
 
+    def ids_from_names(self, shortnames):
+        return self._map_using_sourcetbl(shortnames, tbl='TblBmp',
+                                         fromcol='bmpshortname', tocol='bmpid')
+
     def names_from_ids(self, bmpids=None):
-        bmpids = self.forceToSingleColumnDataFrame(bmpids, colname='bmpid')
-        return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpshortname', 'bmpid'],
-                                  fromtable=bmpids, toname='bmpshortname')
+        return self._map_using_sourcetbl(bmpids, tbl='TblBmp',
+                                         fromcol='bmpid', tocol='bmpshortname')
 
     def single_bmpid_from_shortname(self, bmpshortname):
         TblBmp = self.source.TblBmp  # get relevant source data
         return TblBmp['bmpid'][TblBmp['bmpshortname'] == bmpshortname].tolist()
 
     def fullnames_from_shortnames(self, bmpshortname):
-        bmpshortname = self.forceToSingleColumnDataFrame(bmpshortname, colname='bmpshortname')
-        return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpfullname', 'bmpshortname'],
-                                  fromtable=bmpshortname, toname='bmpfullname')
+        return self._map_using_sourcetbl(bmpshortname, tbl='TblBmp',
+                                         fromcol='bmpshortname', tocol='bmpfullname')
 
     def single_bmptype_from_bmpid(self, bmpid):
         TblBmp = self.source.TblBmp  # get relevant source data
