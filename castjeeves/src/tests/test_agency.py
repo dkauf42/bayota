@@ -17,24 +17,28 @@ def test_agency_names_query(resource_a):
 def test_agencies_query_from_lrsegs(resource_a):
     assert 'NONFED' in resource_a.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist()
 
-def test_agencyfullname_from_id(resource_a):
-    assert 'Non-Federal' in resource_a.fullnames_from_ids([9])['agencyfullname'][0]
+def test_agencyfullname_query_from_a_list_of_agencyid(resource_a):
+    test_values = [9]
+    retval = resource_a.fullnames_from_ids(test_values)
+    assert 'Non-Federal' in retval
 
 def test_agencyid_query_from_a_list_of_agencycodes(resource_a):
-    retval = resource_a.ids_from_names(['gsa', 'nasa'])
+    test_values = ['gsa', 'nasa']
+    retval = resource_a.ids_from_names(test_values)
     assert ({7, 8} == set(retval)) and isinstance(retval, list)
 
 def test_agencyid_query_from_a_DataFrame_of_agencycodes(resource_a):
-    test_df = pd.DataFrame(['gsa', 'nasa'], columns=['agencycode'])
-    retval = resource_a.ids_from_names(test_df)
+    test_values = pd.DataFrame(['gsa', 'nasa'], columns=['agencycode'])
+    retval = resource_a.ids_from_names(test_values)
     assert (8 in retval['agencyid'].tolist()) and isinstance(retval, pd.DataFrame)
 
 def test_agencyid_query_from_a_Series_of_agencycodes(resource_a):
-    test_series = pd.Series(['gsa', 'nasa'])
-    retval = resource_a.ids_from_names(test_series)
+    test_values = pd.Series(['gsa', 'nasa'])
+    retval = resource_a.ids_from_names(test_values)
     assert (8 in retval.tolist()) and isinstance(retval, pd.Series)
 
-def test_agencyid_from_name(resource_a):
-    print(resource_a.ids_from_fullnames(['Non-Federal'])['agencyid'][0])
-    assert 9 in resource_a.ids_from_fullnames(['Non-Federal'])['agencyid'].tolist()
+def test_agencyid_query_from_a_list_of_agencyfullnames(resource_a):
+    test_values = ['Non-Federal']
+    retval = resource_a.ids_from_fullnames(test_values)
+    assert (9 in retval) and isinstance(retval, list)
 
