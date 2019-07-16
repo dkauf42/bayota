@@ -1,5 +1,5 @@
 from bayom_e.data_handling.randomizer import random_list_of_names, make_random_bmp_groupings, \
-    randomly_assign_grps_to_loadsources, random_bmp_costs, random_bmp_effectivenesses
+    randomly_assign_grps_to_loadsources, random_bmp_parameters
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
@@ -22,8 +22,8 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
                                                               num_bmpgroups=num_bmpgroups,
                                                               mingrpsize=minbmpgrpsize,
                                                               maxgrpsize=maxbmpgrpsize)
-    tau_dict = random_bmp_costs(bmplist)
-    eta_dict = random_bmp_effectivenesses(bmplist, pollutants_list, lrseg_list, loadsrc_list)
+    tau_dict, eta_dict = random_bmp_parameters(bmplist, pollutants_list, lrseg_list, loadsrc_list,
+                                               cost_upper_limit=1000)
 
     loadsrc_sizes, grploadsrc_dict = randomly_assign_grps_to_loadsources(loadsrc_list=loadsrc_list,
                                                                          bmpgroups_list=bmpgrplist,
