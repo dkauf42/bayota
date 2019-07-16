@@ -5,7 +5,7 @@ import time
 from collections import namedtuple
 
 import numpy as np
-from scipy.stats import skewnorm, expon
+from scipy.stats import skewnorm, expon, nbinom
 
 Group = namedtuple("Group", ['index', 'size', 'bmps'])
 LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
@@ -45,42 +45,48 @@ def random_list_of_names(n, name_length=3, chars=string.ascii_uppercase) -> list
     return name_list
 
 
+def scale_a_distribution(list_of_values, max_value=10, min_value=0, integers=False) -> list:
+    """ shift list of values to match minumum and maximum bounds (and optionally round to integers) """
+    desired_range = max_value - min_value
+
+    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
+    new_list = list_of_values - min(list_of_values)
+    # Values are standardized to be between 0 and 1.
+    new_list = new_list / max(new_list)
+    # The standardized values are rescaled to the desired minimum - maximum range
+    new_list = (new_list * desired_range) + min_value
+
+    if integers:
+        new_list = np.round(new_list, 0).astype(int)
+
+    return list(new_list)
+
+
+def negbinomial_dist(max_value=10, min_value=0, num_values=10000, integers=False,
+                     n=0.5215795, mu=6.8892406):
+    """ generate a negative binomial distribution """
+    p = 1 / ((mu / n) + 1)
+    random_list = nbinom.rvs(n=n, p=p, size=num_values)  # Negative binomial function
+
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
+
+
 def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integers=False):
     """ generate skewed distribution """
     # Negative skewness values are left skewed (long right tail), positive values are right skewed (left tail).
-    skewness_val = skewness
-    desired_range = max_value - min_value
+    random_list = skewnorm.rvs(a=skewness, loc=max_value, size=num_values)
 
-    random_list = skewnorm.rvs(a=skewness_val, loc=max_value, size=num_values)
-    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
-    random_list = random_list - min(random_list)
-    # Values are standardized to be between 0 and 1.
-    random_list = random_list / max(random_list)
-    # The standardized values are rescaled to the desired minimum - maximum range
-    random_list = (random_list * desired_range) + min_value
-
-    if integers:
-        random_list = np.round(random_list, 0).astype(int)
-
-    return list(random_list)
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
 
 
 def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False):
     """ generate exponentially decaying distribution """
-    desired_range = max_value - min_value
-
     random_list = expon.rvs(scale=1, loc=0, size=num_values)
-    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
-    random_list = random_list - min(random_list)
-    # Values are standardized to be between 0 and 1.
-    random_list = random_list / max(random_list)
-    # The standardized values are rescaled to the desired minimum - maximum range
-    random_list = (random_list * desired_range) + min_value
 
-    if integers:
-        random_list = np.round(random_list, 0).astype(int)
-
-    return list(random_list)
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
 
 
 def random_bmp_costs(bmp_list: list, upperlimit: int = 1000) -> dict:
@@ -133,7 +139,9 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
     """ The sizes for each group are determined randomly. 
     """
     # generate skewed distribution
-    random_list = skewed_dist(max_value=maxgrpsize, min_value=1, num_values=10000, skewness=5, integers=True)
+    random_list = negbinomial_dist(max_value=maxgrpsize, min_value=1,
+                                   num_values=10000, integers=True,
+                                   n=0.5215795, mu=6.8892406)
     # The minimum group size is used as a starting point to which we will add.
     grp_sizes = {i: mingrpsize for i in range(0, num_bmpgroups)}
     # Groups are randomly selected to have their size incrementally increased by 1.
