@@ -11,10 +11,6 @@ Group = namedtuple("Group", ['index', 'size', 'bmps'])
 LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
 
 
-def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
-
-
 def word_generator(size=6, chars=string.ascii_uppercase):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -34,7 +30,7 @@ def random_ints_with_sum(n):
 
 
 def random_list_of_names(n, name_length=3, chars=string.ascii_uppercase) -> list:
-    # A list of random names is generated.
+    """ A list of random names is generated. """
     name_list = []
     for i in range(n):
         while True:  # generate a new name until we find one not already in the list.
