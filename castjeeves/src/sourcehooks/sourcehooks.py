@@ -33,6 +33,8 @@ class SourceHook:
         pass
     def names_from_ids(self):
         pass
+    def ids_from_names(self):
+        pass
 
     def _map_using_sourcetbl(self, values, tbl, tocol, fromcol):
         """ Convert values in 's' using a mapping based on the correspondences in the Source table 'tbl'
