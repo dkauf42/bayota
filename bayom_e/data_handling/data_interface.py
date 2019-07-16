@@ -1,5 +1,5 @@
 from bayom_e.data_handling.randomizer import random_list_of_names, make_random_bmp_groupings, \
-    randomly_assign_grps_to_loadsources
+    randomly_assign_grps_to_loadsources, random_bmp_costs, random_bmp_effectivenesses
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
@@ -18,22 +18,17 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
     lrseg_list = random_list_of_names(n=num_lrsegs, name_length=19, chars=string.ascii_uppercase + string.digits)
     loadsrc_list = random_list_of_names(n=num_loadsources, name_length=3, chars=string.ascii_lowercase)
 
-    bmplist, grpsizes, bmpgrplist, tau_dict, eta_dict = make_random_bmp_groupings(pollutants_list=pollutants_list,
-                                                                                  lrseg_list=lrseg_list,
-                                                                                  loadsrc_list=loadsrc_list,
-                                                                                  num_bmps=num_bmps,
-                                                                                  num_bmpgroups=num_bmpgroups,
-                                                                                  mingrpsize=minbmpgrpsize,
-                                                                                  maxgrpsize=maxbmpgrpsize)
-    # print(f"bmp group sizes are {grpsizes}.  sum={sum([s for _, s in grpsizes.items()])}")
-    # print('\n')
+    bmplist, grpsizes, bmpgrplist = make_random_bmp_groupings(num_bmps=num_bmps,
+                                                              num_bmpgroups=num_bmpgroups,
+                                                              mingrpsize=minbmpgrpsize,
+                                                              maxgrpsize=maxbmpgrpsize)
+    tau_dict = random_bmp_costs(bmplist)
+    eta_dict = random_bmp_effectivenesses(bmplist, pollutants_list, lrseg_list, loadsrc_list)
 
     loadsrc_sizes, grploadsrc_dict = randomly_assign_grps_to_loadsources(loadsrc_list=loadsrc_list,
                                                                          bmpgroups_list=bmpgrplist,
                                                                          minloadsrcgrpingsize=minloadsrcgrpingsize,
                                                                          maxloadsrcgrpingsize=maxloadsrcgrpingsize)
-    # print(f"load source sizes are {loadsrc_sizes}.  sum={sum(loadsrc_sizes)}")
-    # print(grploadsrc_list)
 
     # Each load source is assigned a list of bmps according to the bmpgroup(s) already associated with the loadsource.
     bmpsrc_dict = {}

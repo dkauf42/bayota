@@ -112,8 +112,7 @@ def random_bmp_effectivenesses(bmp_list, pollutants_list, lrseg_list, loadsrc_li
     return eta_dict
 
 
-def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
-                              num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
+def make_random_bmp_groupings(num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
     """
 
     Args:
@@ -139,9 +138,6 @@ def make_random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
 
     # A list of random bmp names is generated [of length 'num_bmps'].
     bmp_list = random_list_of_names(n=num_bmps, name_length=6, chars=string.ascii_uppercase + string.ascii_lowercase)
-
-    tau_dict = random_bmp_costs(bmp_list)
-    eta_dict = random_bmp_effectivenesses(bmp_list, pollutants_list, lrseg_list, loadsrc_list)
 
     """ The sizes for each group are determined randomly. 
     """
