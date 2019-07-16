@@ -211,7 +211,7 @@ def make_random_bmp_groupings(num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrps
             thisgrpsbmps.append(bmplistforpopping.pop())
         bmpgroups_list.append(Group(index=g_index, size=len(thisgrpsbmps), bmps=thisgrpsbmps))
 
-    return bmp_list, grp_sizes, bmpgroups_list, tau_dict, eta_dict
+    return bmp_list, grp_sizes, bmpgroups_list
 
 
 def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrcgrpingsize=1,
