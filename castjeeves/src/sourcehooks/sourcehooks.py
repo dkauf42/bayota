@@ -85,9 +85,9 @@ class SourceHook:
 
         return tblsubset.loc[:, [toname]]  # pass column name as list so return type is pandas.DataFrame
 
-    def append_ids_to_table(self, sourcetbl=None, commonheaders_with_append=None, fromtable=None):
+    def append_column_to_table(self, df_to_append_to, sourcetbl, commonheader_and_appendcol):
         sourcetable = getattr(self.source, sourcetbl)
-        tblsubset = sourcetable.loc[:, commonheaders_with_append].merge(fromtable, how='inner')
+        tblsubset = sourcetable.loc[:, commonheader_and_appendcol].merge(df_to_append_to, how='inner')
 
         return tblsubset
 
