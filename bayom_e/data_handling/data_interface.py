@@ -1,5 +1,5 @@
 from bayom_e.data_handling.randomizer import random_list_of_names, make_random_bmp_groupings, \
-    randomly_assign_grps_to_loadsources, random_bmp_parameters
+    randomly_assign_grps_to_loadsources, random_bmp_parameters, random_parcel_parameters
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
@@ -17,6 +17,7 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
     pollutants_list = ['N']
     lrseg_list = random_list_of_names(n=num_lrsegs, name_length=19, chars=string.ascii_uppercase + string.digits)
     loadsrc_list = random_list_of_names(n=num_loadsources, name_length=3, chars=string.ascii_lowercase)
+    agency_list = ['nonfed']
 
     bmplist, grpsizes, bmpgrplist = make_random_bmp_groupings(num_bmps=num_bmps,
                                                               num_bmpgroups=num_bmpgroups,
@@ -39,14 +40,7 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
                 bmpsrc_list.append(b)
         bmpsrc_dict[ls] = bmpsrc_list
 
-    # Random acreages (alpha) and base loadings (phi) are generated
-    alpha_dict = {}
-    phi_dict = {}
-    for l in lrseg_list:
-        for u in loadsrc_list:
-            alpha_dict[(l, u)] = random.randint(0, 10000)
-            for p in pollutants_list:
-                phi_dict[(l, u, p)] = random.randint(0, 2000)
+    alpha_dict, phi_dict, parcel_list = random_parcel_parameters(lrseg_list, loadsrc_list, agency_list, pollutants_list)
 
     if name == 'nlp':
         return NLP_DataPlate(PLTNTS=pollutants_list,
