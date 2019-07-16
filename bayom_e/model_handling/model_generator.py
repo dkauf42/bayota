@@ -96,12 +96,37 @@ class ModelHandlerBase:
 
         model.BMPS = pyo.Set(initialize=datahandler.BMPS, ordered=True)
         model.BMPGRPS = pyo.Set(initialize=datahandler.BMPGRPS)
-        model.BMPGRPING = pyo.Set(initialize=datahandler.BMPGRPING, dimen=2)
-
         model.LOADSRCS = pyo.Set(initialize=datahandler.LOADSRCS)
 
-        model.BMPSRCLINKS = pyo.Set(initialize=datahandler.BMPSRCLINKS, dimen=2)
-        model.BMPGRPSRCLINKS = pyo.Set(initialize=datahandler.BMPGRPSRCLINKS, dimen=2)
+        # BMPGRPING
+        if isinstance(datahandler.BMPGRPING, dict):
+            temp_list = []
+            for grp, bmps in datahandler.BMPGRPING.items():
+                for b in bmps:
+                    temp_list.append((grp, b))
+            model.BMPGRPING = pyo.Set(initialize=temp_list, dimen=2)
+        else:
+            model.BMPGRPING = pyo.Set(initialize=datahandler.BMPGRPING, dimen=2)
+
+        # BMPSRCLINKS
+        if isinstance(datahandler.BMPSRCLINKS, dict):
+            temp_list = []
+            for ldsrc, bmps in datahandler.BMPSRCLINKS.items():
+                for b in bmps:
+                    temp_list.append((b, ldsrc))
+            model.BMPSRCLINKS = pyo.Set(initialize=temp_list, dimen=2)
+        else:
+            model.BMPSRCLINKS = pyo.Set(initialize=datahandler.BMPSRCLINKS, dimen=2)
+
+        # BMPGRPSRCLINKS
+        if isinstance(datahandler.BMPGRPSRCLINKS, dict):
+            temp_list = []
+            for ldsrc, grps in datahandler.BMPGRPSRCLINKS.items():
+                for g in grps:
+                    temp_list.append((g, ldsrc))
+            model.BMPGRPSRCLINKS = pyo.Set(initialize=temp_list, dimen=2)
+        else:
+            model.BMPGRPSRCLINKS = pyo.Set(initialize=datahandler.BMPGRPSRCLINKS, dimen=2)
 
     @staticmethod
     def _define_variables(model):
