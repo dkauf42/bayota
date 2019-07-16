@@ -73,7 +73,7 @@ def negbinomial_dist(n, mu, max_value=10, min_value=0, num_values=10000, integer
 
 def poisson_dist(lmbda, max_value=10, min_value=0, num_values=10000, integers=False):
     """ generate a Poisson distribution """
-    random_list = nbinom.rvs(mu=lmbda, size=num_values)
+    random_list = poisson.rvs(mu=lmbda, size=num_values)
 
     return scale_a_distribution(random_list, integers=integers,
                                 max_value=max_value, min_value=min_value)
