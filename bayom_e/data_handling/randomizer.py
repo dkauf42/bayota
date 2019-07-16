@@ -5,7 +5,7 @@ import time
 from collections import namedtuple
 
 import numpy as np
-from scipy.stats import skewnorm, expon, nbinom, poisson
+from scipy.stats import skewnorm, expon, nbinom, poisson, gamma
 
 Group = namedtuple("Group", ['index', 'size', 'bmps'])
 LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
@@ -71,6 +71,15 @@ def negbinomial_dist(n, mu, max_value=10, min_value=0, num_values=10000, integer
                                 max_value=max_value, min_value=min_value)
 
 
+def gamma_dist(a, b, max_value=10, min_value=0, num_values=10000, integers=False):
+    """ generate a negative binomial distribution """
+    scale = 1/b
+    random_list = gamma.rvs(a=a, scale=scale, size=num_values)
+
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
+
+
 def poisson_dist(lmbda, max_value=10, min_value=0, num_values=10000, integers=False):
     """ generate a Poisson distribution """
     random_list = poisson.rvs(mu=lmbda, size=num_values)
@@ -108,6 +117,33 @@ def random_bmp_parameters(bmp_list, pollutants_list, lrseg_list, loadsrc_list,
                 for u in loadsrc_list:
                     eta_dict[(b, p, l, u)] = round(random.random(), 2)
     return tau_dict, eta_dict
+
+
+def random_parcel_parameters(lrseg_list, loadsrc_list, agency_list, pollutants_list):
+    """ Random acreages (alpha) and base loadings (phi) are generated for each parcel. """
+    num_alpha_values = len(lrseg_list) * len(loadsrc_list) * len(agency_list)
+    num_phi_values = len(lrseg_list) * len(loadsrc_list) * len(agency_list) * len(pollutants_list)
+
+    alpha_list = gamma_dist(max_value=50000, min_value=0,
+                            num_values=num_alpha_values, integers=False,
+                            a=0.0773779258, b=0.0004336348)
+
+    phi_list = gamma_dist(max_value=50000, min_value=0,
+                          num_values=num_phi_values, integers=False,
+                          a=0.60131693, b=0.04721543)
+
+    alpha_dict = {}
+    phi_dict = {}
+    parcel_list = []
+    for l in lrseg_list:
+        for u in loadsrc_list:
+            for h in agency_list:
+                parcel_list.append((l, u, h))
+                alpha_dict[(l, u, h)] = alpha_list.pop()
+                for p in pollutants_list:
+                    phi_dict[(l, u, h, p)] = phi_list.pop()
+
+    return alpha_dict, phi_dict, parcel_list
 
 
 def make_random_bmp_groupings(num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
