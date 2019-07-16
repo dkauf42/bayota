@@ -5,7 +5,7 @@ import time
 from collections import namedtuple
 
 import numpy as np
-from scipy.stats import skewnorm, expon, nbinom
+from scipy.stats import skewnorm, expon, nbinom, poisson
 
 Group = namedtuple("Group", ['index', 'size', 'bmps'])
 LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
@@ -67,6 +67,15 @@ def negbinomial_dist(max_value=10, min_value=0, num_values=10000, integers=False
     """ generate a negative binomial distribution """
     p = 1 / ((mu / n) + 1)
     random_list = nbinom.rvs(n=n, p=p, size=num_values)  # Negative binomial function
+
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
+
+
+def poisson_dist(max_value=10, min_value=0, num_values=10000, integers=False,
+                 lmbda=2.848485):
+    """ generate a Poisson distribution """
+    random_list = nbinom.rvs(mu=lmbda, size=num_values)
 
     return scale_a_distribution(random_list, integers=integers,
                                 max_value=max_value, min_value=min_value)
