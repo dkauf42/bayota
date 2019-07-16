@@ -17,8 +17,6 @@ class DataHandlerBase:
     Attributes:
         save2file ():
         instdatadir ():
-        agencyid ():
-        agencyfullname ():
         PLTNTS (pd.DataFrame):
         LRSEGS (pd.DataFrame):
         BMPS (pd.DataFrame):
@@ -65,9 +63,6 @@ class DataHandlerBase:
         self._baseconditionid = jeeves.scenario.get_baseconditionid(landchangemodelscenario=self._landchangemodelscenario,
                                                                     baseyear=self._baseyear)
         self._costprofileid = 4
-
-        self.agencyid = jeeves.agency.ids_from_names(['NONFED'])['agencyid'][0]  # NONFED agency code
-        self.agencyfullname = 'Non-Federal'
 
         """ Data tables for the set definitions """
         TblBmp = jeeves.source.TblBmp.copy()
