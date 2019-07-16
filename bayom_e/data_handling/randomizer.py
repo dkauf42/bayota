@@ -96,20 +96,18 @@ def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False):
                                 max_value=max_value, min_value=min_value)
 
 
-def random_bmp_costs(bmp_list: list, upperlimit: int = 1000) -> dict:
-    """ Random costs are generated for each bmp. """
-    return {b: random.randint(0, upperlimit) for b in bmp_list}
-
-
-def random_bmp_effectivenesses(bmp_list, pollutants_list, lrseg_list, loadsrc_list) -> dict:
-    """ Random effectiveness values in (0, 1) are generated for each bmp. """
+def random_bmp_parameters(bmp_list, pollutants_list, lrseg_list, loadsrc_list,
+                          cost_upper_limit: int = 1000):
+    """ Random costs and effectiveness values (0, 1) are generated for each bmp. """
+    tau_dict = {}
     eta_dict = {}
     for b in bmp_list:
+        tau_dict[b] = random.randint(0, cost_upper_limit)
         for p in pollutants_list:
             for l in lrseg_list:
                 for u in loadsrc_list:
                     eta_dict[(b, p, l, u)] = round(random.random(), 2)
-    return eta_dict
+    return tau_dict, eta_dict
 
 
 def make_random_bmp_groupings(num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
