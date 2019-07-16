@@ -3,9 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 
-from bayota_settings.base import get_source_pickles_dir
-from . import get_sqlsourcetabledir
-from . import get_sqlmetadatatabledir
+from bayota_settings.base import get_source_pickles_dir, get_source_csvs_dir, get_metadata_csvs_dir
 
 from .sqltables.source_data import SourceData
 from .sqltables.metadata import Metadata as sqlMetaData
@@ -82,7 +80,7 @@ class Jeeves:
             for tblName in tbllist:
                 # for tblName in tbllist:
                 # print("loading source:", tblName)
-                df = cls.loadDataframe(tblName, get_sqlsourcetabledir())
+                df = cls.loadDataframe(tblName, get_source_csvs_dir())
                 sourcedata.addTable(tblName, df)
 
             with open(savename, 'wb') as f:
@@ -110,7 +108,7 @@ class Jeeves:
             for tblName in tbllist:
                 # for tblName in tbllist:
                 # print("loading source:", tblName)
-                df = cls.loadDataframe(tblName, get_sqlmetadatatabledir())
+                df = cls.loadDataframe(tblName, get_metadata_csvs_dir())
                 metadata.addTable(tblName, df)
 
             with open(savename, 'wb') as f:

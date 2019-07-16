@@ -1,13 +1,13 @@
 """
 Interface for retrieving DataPlate and DataHandler objects.
 """
-from .randomizer import random_list_of_names, random_bmp_groupings, randomly_assign_grps_to_loadsources
+from .randomizer import random_list_of_names, make_random_bmp_groupings, \
+    randomly_assign_grps_to_loadsources, random_bmp_parameters, random_parcel_parameters
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
 
 import string
-import random
 
 
 def get_random_dataplate(name='nlp', num_lrsegs=1,
@@ -36,16 +36,14 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
     pollutants_list = ['N']
     lrseg_list = random_list_of_names(n=num_lrsegs, name_length=19, chars=string.ascii_uppercase + string.digits)
     loadsrc_list = random_list_of_names(n=num_loadsources, name_length=3, chars=string.ascii_lowercase)
+    agency_list = ['nonfed']
 
-    bmplist, grpsizes, bmpgrplist, tau_dict, eta_dict = random_bmp_groupings(pollutants_list=pollutants_list,
-                                                                             lrseg_list=lrseg_list,
-                                                                             loadsrc_list=loadsrc_list,
-                                                                             num_bmps=num_bmps,
-                                                                             num_bmpgroups=num_bmpgroups,
-                                                                             mingrpsize=minbmpgrpsize,
-                                                                             maxgrpsize=maxbmpgrpsize)
-    # print(f"bmp group sizes are {grpsizes}.  sum={sum([s for _, s in grpsizes.items()])}")
-    # print('\n')
+    bmplist, grpsizes, bmpgrplist = make_random_bmp_groupings(num_bmps=num_bmps,
+                                                              num_bmpgroups=num_bmpgroups,
+                                                              mingrpsize=minbmpgrpsize,
+                                                              maxgrpsize=maxbmpgrpsize)
+    tau_dict, eta_dict = random_bmp_parameters(bmplist, pollutants_list, lrseg_list, loadsrc_list,
+                                               cost_upper_limit=1000)
 
     loadsrc_sizes, grploadsrc_dict = randomly_assign_grps_to_loadsources(loadsrc_list=loadsrc_list,
                                                                          bmpgroups_list=bmpgrplist,
@@ -63,19 +61,14 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
                 bmpsrc_list.append(b)
         bmpsrc_dict[ls] = bmpsrc_list
 
-    # Random acreages (alpha) and base loadings (phi) are generated
-    alpha_dict = {}
-    phi_dict = {}
-    for l in lrseg_list:
-        for u in loadsrc_list:
-            alpha_dict[(l, u)] = random.randint(0, 10000)
-            for p in pollutants_list:
-                phi_dict[(l, u, p)] = random.randint(0, 2000)
+    alpha_dict, phi_dict, parcel_list = random_parcel_parameters(lrseg_list, loadsrc_list, agency_list, pollutants_list)
 
     if name == 'nlp':
         return NLP_DataPlate(PLTNTS=pollutants_list,
                              LRSEGS=lrseg_list,
                              LOADSRCS=loadsrc_list,
+                             AGENCIES=agency_list,
+                             PARCELS=parcel_list,
                              BMPS=bmplist,
                              BMPGRPS=[g.index for g in bmpgrplist],
                              BMPGRPING={g.index: g.bmps for g in bmpgrplist},
@@ -108,10 +101,12 @@ def get_dataplate(geoscale, geoentities, baseloadingfilename, name='nlp',
     if name == 'nlp':
         return NLP_DataPlate(PLTNTS=dh.PLTNTS,
                              LRSEGS=dh.LRSEGS,
+                             LOADSRCS=dh.LOADSRCS,
+                             AGENCIES=dh.AGENCIES,
+                             PARCELS=dh.PARCELS,
                              BMPS=dh.BMPS,
                              BMPGRPS=dh.BMPGRPS,
                              BMPGRPING=dh.BMPGRPING,
-                             LOADSRCS=dh.LOADSRCS,
                              BMPSRCLINKS=dh.BMPSRCLINKS,
                              BMPGRPSRCLINKS=dh.BMPGRPSRCLINKS,
                              theta=dh.Theta,

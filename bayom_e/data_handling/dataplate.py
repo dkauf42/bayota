@@ -1,3 +1,6 @@
+""" DATAPLATE class
+
+"""
 import pandas as pd
 from dataclasses import dataclass, InitVar
 from bayota_util.str_manip import numstr
@@ -12,10 +15,12 @@ class NLP_DataPlate:
     # Sets
     PLTNTS: pd.DataFrame()
     LRSEGS: pd.DataFrame()
+    LOADSRCS: pd.DataFrame()
+    AGENCIES: pd.DataFrame()
+    PARCELS: pd.DataFrame()
     BMPS: pd.DataFrame()
     BMPGRPS: pd.DataFrame()
     BMPGRPING: pd.DataFrame()
-    LOADSRCS: pd.DataFrame()
     BMPSRCLINKS: pd.DataFrame()
     BMPGRPSRCLINKS: pd.DataFrame()
 

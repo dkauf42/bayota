@@ -12,7 +12,7 @@ import time
 from collections import namedtuple
 
 import numpy as np
-from scipy.stats import skewnorm, expon
+from scipy.stats import skewnorm, expon, nbinom, poisson, gamma
 
 Group = namedtuple("Group", ['index', 'size', 'bmps'])
 LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
@@ -49,69 +49,118 @@ def random_list_of_names(n, name_length=3, chars=string.ascii_uppercase) -> list
     return name_list
 
 
-def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integers=False) -> list:
-    """ Generate a skewed distribution.
+def scale_a_distribution(list_of_values, max_value=10, min_value=0, integers=False) -> list:
+    """ shift list of values to match minumum and maximum bounds (and optionally round to integers) """
+    desired_range = max_value - min_value
 
-    Args:
-        max_value:
-        min_value:
-        num_values:
-        skewness:
-        integers:
+    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
+    new_list = list_of_values - min(list_of_values)
+    # Values are standardized to be between 0 and 1.
+    new_list = new_list / max(new_list)
+    # The standardized values are rescaled to the desired minimum - maximum range
+    new_list = (new_list * desired_range) + min_value
 
-    Returns:
-        a list of numbers
+    if integers:
+        new_list = np.round(new_list, 0).astype(int)
 
-    """
+    return list(new_list)
+
+
+def negbinomial_dist(n, mu, max_value=10, min_value=0, num_values=10000, integers=False):
+    """ generate a negative binomial distribution """
+    p = 1 / ((mu / n) + 1)
+    random_list = nbinom.rvs(n=n, p=p, size=num_values)  # Negative binomial function
+
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
+
+
+def gamma_dist(a, b, max_value=10, min_value=0, num_values=10000, integers=False):
+    """ generate a negative binomial distribution """
+    scale = 1/b
+    random_list = gamma.rvs(a=a, scale=scale, size=num_values)
+
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
+
+
+def poisson_dist(lmbda, max_value=10, min_value=0, num_values=10000, integers=False):
+    """ generate a Poisson distribution """
+    random_list = poisson.rvs(mu=lmbda, size=num_values)
+
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
+
+
+def skewed_dist(max_value=10, min_value=0, num_values=10000, skewness=5, integers=False):
+    """ generate skewed distribution """
     # Negative skewness values are left skewed (long right tail), positive values are right skewed (left tail).
-    skewness_val = skewness
-    desired_range = max_value - min_value
+    random_list = skewnorm.rvs(a=skewness, loc=max_value, size=num_values)
 
-    random_list = skewnorm.rvs(a=skewness_val, loc=max_value, size=num_values)
-    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
-    random_list = random_list - min(random_list)
-    # Values are standardized to be between 0 and 1.
-    random_list = random_list / max(random_list)
-    # The standardized values are rescaled to the desired minimum - maximum range
-    random_list = (random_list * desired_range) + min_value
-
-    if integers:
-        random_list = np.round(random_list, 0).astype(int)
-
-    return list(random_list)
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
 
 
-def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False) -> list:
-    """ Generate an exponentially decaying distribution.
-
-    Args:
-        max_value:
-        min_value:
-        num_values:
-        integers:
-
-    Returns:
-        a list of numbers
-
-    """
-    desired_range = max_value - min_value
-
+def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False):
+    """ generate exponentially decaying distribution """
     random_list = expon.rvs(scale=1, loc=0, size=num_values)
-    # The list is shifted so that the minimum value is equal to zero (+ an optional min_value).
-    random_list = random_list - min(random_list)
-    # Values are standardized to be between 0 and 1.
-    random_list = random_list / max(random_list)
-    # The standardized values are rescaled to the desired minimum - maximum range
-    random_list = (random_list * desired_range) + min_value
 
-    if integers:
-        random_list = np.round(random_list, 0).astype(int)
-
-    return list(random_list)
+    return scale_a_distribution(random_list, integers=integers,
+                                max_value=max_value, min_value=min_value)
 
 
-def random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
-                         num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
+def random_bmp_parameters(bmp_list, pollutants_list, lrseg_list, loadsrc_list,
+                          cost_upper_limit: int = 1000):
+    """ Random costs and effectiveness values (0, 1) are generated for each bmp. """
+    num_tau_values = len(bmp_list)
+    num_eta_values = len(bmp_list) * len(pollutants_list) * len(lrseg_list) * len(loadsrc_list)
+
+    tau_list = gamma_dist(max_value=cost_upper_limit, min_value=0,
+                          num_values=num_tau_values, integers=False,
+                          a=0.1428035429, b=0.0001331214)
+
+    eta_list = gamma_dist(max_value=1, min_value=0,
+                          num_values=num_eta_values, integers=False,
+                          a=1.558558, b=7.631583)
+    tau_dict = {}
+    eta_dict = {}
+    for b in bmp_list:
+        tau_dict[b] = tau_list.pop()
+        for p in pollutants_list:
+            for l in lrseg_list:
+                for u in loadsrc_list:
+                    eta_dict[(b, p, l, u)] = round(eta_list.pop(), 2)
+    return tau_dict, eta_dict
+
+
+def random_parcel_parameters(lrseg_list, loadsrc_list, agency_list, pollutants_list):
+    """ Random acreages (alpha) and base loadings (phi) are generated for each parcel. """
+    num_alpha_values = len(lrseg_list) * len(loadsrc_list) * len(agency_list)
+    num_phi_values = len(lrseg_list) * len(loadsrc_list) * len(agency_list) * len(pollutants_list)
+
+    alpha_list = gamma_dist(max_value=50000, min_value=0,
+                            num_values=num_alpha_values, integers=False,
+                            a=0.0773779258, b=0.0004336348)
+
+    phi_list = gamma_dist(max_value=50000, min_value=0,
+                          num_values=num_phi_values, integers=False,
+                          a=0.60131693, b=0.04721543)
+
+    alpha_dict = {}
+    phi_dict = {}
+    parcel_list = []
+    for l in lrseg_list:
+        for u in loadsrc_list:
+            for h in agency_list:
+                parcel_list.append((l, u, h))
+                alpha_dict[(l, u, h)] = alpha_list.pop()
+                for p in pollutants_list:
+                    phi_dict[(l, u, h, p)] = phi_list.pop()
+
+    return alpha_dict, phi_dict, parcel_list
+
+
+def make_random_bmp_groupings(num_bmps=8, num_bmpgroups=3, mingrpsize=1, maxgrpsize=10):
     """
 
     Args:
@@ -138,21 +187,12 @@ def random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
     # A list of random bmp names is generated [of length 'num_bmps'].
     bmp_list = random_list_of_names(n=num_bmps, name_length=6, chars=string.ascii_uppercase + string.ascii_lowercase)
 
-    # Random costs are generated for each bmp.
-    tau_dict = {b: random.randint(0, 1000) for b in bmp_list}
-
-    # Random effectiveness values are generated for each bmp.
-    eta_dict = {}
-    for b in bmp_list:
-        for p in pollutants_list:
-            for l in lrseg_list:
-                for u in loadsrc_list:
-                    eta_dict[(b, p, l, u)] = round(random.random(), 2)
-
     """ The sizes for each group are determined randomly. 
     """
     # generate skewed distribution
-    random_list = skewed_dist(max_value=maxgrpsize, min_value=1, num_values=10000, skewness=5, integers=True)
+    random_list = negbinomial_dist(max_value=maxgrpsize, min_value=1,
+                                   num_values=10000, integers=True,
+                                   n=0.5215795, mu=6.8892406)
     # The minimum group size is used as a starting point to which we will add.
     grp_sizes = {i: mingrpsize for i in range(0, num_bmpgroups)}
     # Groups are randomly selected to have their size incrementally increased by 1.
@@ -185,7 +225,7 @@ def random_bmp_groupings(pollutants_list, lrseg_list, loadsrc_list,
             thisgrpsbmps.append(bmplistforpopping.pop())
         bmpgroups_list.append(Group(index=g_index, size=len(thisgrpsbmps), bmps=thisgrpsbmps))
 
-    return bmp_list, grp_sizes, bmpgroups_list, tau_dict, eta_dict
+    return bmp_list, grp_sizes, bmpgroups_list
 
 
 def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrcgrpingsize=1,
@@ -199,8 +239,9 @@ def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrc
                          f"It is recommended to lower maxloadsrcgrpingsize to {num_bmpgroups}.")
 
     # The sizes for each load source grouping are determined randomly.
-    random_list = exp_dist(max_value=maxloadsrcgrpingsize, min_value=minloadsrcgrpingsize,
-                           num_values=10000, integers=True)
+    random_list = poisson_dist(max_value=maxloadsrcgrpingsize, min_value=minloadsrcgrpingsize,
+                               num_values=10000, integers=True,
+                               lmbda=2.848485)
     loadsrc_sizes = list(np.random.choice(random_list, size=len(loadsrc_list)))
 
     # BMPGRPS are assigned to load sources using the specified sizes.

@@ -37,13 +37,13 @@ cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}' +
                       ';pwd=' + password)
 
 sourcedata = SourceData()
-skipLargest = True  # to skip the largest (>120 MB) files
+skipLargest = False  # to skip the largest (>120 MB) files
 for tblName in sourcedata.getTblList():
+    print("extracting table:", tblName)
     if skipLargest is True:
         if (tblName == 'TblPointSourceData') | (tblName == 'TblLandUsePreBmp'):
+            print('...nevermind, we are skipping this table because <skipLargest==True>')
             continue
-
-    print("extracting table:", tblName)
 
     query = "SELECT * from dbo."+tblName
 

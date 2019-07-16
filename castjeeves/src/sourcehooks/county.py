@@ -39,7 +39,9 @@ class County(SourceHook):
         """
         try:
             areas = [x.split(', ') for x in countystatestrs]  # split ('County, StateAbbrev')
-            return pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
+            df = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
+            df['stateabbreviation'] = df['stateabbreviation'].str.lower()
+            return df
         except (AssertionError, ValueError) as e:
             raise Exception('** Invalid County Input **\n'
                             '   %s is invalid'

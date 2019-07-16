@@ -44,6 +44,7 @@ class ModelHandlerBase:
                                                                 geoentities=[geoentities],
                                                                 savedata2file=savedata2file,
                                                                 baseloadingfilename=baseloadingfilename)
+        self.check_for_problems_in_data_before_model_construction(self.datahandler)
 
         model = pyo.ConcreteModel()
         self._define_sets(model, self.datahandler, geoscale=geoscale)
@@ -62,7 +63,7 @@ class ModelHandlerBase:
         self._add_expression_to_model(model, expr_name='new_load_for_each_loadsource_expr')
 
         # The model is validated.
-        self.check_for_problems_in_model(model)
+        self.check_for_problems_post_model_construction(model)
 
     def _define_sets(self, model, datahandler, geoscale):
         """ Sets """
@@ -115,6 +116,7 @@ class ModelHandlerBase:
     @staticmethod
     def _define_params(model, datahandler):
         """ Parameters """
+
         # tau = datahandler.tau,
         # eta = datahandler.eta,
         # Theta = datahandler.Theta,
@@ -295,7 +297,12 @@ class ModelHandlerBase:
 
         return model
 
-    def check_for_problems_in_model(self, model):
+    def check_for_problems_in_data_before_model_construction(self, datahandler):
+        for key in datahandler.tau:
+            if datahandler.tau[key] < 0:
+                self.logger.warn(f"*warning* the bmp '{key}' has a negative unit cost ({datahandler.tau[key]})!")
+
+    def check_for_problems_post_model_construction(self, model):
 
         def original_loadsource_problems_dataframe(mdl):
             d = []
