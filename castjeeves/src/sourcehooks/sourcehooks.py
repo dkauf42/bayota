@@ -31,6 +31,8 @@ class SourceHook:
         pass
     def all_ids(self):
         pass
+    def names_from_ids(self):
+        pass
 
     def _map_using_sourcetbl(self, values, tbl, tocol, fromcol):
         """ Convert values in 's' using a mapping based on the correspondences in the Source table 'tbl'
@@ -67,9 +69,6 @@ class SourceHook:
         """ Return a Series of values that have been translated using two columns in a source table """
         translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
         return values.map(translate_dict)
-
-    def names_from_ids(self):
-        pass
 
     def singleconvert(self, sourcetbl=None, toandfromheaders=None,
                       fromtable=None, toname='',
