@@ -108,14 +108,24 @@ def exp_dist(max_value=10, min_value=0, num_values=10000, integers=False):
 def random_bmp_parameters(bmp_list, pollutants_list, lrseg_list, loadsrc_list,
                           cost_upper_limit: int = 1000):
     """ Random costs and effectiveness values (0, 1) are generated for each bmp. """
+    num_tau_values = len(bmp_list)
+    num_eta_values = len(bmp_list) * len(pollutants_list) * len(lrseg_list) * len(loadsrc_list)
+
+    tau_list = gamma_dist(max_value=cost_upper_limit, min_value=0,
+                          num_values=num_tau_values, integers=False,
+                          a=0.1428035429, b=0.0001331214)
+
+    eta_list = gamma_dist(max_value=1, min_value=0,
+                          num_values=num_eta_values, integers=False,
+                          a=1.558558, b=7.631583)
     tau_dict = {}
     eta_dict = {}
     for b in bmp_list:
-        tau_dict[b] = random.randint(0, cost_upper_limit)
+        tau_dict[b] = tau_list.pop()
         for p in pollutants_list:
             for l in lrseg_list:
                 for u in loadsrc_list:
-                    eta_dict[(b, p, l, u)] = round(random.random(), 2)
+                    eta_dict[(b, p, l, u)] = round(eta_list.pop(), 2)
     return tau_dict, eta_dict
 
 
