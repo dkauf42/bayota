@@ -13,7 +13,7 @@ def resource_a(request):
 
 def test_loadsources_query_from_lrseg_agency_sectors_contains_LEGUMEHAY(resource_a):
     retval = resource_a.loadsources_from_lrseg_agency_sector(lrsegs=['N42001PU2_2790_3290'],
-                                                             agencies=['NONFED', 'FWS'],
+                                                             agencies=['nonfed', 'fws'],
                                                              sectors=['Agriculture']).loadsource.tolist()
     assert 'Leguminous Hay' in retval
 

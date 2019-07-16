@@ -17,9 +17,8 @@ class Lrseg(SourceHook):
         pass
 
     def ids_from_names(self, names=None):
-        names = self.forceToSingleColumnDataFrame(names, colname='landriversegment')
-        return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
-                                  fromtable=names, toname='lrsegid')
+        return self._map_using_sourcetbl(names, tbl='TblLandRiverSegment',
+                                         fromcol='landriversegment', tocol='lrsegid')
 
     def names_from_ids(self, ids=None):
         ids = self.forceToSingleColumnDataFrame(ids, colname='landriversegment')

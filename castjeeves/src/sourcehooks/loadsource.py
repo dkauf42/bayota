@@ -17,14 +17,12 @@ class LoadSource(SourceHook):
         self.sector = Sector(sourcedata=sourcedata, metadata=metadata)
 
     def ids_from_names(self, names=None):
-        names = self.forceToSingleColumnDataFrame(names, colname='loadsourceshortname')
-        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceid', 'loadsourceshortname'],
-                                  fromtable=names, toname='loadsourceid')
+        return self._map_using_sourcetbl(names, tbl='TblLoadSource',
+                                         fromcol='loadsourceshortname', tocol='loadsourceid')
 
     def names_from_ids(self, ids=None):
-        ids = self.forceToSingleColumnDataFrame(ids, colname='loadsourceid')
-        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceshortname', 'loadsourceid'],
-                                  fromtable=ids, toname='loadsourceshortname')
+        return self._map_using_sourcetbl(ids, tbl='TblLoadSource',
+                                         fromcol='loadsourceid', tocol='loadsourceshortname')
 
     def loadsourcegroupids_from(self, sectorids=None, loadsourceids=None):
         kwargs = (sectorids, loadsourceids)
@@ -62,9 +60,8 @@ class LoadSource(SourceHook):
                                   use_order_of_sourcetbl=use_order_of_sourcetbl)
 
     def loadsourceids_from(self, sectorids=None):
-        sectorids = self.forceToSingleColumnDataFrame(sectorids, colname='sectorid')
-        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceid', 'sectorid'],
-                                  fromtable=sectorids, toname='loadsourceid')
+        return self._map_using_sourcetbl(sectorids, tbl='TblLoadSource',
+                                         fromcol='sectorid', tocol='loadsourceid')
 
     def single_loadsourcegroupid_from_loadsourcegroup_name(self, loadsourcegroupname):
         TblLoadSourceGroup = self.source.TblLoadSourceGroup  # get relevant source data
@@ -150,7 +147,7 @@ class LoadSource(SourceHook):
         sectorids = self.sector.ids_from_names(names=sectors)
 
         # Generate all combinations of the lrseg, agency, sectors
-        combos = list(product(lrsegids['lrsegid'], agencyids['agencyid']))
+        combos = list(product(lrsegids, agencyids))
         combos = pd.DataFrame(combos, columns=['lrsegid', 'agencyid'])
 
         # use [lrseg, agency] to get loadsourceids
