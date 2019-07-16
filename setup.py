@@ -87,7 +87,8 @@ install_requires = ['pyomo',
                     'matplotlib',
                     'pytest',
                     'boto3',  # necessary for moving files in aws s3
-                    'requests'  # necessary for moving files in aws s3
+                    'requests',  # necessary for moving files in aws s3
+                    'scipy'
                     #'pyutilib'
                     ]
 # boto3 and requests are also required IF using AWS and you want to move files to s3
