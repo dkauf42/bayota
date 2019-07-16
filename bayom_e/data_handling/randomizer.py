@@ -62,8 +62,7 @@ def scale_a_distribution(list_of_values, max_value=10, min_value=0, integers=Fal
     return list(new_list)
 
 
-def negbinomial_dist(max_value=10, min_value=0, num_values=10000, integers=False,
-                     n=0.5215795, mu=6.8892406):
+def negbinomial_dist(n, mu, max_value=10, min_value=0, num_values=10000, integers=False):
     """ generate a negative binomial distribution """
     p = 1 / ((mu / n) + 1)
     random_list = nbinom.rvs(n=n, p=p, size=num_values)  # Negative binomial function
@@ -72,8 +71,7 @@ def negbinomial_dist(max_value=10, min_value=0, num_values=10000, integers=False
                                 max_value=max_value, min_value=min_value)
 
 
-def poisson_dist(max_value=10, min_value=0, num_values=10000, integers=False,
-                 lmbda=2.848485):
+def poisson_dist(lmbda, max_value=10, min_value=0, num_values=10000, integers=False):
     """ generate a Poisson distribution """
     random_list = nbinom.rvs(mu=lmbda, size=num_values)
 
@@ -197,8 +195,9 @@ def randomly_assign_grps_to_loadsources(loadsrc_list, bmpgroups_list, minloadsrc
                          f"It is recommended to lower maxloadsrcgrpingsize to {num_bmpgroups}.")
 
     # The sizes for each load source grouping are determined randomly.
-    random_list = exp_dist(max_value=maxloadsrcgrpingsize, min_value=minloadsrcgrpingsize,
-                           num_values=10000, integers=True)
+    random_list = poisson_dist(max_value=maxloadsrcgrpingsize, min_value=minloadsrcgrpingsize,
+                               num_values=10000, integers=True,
+                               lmbda=2.848485)
     loadsrc_sizes = list(np.random.choice(random_list, size=len(loadsrc_list)))
 
     # BMPGRPS are assigned to load sources using the specified sizes.
