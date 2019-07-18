@@ -23,9 +23,9 @@ class SourceHook:
         self.source = sourcedata
         self.metadata_tables = metadata
 
-        self.id_from_names_map = {list: self._map_LIST_using_sourcetbl,
-                                  pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
-                                  pd.Series: self._map_SERIES_using_sourcetbl}
+        self._id_from_names_map = {list: self._map_LIST_using_sourcetbl,
+                                   pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
+                                   pd.Series: self._map_SERIES_using_sourcetbl}
 
     def all_names(self):
         pass
@@ -36,7 +36,44 @@ class SourceHook:
     def ids_from_names(self):
         pass
 
-    def _map_using_sourcetbl(self, values, tbl, tocol, fromcol):
+    def _map_using_multiple_sourcetbls(self, values,
+                                       tbls: List[str],
+                                       column_sequence: List[str]):
+        """
+
+        Args:
+            values:
+            tbls:
+            column_sequence:
+
+        Note:
+            len(tbls) must be one less than len(column_sequence)
+
+        Returns:
+
+        Example:
+            _map_using_multiple_sourcetbls(
+                                           tbls=['TblLandRiverSegmentAgency', 'TblAgency'],
+                                           column_sequence=['lrsegid', 'agencyid', 'agencycode']
+                                           )
+
+        """
+        assert len(column_sequence) == (len(tbls) + 1)
+
+        newvalues = values.copy()
+        for i, t in enumerate(tbls):
+            sourcetable = getattr(self.source, t)
+            newvalues = self._id_from_names_map[type(values)](newvalues, sourcetable,
+                                                              fromcol=column_sequence[i],
+                                                              tocol=column_sequence[i+1])
+
+        return newvalues
+
+    def _map_using_sourcetbl(self, values,
+                             tbl: str,
+                             tocol: str,
+                             fromcol: str,
+                             todict=False):
         """ Convert values in 's' using a mapping based on the correspondences in the Source table 'tbl'
 
         This is the main method that will call a type-specific submethod
@@ -52,7 +89,9 @@ class SourceHook:
         """
         sourcetable = getattr(self.source, tbl)
 
-        return self.id_from_names_map[type(values)](values, sourcetable, tocol, fromcol)
+        return self._id_from_names_map[type(values)](values, sourcetable,
+                                                     tocol, fromcol,
+                                                     todict=todict)
 
     @staticmethod
     def _map_LIST_using_sourcetbl(values, tbl, tocol, fromcol) -> list:
