@@ -16,9 +16,8 @@ class Sector(SourceHook):
         return TblSector.loc[:, ['sectorid']]
 
     def ids_from_names(self, names=None):
-        names = self.forceToSingleColumnDataFrame(names, colname='sector')
-        return self.singleconvert(sourcetbl='TblSector', toandfromheaders=['sector', 'sectorid'],
-                                  fromtable=names, toname='sectorid')
+        return self._map_using_sourcetbl(names, tbl='TblSector',
+                                         fromcol='sector', tocol='sectorid')
 
     def sectors_from_loadsourceshortname(self, loadsourceshortnames):
         names = self.forceToSingleColumnDataFrame(loadsourceshortnames, colname='loadsourceshortname')
