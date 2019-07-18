@@ -109,9 +109,9 @@ class SourceHook:
         """
         sourcetable = getattr(self.source, tbl)
 
-        return self._id_from_names_map[type(values)](values, sourcetable,
-                                                     tocol, fromcol,
-                                                     todict=todict)
+        return self._method_for_type_map[type(values)](values, sourcetable,
+                                                       tocol, fromcol,
+                                                       todict=todict)
 
     @staticmethod
     def _map_LIST_using_sourcetbl(vals: list,
