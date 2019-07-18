@@ -28,12 +28,8 @@ class Agency(SourceHook):
                                          fromcol='agencyid', tocol='agencyfullname')
 
     def append_agencyid_to_lrsegids(self, lrsegids=None):
-        TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
-
-        columnmask = ['lrsegid', 'agencyid']
-        tblsubset = TblLandRiverSegmentAgency.loc[:, columnmask].merge(lrsegids, how='inner')
-
-        return tblsubset.loc[:, ['lrsegid', 'agencyid']]
+        return self.append_column_to_table(lrsegids, sourcetbl='TblLandRiverSegmentAgency',
+                                           commoncol='lrsegid', appendcol='agencyid')
 
     def agencycodes_from_lrsegnames(self, lrsegnames=None):
         if not isinstance(lrsegnames, list):
