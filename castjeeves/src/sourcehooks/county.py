@@ -12,9 +12,10 @@ class County(SourceHook):
 
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
 
-    def all_names(self):
+    def all_names(self, astype=pd.Series):
         TblCounty = self.source.TblCounty  # get relevant source data
-        return TblCounty.loc[:, 'countyname']
+        name_series = TblCounty.loc[:, 'countyname']
+        return self.type_convert(name_series, astype)
 
     def all_ids(self):
         pass
