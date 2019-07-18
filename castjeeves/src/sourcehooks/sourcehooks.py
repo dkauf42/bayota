@@ -101,8 +101,19 @@ class SourceHook:
                                   fromcol: str,
                                   todict=False):
         """ Return a list of values that have been translated using two columns in a source table """
-        translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
-        return [translate_dict[v] for v in values]
+        translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
+
+        if any(translate_series.index.duplicated()) & (not todict):
+            raise ValueError('duplicate values in the tocol will be dropped when translating a list! '
+                             'try setting todict=True, or using a Series or DataFrame instead of a list')
+
+        if todict:
+            df = sourcetable.loc[:, [fromcol, tocol]]
+            return df.groupby(fromcol)[tocol].apply(list).to_dict()
+        else:
+            translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
+            translate_dict = translate_series.to_dict()
+            return [translate_dict[v] for v in values]
 
     @staticmethod
     def _map_DATAFRAME_using_sourcetbl(values: pd.DataFrame,
