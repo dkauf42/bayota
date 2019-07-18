@@ -118,17 +118,28 @@ class SourceHook:
                                   sourcetable: pd.DataFrame,
                                   tocol: str,
                                   fromcol: str,
-                                  todict=False):
+                                  todict=False,
+                                  flatten_to_set=False):
         """ Return a list of values that have been translated using two columns in a source table """
         translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
 
-        if any(translate_series.index.duplicated()) & (not todict):
+        if any(translate_series.index.duplicated()) & (not todict) & (not flatten_to_set):
             raise ValueError('duplicate values in the tocol will be dropped when translating a list! '
-                             'try setting todict=True, or using a Series or DataFrame instead of a list')
+                             'try setting todict=True or flatten=True, '
+                             'or using a Series or DataFrame instead of a list')
+
+        if todict and flatten_to_set:
+            raise ValueError(f"todict and flatten_to_set arguments are mutually exclusive; "
+                             f"only one can be set to True")
 
         if todict:
             df = sourcetable.loc[:, [fromcol, tocol]]
-            return df.groupby(fromcol)[tocol].apply(list).to_dict()
+            my_series = df.groupby(fromcol)[tocol].apply(list)
+            return my_series.loc[vals].to_dict()
+        elif flatten_to_set:
+            df = sourcetable.loc[:, [fromcol, tocol]]
+            my_series = df.groupby(fromcol)[tocol].apply(list)
+            return set([item for sublist in my_series.loc[vals] for item in sublist])
         else:
             translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
             translate_dict = translate_series.to_dict()
