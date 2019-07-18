@@ -21,7 +21,8 @@ class County(SourceHook):
         pass
 
     def ids_from_names(self):
-        pass
+        raise LookupError('ids_from_names() method is not available for counties, '
+                          'because they must be specified using both a county name and a state abbreviation')
 
     def names_from_ids(self, countyids=None):
         return self._map_using_sourcetbl(countyids, tbl='TblCounty',
