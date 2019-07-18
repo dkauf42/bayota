@@ -11,9 +11,10 @@ class Bmp(SourceHook):
         """ BMP Methods """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
-    def all_names(self):
+    def all_names(self, astype=pd.Series):
         TblBmp = self.source.TblBmp  # get relevant source data]
-        return TblBmp.loc[:, 'bmpshortname']
+        name_series = TblBmp.loc[:, 'bmpshortname']
+        return self.type_convert(name_series, astype)
 
     def ids_from_names(self, shortnames):
         return self._map_using_sourcetbl(shortnames, tbl='TblBmp',

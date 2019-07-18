@@ -11,19 +11,46 @@ class Agency(SourceHook):
 
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
 
-    def all_names(self):
+    def all_names(self, astype=pd.Series):
         TblAgency = self.source.TblAgency  # get relevant source data
-        return TblAgency.loc[:, 'agencycode']
+
+        name_series = TblAgency.loc[:, 'agencycode']
+        return self.type_convert(name_series, astype)
 
     def ids_from_names(self, agencycodes=None):
+        """
+
+        Args:
+            agencycodes (list, pd.Series, or pd.DataFrame):
+
+        Returns:
+            same type as input
+        """
         return self._map_using_sourcetbl(agencycodes, tbl='TblAgency',
                                          fromcol='agencycode', tocol='agencyid')
 
     def ids_from_fullnames(self, fullnames=None):
+        """
+
+        Args:
+            fullnames (list, pd.Series, or pd.DataFrame):
+
+        Returns:
+            same type as input
+        """
         return self._map_using_sourcetbl(fullnames, tbl='TblAgency',
                                          fromcol='agencyfullname', tocol='agencyid')
 
     def fullnames_from_ids(self, ids=None):
+        """
+
+        Args:
+            ids (list, pd.Series, or pd.DataFrame):
+
+        Returns:
+            same type as input
+
+        """
         return self._map_using_sourcetbl(ids, tbl='TblAgency',
                                          fromcol='agencyid', tocol='agencyfullname')
 
