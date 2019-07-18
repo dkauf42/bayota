@@ -16,6 +16,11 @@ class LoadSource(SourceHook):
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
         self.sector = Sector(sourcedata=sourcedata, metadata=metadata)
 
+    def all_names(self, astype=pd.Series):
+        TblLoadSource = self.source.TblLoadSource  # get relevant source data]
+        name_series = TblLoadSource.loc[:, 'loadsourceshortname']
+        return self.type_convert(name_series, astype)
+
     def ids_from_names(self, names=None):
         return self._map_using_sourcetbl(names, tbl='TblLoadSource',
                                          fromcol='loadsourceshortname', tocol='loadsourceid')
