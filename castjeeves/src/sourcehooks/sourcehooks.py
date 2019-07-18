@@ -24,9 +24,9 @@ class SourceHook:
         self.source = sourcedata
         self.metadata_tables = metadata
 
-        self._id_from_names_map = {list: self._map_LIST_using_sourcetbl,
-                                   pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
-                                   pd.Series: self._map_SERIES_using_sourcetbl}
+        self._method_for_type_map = {list: self._map_LIST_using_sourcetbl,
+                                     pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
+                                     pd.Series: self._map_SERIES_using_sourcetbl}
 
     def type_convert(self, orig, astype):
         if isinstance(orig, pd.Series):
@@ -83,9 +83,9 @@ class SourceHook:
         newvalues = values.copy()
         for i, t in enumerate(tbls):
             sourcetable = getattr(self.source, t)
-            newvalues = self._id_from_names_map[type(values)](newvalues, sourcetable,
-                                                              fromcol=column_sequence[i],
-                                                              tocol=column_sequence[i+1])
+            newvalues = self._method_for_type_map[type(values)](newvalues, sourcetable,
+                                                                fromcol=column_sequence[i],
+                                                                tocol=column_sequence[i+1])
 
         return newvalues
 
