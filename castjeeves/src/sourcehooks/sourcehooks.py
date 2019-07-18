@@ -114,7 +114,7 @@ class SourceHook:
                                                      todict=todict)
 
     @staticmethod
-    def _map_LIST_using_sourcetbl(values: list,
+    def _map_LIST_using_sourcetbl(vals: list,
                                   sourcetable: pd.DataFrame,
                                   tocol: str,
                                   fromcol: str,
@@ -132,16 +132,16 @@ class SourceHook:
         else:
             translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
             translate_dict = translate_series.to_dict()
-            return [translate_dict[v] for v in values]
+            return [translate_dict[v] for v in vals]
 
     @staticmethod
-    def _map_DATAFRAME_using_sourcetbl(values: pd.DataFrame,
+    def _map_DATAFRAME_using_sourcetbl(vals: pd.DataFrame,
                                        sourcetable: pd.DataFrame,
                                        tocol: str,
                                        fromcol: str,
                                        todict=False):
         """ Return a DataFrame of values that have been translated using two columns in a source table """
-        tblsubset = sourcetable.loc[:, [tocol, fromcol]].merge(values, how='inner')
+        tblsubset = sourcetable.loc[:, [tocol, fromcol]].merge(vals, how='inner')
 
         if todict:
             return pd.Series(tblsubset[tocol].values, index=tblsubset[fromcol]).to_dict()
@@ -149,7 +149,7 @@ class SourceHook:
             return tblsubset.loc[:, [tocol]]  # pass column name as list so return type is pandas.DataFrame
 
     @staticmethod
-    def _map_SERIES_using_sourcetbl(values: pd.Series,
+    def _map_SERIES_using_sourcetbl(vals: pd.Series,
                                     sourcetable: pd.DataFrame,
                                     tocol: str,
                                     fromcol: str,
@@ -160,7 +160,7 @@ class SourceHook:
         if todict:
             return translate_dict
         else:
-            return values.map(translate_dict)
+            return vals.map(translate_dict)
 
     def singleconvert(self, sourcetbl=None, toandfromheaders=None,
                       fromtable=None, toname='',
