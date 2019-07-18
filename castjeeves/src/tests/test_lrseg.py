@@ -11,6 +11,13 @@ def resource_a(request):
     source = Jeeves.loadInSourceDataFromSQL()
     return Lrseg(sourcedata=source)
 
+def test_lrseg_all_names_query_as_list(resource_a):
+    retval = resource_a.all_names(astype=list)
+    assert ('N24003WL0_4601_0000' in retval) and isinstance(retval, list)
+
+def test_lrseg_all_names_query_as_Series(resource_a):
+    retval = resource_a.all_names(astype='series')
+    assert ('N24003WL0_4601_0000' in retval.tolist()) and isinstance(retval, pd.Series)
 
 def test_removal_of_outofcbws_lrsegs_from_list(resource_a):
     lrseglist = ['N36007ZZ0_9999_9999',

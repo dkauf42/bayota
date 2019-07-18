@@ -9,9 +9,10 @@ class Lrseg(SourceHook):
         """ Geography Methods """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
-    def all_names(self):
-        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data
-        return TblLandRiverSegment.loc[:, 'landriversegment']
+    def all_names(self, astype=pd.Series):
+        TblLandRiverSegment = self.source.TblLandRiverSegment  # get relevant source data]
+        name_series = TblLandRiverSegment.loc[:, 'landriversegment']
+        return self.type_convert(name_series, astype)
 
     def all_ids(self):
         pass
