@@ -4,6 +4,7 @@ import pandas as pd
 from itertools import product
 from itertools import permutations
 import warnings
+from typing import List
 
 
 class SourceHook:
@@ -94,22 +95,42 @@ class SourceHook:
                                                      todict=todict)
 
     @staticmethod
-    def _map_LIST_using_sourcetbl(values, tbl, tocol, fromcol) -> list:
+    def _map_LIST_using_sourcetbl(values: list,
+                                  sourcetable: pd.DataFrame,
+                                  tocol: str,
+                                  fromcol: str,
+                                  todict=False):
         """ Return a list of values that have been translated using two columns in a source table """
         translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
         return [translate_dict[v] for v in values]
 
     @staticmethod
-    def _map_DATAFRAME_using_sourcetbl(values, tbl, tocol, fromcol) -> pd.DataFrame:
+    def _map_DATAFRAME_using_sourcetbl(values: pd.DataFrame,
+                                       sourcetable: pd.DataFrame,
+                                       tocol: str,
+                                       fromcol: str,
+                                       todict=False):
         """ Return a DataFrame of values that have been translated using two columns in a source table """
-        tblsubset = tbl.loc[:, [tocol, fromcol]].merge(values, how='inner')
-        return tblsubset.loc[:, [tocol]]  # pass column name as list so return type is pandas.DataFrame
+        tblsubset = sourcetable.loc[:, [tocol, fromcol]].merge(values, how='inner')
+
+        if todict:
+            return pd.Series(tblsubset[tocol].values, index=tblsubset[fromcol]).to_dict()
+        else:
+            return tblsubset.loc[:, [tocol]]  # pass column name as list so return type is pandas.DataFrame
 
     @staticmethod
-    def _map_SERIES_using_sourcetbl(values, tbl, tocol, fromcol) -> pd.Series:
+    def _map_SERIES_using_sourcetbl(values: pd.Series,
+                                    sourcetable: pd.DataFrame,
+                                    tocol: str,
+                                    fromcol: str,
+                                    todict=False):
         """ Return a Series of values that have been translated using two columns in a source table """
-        translate_dict = pd.Series(tbl[tocol].values, index=tbl[fromcol]).to_dict()
-        return values.map(translate_dict)
+        translate_dict = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol]).to_dict()
+
+        if todict:
+            return translate_dict
+        else:
+            return values.map(translate_dict)
 
     def singleconvert(self, sourcetbl=None, toandfromheaders=None,
                       fromtable=None, toname='',
