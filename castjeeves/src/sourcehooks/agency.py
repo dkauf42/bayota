@@ -44,10 +44,19 @@ class Agency(SourceHook):
         return self.agencycodes_from_lrsegids(lrsegids=lrsegids)
 
     def agencycodes_from_lrsegids(self, lrsegids=None):
-        tblwithagencyids = self.append_agencyid_to_lrsegids(lrsegids=lrsegids).loc[:, ['agencyid']]
+        backtolist = False
+        if isinstance(lrsegids, list):
+            backtolist = True
+            lrsegids = pd.DataFrame(lrsegids, columns=['lrsegid'])
 
-        return self.singleconvert(sourcetbl='TblAgency', toandfromheaders=['agencycode', 'agencyid'],
-                                  fromtable=tblwithagencyids, toname='agencycode')
+        agencycodes = self._map_using_multiple_sourcetbls(lrsegids,
+                                                          tbls=['TblLandRiverSegmentAgency', 'TblAgency'],
+                                                          column_sequence=['lrsegid', 'agencyid', 'agencycode'])
+
+        if backtolist:
+            return agencycodes['agencycode'].tolist()
+        else:
+            return agencycodes
 
     def append_agencyid_to_lrsegidtable(self, lrsegids=None):
         TblLandRiverSegmentAgency = self.source.TblLandRiverSegmentAgency  # get relevant source data
