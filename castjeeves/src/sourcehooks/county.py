@@ -23,9 +23,8 @@ class County(SourceHook):
         pass
 
     def names_from_ids(self, countyids=None):
-        countyids = self.forceToSingleColumnDataFrame(countyids, colname='countyid')
-        return self.singleconvert(sourcetbl='TblCounty', toandfromheaders=['countyid', 'countyname'],
-                                  fromtable=countyids, toname='countyname')
+        return self._map_using_sourcetbl(countyids, tbl='TblCounty',
+                                         fromcol='countyid', tocol='countyname')
 
     def validate_countystatestrs(self, countystatestrs=None):
         """
