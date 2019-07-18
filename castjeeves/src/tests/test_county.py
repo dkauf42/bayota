@@ -15,7 +15,7 @@ def resource_a(request):
 def test_countyid_query_from_list_of_countystatestrs(resource_a):
     test_values = ['Adams, PA', 'Anne Arundel, MD']
     retval = resource_a.countyid_from_countystatestrs(getfrom=test_values).countyid.tolist()
-    assert {11, 194} == set(retval)
+    assert {11, 194} == set(retval) and isinstance(retval, list)
 
 
 def test_all_names_query_contains_AnneArundel_as_list(resource_a):
