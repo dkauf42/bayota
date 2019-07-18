@@ -94,7 +94,7 @@ class SourceHook:
                              tocol: str,
                              fromcol: str,
                              todict=False,
-                             flatten_to_set=True):
+                             flatten_to_set=False):
         """ Convert values in 's' using a mapping based on the correspondences in the Source table 'tbl'
 
         This is the main method that will call a type-specific submethod
