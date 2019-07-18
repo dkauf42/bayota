@@ -28,6 +28,25 @@ class SourceHook:
                                    pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
                                    pd.Series: self._map_SERIES_using_sourcetbl}
 
+    def type_convert(self, orig, astype):
+        if isinstance(orig, pd.Series):
+            """ Series """
+            if isinstance(astype, str):
+                if astype.lower() == 'series':
+                    return orig
+                elif astype.lower() == 'list':
+                    return orig.tolist()
+                else:
+                    raise TypeError(f"unexpected astype value: <{astype}>")
+            else:
+                if astype == pd.Series:
+                    return orig
+                elif astype == list:
+                    return orig.tolist()
+                else:
+                    raise TypeError(f"unexpected astype value: <{astype}>")
+
+
     def all_names(self):
         pass
     def all_ids(self):
