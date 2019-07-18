@@ -93,7 +93,8 @@ class SourceHook:
                              tbl: str,
                              tocol: str,
                              fromcol: str,
-                             todict=False):
+                             todict=False,
+                             flatten_to_set=True):
         """ Convert values in 's' using a mapping based on the correspondences in the Source table 'tbl'
 
         This is the main method that will call a type-specific submethod
@@ -111,7 +112,7 @@ class SourceHook:
 
         return self._method_for_type_map[type(values)](values, sourcetable,
                                                        tocol, fromcol,
-                                                       todict=todict)
+                                                       todict=todict, flatten_to_set=flatten_to_set)
 
     @staticmethod
     def _map_LIST_using_sourcetbl(vals: list,
@@ -121,16 +122,18 @@ class SourceHook:
                                   todict=False,
                                   flatten_to_set=False):
         """ Return a list of values that have been translated using two columns in a source table """
+        if not isinstance(vals, list):
+            raise TypeError(f"unexpected type <{type(vals)}>")
+        if todict and flatten_to_set:
+            raise ValueError(f"todict and flatten_to_set arguments are mutually exclusive; "
+                             f"only one can be set to True")
+
         translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
 
         if any(translate_series.index.duplicated()) & (not todict) & (not flatten_to_set):
             raise ValueError('duplicate values in the tocol will be dropped when translating a list! '
                              'try setting todict=True or flatten=True, '
                              'or using a Series or DataFrame instead of a list')
-
-        if todict and flatten_to_set:
-            raise ValueError(f"todict and flatten_to_set arguments are mutually exclusive; "
-                             f"only one can be set to True")
 
         if todict:
             df = sourcetable.loc[:, [fromcol, tocol]]
@@ -141,7 +144,6 @@ class SourceHook:
             my_series = df.groupby(fromcol)[tocol].apply(list)
             return set([item for sublist in my_series.loc[vals] for item in sublist])
         else:
-            translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
             translate_dict = translate_series.to_dict()
             return [translate_dict[v] for v in vals]
 
@@ -150,28 +152,45 @@ class SourceHook:
                                        sourcetable: pd.DataFrame,
                                        tocol: str,
                                        fromcol: str,
-                                       todict=False):
+                                       todict=False,
+                                       flatten_to_set=False):
         """ Return a DataFrame of values that have been translated using two columns in a source table """
-        tblsubset = sourcetable.loc[:, [tocol, fromcol]].merge(vals, how='inner')
+        if not isinstance(vals, pd.DataFrame):
+            raise TypeError(f"unexpected type <{type(vals)}>")
+
+        my_table = sourcetable.loc[:, [tocol, fromcol]]
 
         if todict:
-            return pd.Series(tblsubset[tocol].values, index=tblsubset[fromcol]).to_dict()
+            my_series = my_table.groupby(fromcol)[tocol].apply(list)
+            return my_series.loc[vals[fromcol]].to_dict()
+        elif flatten_to_set:
+            my_series = my_table.groupby(fromcol)[tocol].apply(list)
+            return set([item for sublist in my_series.loc[vals[fromcol]] for item in sublist])
         else:
-            return tblsubset.loc[:, [tocol]]  # pass column name as list so return type is pandas.DataFrame
+            return my_table.merge(vals, how='inner').loc[:, [tocol]]  # pass column name as list so return type is pandas.DataFrame
 
     @staticmethod
     def _map_SERIES_using_sourcetbl(vals: pd.Series,
                                     sourcetable: pd.DataFrame,
                                     tocol: str,
                                     fromcol: str,
-                                    todict=False):
+                                    todict=False,
+                                    flatten_to_set=False):
         """ Return a Series of values that have been translated using two columns in a source table """
-        translate_dict = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol]).to_dict()
+        if not isinstance(vals, pd.Series):
+            raise TypeError(f"unexpected type <{type(vals)}>")
 
         if todict:
-            return translate_dict
+            df = sourcetable.loc[:, [fromcol, tocol]]
+            my_series = df.groupby(fromcol)[tocol].apply(list)
+            return my_series.loc[vals].to_dict()
+        elif flatten_to_set:
+            df = sourcetable.loc[:, [fromcol, tocol]]
+            my_series = df.groupby(fromcol)[tocol].apply(list)
+            return set([item for sublist in my_series.loc[vals] for item in sublist])
         else:
-            return vals.map(translate_dict)
+            my_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
+            return vals.map(my_series.to_dict())
 
     def singleconvert(self, sourcetbl=None, toandfromheaders=None,
                       fromtable=None, toname='',
