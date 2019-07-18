@@ -156,9 +156,24 @@ class SourceHook:
 
         return tblsubset.loc[:, [toname]]  # pass column name as list so return type is pandas.DataFrame
 
-    def append_column_to_table(self, df_to_append_to, sourcetbl, commonheader_and_appendcol):
+    def append_column_to_table(self, df_to_append_to, sourcetbl,
+                               commoncol, appendcol):
         sourcetable = getattr(self.source, sourcetbl)
-        tblsubset = sourcetable.loc[:, commonheader_and_appendcol].merge(df_to_append_to, how='inner')
+
+        def add_to_list(baselist, colname):
+            """ add colname values to list, according to its type """
+            if isinstance(colname, str):
+                baselist.append(colname)
+            elif isinstance(colname, list):
+                baselist.extend(colname)
+            else:
+                raise ValueError(f'unexpected type for {commoncol}')
+
+        includecols = []
+        add_to_list(includecols, commoncol)
+        add_to_list(includecols, appendcol)
+
+        tblsubset = sourcetable.loc[:, includecols].merge(df_to_append_to, how='inner')
 
         return tblsubset
 
