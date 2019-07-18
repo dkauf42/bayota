@@ -146,30 +146,6 @@ def test_one_to_many_with_list_raises_error_without_todict_or_flatten(resource_a
                                              todict=False, flatten_to_set=False)
 
 
-def test_map_using_a_sourcetable_with_list(resource_a):
-    test_values = [10]
-    retval = resource_a._map_using_sourcetbl(test_values, tbl='TblAgency',
-                                             tocol='agencycode', fromcol='agencyid',
-                                             todict=False, flatten_to_set=False)
-    assert ('nps' in retval) and isinstance(retval, list)
-
-
-def test_map_using_a_sourcetable_with_series(resource_a):
-    test_values = pd.Series([10, 8])
-    retval = resource_a._map_using_sourcetbl(test_values, tbl='TblAgency',
-                                             tocol='agencycode', fromcol='agencyid',
-                                             todict=False, flatten_to_set=False)
-    assert ('nps' in retval.tolist()) and isinstance(retval, pd.Series)
-
-
-def test_map_using_a_sourcetable_with_dataframe(resource_a):
-    test_values = pd.DataFrame([10, 8], columns=['agencyid'])
-    retval = resource_a._map_using_sourcetbl(test_values, tbl='TblAgency',
-                                             tocol='agencycode', fromcol='agencyid',
-                                             todict=False, flatten_to_set=False)
-    assert ('nps' in retval['agencycode'].tolist()) and isinstance(retval, pd.DataFrame)
-
-
 def test_append_ids_to_table(resource_a):
     pass
 
