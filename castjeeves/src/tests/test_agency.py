@@ -11,8 +11,13 @@ def resource_a(request):
     source = Jeeves.loadInSourceDataFromSQL()
     return Agency(sourcedata=source)
 
-def test_agency_names_query(resource_a):
-    assert 'nonfed' in resource_a.all_names().tolist()
+def test_agency_all_names_query_as_list(resource_a):
+    retval = resource_a.all_names(astype=list)
+    assert ('nonfed' in retval) and isinstance(retval, list)
+
+def test_agency_all_names_query_as_Series(resource_a):
+    retval = resource_a.all_names(astype='series')
+    assert ('nonfed' in retval.tolist()) and isinstance(retval, pd.Series)
 
 def test_agencies_query_from_lrsegs(resource_a):
     test_values = ['N42001PU2_2790_3290']
