@@ -24,9 +24,9 @@ class SourceHook:
         self.source = sourcedata
         self.metadata_tables = metadata
 
-        self._method_for_type_map = {list: self._map_LIST_using_sourcetbl,
-                                     pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
-                                     pd.Series: self._map_SERIES_using_sourcetbl}
+        self._method_dict_for_mapping_type = {list: self._map_LIST_using_sourcetbl,
+                                              pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
+                                              pd.Series: self._map_SERIES_using_sourcetbl}
 
     def type_convert(self, orig, astype):
         if isinstance(orig, pd.Series):
@@ -83,9 +83,9 @@ class SourceHook:
         newvalues = values.copy()
         for i, t in enumerate(tbls):
             sourcetable = getattr(self.source, t)
-            newvalues = self._method_for_type_map[type(values)](newvalues, sourcetable,
-                                                                fromcol=column_sequence[i],
-                                                                tocol=column_sequence[i+1])
+            newvalues = self._method_dict_for_mapping_type[type(values)](newvalues, sourcetable,
+                                                                         fromcol=column_sequence[i],
+                                                                         tocol=column_sequence[i+1])
 
         return newvalues
 
@@ -110,9 +110,9 @@ class SourceHook:
         """
         sourcetable = getattr(self.source, tbl)
 
-        return self._method_for_type_map[type(values)](values, sourcetable,
-                                                       tocol, fromcol,
-                                                       todict=todict, flatten_to_set=flatten_to_set)
+        return self._method_dict_for_mapping_type[type(values)](values, sourcetable,
+                                                                tocol, fromcol,
+                                                                todict=todict, flatten_to_set=flatten_to_set)
 
     @staticmethod
     def _map_LIST_using_sourcetbl(vals: list,
