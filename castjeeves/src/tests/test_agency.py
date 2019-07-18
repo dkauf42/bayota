@@ -15,7 +15,9 @@ def test_agency_names_query(resource_a):
     assert 'nonfed' in resource_a.all_names().tolist()
 
 def test_agencies_query_from_lrsegs(resource_a):
-    assert 'nonfed' in resource_a.agencycodes_from_lrsegnames(lrsegnames=['N42001PU2_2790_3290']).agencycode.tolist()
+    test_values = ['N42001PU2_2790_3290']
+    retval = resource_a.agencycodes_from_lrsegnames(lrsegnames=test_values)
+    assert 'nonfed' in retval
 
 def test_agencyfullname_query_from_a_list_of_agencyid(resource_a):
     test_values = [9]
