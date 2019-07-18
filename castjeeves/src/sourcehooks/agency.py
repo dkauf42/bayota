@@ -1,4 +1,5 @@
 from .sourcehooks import SourceHook
+import pandas as pd
 
 from .lrseg import Lrseg
 
@@ -39,8 +40,8 @@ class Agency(SourceHook):
             lrsegnames = lrsegnames.tolist()
 
         # self.__ids_from_names(idtype='lrseg', names=lrsegnames)
-        tblwithlrsegids = self.lrseg.ids_from_names(names=lrsegnames)
-        return self.agencycodes_from_lrsegids(lrsegids=tblwithlrsegids)
+        lrsegids = self.lrseg.ids_from_names(names=lrsegnames)
+        return self.agencycodes_from_lrsegids(lrsegids=lrsegids)
 
     def agencycodes_from_lrsegids(self, lrsegids=None):
         tblwithagencyids = self.append_agencyid_to_lrsegids(lrsegids=lrsegids).loc[:, ['agencyid']]
