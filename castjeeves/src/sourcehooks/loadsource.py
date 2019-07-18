@@ -155,7 +155,8 @@ class LoadSource(SourceHook):
         tblloadsourceids1 = TblLandRiverSegmentAgencyLoadSource.loc[:, columnmask].merge(combos, how='inner')
 
         # use sectors/loadsourcegroups to get loadsourceids
-        tblloadsourceids2 = self.loadsourceids_from(sectorids=sectorids)
+        sectorid_df = pd.DataFrame(sectorids, columns=['sectorid'])
+        tblloadsourceids2 = self.loadsourceids_from(sectorids=sectorid_df)
 
         # get the intersection of these two loadsourceid tables
         tblloadsourceids = tblloadsourceids1.merge(tblloadsourceids2, how='inner')
