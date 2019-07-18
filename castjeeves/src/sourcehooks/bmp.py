@@ -43,9 +43,8 @@ class Bmp(SourceHook):
         return TblUnit[TblUnit['unit'] == unitname]['unitid'].values[0]
 
     def bmpids_from_categoryids(self, categoryids):
-        categoryids = self.forceToSingleColumnDataFrame(categoryids, colname='bmpcategoryid')
-        return self.singleconvert(sourcetbl='TblBmp', toandfromheaders=['bmpcategoryid', 'bmpid'],
-                                  fromtable=categoryids, toname='bmpid')
+        return self._map_using_sourcetbl(categoryids, tbl='TblBmp',
+                                         fromcol='bmpcategoryid', tocol='bmpid')
 
     def efficiency_bmps(self):
         efftypeid = self.source.TblBmpType[self.source.TblBmpType['bmptype'] == 'Efficiency']['bmptypeid'].tolist()[0]
