@@ -1,3 +1,4 @@
+import pandas as pd
 from .sourcehooks import SourceHook
 
 
@@ -7,9 +8,10 @@ class Sector(SourceHook):
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Sector Methods
-    def all_names(self):
-        TblSector = self.source.TblSector  # get relevant source data
-        return TblSector.loc[:, 'sector']
+    def all_names(self, astype=pd.Series):
+        TblSector = self.source.TblSector  # get relevant source data]
+        name_series = TblSector.loc[:, 'sector']
+        return self.type_convert(name_series, astype)
 
     def all_ids(self):
         TblSector = self.source.TblSector  # get relevant source data
