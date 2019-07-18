@@ -11,12 +11,6 @@ def resource_geo(request):
     return Geo(sourcedata=source)
 
 
-def test_correct_countyid_queried_from_AnneArundel_countyname_and_stateabbreviation(resource_geo):
-    retval = resource_geo.county.countyid_from_countystatestrs(getfrom=['Adams, PA',
-                                                               'Anne Arundel, MD']).countyid.tolist()
-    assert 11 in retval
-
-
 def test_generic_lrsegid_query_returns_correct_from_countystatestrs(resource_geo):
     assert 100 in resource_geo.lrsegids_from(countystatestrs=['Adams, PA', 'Anne Arundel, MD']).lrsegid.tolist()
 
