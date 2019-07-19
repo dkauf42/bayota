@@ -210,7 +210,6 @@ class SourceHook:
         my_series = sourcetable.loc[:, col]
         return self.type_convert(my_series, astype)
 
-
     def singleconvert(self, sourcetbl=None, toandfromheaders=None,
                       fromtable=None, toname='',
                       use_order_of_sourcetbl=True):
