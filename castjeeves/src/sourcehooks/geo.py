@@ -76,17 +76,18 @@ class Geo(SourceHook):
         return tblsubset.loc[:, 'geographyfullname']
 
     def geonames_from_lrsegid(self, lrsegids=None):
-        geographyids = self.singleconvert(sourcetbl='TblGeographyLrSeg', toandfromheaders=['lrsegid', 'geographyid'],
-                                          fromtable=lrsegids, toname='geographyid', use_order_of_sourcetbl=False)
+        geotypeid_to = self.geotypeid_from_geotypename(['Land River Segment indicating if in or out of CBWS'])[0]
+        lrsegid_df = pd.DataFrame(list(zip(lrsegids, [geotypeid_to]*len(lrsegids))),
+                                  columns=['lrsegid', 'geographytypeid'])
 
-        allgeofullnames_of_type = self.geonames_from_geotypename(['Land River Segment indicating if in or out of CBWS'])
+        lrsegid_df = self.append_column_to_table(df_to_append_to=lrsegid_df,
+                                                 sourcetbl='TblGeographyLrSeg',
+                                                 commoncol='lrsegid',
+                                                 appendcol='geographyid')
 
-        geographyfullnames = self.singleconvert(sourcetbl='TblGeography', toandfromheaders=['geographyid', 'geographyfullname'],
-                                                fromtable=geographyids, toname='geographyfullname', use_order_of_sourcetbl=False)
-
-        # Get intersection of (1) all fullnames of lrseg type and (2) the input data fullnames
-        return pd.Series(list(set(allgeofullnames_of_type) & set(geographyfullnames['geographyfullname'])))
-
+        include_cols = ['geographytypeid', 'geographyid', 'geographyfullname']
+        geo_df = self.source.TblGeography.loc[:, include_cols].merge(lrsegid_df, how='inner')
+        return geo_df.loc[:, 'geographyfullname'].tolist()
 
     def lrsegids_from(self, lrsegnames=None, countystatestrs=None, countyid=None):
         kwargs = (lrsegnames, countystatestrs, countyid)
@@ -97,15 +98,29 @@ class Geo(SourceHook):
         if lrsegnames is not None:
             return self.lrseg.ids_from_names(names=lrsegnames)
         elif countystatestrs is not None:
-            return self.__lrsegids_from_countystatestrs(getfrom=countystatestrs)
+            if isinstance(countystatestrs, list):
+                lrsegid_list = []
+                li_dict = self.__lrsegids_from_countystatestrs(getfrom=countystatestrs)
+                for ci in li_dict.keys():
+                    lrsegid_list.extend(li_dict[ci])
+                return lrsegid_list
+            else:
+                return self.__lrsegids_from_countystatestrs(getfrom=countystatestrs)
         elif countyid is not None:
-            return self.__lrsegids_from_countyid(getfrom=countyid)
+            if isinstance(countyid, list):
+                lrsegid_list = []
+                li_dict = self.__lrsegids_from_countyid(getfrom=countyid)
+                for ci in li_dict.keys():
+                    lrsegid_list.extend(li_dict[ci])
+                return lrsegid_list
+            else:
+                return self.__lrsegids_from_countyid(getfrom=countyid)
         else:
             raise ValueError('unrecognized input')
 
     def __lrsegids_from_countystatestrs(self, getfrom=None):
         countyids = self.county.countyid_from_countystatestrs(getfrom=getfrom)
-        return self.__lrsegids_from_countyid(getfrom=countyids)
+        return self.__lrsegids_from_countyid(getfrom=countyids, todict=True)
 
     def __lrsegids_from_countyid(self, getfrom=None, todict=True, flatten_to_set=False):
         return self._map_using_sourcetbl(getfrom, tbl='TblLandRiverSegment',
@@ -114,8 +129,7 @@ class Geo(SourceHook):
 
     def lrsegids_from_geoscale_with_names(self, scale='', areanames=None):
         if scale == 'County':
-            tblsubset = self.lrsegids_from(countystatestrs=areanames)
-            return tblsubset.loc[:, ['lrsegid']]
+            return self.lrsegids_from(countystatestrs=areanames)
         elif scale == "Land River Segment indicating if in or out of CBWS":
             segstrlist = [x.split("-")[1].split("(")[0] for x in areanames]
             return self.singleconvert(sourcetbl='TblLandRiverSegment',
