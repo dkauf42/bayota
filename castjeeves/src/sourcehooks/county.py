@@ -26,7 +26,7 @@ class County(SourceHook):
         return self._map_using_sourcetbl(countyids, tbl='TblCounty',
                                          fromcol='countyid', tocol='countyname')
 
-    def validate_countystatestrs(self, countystatestrs=None):
+    def validate_countystatestrs(self, countystatestrs=None) -> pd.DataFrame:
         """
 
         Args:
@@ -48,26 +48,31 @@ class County(SourceHook):
                             '   -- e.g. [\'Adams, PA\', \'Hardy, WV\']'
                             % countystatestrs).with_traceback(e.__traceback__)
 
-    def countyid_from_countystatestrs(self, getfrom=None, append=False):
+    def countyid_from_countystatestrs(self, getfrom=None, astype=None, append=False):
         TblCounty = self.source.TblCounty  # get relevant source data
 
         rowmask = self.validate_countystatestrs(getfrom)
+        columnmask = ['countyid', 'countyname', 'stateabbreviation']
+        countyids = TblCounty.loc[:, columnmask].merge(rowmask, how='inner').loc[:, 'countyid']
 
-        columnmask = ['countyid', 'countyname', 'stateid', 'stateabbreviation', 'fips']
-        tblsubset = TblCounty.loc[:, columnmask].merge(rowmask, how='inner')
-
-        if append:
-            return tblsubset.loc[:, ['countyname', 'countyid']]
+        if isinstance(getfrom, list):
+            countyids = countyids.tolist()
+        elif isinstance(getfrom, pd.Series):
+            pass
         else:
-            return tblsubset.loc[:, ['countyid']]  # pass column name as list so return type is pandas.DataFrame
+            raise TypeError(f"unexpected type <{type(getfrom)}>")
+
+        if astype:
+            return self.type_convert(orig=countyids, astype=astype)
+        else:
+            return countyids
 
     def add_lrsegs_to_counties(self, countystatestrs=None):
-        countyids = self.countyid_from_countystatestrs(getfrom=countystatestrs, append=True)
-
+        countyids = self.countyid_from_countystatestrs(getfrom=countystatestrs)
         strnospaces = [''.join(x.split(', ')).replace(" ", "") for x in countystatestrs]
-        countyids['countystatestrs'] = strnospaces
 
-        tblsubset = self.lrseg.append_lrsegs_to_counties(tablewithcountyids=countyids)
+        df = pd.DataFrame(countyids, columns=['countyid'])
+        df['countystatestr'] = strnospaces
 
-        return tblsubset
+        return self.lrseg.append_lrsegs_to_counties(tablewithcountyids=df)
 
