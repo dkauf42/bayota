@@ -11,16 +11,22 @@ def resource_geo(request):
     return Geo(sourcedata=source)
 
 
-def test_generic_lrsegid_query_returns_correct_from_countystatestrs(resource_geo):
-    assert 100 in resource_geo.lrsegids_from(countystatestrs=['Adams, PA', 'Anne Arundel, MD']).lrsegid.tolist()
+def test_generic_lrsegid_query_returns_correct_from_countystatestrs_list(resource_geo):
+    test_values = ['Adams, PA', 'Anne Arundel, MD']
+    retval = resource_geo.lrsegids_from(countystatestrs=test_values)
+    assert (100 in retval) and isinstance(retval, list)
 
 
-def test_generic_lrsegid_query_returns_correct_from_lrsegnames(resource_geo):
-    assert 741 in resource_geo.lrsegids_from(lrsegnames=['N42001PU2_2790_3290']).lrsegid.tolist()
+def test_generic_lrsegid_query_returns_correct_from_lrsegnames_list(resource_geo):
+    test_values = ['N42001PU2_2790_3290']
+    retval = resource_geo.lrsegids_from(lrsegnames=test_values)
+    assert (741 in retval) and isinstance(retval, list)
 
 
-def test_generic_lrsegid_query_returns_correct_from_countyids(resource_geo):
-    assert 100 in resource_geo.lrsegids_from(countyid=[11]).lrsegid.tolist()
+def test_generic_lrsegid_query_returns_correct_from_countyids_list(resource_geo):
+    test_values = [11]
+    retval = resource_geo.lrsegids_from(countyid=test_values)
+    assert (100 in retval) and isinstance(retval, list)
 
 
 def test_generic_lrsegid_query_raises_error_for_more_than_one_keyword_argument(resource_geo):
@@ -29,21 +35,39 @@ def test_generic_lrsegid_query_raises_error_for_more_than_one_keyword_argument(r
                                    lrsegnames=['N42001PU2_2790_3290'])
 
 
-def test_lrsegs_query_from_geoscale_with_names(resource_geo):
-    assert 'N42001PU2_2790_3290' in resource_geo.lrseg.names_from_ids(ids=resource_geo.lrsegids_from_geoscale_with_names(scale='County',
-                                                                                                       areanames=['Adams, PA']
-                                                                                                       )
-                                                                      ).landriversegment.tolist()
+def test_lrsegs_query_from_geoscale_with_single_county_name_in_a_list(resource_geo):
+    test_values = ['Adams, PA']
+    intermediate_lrsegids = resource_geo.lrsegids_from_geoscale_with_names(scale='County', areanames=test_values)
+    retval = resource_geo.lrseg.names_from_ids(ids=intermediate_lrsegids)
+    assert ('N42001PU2_2790_3290' in retval) and isinstance(retval, list)
+
+
+def test_lrsegs_query_from_Northumberland_county(resource_geo):
+    test_values = ['Northumberland, VA']
+    intermediate_lrsegids = resource_geo.lrsegids_from_geoscale_with_names(scale='County', areanames=test_values)
+    retval = resource_geo.lrseg.names_from_ids(ids=intermediate_lrsegids)
+    assert isinstance(retval, list) and \
+           set(retval) == {'N51133RL0_6450_0000', 'N51133RL0_6530_0000', 'N51133RL0_6501_0000',
+                           'N51133PL0_6272_0000', 'N51133PL0_6271_0000', 'N51133PL0_6270_0000',
+                           'N51133PL0_6140_0000'}
+
+
+def test_lrsegs_query_from_geoscale_with_county_names_in_a_list(resource_geo):
+    test_values = ['Adams, PA', 'Anne Arundel, MD']
+    intermediate_lrsegids = resource_geo.lrsegids_from_geoscale_with_names(scale='County', areanames=test_values)
+    retval = resource_geo.lrseg.names_from_ids(ids=intermediate_lrsegids)
+    assert ('N24003XL3_4710_0000' in retval) and ('N42001PU2_2790_3290' in retval) and isinstance(retval, list)
 
 
 def test_lrseg_geographyfullnames_query_from_county_state_str(resource_geo):
-    geodf = resource_geo.county.add_lrsegs_to_counties(countystatestrs=['Anne Arundel, MD'])
+    test_values = ['Anne Arundel, MD']
 
-    geodf = resource_geo.lrseg.remove_outofcbws_lrsegs(lrsegdf=geodf)
+    intermediate_geodf = resource_geo.county.add_lrsegs_to_counties(countystatestrs=test_values)
+    intermediate_geodf = resource_geo.lrseg.remove_outofcbws_lrsegs(lrsegdf=intermediate_geodf)
+    intermediate_lrsegid_list = intermediate_geodf.loc[:, 'lrsegid'].to_list()
+    retval = resource_geo.geonames_from_lrsegid(lrsegids=intermediate_lrsegid_list)
 
-    geonames = resource_geo.geonames_from_lrsegid(lrsegids=geodf[['lrsegid']])
-
-    assert 'MD-N24003XU3_4650_0001(CBWS)' in list(geonames)
+    assert ('MD-N24003XU3_4650_0001(CBWS)' in retval) and isinstance(retval, list)
 
 
 def test_geo_scale_query_contains_COUNTY(resource_geo):
@@ -51,14 +75,16 @@ def test_geo_scale_query_contains_COUNTY(resource_geo):
 
 
 def test_geo_names_query_using_ID_for_COUNTYID_contains_ANNEARUNDEL(resource_geo):
-    assert 'Anne Arundel, MD' in resource_geo.geonames_from_geotypeid(geotype=[2]).tolist()
+    test_values = [2]
+    retval = resource_geo.geonames_from_geotypeid(geotype=test_values).tolist()
+    assert 'Anne Arundel, MD' in retval
 
 
 def test_geo_names_query_using_LRSEGID(resource_geo):
-    lrsegids = resource_geo.lrsegids_from_geoscale_with_names(scale='County',
-                                                              areanames=['Adams, PA']
-                                                              )
-    assert 'PA-N42001PU2_2790_3290(CBWS)' in resource_geo.geonames_from_lrsegid(lrsegids=lrsegids).tolist()
+    test_values = ['Adams, PA']
+    intermediate_lrsegids = resource_geo.lrsegids_from_geoscale_with_names(scale='County', areanames=test_values)
+    retval = resource_geo.geonames_from_lrsegid(lrsegids=intermediate_lrsegids)
+    assert ('PA-N42001PU2_2790_3290(CBWS)' in retval) and isinstance(retval, list)
 
 
 def test_geo_names_query_using_ID_raises_error_when_passed_a_name(resource_geo):
@@ -67,7 +93,9 @@ def test_geo_names_query_using_ID_raises_error_when_passed_a_name(resource_geo):
 
 
 def test_geo_names_query_using_name_for_COUNTYID_contains_ANNEARUNDEL(resource_geo):
-    assert 'Anne Arundel, MD' in resource_geo.geonames_from_geotypename(geotype=['County']).tolist()
+    test_values = ['County']
+    retval = resource_geo.geonames_from_geotypename(geotype=test_values).tolist()
+    assert 'Anne Arundel, MD' in retval
 
 
 def test_geo_names_query_raises_error_when_specified_scale_does_not_exist(resource_geo):

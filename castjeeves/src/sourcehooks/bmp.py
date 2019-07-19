@@ -12,12 +12,13 @@ class Bmp(SourceHook):
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self, astype=pd.Series):
-        TblBmp = self.source.TblBmp  # get relevant source data]
-        name_series = TblBmp.loc[:, 'bmpshortname']
-        return self.type_convert(name_series, astype)
+        return self.grab_sourcetbl_column(tbl='TblBmp', col='bmpshortname', astype=astype)
 
-    def ids_from_names(self, shortnames):
-        return self._map_using_sourcetbl(shortnames, tbl='TblBmp',
+    def all_ids(self, astype=pd.Series):
+        return self.grab_sourcetbl_column(tbl='TblBmp', col='bmpid', astype=astype)
+
+    def ids_from_names(self, names):
+        return self._map_using_sourcetbl(names, tbl='TblBmp',
                                          fromcol='bmpshortname', tocol='bmpid')
 
     def names_from_ids(self, bmpids=None):

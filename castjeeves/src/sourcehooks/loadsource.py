@@ -17,9 +17,10 @@ class LoadSource(SourceHook):
         self.sector = Sector(sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self, astype=pd.Series):
-        TblLoadSource = self.source.TblLoadSource  # get relevant source data]
-        name_series = TblLoadSource.loc[:, 'loadsourceshortname']
-        return self.type_convert(name_series, astype)
+        return self.grab_sourcetbl_column(tbl='TblLoadSource', col='loadsourceshortname', astype=astype)
+
+    def all_ids(self, astype=pd.Series):
+        return self.grab_sourcetbl_column(tbl='TblLoadSource', col='loadsourceid', astype=astype)
 
     def ids_from_names(self, names=None):
         return self._map_using_sourcetbl(names, tbl='TblLoadSource',

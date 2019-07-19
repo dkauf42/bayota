@@ -9,13 +9,10 @@ class Sector(SourceHook):
 
     # Sector Methods
     def all_names(self, astype=pd.Series):
-        TblSector = self.source.TblSector  # get relevant source data]
-        name_series = TblSector.loc[:, 'sector']
-        return self.type_convert(name_series, astype)
+        return self.grab_sourcetbl_column(tbl='TblSector', col='sector', astype=astype)
 
-    def all_ids(self):
-        TblSector = self.source.TblSector  # get relevant source data
-        return TblSector.loc[:, ['sectorid']]
+    def all_ids(self, astype=pd.Series):
+        return self.grab_sourcetbl_column(tbl='TblSector', col='sectorid', astype=astype)
 
     def ids_from_names(self, names=None):
         return self._map_using_sourcetbl(names, tbl='TblSector',

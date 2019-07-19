@@ -13,12 +13,10 @@ class County(SourceHook):
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self, astype=pd.Series):
-        TblCounty = self.source.TblCounty  # get relevant source data
-        name_series = TblCounty.loc[:, 'countyname']
-        return self.type_convert(name_series, astype)
+        return self.grab_sourcetbl_column(tbl='TblCounty', col='countyname', astype=astype)
 
-    def all_ids(self):
-        pass
+    def all_ids(self, astype=pd.Series):
+        return self.grab_sourcetbl_column(tbl='TblCounty', col='countyid', astype=astype)
 
     def ids_from_names(self):
         raise LookupError('ids_from_names() method is not available for counties, '

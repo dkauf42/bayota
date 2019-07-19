@@ -12,10 +12,16 @@ def resource_a(request):
     return County(sourcedata=source)
 
 
-def test_countyid_query_from_list_of_countystatestrs(resource_a):
+def test_countyid_query_from_LIST_of_countystatestrs(resource_a):
     test_values = ['Adams, PA', 'Anne Arundel, MD']
-    retval = resource_a.countyid_from_countystatestrs(getfrom=test_values).countyid.tolist()
+    retval = resource_a.countyid_from_countystatestrs(getfrom=test_values)
     assert {11, 194} == set(retval) and isinstance(retval, list)
+
+
+def test_countyid_query_from_SERIES_of_countystatestrs(resource_a):
+    test_values = pd.Series(['Adams, PA', 'Anne Arundel, MD'])
+    retval = resource_a.countyid_from_countystatestrs(getfrom=test_values)
+    assert {11, 194} == set(retval) and isinstance(retval, pd.Series)
 
 
 def test_all_names_query_contains_AnneArundel_as_list(resource_a):

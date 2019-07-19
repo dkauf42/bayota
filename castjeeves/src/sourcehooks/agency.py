@@ -12,10 +12,10 @@ class Agency(SourceHook):
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self, astype=pd.Series):
-        TblAgency = self.source.TblAgency  # get relevant source data
+        return self.grab_sourcetbl_column(tbl='TblAgency', col='agencycode', astype=astype)
 
-        name_series = TblAgency.loc[:, 'agencycode']
-        return self.type_convert(name_series, astype)
+    def all_ids(self, astype=pd.Series):
+        return self.grab_sourcetbl_column(tbl='TblAgency', col='agencyid', astype=astype)
 
     def ids_from_names(self, agencycodes=None):
         """

@@ -36,24 +36,36 @@ class SourceHook:
                     return orig
                 elif astype.lower() == 'list':
                     return orig.tolist()
-                else:
-                    raise TypeError(f"unexpected astype value: <{astype}>")
             else:
                 if astype == pd.Series:
                     return orig
                 elif astype == list:
                     return orig.tolist()
-                else:
-                    raise TypeError(f"unexpected astype value: <{astype}>")
+
+        elif isinstance(orig, list):
+            """ List """
+            if isinstance(astype, str):
+                if astype.lower() == 'series':
+                    return pd.Series(orig)
+                elif astype.lower() == 'list':
+                    return orig
+            else:
+                if astype == pd.Series:
+                    return pd.Series(orig)
+                elif astype == list:
+                    return orig
+
+        raise TypeError(f"unexpected astype <{astype}> for conversion from <{type(orig)}>")
+
 
 
     def all_names(self):
         pass
     def all_ids(self):
         pass
-    def names_from_ids(self):
+    def names_from_ids(self, ids):
         pass
-    def ids_from_names(self):
+    def ids_from_names(self, names):
         pass
 
     def _map_using_multiple_sourcetbls(self, values,
@@ -191,6 +203,15 @@ class SourceHook:
         else:
             my_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
             return vals.map(my_series.to_dict())
+
+    def grab_sourcetbl_column(self,
+                             tbl: str,
+                             col: str,
+                             astype=pd.Series):
+        sourcetable = getattr(self.source, tbl)  # get relevant source data
+        my_series = sourcetable.loc[:, col]
+        return self.type_convert(my_series, astype)
+
 
     def singleconvert(self, sourcetbl=None, toandfromheaders=None,
                       fromtable=None, toname='',
