@@ -53,17 +53,13 @@ class LoadSource(SourceHook):
                                     toandfromheaders=['loadsourcegroupid', 'loadsourceid'],
                                     fromtable=getfrom, toname='loadsourcegroupid')
 
-    def fullnames_from_shortnames(self, loadsourceshortname, use_order_of_sourcetbl=True):
-        loadsourceshortname = self.forceToSingleColumnDataFrame(loadsourceshortname, colname='loadsourceshortname')
-        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsource', 'loadsourceshortname'],
-                                  fromtable=loadsourceshortname, toname='loadsource',
-                                  use_order_of_sourcetbl=use_order_of_sourcetbl)
+    def fullnames_from_shortnames(self, shortnames):
+        return self._map_using_sourcetbl(shortnames, tbl='TblLoadSource',
+                                         fromcol='loadsourceshortname', tocol='loadsource')
 
-    def shortnames_from_fullnames(self, loadsourcefullname, use_order_of_sourcetbl=True):
-        loadsource = self.forceToSingleColumnDataFrame(loadsourcefullname, colname='loadsource')
-        return self.singleconvert(sourcetbl='TblLoadSource', toandfromheaders=['loadsourceshortname', 'loadsource'],
-                                  fromtable=loadsource, toname='loadsourceshortname',
-                                  use_order_of_sourcetbl=use_order_of_sourcetbl)
+    def shortnames_from_fullnames(self, fullnames, use_order_of_sourcetbl=True):
+        return self._map_using_sourcetbl(fullnames, tbl='TblLoadSource',
+                                         fromcol='loadsource', tocol='loadsourceshortname')
 
     def loadsourceids_from(self, sectorids=None):
         return self._map_using_sourcetbl(sectorids, tbl='TblLoadSource',

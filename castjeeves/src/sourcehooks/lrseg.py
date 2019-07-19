@@ -20,9 +20,8 @@ class Lrseg(SourceHook):
                                          fromcol='landriversegment', tocol='lrsegid')
 
     def names_from_ids(self, ids=None):
-        ids = self.forceToSingleColumnDataFrame(ids, colname='landriversegment')
-        return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'landriversegment'],
-                                  fromtable=ids, toname='landriversegment')
+        return self._map_using_sourcetbl(ids, tbl='TblLandRiverSegment',
+                                         fromcol='lrsegid', tocol='landriversegment')
 
     def totalacres_for(self, lrsegnames=None, lrsegids=None):
         if lrsegnames is not None:

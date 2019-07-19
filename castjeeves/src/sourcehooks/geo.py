@@ -19,6 +19,11 @@ class Geo(SourceHook):
         TblGeoType = TblGeoType.loc[TblGeoType['castscenariogeographytype'] == True]
         return TblGeoType.loc[:, ['geographytypeid', 'geographytype', 'geographytypefullname']]
 
+
+    def geotypeid_from_geotypename(self, geotype):
+        return self._map_using_sourcetbl(geotype, tbl='TblGeographyType',
+                                         tocol='geographytypeid', fromcol='geographytypefullname')
+
     def geonames_from_geotypeid(self, geotype=None):
         TblGeography = self.source.TblGeography  # get relevant source data
         if not geotype:
@@ -102,10 +107,10 @@ class Geo(SourceHook):
         countyids = self.county.countyid_from_countystatestrs(getfrom=getfrom)
         return self.__lrsegids_from_countyid(getfrom=countyids)
 
-    def __lrsegids_from_countyid(self, getfrom=None):
-        getfrom = self.forceToSingleColumnDataFrame(getfrom, colname='countyid')
-        return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
-                                  fromtable=getfrom, toname='lrsegid')
+    def __lrsegids_from_countyid(self, getfrom=None, todict=True, flatten_to_set=False):
+        return self._map_using_sourcetbl(getfrom, tbl='TblLandRiverSegment',
+                                         fromcol='countyid', tocol='lrsegid',
+                                         todict=todict, flatten_to_set=flatten_to_set)
 
     def lrsegids_from_geoscale_with_names(self, scale='', areanames=None):
         if scale == 'County':
@@ -122,17 +127,10 @@ class Geo(SourceHook):
             raise ValueError('The specified scale ("%s") is unsupported' % scale)
 
     def countyids_from_lrsegids(self, lrsegids=None):
-        return self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'countyid'],
-                                  fromtable=lrsegids, toname='countyid')
+        return self._map_using_sourcetbl(lrsegids, tbl='TblLandRiverSegment',
+                                         fromcol='lrsegid', tocol='countyid')
 
     def statenames_from_lrsegids(self, lrsegids=None):
-        stateid_tbl = self.singleconvert(sourcetbl='TblLandRiverSegment', toandfromheaders=['lrsegid', 'stateid'],
-                                         fromtable=lrsegids, toname='stateid')
-
-
-        print(stateid_tbl.head())
-
-        return self.singleconvert(sourcetbl='TblState', toandfromheaders=['stateid', 'stateabbreviation'],
-                                  fromtable=stateid_tbl, toname='stateabbreviation')
-
-
+        return self._map_using_multiple_sourcetbls(lrsegids,
+                                                   tbls=['TblLandRiverSegment', 'TblState'],
+                                                   column_sequence=['lrsegid', 'stateid', 'stateabbreviation'])
