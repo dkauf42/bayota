@@ -18,7 +18,7 @@ class County(SourceHook):
     def all_ids(self, astype=pd.Series):
         return self.grab_sourcetbl_column(tbl='TblCounty', col='countyid', astype=astype)
 
-    def ids_from_names(self):
+    def ids_from_names(self, ids):
         raise LookupError('ids_from_names() method is not available for counties, '
                           'because they must be specified using both a county name and a state abbreviation')
 
@@ -37,7 +37,8 @@ class County(SourceHook):
 
         """
         try:
-            areas = [x.split(', ') for x in countystatestrs]  # split ('County, StateAbbrev')
+            # split ('County, StateAbbrev')
+            areas = [x.split(', ') for x in countystatestrs]
             df = pd.DataFrame(areas, columns=['countyname', 'stateabbreviation'])
             df['stateabbreviation'] = df['stateabbreviation'].str.lower()
             return df
