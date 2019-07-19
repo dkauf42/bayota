@@ -57,8 +57,6 @@ class SourceHook:
 
         raise TypeError(f"unexpected astype <{astype}> for conversion from <{type(orig)}>")
 
-
-
     def all_names(self):
         pass
     def all_ids(self):
