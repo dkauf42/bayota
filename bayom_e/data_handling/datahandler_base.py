@@ -452,14 +452,14 @@ class DataHandlerBase:
         df = TblLoadSource.loc[:, ['loadsourceid', 'loadsourceshortname']].merge(df)
 
         # Groupby groups are converted to a dictionary ( with tuple->value structure ).
-        grouped = df.groupby(['bmpshortname', 'pltnt', 'landriversegment', 'loadsourceshortname'])
+        grouped = df.groupby(['bmpshortname', 'landriversegment', 'loadsourceshortname', 'pltnt'])
         self.eta = grouped['effvalue'].apply(lambda x: list(x)[0]).to_dict()
         if self.save2file:
-            df.loc[:, ['bmpshortname', 'pltnt', 'landriversegment',
-                       'loadsourceshortname', 'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_eta.tab'),
-                                                                  sep=' ', index=False,
-                                                                  header=['BMPS', 'PLTNTS', 'LRSEGS', 'LOADSRCS',
-                                                                          'eta'])
+            df.loc[:, ['bmpshortname', 'landriversegment', 'loadsourceshortname', 'pltnt',
+                       'effvalue']].to_csv(os.path.join(self.instdatadir, 'data_eta.tab'),
+                                           sep=' ', index=False,
+                                           header=['BMPS', 'LRSEGS', 'LOADSRCS', 'PLTNTS',
+                                                   'eta'])
 
     def _load_param_PhiBaseLoadingRates(self, TblLandRiverSegment,
                                         TblGeography, TblGeographyType, TblGeographyLrSeg,
