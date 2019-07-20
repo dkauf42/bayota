@@ -32,20 +32,6 @@ class NLP_DataPlate:
     eta: pd.DataFrame()  # reduction effectiveness of bmp b when applied to load source u (% lb nutrient reduction)
     # self.totalcostupperbound = pd.DataFrame()
 
-    # database: InitVar[] = None
-
-    # def __post_init__(self, database):
-    #     if self.j is None and database is not None:
-    #         self.j = database.lookup('j')
-
-    #
-    # name: str
-    # unit_price: float
-    # quantity_on_hand: int = 0
-
-    # def total_cost(self) -> float:
-    #     return self.unit_price * self.quantity_on_hand
-
     def __repr__(self):
         obj_attributes = sorted([k for k in self.__dict__.keys()
                                  if not k.startswith('_')])
