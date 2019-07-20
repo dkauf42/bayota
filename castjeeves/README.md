@@ -1,11 +1,12 @@
 # Overview
 
-"CastJeeves" is a utility class with methods for
-accessing, querying, and parsing source data from
-the Chesapeake Bay Assessement Scenario Tool (CAST)
+"CastJeeves" is a package that provides functionality for
+accessing, querying, and parsing the source data from CAST 
+(the Chesapeake Assessement Scenario Tool),
+which is the CBP Phase 6 time-averaged watershed model.
 
-This README documents the steps necessary to get the "CastJeeves"
-application up and running.
+This README documents the steps necessary to get "CastJeeves"
+ up and running.
 
 # How do I get set up?
 
