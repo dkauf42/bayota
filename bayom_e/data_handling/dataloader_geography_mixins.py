@@ -18,10 +18,10 @@ class DataCountyGeoentitiesMixin(object):
         geodf = jeeves.lrseg.remove_outofcbws_lrsegs(lrsegdf=geodf)
         lrsegs_list = geodf.landriversegment.tolist()
 
-        counties_list = geodf.countyid.tolist()
+        counties_list = geodf['countyid'].tolist()
         cntylrseglinkslist = list(zip(lrsegs_list, counties_list))
 
-        self.countysetlist = list(set(geodf.countystatestrs))
+        self.countysetlist = list(set(geodf['countystatestr']))
         self.countysetidlist = list(set(counties_list))
         self.COUNTIES = self.countysetidlist
         self.CNTYLRSEGLINKS = cntylrseglinkslist
