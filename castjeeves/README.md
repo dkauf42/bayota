@@ -27,7 +27,7 @@ application up and running.
 
 # Usage
 
-###### A simple example (to run using GUI):
+###### A minimal working example:
 
     > from castjeeves.src.jeeves import Jeeves
     > cj = Jeeves()
