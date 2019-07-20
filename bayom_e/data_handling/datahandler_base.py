@@ -229,7 +229,7 @@ class DataHandlerBase:
 
         # The list of land river segments is saved as object attributes.
         self.lrsegsetlist = lrsegs_list.copy()
-        self.lrsegsetidlist = jeeves.geo.lrsegids_from(lrsegnames=lrsegs_list)['lrsegid'].tolist()
+        self.lrsegsetidlist = jeeves.geo.lrsegids_from(lrsegnames=lrsegs_list)
 
         if not self.lrsegsetidlist:
             raise ValueError('No LRSEGS found matching the input list')
