@@ -4,9 +4,6 @@
 accessing, querying, and parsing source data from
 the Chesapeake Bay Assessement Scenario Tool (CAST)
 
-* This release initializes the repository
-    (from code originally in the "sandbox" project)
-
 This README documents the steps necessary to get the "CastJeeves"
 application up and running.
 
