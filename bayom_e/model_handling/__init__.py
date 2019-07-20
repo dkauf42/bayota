@@ -1,3 +1,3 @@
 # __init__.py for model_handling
 
-from .model_generator import ModelHandlerBase
+from bayom_e.model_handling.builders.modelbuilder import ModelBuilder
