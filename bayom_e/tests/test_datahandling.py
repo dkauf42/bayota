@@ -10,31 +10,37 @@ def resource_dh_adamsPA(request):
     dh = get_loaded_data_handler_no_objective(geoscale='county',
                                               geoentities=['Adams, PA'],
                                               savedata2file=False,
-                                              baseloadingfilename='2010NoActionLoads_20190325.csv')
+                                              baseloadingfilename='2010NoActionLoads_updated.csv')
     return dh
 
 
 def test_default_County_DataHandler_ADAMSCounty(resource_dh_adamsPA):
     # Verify the lrseg list is populated correctly
-    assert 'N42001PU0_3000_3090' in resource_dh_adamsPA.LRSEGS
+    assert ('N42001PU0_3000_3090' in resource_dh_adamsPA.LRSEGS) and isinstance(resource_dh_adamsPA.LRSEGS, list)
 
 
 def test_default_County_DataHandler_NUmberlandVACounty():
     dh = get_loaded_data_handler_no_objective(geoscale='county',
                                               geoentities=['Northumberland, VA'],
                                               savedata2file=False,
-                                              baseloadingfilename='2010NoActionLoads_20190325.csv')
+                                              baseloadingfilename='2010NoActionLoads_updated.csv')
     # Verify the lrseg list is populated correctly
-    assert dh.lrsegsetlist == ['N51133RL0_6450_0000', 'N51133RL0_6530_0000', 'N51133RL0_6501_0000', 'N51133PL0_6272_0000', 'N51133PL0_6271_0000', 'N51133PL0_6270_0000', 'N51133PL0_6140_0000']
+    assert set(dh.lrsegsetlist) == {'N51133RL0_6450_0000', 'N51133RL0_6530_0000', 'N51133RL0_6501_0000',
+                                    'N51133PL0_6272_0000', 'N51133PL0_6271_0000', 'N51133PL0_6270_0000',
+                                    'N51133PL0_6140_0000'}
 
 
 def test_default_County_DataHandler_instantiation_BroomeNYCounty():
     dh = get_loaded_data_handler_no_objective(geoscale='county',
                                               geoentities=['Broome, NY'],
                                               savedata2file=False,
-                                              baseloadingfilename='2010NoActionLoads_20190325.csv')
+                                              baseloadingfilename='2010NoActionLoads_updated.csv')
     # Verify the lrseg list is populated correctly
-    assert set(dh.lrsegsetlist) == {'N36007SU5_0420_0500', 'N36007SU4_0430_0420', 'N36007SU2_0440_0550', 'N36007SU5_0460_0480', 'N36007SU6_0480_0520', 'N36007SU6_0520_0500', 'N36007SU7_0550_0540', 'N36007SU6_0500_0550', 'N36007SU1_0410_0480', 'N36007SU3_0240_0350', 'N36007SU2_0280_0430', 'N36007SU4_0260_0350', 'N36007SU4_0350_0420'}
+    assert set(dh.lrsegsetlist) == {'N36007SU5_0420_0500', 'N36007SU4_0430_0420', 'N36007SU2_0440_0550',
+                                    'N36007SU5_0460_0480', 'N36007SU6_0480_0520', 'N36007SU6_0520_0500',
+                                    'N36007SU7_0550_0540', 'N36007SU6_0500_0550', 'N36007SU1_0410_0480',
+                                    'N36007SU3_0240_0350', 'N36007SU2_0280_0430', 'N36007SU4_0260_0350',
+                                    'N36007SU4_0350_0420'}
 
 
 def test_default_County_DataHandler_AnneArundelMDCounty():
@@ -44,7 +50,7 @@ def test_default_County_DataHandler_AnneArundelMDCounty():
                                               baseloadingfilename='2010NoActionLoads_updated.csv')
     # yo = DataHandlerLrsegWithCostConstraint(savedata2file=False, geoentities=['N51133RL0_6450_0000'])
     # Verify the lrseg list is populated correctly
-    assert 'N24003WL0_4390_0000' in dh.LRSEGS
+    assert ('N24003WL0_4390_0000' in dh.LRSEGS) and isinstance(dh.LRSEGS, list)
 
 
 def test_default_Lrseg_DataHandler_instantiation():
@@ -58,18 +64,18 @@ def test_default_Lrseg_DataHandler_instantiation():
                                               # baseloadingfilename='2010NoActionLoads_20190325.csv')
     # yo = DataHandlerLrsegWithCostConstraint(savedata2file=False, geoentities=['N51133RL0_6450_0000'])
     # Verify the lrseg list is populated correctly
-    assert testlrseg in dh.LRSEGS
+    assert (testlrseg in dh.LRSEGS) and isinstance(dh.LRSEGS, list)
 
 
 def test_default_Lrseg_DataHandler_inMontgomeryCountyMD():
     dh = get_loaded_data_handler_no_objective(geoscale='lrseg',
                                               geoentities=['N24031PM0_4640_4820'],
                                               savedata2file=False,
-                                              baseloadingfilename='2010NoActionLoads_20190325.csv')
+                                              baseloadingfilename='2010NoActionLoads_updated.csv')
     # N24031PM0_4640_4820 = Cabin John Creek, in Montgomery County
 
     # Verify the lrseg list is populated correctly
-    assert 'N24031PM0_4640_4820' in dh.LRSEGS
+    assert ('N24031PM0_4640_4820' in dh.LRSEGS) and isinstance(dh.LRSEGS, list)
 
 # def test_default_lrseg_instantiation():
 #     lrseg = Lrseg(save2file=False, geolist=['N51133RL0_6450_0000'])  # lrseg in Northumberland County, VA
