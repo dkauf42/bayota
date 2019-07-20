@@ -1,7 +1,7 @@
 import pytest
 
-from ..jeeves import Jeeves
-from ..sourcehooks.geo import Geo
+from castjeeves.jeeves import Jeeves
+from castjeeves.sourcehooks import Geo
 
 
 @pytest.fixture(scope='module')

@@ -5,20 +5,20 @@ import pandas as pd
 
 from bayota_settings.base import get_source_pickles_dir, get_source_csvs_dir, get_metadata_csvs_dir
 
-from .sqltables.source_data import SourceData
-from .sqltables.metadata import Metadata as sqlMetaData
+from castjeeves.sqltables import SourceData
+from castjeeves.sqltables import Metadata as sqlMetaData
 
-from .sourcehooks.agency import Agency
-from .sourcehooks.animal import Animal
-from .sourcehooks.bmp import Bmp
-from .sourcehooks.county import County
-from .sourcehooks.geo import Geo
-from .sourcehooks.loadsource import LoadSource
-from .sourcehooks.lrseg import Lrseg
-from .sourcehooks.meta import Meta
-from .sourcehooks.scenario import Scenario
-from .sourcehooks.sector import Sector
-from .sourcehooks.translator import Translator
+from castjeeves.sourcehooks import Agency
+from castjeeves.sourcehooks import Animal
+from castjeeves.sourcehooks import Bmp
+from castjeeves.sourcehooks import County
+from castjeeves.sourcehooks import Geo
+from castjeeves.sourcehooks import LoadSource
+from castjeeves.sourcehooks import Lrseg
+from castjeeves.sourcehooks import Meta
+from castjeeves.sourcehooks import Scenario
+from castjeeves.sourcehooks import Sector
+from castjeeves.sourcehooks import Translator
 
 import logging
 logger = logging.getLogger(__name__)

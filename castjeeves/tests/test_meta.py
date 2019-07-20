@@ -1,7 +1,7 @@
 import pytest
 
-from ..jeeves import Jeeves
-from ..sourcehooks.meta import Meta
+from castjeeves.jeeves import Jeeves
+from castjeeves.sourcehooks import Meta
 
 
 @pytest.fixture(scope='module')

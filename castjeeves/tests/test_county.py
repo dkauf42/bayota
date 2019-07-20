@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 
-from ..jeeves import Jeeves
-from ..sourcehooks.county import County
+from castjeeves.jeeves import Jeeves
+from castjeeves.sourcehooks import County
 
 
 @pytest.fixture(scope='module')

@@ -1,7 +1,7 @@
 import pytest
 
-from ..jeeves import Jeeves
-from ..sourcehooks.scenario import Scenario
+from castjeeves.jeeves import Jeeves
+from castjeeves.sourcehooks import Scenario
 
 
 @pytest.fixture(scope='module')

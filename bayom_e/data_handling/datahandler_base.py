@@ -5,7 +5,7 @@ import pandas as pd
 from bayota_settings.base import get_model_instances_dir, get_raw_data_dir
 from .bmp_exclusions import excluded_bmps_list
 
-from castjeeves.src.jeeves import Jeeves
+from castjeeves.jeeves import Jeeves
 
 import logging
 logger = logging.getLogger(__name__)

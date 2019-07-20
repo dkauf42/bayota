@@ -9,7 +9,7 @@ import sys
 import time
 import pyodbc
 import pandas as pd
-from castjeeves.src.sqltables.metadata import Metadata
+from castjeeves.sqltables import Metadata
 
 if len(sys.argv) < 5:
     raise ValueError("We need server, database name, output directory, and a user/password file!")

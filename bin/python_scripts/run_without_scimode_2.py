@@ -1,6 +1,6 @@
 import pandas as pd
 
-from castjeeves.src.jeeves import Jeeves
+from castjeeves.jeeves import Jeeves
 
 
 jeeves = Jeeves()

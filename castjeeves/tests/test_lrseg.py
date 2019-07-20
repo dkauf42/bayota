@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 
-from ..jeeves import Jeeves
-from ..sourcehooks.lrseg import Lrseg
+from castjeeves.jeeves import Jeeves
+from castjeeves.sourcehooks import Lrseg
 
 
 @pytest.fixture(scope='module')

@@ -3,7 +3,7 @@ import pandas as pd
 
 import pyomo.environ as pyo
 
-from castjeeves.src.jeeves import Jeeves
+from castjeeves.jeeves import Jeeves
 
 jeeves = Jeeves()
 

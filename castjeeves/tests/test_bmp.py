@@ -1,7 +1,7 @@
 import pytest
 
-from ..jeeves import Jeeves
-from ..sourcehooks.bmp import Bmp
+from castjeeves.jeeves import Jeeves
+from castjeeves.sourcehooks import Bmp
 import pandas as pd
 
 
