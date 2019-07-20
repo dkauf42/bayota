@@ -2,6 +2,7 @@ objectiveshortname: costmin
 constraintshortname: Nloadredtarget
 
 baseyear: 2010
+variant: nlp
 
 # objective dictionary
 objective:
