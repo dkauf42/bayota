@@ -178,30 +178,26 @@ or with individual steps run separately. They are, in order of their automated e
 
 #### 2🐍 Running from the python prompt
 ```python
-from bayom_e.src.model_handling import model_generator
-from bayom_e.src.solver_handling import solvehandler
+from bayom_e.model_handling.interface import build_model
+from bayom_e.solver_handling import solvehandler
 
 # Create a model instance
-model_spec_file = '/bayota/bin/specification_files/model_specs/costmin_total_Npercentreduction.yaml'
-mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
-                                              geoscale='county',
-                                              geoentities='Perry, PA',
-                                              savedata2file=False,
-                                              baseloadingfilename='2010NoActionLoads_20190325.csv',
-                                              log_level='INFO')
-mdl = mdlhandler.model
+model_spec_file = '/bayota/bayom_e/tests/costmin_total_Npercentreduction.yaml'
+model, dataplate = build_model(model_spec_file=model_spec_file,
+                               geoscale='county',
+                               geoentities='Perry, PA',
+                               savedata2file=False,
+                               baseloadingfilename='2010NoActionLoads_updated.csv',
+                               log_level='INFO')
 
 # Set a constraint level
-mdl.percent_reduction_minimum['N'] = 20
+model.percent_reduction_minimum['N'] = 20
 
 # Solve the instance and get results
-solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
-                                         translate_to_cast_format='True')
-                                             
-print("solving timestamp: %s      feasible: %s" %
-      (solution_dict['timestamp'], solution_dict['feasible']))
 
-solution_data_frame = solution_dict['solution_df']
+solvername = 'ipopt'
+instance, results, feasible = solvehandler.solve(localsolver=True, solvername=solvername,
+                                                 instance=model)
 ```
 
 #### 3📓 Running from a jupyter notebook
