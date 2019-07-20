@@ -14,6 +14,7 @@ def build_model(dataplate, target_load=1):
     # *************************
     # SETS
     # *************************
+    model.PLTNTS = pyo.Set(initialize=dataplate.PLTNTS)
     model.LRSEGS = pyo.Set(initialize=dataplate.LRSEGS)
     model.LOADSRCS = pyo.Set(initialize=dataplate.LOADSRCS)
     model.AGENCIES = pyo.Set(initialize=dataplate.AGENCIES)
