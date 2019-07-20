@@ -113,19 +113,20 @@ During the first install (or first test run), default configuration files are ge
 
 -- From the project directory, run the automated test suites:
 
-***(Note, these are currently out-of-sync with the packages, so will fail)***
-
 ```
-cd bayota/
-
-python castjeeves/setup.py test
-
-python bayom_e/setup.py test
+python setup.py test
 ```
 
-***Note:*** *Tests can be run from the project directory (`bayota/`) even though they are located within each package.\
-If you try to run `python setup.py test` from the project dir directly, you will get an error message like:\
-"no tests specified at the top(bayota package)-level".*
+Or, if you want to run it from the installed package:
+```
+pytest --pyargs bayota
+```
+
+Or, for one package at a time:
+```
+pytest --pyargs bayota.castjeeves
+pytest --pyargs bayota.bayom_e
+```
 
 ***Note:*** *To remove the test files after running the tests, use `python setup.py clean`.*
 
