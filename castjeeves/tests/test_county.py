@@ -1,15 +1,12 @@
 import pytest
 import pandas as pd
 
-from castjeeves.jeeves import Jeeves
 from castjeeves.sourcehooks import County
 
 
 @pytest.fixture(scope='module')
-def resource_a(request):
-    # Load the Source Data and Base Condition tables
-    source = Jeeves.loadInSourceDataFromSQL()
-    return County(sourcedata=source)
+def resource_a(request, source_resource):
+    return County(sourcedata=source_resource)
 
 
 def test_countyid_query_from_LIST_of_countystatestrs(resource_a):

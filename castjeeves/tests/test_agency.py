@@ -1,15 +1,12 @@
 import pytest
 import pandas as pd
 
-from castjeeves.jeeves import Jeeves
 from castjeeves.sourcehooks import Agency
 
 
 @pytest.fixture(scope='module')
-def resource_a(request):
-    # Load the Source Data and Base Condition tables
-    source = Jeeves.loadInSourceDataFromSQL()
-    return Agency(sourcedata=source)
+def resource_a(request, source_resource):
+    return Agency(sourcedata=source_resource)
 
 def test_agency_all_names_query_as_list(resource_a):
     retval = resource_a.all_names(astype=list)

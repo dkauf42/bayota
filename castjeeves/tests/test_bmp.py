@@ -1,15 +1,12 @@
 import pytest
-
-from castjeeves.jeeves import Jeeves
-from castjeeves.sourcehooks import Bmp
 import pandas as pd
+
+from castjeeves.sourcehooks import Bmp
 
 
 @pytest.fixture(scope='module')
-def resource_a(request):
-    # Load the Source Data and Base Condition tables
-    source = Jeeves.loadInSourceDataFromSQL()
-    return Bmp(sourcedata=source)
+def resource_a(request, source_resource):
+    return Bmp(sourcedata=source_resource)
 
 def test_all_names_query_contains_GRASSBUFFERS_as_list(resource_a):
     retval = resource_a.all_names(astype=list)

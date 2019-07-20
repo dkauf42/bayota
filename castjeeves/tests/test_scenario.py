@@ -1,14 +1,11 @@
 import pytest
 
-from castjeeves.jeeves import Jeeves
 from castjeeves.sourcehooks import Scenario
 
 
 @pytest.fixture(scope='module')
-def resource_a(request):
-    # Load the Source Data and Base Condition tables
-    source = Jeeves.loadInSourceDataFromSQL()
-    return Scenario(sourcedata=source)
+def resource_a(request, source_resource):
+    return Scenario(sourcedata=source_resource)
 
 
 def test_get_baseconditionid_2010(resource_a):

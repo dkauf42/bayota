@@ -1,14 +1,11 @@
 import pytest
 
-from castjeeves.jeeves import Jeeves
 from castjeeves.sourcehooks import Geo
 
 
 @pytest.fixture(scope='module')
-def resource_geo(request):
-    # Load the Source Data and Base Condition tables
-    source = Jeeves.loadInSourceDataFromSQL()
-    return Geo(sourcedata=source)
+def resource_geo(request, source_resource):
+    return Geo(sourcedata=source_resource)
 
 
 def test_generic_lrsegid_query_returns_correct_from_countystatestrs_list(resource_geo):
