@@ -51,9 +51,6 @@ class TestCommand(setuptools.command.test.test):
 with open('README.md', encoding='utf-8') as f:
     readme_text = f.read()
 
-with open('LICENSE') as f:
-    license_text = f.read()
-
 install_requires = ['numpy>=1.14.2',
                     'pandas>=0.22.0',  # there is currently an issue with pandas==0.23.0
                     'pytest'
@@ -66,8 +63,8 @@ setup(name='castjeeves',
       author='Daniel Kaufman',
       author_email='dkaufman@chesapeakebay.net',
       url='https://gitlab.com/daka42',
-      license=license_text,
       packages=find_packages(),
+      py_modules=['jeeves'],
       include_package_data=True,
       install_requires=install_requires,
       # test_suite="src.tests",
