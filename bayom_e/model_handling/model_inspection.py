@@ -8,6 +8,29 @@ from castjeeves.jeeves import Jeeves
 jeeves = Jeeves()
 
 
+def print_lens(model):
+    print(f"# of parcels: {len(model.PARCELS)}")
+    print(f"\t# of lrsegs: {len(model.LRSEGS)}")
+    print(f"\t# of loadsources: {len(model.LOADSRCS)}")
+    print(f"\t# of agencies: {len(model.AGENCIES)}")
+
+    print(f"# of bmps: {len(model.BMPS)}")
+
+    print(f"length of alpha: {len(model.alpha)}")
+    print(f"length of eta: {len(model.eta)}")
+
+    print(f"length of Available_Acres_Constraint: {len(model.Available_Acres_Constraint)}")
+
+
+def print_head(mdl_component, n=5):
+    i = 0
+    for k, v in mdl_component.items():
+        i += 1
+        print(f"{k}: {pyo.value(v)}")
+        if i > n:
+            break
+
+
 def diff_pd(df1, df2):
     """Identify differences between two pandas DataFrames"""
     assert (df1.columns == df2.columns).all(), \
