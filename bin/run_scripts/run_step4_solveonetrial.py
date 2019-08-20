@@ -18,7 +18,7 @@ import pyomo.environ as pyo
 from bayota_util.spec_handler import read_spec, notdry
 from bayom_e.solver_handling import solvehandler
 
-from bayom_e.model_handling import load_model_pickle
+from bayom_e.model_handling.utils import load_model_pickle
 
 from bayota_settings.base import get_model_instances_dir, \
     get_output_dir, get_scripts_dir, get_logging_dir
