@@ -19,16 +19,20 @@ up and running.
 │   ├── __init__.py        <- Makes src a Python module
 │   │
 │   ├── data_handling      <- Code to populate necessary source data
-│   │   ├── interface.py
+│   │   ├── bmp_exclusions.py
+│   │   ├── data_interface.py
 │   │   ├── datahandler_base.py
 │   │   ├── dataloader_constraint_mixins.py
-│   │   └── dataloader_geography_mixins.py
+│   │   ├── dataloader_geography_mixins.py
+│   │   ├── dataplate.py
+│   │   └── randomizer.py
 │   │
-│   ├── model_handlers     <- Formulations of the optimization model
+│   ├── model_handling     <- Formulations of the optimization model
 │   │   ├── interface.py
-│   │   ├── modelhandler_base.py
-│   │   ├── efficiencymodel_objective_mixins.py
-│   │   └── efficiencymodel_geography_mixins.py
+│   │   ├── model_components.py
+│   │   ├── model_expressions.py
+│   │   ├── model_inspection.py
+│   │   └── utils.py
 │   │
 │   ├── solution_handling  <- Code to parse and manipulate run solutions
 │   │   ├── ipopt_parser.py
@@ -40,7 +44,9 @@ up and running.
 │   │
 │   ├── tests              <- Scripts to test and validate code using pytest
 │   │   ├── test_datahandling.py
-│   │   └── test_modelhandling.py
+│   │   ├── test_dataplate.py
+│   │   ├── test_modelhandling.py
+│   │   └── test_solving.py
 │   │
 │   └── vis                <- Scripts to create exploratory and results oriented visualizations
 │       ├── acres_bars.py
