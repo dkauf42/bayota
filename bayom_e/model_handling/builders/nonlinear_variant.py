@@ -1,3 +1,4 @@
+from typing import Dict
 import pyomo.environ as pyo
 
 from bayom_e.model_handling.builders.modelbuilder import ModelBuilder
@@ -14,7 +15,7 @@ class NonlinearVariant(ModelBuilder):
         """ Please see help(NonlinearVariant) for more info """
         ModelBuilder.__init__(self, logger=logger)
 
-    def build_skeleton(self, dataplate, geoscale, target_load=1) -> pyo.ConcreteModel:
+    def build_skeleton(self, dataplate, geoscale, target_load: Dict) -> pyo.ConcreteModel:
         """Nonlinear variant of the efficiency BMP model
 
         Skeleton
@@ -132,15 +133,20 @@ class NonlinearVariant(ModelBuilder):
         # *************************
         #  MUTABLE PARAMETERS
         # *************************
-        model.target_load_param = pyo.Param(initialize=target_load,
+        model.target_load_param = pyo.Param(model.PLTNTS,
+                                            initialize={p: target_load[p]
+                                                        for p in dataplate.PLTNTS},
                                             mutable=True)
 
         # *************************
         # VARIABLES
         # *************************
+        def _bounds_rule(m, b, k1, k2, k3):
+            return 0, dataplate.alpha[k1, k2, k3]
         model.x = pyo.Var(model.BMPS,
                           model.PARCELS,
                           domain=pyo.NonNegativeReals,
+                          bounds=_bounds_rule,
                           doc='Amount of each BMP to implement.')
 
         # model.x = pyo.Var(model.BMPS,

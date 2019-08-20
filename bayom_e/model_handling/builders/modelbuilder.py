@@ -1,3 +1,5 @@
+from typing import Dict
+import numpy as np
 from pyomo import environ as pyo
 
 from bayom_e.model_handling import model_components, model_expressions
@@ -36,7 +38,9 @@ class ModelBuilder:
         Returns:
 
         """
-        model = self.build_skeleton(dataplate=dataplate, geoscale=geoscale, target_load=1)
+        model = self.build_skeleton(dataplate=dataplate, geoscale=geoscale, target_load={'N': np.Inf,
+                                                                                         'P': np.Inf,
+                                                                                         'S': np.Inf})
 
         self.specdict = specdict
 
@@ -53,7 +57,7 @@ class ModelBuilder:
 
         return model
 
-    def build_skeleton(self, dataplate, geoscale, target_load=1) -> pyo.ConcreteModel:
+    def build_skeleton(self, dataplate, geoscale, target_load: Dict) -> pyo.ConcreteModel:
         """ overridden by children classes """
         pass
 
