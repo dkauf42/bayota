@@ -182,6 +182,20 @@ class ModelBuilder:
 
             setattr(model, constraint_name, cobj)
 
+    @staticmethod
+    def create_2dim_set_component(model, data_component, model_component_name):
+        """ either from dictionary or tuples """
+        if isinstance(data_component, dict):
+            temp_list = []
+            for item, grps in data_component.items():
+                for g in grps:
+                    temp_list.append((g, item))
+            cobj = pyo.Set(initialize=temp_list, dimen=2)
+            setattr(model, model_component_name, cobj)
+        else:
+            cobj = pyo.Set(initialize=data_component, dimen=2)
+            setattr(model, model_component_name, cobj)
+
     def add_other_components_from_spec(self, model):
         for i, c in enumerate(self.specdict['other_components']):
             # COMPONENT

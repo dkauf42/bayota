@@ -54,34 +54,13 @@ class NonlinearVariant(ModelBuilder):
         model.BMPGRPS = pyo.Set(initialize=dataplate.BMPGRPS)
 
         # BMPs in each BMPGRP
-        if isinstance(dataplate.BMPGRPING, dict):
-            temp_list = []
-            for grp, bmps in dataplate.BMPGRPING.items():
-                for b in bmps:
-                    temp_list.append((grp, b))
-            model.BMPGRPING = pyo.Set(initialize=temp_list, dimen=2)
-        else:
-            model.BMPGRPING = pyo.Set(initialize=dataplate.BMPGRPING, dimen=2)
+        self.create_2dim_set_component(model, dataplate.BMPGRPING, 'BMPGRPING')
 
         # BMPs in each LOADSRC
-        if isinstance(dataplate.BMPSRCLINKS, dict):
-            temp_list = []
-            for ldsrc, bmps in dataplate.BMPSRCLINKS.items():
-                for b in bmps:
-                    temp_list.append((b, ldsrc))
-            model.BMPSRCLINKS = pyo.Set(initialize=temp_list, dimen=2)
-        else:
-            model.BMPSRCLINKS = pyo.Set(initialize=dataplate.BMPSRCLINKS, dimen=2)
+        self.create_2dim_set_component(model, dataplate.BMPSRCLINKS, 'BMPSRCLINKS')
 
         # BMPGRPs in each LOADSRC
-        if isinstance(dataplate.BMPGRPSRCLINKS, dict):
-            temp_list = []
-            for ldsrc, grps in dataplate.BMPGRPSRCLINKS.items():
-                for g in grps:
-                    temp_list.append((g, ldsrc))
-            model.BMPGRPSRCLINKS = pyo.Set(initialize=temp_list, dimen=2)
-        else:
-            model.BMPGRPSRCLINKS = pyo.Set(initialize=dataplate.BMPGRPSRCLINKS, dimen=2)
+        self.create_2dim_set_component(model, dataplate.BMPGRPSRCLINKS, 'BMPGRPSRCLINKS')
 
         # *************************
         #  IMMUTABLE PARAMETERS

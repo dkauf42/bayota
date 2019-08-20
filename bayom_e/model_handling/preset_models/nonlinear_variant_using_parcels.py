@@ -1,5 +1,6 @@
 import pyomo.environ as pyo
 
+from bayom_e.model_handling.builders.modelbuilder import ModelBuilder
 
 def build_model(dataplate, target_load=1):
     """Nonlinear variant of the efficiency BMP model
@@ -22,14 +23,8 @@ def build_model(dataplate, target_load=1):
 
     model.BMPS = pyo.Set(initialize=dataplate.BMPS, ordered=True)
     model.BMPGRPS = pyo.Set(initialize=dataplate.BMPGRPS)
-    if isinstance(dataplate.BMPGRPING, dict):
-        bmpgrpinglist = []
-        for grp, bmps in dataplate.BMPGRPING.items():
-            for b in bmps:
-                bmpgrpinglist.append((b, grp))
-        model.BMPGRPING = pyo.Set(initialize=bmpgrpinglist, dimen=2)
-    else:
-        model.BMPGRPING = pyo.Set(initialize=dataplate.BMPGRPING, dimen=2)
+
+    ModelBuilder.create_2dim_set_component(model, dataplate.BMPGRPING, 'BMPGRPING')
 
     model.BMPSRCLINKS = pyo.Set(initialize=dataplate.BMPSRCLINKS, dimen=2)
     model.BMPGRPSRCLINKS = pyo.Set(initialize=dataplate.BMPGRPSRCLINKS, dimen=2)
