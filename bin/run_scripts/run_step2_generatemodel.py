@@ -12,9 +12,9 @@ import sys
 import time
 from argparse import ArgumentParser
 
+import bayom_e.model_handling.builders.modelbuilder
 from bayota_util.spec_handler import read_spec, notdry
 
-from bayom_e.model_handling import model_generator
 from bayom_e.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_specs_dir,\
@@ -71,11 +71,11 @@ def main(geography_name, model_spec_file, control_file=None,
     if notdry(dryrun, logger, '--Dryrun-- Would generate model'):
         starttime_modelinstantiation = time.time()  # Wall time - clock starts.
 
-        mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
-                                                      geoscale=geography_scale.lower(),
-                                                      geoentities=geography_entity,
-                                                      savedata2file=savedata2file,
-                                                      baseloadingfilename=baseloadingfilename)
+        mdlhandler = bayom_e.model_handling.builders.modelbuilder.ModelBuilder(model_spec_file=model_spec_file,
+                                                                               geoscale=geography_scale.lower(),
+                                                                               geoentities=geography_entity,
+                                                                               savedata2file=savedata2file,
+                                                                               baseloadingfilename=baseloadingfilename)
 
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
