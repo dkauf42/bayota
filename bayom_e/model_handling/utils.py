@@ -4,7 +4,7 @@ import pyomo.environ as pe
 from itertools import compress
 
 from bayota_util.spec_handler import notdry
-from bayom_e.model_handling import ModelHandlerBase
+from bayom_e.model_handling import ModelBuilder
 
 import logging
 logger = logging.getLogger('root')
@@ -61,13 +61,13 @@ def save_model_pickle(mdlhandler, savepath, dryrun=False, logprefix=''):
         logger.info(f"*{logprefix} - model pickling done* <- it took {timefor_modelsave} seconds>")
 
 
-def load_model_pickle(savepath, dryrun=False, logprefix='') -> ModelHandlerBase:
-    mdlhandler = None
+def load_model_pickle(savepath, dryrun=False, logprefix='') -> ModelBuilder:
+    mdlbuilder = None
     if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % savepath):
         starttime_modelload = time.time()  # Wall time - clock starts.
         with open(savepath, "rb") as f:
-            mdlhandler = cloudpickle.load(f)
+            mdlbuilder = cloudpickle.load(f)
         timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
         logger.info(
             f"*{logprefix} - model load (from pickle) done* <- it took {timefor_modelload} seconds>")
-    return mdlhandler
+    return mdlbuilder
