@@ -52,6 +52,7 @@ class ModelBuilder:
         self.model = model
 
         # Add diagnostic expressions to model:
+        self._add_expression_to_model(model, expr_name='original_load_expr')
         self._add_expression_to_model(model, expr_name='original_load_for_each_loadsource_expr')
         self._add_expression_to_model(model, expr_name='new_load_for_each_loadsource_expr')
 
