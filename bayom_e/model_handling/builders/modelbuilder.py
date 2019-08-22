@@ -217,7 +217,17 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def _add_expression_to_model(model, expr_name):
+    def _add_expression_to_model(model, expr_name, logger=default_logger):
+
+        # We check whether the expression is already part of the model
+        try:
+            att = getattr(model, expr_name)
+            if att.is_constructed():
+                logger.info(f"{expr_name} is already part of the model")
+                return model
+        except AttributeError as e:
+            pass
+
         try:
             model = model_expressions.__dict__[expr_name](model)  # add corresponding expression method to model object
         except KeyError as e:
