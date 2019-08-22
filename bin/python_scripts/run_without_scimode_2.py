@@ -1,6 +1,6 @@
 import pandas as pd
 
-from castjeeves.src.jeeves import Jeeves
+from castjeeves.jeeves import Jeeves
 
 
 jeeves = Jeeves()
@@ -15,7 +15,7 @@ def numstr(number, decimalpoints: int) -> str:
 
 model_spec_file = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/specification_files/model_specs/costmin_total_Npercentreduction.yaml'
 # model_spec_file = '/Users/Danny/Desktop/CATEGORIES/CAREER_MANAGEMENT/CRC_ResearchScientist_Optimization/Optimization_Tool/2_ExperimentFolder/bayota/bin/specification_files/model_specs/Nloadreductionmax_totalcostupper.yaml'
-# mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
+# mdlhandler = model_generator.ModelBuilder(model_spec_file=model_spec_file,
 #                                               geoscale='county',
 #                                               geoentities='Perry, PA',
 #                                               savedata2file=False,

@@ -12,10 +12,10 @@ import sys
 import time
 from argparse import ArgumentParser
 
+from bayom_e.model_handling.interface import build_model
 from bayota_util.spec_handler import read_spec, notdry
 
-from bayom_e.model_handling import model_generator
-from bayom_e.model_handling import save_model_pickle
+from bayom_e.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_specs_dir,\
     get_spec_files_dir, get_model_instances_dir
@@ -67,20 +67,20 @@ def main(geography_name, model_spec_file, control_file=None,
     else:
         savepath = saved_model_file
 
-    mdlhandler = None
+    my_model = None
     if notdry(dryrun, logger, '--Dryrun-- Would generate model'):
         starttime_modelinstantiation = time.time()  # Wall time - clock starts.
 
-        mdlhandler = model_generator.ModelHandlerBase(model_spec_file=model_spec_file,
-                                                      geoscale=geography_scale.lower(),
-                                                      geoentities=geography_entity,
-                                                      savedata2file=savedata2file,
-                                                      baseloadingfilename=baseloadingfilename)
+        my_model, dataplate = build_model(model_spec_file=model_spec_file,
+                                          geoscale=geography_scale.lower(),
+                                          geoentities=geography_entity,
+                                          savedata2file=savedata2file,
+                                          baseloadingfilename=baseloadingfilename)
 
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
-    save_model_pickle(mdlhandler=mdlhandler, savepath=savepath, dryrun=dryrun)
+    save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
 
     return 0  # a clean, no-issue, exit
 

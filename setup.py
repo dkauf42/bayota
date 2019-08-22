@@ -7,6 +7,7 @@ and work occurring at U.S. EPA Chesapeake Bay Program Office, Annapolis, MD
 """
 
 import os
+import subprocess
 import sys
 from setuptools import setup, Command, find_packages
 import setuptools.command.test
@@ -21,7 +22,9 @@ class CleanCommand(Command):
     @staticmethod
     def run():
         os.system('rm -vrf ./build ./dist ./*.egg-info '
-                  './*.col ./*nl ./*.row ./*.sol ./logfile_loadobjective.log ./slurm_*.out ./slurm_*.err')
+                  './*.col ./*nl ./*.row ./*.sol '
+                  '.pytest_cache .coverage '
+                  './logfile_loadobjective.log ./slurm_*.out ./slurm_*.err')
 
     def initialize_options(self):
         pass
@@ -33,10 +36,10 @@ class CleanCommand(Command):
 class TestCommand(setuptools.command.test.test):
 
     def run_tests(self):
-        """Customized run"""
-        # deferred import, because outside the eggs aren't loaded
-        print('no tests specified at the top(bayota package)-level')
-        pass
+        """Customized test run"""
+        self._run(['pytest', '--ignore-glob=sandbox/*'])
+        # self._run(['py.test', '--cov=package', 'test'])
+
         # import shlex
         # import pytest
         #
@@ -51,6 +54,13 @@ class TestCommand(setuptools.command.test.test):
         # print('pytest args :\n %s' % pytest_args)
         # errno = pytest.main(shlex.split(pytest_args, posix="win" not in sys.platform))
         # sys.exit(errno)
+
+    def _run(self, command):
+        try:
+            subprocess.check_call(command)
+        except subprocess.CalledProcessError as error:
+            print('Command failed with exit code', error.returncode)
+            sys.exit(error.returncode)
 
 
 class PostDevelopCommand(setuptools.command.develop.develop):

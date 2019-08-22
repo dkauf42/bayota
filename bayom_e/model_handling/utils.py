@@ -3,8 +3,9 @@ import cloudpickle
 import pyomo.environ as pe
 from itertools import compress
 
+import pyomo.environ as pyo
+
 from bayota_util.spec_handler import notdry
-from bayom_e.model_handling import ModelHandlerBase
 
 import logging
 logger = logging.getLogger('root')
@@ -51,23 +52,23 @@ def modify_model(model, actiondict=None):
                         (ii, idxval, fix_value))
 
 
-def save_model_pickle(mdlhandler, savepath, dryrun=False, logprefix=''):
+def save_model_pickle(model, savepath, dryrun=False, logprefix=''):
     # Save the model handler object
     if notdry(dryrun, logger, '--Dryrun-- Would save model as pickle with name <%s>' % savepath):
         starttime_modelsave = time.time()  # Wall time - clock starts.
         with open(savepath, "wb") as f:
-            cloudpickle.dump(mdlhandler, f)
+            cloudpickle.dump(model, f)
         timefor_modelsave = time.time() - starttime_modelsave  # Wall time - clock stops.
         logger.info(f"*{logprefix} - model pickling done* <- it took {timefor_modelsave} seconds>")
 
 
-def load_model_pickle(savepath, dryrun=False, logprefix='') -> ModelHandlerBase:
-    mdlhandler = None
+def load_model_pickle(savepath, dryrun=False, logprefix='') -> pyo.ConcreteModel:
+    model = None
     if notdry(dryrun, logger, '--Dryrun-- Would load model from pickle with name <%s>' % savepath):
         starttime_modelload = time.time()  # Wall time - clock starts.
         with open(savepath, "rb") as f:
-            mdlhandler = cloudpickle.load(f)
+            model = cloudpickle.load(f)
         timefor_modelload = time.time() - starttime_modelload  # Wall time - clock stops.
         logger.info(
             f"*{logprefix} - model load (from pickle) done* <- it took {timefor_modelload} seconds>")
-    return mdlhandler
+    return model

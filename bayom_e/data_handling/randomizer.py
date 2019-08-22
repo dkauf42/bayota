@@ -1,3 +1,10 @@
+"""
+Generate pseudo-random data similar to the CAST source data, useful for testing and experimentation.
+
+Todo:
+    * Try to speed up the random generation computational time
+
+"""
 import math
 import random
 import string
@@ -11,13 +18,14 @@ Group = namedtuple("Group", ['index', 'size', 'bmps'])
 LoadSrc = namedtuple("LoadSrc", ['index', 'name', 'size', 'bmpgroups'])
 
 
-def word_generator(size=6, chars=string.ascii_uppercase):
+def word_generator(size=6, chars=string.ascii_uppercase) -> str:
+    """ Generate a 'size'-length random string. """
     return ''.join(random.choice(chars) for _ in range(size))
 
 
 def random_ints_with_sum(n):
     """
-    Generate positive random integers summing to `n`, sampled
+    Yield positive random integers summing to `n`, sampled
     uniformly from the ordered integer partitions of `n`.
     """
     p = 0
@@ -30,7 +38,7 @@ def random_ints_with_sum(n):
 
 
 def random_list_of_names(n, name_length=3, chars=string.ascii_uppercase) -> list:
-    """ A list of random names is generated. """
+    """ Generate an n-length list of random strings. """
     name_list = []
     for i in range(n):
         while True:  # generate a new name until we find one not already in the list.

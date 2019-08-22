@@ -1,18 +1,37 @@
-from bayom_e.data_handling.randomizer import random_list_of_names, make_random_bmp_groupings, \
+"""
+Interface for retrieving DataPlate and DataHandler objects.
+"""
+from .randomizer import random_list_of_names, make_random_bmp_groupings, \
     randomly_assign_grps_to_loadsources, random_bmp_parameters, random_parcel_parameters
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
 
 import string
-import random
 
 
 def get_random_dataplate(name='nlp', num_lrsegs=1,
                          num_bmps=8, num_bmpgroups=3, num_loadsources=2,
                          minbmpgrpsize=1, maxbmpgrpsize=10,
                          minloadsrcgrpingsize=1, maxloadsrcgrpingsize=4,
-                         savedata2file=False):
+                         savedata2file=False) -> NLP_DataPlate:
+    """ Create a random dataplate object.
+
+    Args:
+        name:
+        num_lrsegs:
+        num_bmps:
+        num_bmpgroups:
+        num_loadsources:
+        minbmpgrpsize:
+        maxbmpgrpsize:
+        minloadsrcgrpingsize:
+        maxloadsrcgrpingsize:
+        savedata2file:
+
+    Returns:
+
+    """
 
     pollutants_list = ['N']
     lrseg_list = random_list_of_names(n=num_lrsegs, name_length=19, chars=string.ascii_uppercase + string.digits)
@@ -30,6 +49,8 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
                                                                          bmpgroups_list=bmpgrplist,
                                                                          minloadsrcgrpingsize=minloadsrcgrpingsize,
                                                                          maxloadsrcgrpingsize=maxloadsrcgrpingsize)
+    # print(f"load source sizes are {loadsrc_sizes}.  sum={sum(loadsrc_sizes)}")
+    # print(grploadsrc_list)
 
     # Each load source is assigned a list of bmps according to the bmpgroup(s) already associated with the loadsource.
     bmpsrc_dict = {}
@@ -46,6 +67,8 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
         return NLP_DataPlate(PLTNTS=pollutants_list,
                              LRSEGS=lrseg_list,
                              LOADSRCS=loadsrc_list,
+                             AGENCIES=agency_list,
+                             PARCELS=parcel_list,
                              BMPS=bmplist,
                              BMPGRPS=[g.index for g in bmpgrplist],
                              BMPGRPING={g.index: g.bmps for g in bmpgrplist},
@@ -59,17 +82,31 @@ def get_random_dataplate(name='nlp', num_lrsegs=1,
 
 
 def get_dataplate(geoscale, geoentities, baseloadingfilename, name='nlp',
-                  savedata2file=False):
+                  savedata2file=False) -> NLP_DataPlate:
+    """ Create a dataplate object for a given geography.
+
+    Args:
+        geoscale:
+        geoentities:
+        baseloadingfilename:
+        name:
+        savedata2file:
+
+    Returns:
+
+    """
     dh = get_loaded_data_handler_no_objective(geoscale, geoentities,
                                               savedata2file=savedata2file, baseloadingfilename=baseloadingfilename)
 
     if name == 'nlp':
         return NLP_DataPlate(PLTNTS=dh.PLTNTS,
                              LRSEGS=dh.LRSEGS,
+                             LOADSRCS=dh.LOADSRCS,
+                             AGENCIES=dh.AGENCIES,
+                             PARCELS=dh.PARCELS,
                              BMPS=dh.BMPS,
                              BMPGRPS=dh.BMPGRPS,
                              BMPGRPING=dh.BMPGRPING,
-                             LOADSRCS=dh.LOADSRCS,
                              BMPSRCLINKS=dh.BMPSRCLINKS,
                              BMPGRPSRCLINKS=dh.BMPGRPSRCLINKS,
                              theta=dh.Theta,
@@ -79,7 +116,19 @@ def get_dataplate(geoscale, geoentities, baseloadingfilename, name='nlp',
                              eta=dh.eta)
 
 
-def get_loaded_data_handler_no_objective(geoscale, geoentities, savedata2file=False, baseloadingfilename=''):
+def get_loaded_data_handler_no_objective(geoscale, geoentities,
+                                         savedata2file=False, baseloadingfilename=''):
+    """ Create a DataHandler object for a given geography.
+
+    Args:
+        geoscale:
+        geoentities:
+        savedata2file:
+        baseloadingfilename:
+
+    Returns:
+
+    """
     if geoscale == 'lrseg':
         datahandler = DataHandlerLrseg(save2file=savedata2file, geolist=geoentities, baseloadingfilename=baseloadingfilename)
     elif geoscale == 'county':

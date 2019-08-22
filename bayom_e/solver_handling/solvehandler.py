@@ -13,7 +13,7 @@ from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, Termina
 from bayom_e.config import PROJECT_DIR
 from bayom_e.solution_handling.solutionhandler import SolutionHandler, \
     initial_solution_parse_to_dataframe
-from castjeeves.src.jeeves import Jeeves
+from castjeeves.jeeves import Jeeves
 
 from bayota_util.infeasible import *
 from bayota_settings.base import get_output_dir, get_raw_data_dir

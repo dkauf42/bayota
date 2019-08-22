@@ -1,4 +1,4 @@
-from castjeeves.src.jeeves import Jeeves
+from castjeeves.jeeves import Jeeves
 
 from .spaces.animal import Animal
 from .spaces.land import Land

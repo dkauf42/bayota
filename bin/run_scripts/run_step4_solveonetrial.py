@@ -13,12 +13,12 @@ import subprocess
 from argparse import ArgumentParser
 import json
 
-import pyomo.environ as pe
+import pyomo.environ as pyo
 
 from bayota_util.spec_handler import read_spec, notdry
 from bayom_e.solver_handling import solvehandler
 
-from bayom_e.model_handling import load_model_pickle
+from bayom_e.model_handling.utils import load_model_pickle
 
 from bayota_settings.base import get_model_instances_dir, \
     get_output_dir, get_scripts_dir, get_logging_dir
@@ -113,15 +113,15 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         # Optimization objective value is added to the solution table.
         ii = 0
-        for objective_component in mdlhandler.model.component_objects(pe.Objective):
+        for objective_component in mdlhandler.model.component_objects(pyo.Objective):
             if ii < 1:
                 # check whether Objective is an "indexed" component or not
                 if objective_component._index == {None}:
-                    solution_dict['solution_df']['solution_objective'] = pe.value(objective_component)
+                    solution_dict['solution_df']['solution_objective'] = pyo.value(objective_component)
                 else:
                     for cidxpart in objective_component:
                         if objective_component[cidxpart].active:
-                            solution_dict['solution_df']['solution_objective'] = pe.value(objective_component[cidxpart])
+                            solution_dict['solution_df']['solution_objective'] = pyo.value(objective_component[cidxpart])
 
                 ii += 1
             else:

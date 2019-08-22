@@ -16,7 +16,7 @@ import subprocess
 from argparse import ArgumentParser
 
 from bayota_util.spec_handler import read_spec, notdry
-from bayom_e.model_handling import modify_model, save_model_pickle, load_model_pickle
+from bayom_e.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
 
 from bayota_settings.base import get_experiment_specs_dir,\
     get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
@@ -72,12 +72,12 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
             logger.info(f"{logprefix} {expname} - no model modifications made")
         else:
             # Load the model object
-            mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun)
+            my_model = load_model_pickle(savepath=saved_model_file, dryrun=dryrun)
 
             for a in actionlist:
-                modify_model(mdlhandler.model, actiondict=a)
+                modify_model(my_model, actiondict=a)
 
-            save_model_pickle(mdlhandler=mdlhandler, savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
+            save_model_pickle(model=my_model, savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
 
     # List of trial sets to be conducted for this experiment are logged.
     tempstr = 'set' if len(list_of_trialdicts) == 1 else 'sets'
