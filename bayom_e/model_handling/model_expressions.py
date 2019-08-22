@@ -17,12 +17,12 @@ def total_cost_expr(model) -> pyo.ConcreteModel:
 
 def original_load_for_one_parcel_expr(model) -> pyo.ConcreteModel:
     """ An expression to grab one parcel's base load """
-    def original_load_rule(mdl, l, u, h, p):
+    def original_load_rule_for_one_parcel(mdl, l, u, h, p):
         return mdl.phi[l, u, h, p] * mdl.alpha[l, u, h]
 
     model.original_load_for_one_parcel_expr = pyo.Expression(model.PARCELS,
                                                              model.PLTNTS,
-                                                             rule=original_load_rule)
+                                                             rule=original_load_rule_for_one_parcel)
     return model
 
 
@@ -39,15 +39,16 @@ def original_load_expr(model) -> pyo.ConcreteModel:
 
 def original_load_for_each_loadsource_expr(model) -> pyo.ConcreteModel:
     """ Original Load Expression (with lrsegs aggregated together) """
-    def original_load_rule(mdl, thisu, p):
-        return sum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
-                   if (u == thisu)
-                   else 0
-                   for l, u, h in mdl.PARCELS)
+    def original_load_rule_for_each_loadsource(mdl, thisu, p):
+        origload = sum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
+                       if (u == thisu)
+                       else 0
+                       for l, u, h in mdl.PARCELS)
+        return origload
 
     model.original_load_for_each_loadsource_expr = pyo.Expression(model.LOADSRCS,
                                                                   model.PLTNTS,
-                                                                  rule=original_load_rule)
+                                                                  rule=original_load_rule_for_each_loadsource)
     return model
 
 
@@ -162,9 +163,9 @@ def percent_reduction_for_each_lrseg_expr(model) -> pyo.ConcreteModel:
     model = original_load_for_each_lrseg_expr(model)
     model = new_load_for_each_lrseg_expr(model)
     # loading before any new BMPs have been implemented
-    model.originalload = pyo.Param(model.LRSEGS,
-                                   model.PLTNTS,
-                                   initialize=lambda m, l, p: m.original_load_for_each_lrseg_expr[l, p])
+    # model.originalload = pyo.Param(model.LRSEGS,
+    #                                model.PLTNTS,
+    #                                initialize=lambda m, l, p: m.original_load_for_each_lrseg_expr[l, p])
 
     # Relative load reductions must be greater than the specified target percentages (Theta)
     def percent_reduction_rule_for_each_lrseg(mdl, l, p):
@@ -176,7 +177,7 @@ def percent_reduction_for_each_lrseg_expr(model) -> pyo.ConcreteModel:
         # To avoid this, we set the percent reduction here to zero no matter what, since
         # we can assume newload never increases from zero to a positive value.
         if mdl.originalload[l, p] != 0:
-            temp = ((mdl.originalload[l, p] - mdl.new_load_for_each_lrseg_expr[l, p]) / mdl.originalload[l, p]) * 100
+            temp = ((mdl.original_load_for_each_lrseg_expr[l, p] - mdl.new_load_for_each_lrseg_expr[l, p]) / mdl.original_load_for_each_lrseg_expr[l, p]) * 100
         else:
             temp = 0
 
