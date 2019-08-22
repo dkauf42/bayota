@@ -41,20 +41,19 @@ class ModelBuilder:
         model = self.build_skeleton(dataplate=dataplate, geoscale=geoscale, target_load={'N': np.Inf,
                                                                                          'P': np.Inf,
                                                                                          'S': np.Inf})
-
+        self.model = model
         self.specdict = specdict
 
-        """ Build the model frame (objective, constraints, and other expressions) """
+        # Essential diagnostic expressions are added to the model.
+        self._add_expression_to_model(model, expr_name='original_load_expr', logger=self.logger)
+        self._add_expression_to_model(model, expr_name='original_load_for_each_loadsource_expr', logger=self.logger)
+        self._add_expression_to_model(model, expr_name='new_load_expr', logger=self.logger)
+        self._add_expression_to_model(model, expr_name='new_load_for_each_loadsource_expr', logger=self.logger)
+
+        # Other model components (objective, constraints, or expressions) are added according to the specification dict.
         self.add_objective_from_spec(model)
         self.add_constraints_from_spec(model)
         self.add_other_components_from_spec(model)
-
-        self.model = model
-
-        # Add diagnostic expressions to model:
-        self._add_expression_to_model(model, expr_name='original_load_expr')
-        self._add_expression_to_model(model, expr_name='original_load_for_each_loadsource_expr')
-        self._add_expression_to_model(model, expr_name='new_load_for_each_loadsource_expr')
 
         return model
 
