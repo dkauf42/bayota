@@ -142,14 +142,15 @@ def percent_reduction_expr(model) -> pyo.ConcreteModel:
     """ Percent Relative Load Reduction (with lrsegs aggregated together) """
 
     # The model parameters 'originalload[p]' and 'newload[p]' is required for this expression.
-    model = original_load_expr(model)
-    model = new_load_expr(model)
+    # model = original_load_expr(model)
+    # model = new_load_expr(model)
+
     # loading before any new BMPs have been implemented
-    model.originalload = pyo.Param(model.PLTNTS,
-                                   initialize=lambda m, p: m.original_load_expr[p])
+    # model.originalload = pyo.Param(model.PLTNTS,
+    #                                initialize=lambda m, p: pyo.value(m.original_load_expr[p]))
 
     def percent_reduction_rule(mdl, p):
-        return ((mdl.originalload[p] - mdl.new_load_expr[p]) / mdl.originalload[p]) * 100
+        return ((mdl.original_load_expr[p] - mdl.new_load_expr[p]) / mdl.original_load_expr[p]) * 100
 
     model.percent_reduction_expr = pyo.Expression(model.PLTNTS,
                                                   rule=percent_reduction_rule)
