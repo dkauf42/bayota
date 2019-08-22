@@ -7,9 +7,9 @@ import pyomo.environ as pyo
 def total_cost_expr(model) -> pyo.ConcreteModel:
     """ Total Cost Expression """
     def total_cost_rule(mdl):
-        return sum((mdl.tau[b] * mdl.x[b, l, u, h])
-                   for b in mdl.BMPS
-                   for l, u, h in mdl.PARCELS)
+        return pyo.quicksum((mdl.tau[b] * mdl.x[b, l, u, h])
+                            for b in mdl.BMPS
+                            for l, u, h in mdl.PARCELS)
 
     model.total_cost_expr = pyo.Expression(rule=total_cost_rule)
     return model
@@ -29,8 +29,8 @@ def original_load_for_one_parcel_expr(model) -> pyo.ConcreteModel:
 def original_load_expr(model) -> pyo.ConcreteModel:
     """ Original Load Expression (with lrsegs aggregated together) """
     def original_load_rule(mdl, p):
-        return sum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
-                   for l, u, h in mdl.PARCELS)
+        return pyo.quicksum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
+                            for l, u, h in mdl.PARCELS)
 
     model.original_load_expr = pyo.Expression(model.PLTNTS,
                                               rule=original_load_rule)
