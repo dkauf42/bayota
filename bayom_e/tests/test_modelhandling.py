@@ -22,7 +22,7 @@ def test_default_modelgen_NorthUmberlandLrseg(costmin_model_spec_path):
     # Verify the original load is about right
     # OLD Obsolete: abs(pyo.value(mdlhandler.model.originalload['N']) - 572816.402650118) < 1000
     # Verify the original load is numeric, and positive
-    assert pyo.value(model.originalload['N']) > 0
+    assert pyo.value(model.original_load_expr['N']) > 0
 
 
 def test_default_modelgen_BroomeNYCounty(costmin_model_spec_path):
