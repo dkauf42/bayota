@@ -85,14 +85,14 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     # *****************************
     # Make Model Modification(s)
     # *****************************
-    mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
+    my_model = load_model_pickle(savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
     # Modification string is converted into a proper dictionary.
     modification_dict_withtrials = json.loads(model_modification_string)
     if not modification_dict_withtrials:
         modvar = None
         varvalue = None
     else:
-        modvar, varvalue = make_model_modification(modification_dict_withtrials, dryrun, mdlhandler, logger)
+        modvar, varvalue = make_model_modification(modification_dict_withtrials, dryrun, my_model, logger)
 
     # *********************
     # Solve
@@ -102,7 +102,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
         # The problem is solved.
-        solution_dict = solvehandler.basic_solve(modelhandler=mdlhandler, mdl=mdlhandler.model,
+        solution_dict = solvehandler.basic_solve(mdl=my_model,
                                                  translate_to_cast_format=translate_to_cast_format,
                                                  solverlogfile=os.path.join(get_logging_dir(), trial_logfilename + '_ipopt.log'))
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
@@ -113,7 +113,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         # Optimization objective value is added to the solution table.
         ii = 0
-        for objective_component in mdlhandler.model.component_objects(pyo.Objective):
+        for objective_component in my_model.component_objects(pyo.Objective):
             if ii < 1:
                 # check whether Objective is an "indexed" component or not
                 if objective_component._index == {None}:
@@ -202,7 +202,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     return 0  # a clean, no-issue, exit
 
 
-def make_model_modification(dictwithtrials, dryrun, mdlhandler, logger):
+def make_model_modification(dictwithtrials, dryrun, model, logger):
     varindexer = None
 
     modvar = dictwithtrials['variable']
@@ -217,13 +217,13 @@ def make_model_modification(dictwithtrials, dryrun, mdlhandler, logger):
     if not varindexer or (varindexer == 'None'):
         if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
                                   'setting %s to %s (no index)' %
-                                        (modvar, varvalue)):
-            setattr(mdlhandler.model, modvar, varvalue)
+                                  (modvar, varvalue)):
+            setattr(model, modvar, varvalue)
     else:
         if notdry(dryrun, logger, '--Dryrun-- Would make model modification; '
                                   'setting %s to %s (at index %s)' %
-                                        (modvar, varvalue, varindexer)):
-            mdlhandler.model.component(modvar)[varindexer] = varvalue
+                                  (modvar, varvalue, varindexer)):
+            model.component(modvar)[varindexer] = varvalue
 
     return modvar, varvalue
 

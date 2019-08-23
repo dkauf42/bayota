@@ -272,12 +272,11 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
     #             print(multipleReplace(line, myDict), end='')
 
 
-def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4,
+def basic_solve(mdl, output_file_str='', fileprintlevel=4,
                 translate_to_cast_format=False, solverlogfile=None):
     """
 
     Args:
-        modelhandler:
         mdl:
         output_file_str:
         fileprintlevel:
@@ -352,7 +351,7 @@ def basic_solve(modelhandler, mdl, output_file_str='', fileprintlevel=4,
             cast_formatted_df = pd.DataFrame()
     else:
         # Populate dataframe with solution info
-        merged_df = initial_solution_parse_to_dataframe(modelhandler, get_suffixes, solved_instance)
+        merged_df = initial_solution_parse_to_dataframe(get_suffixes, solved_instance)
 
         # Add BMP full name
         merged_df['bmpfullname'] = jeeves.bmp.fullnames_from_shortnames(merged_df)
