@@ -50,7 +50,7 @@ def main(geography_name, model_spec_file, control_file=None,
         savedata2file = False
 
     logger = set_up_detailedfilelogger(loggername=os.path.splitext(os.path.basename(model_spec_file))[0],
-                                       filename=f"bayota_step2_modelgeneration_{compact_geo_entity_str}.log",
+                                       filename=f"step2_modelgeneration_{compact_geo_entity_str}.log",
                                        level=log_level,
                                        also_logtoconsole=True,
                                        add_filehandler_if_already_exists=True,

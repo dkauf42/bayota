@@ -55,12 +55,12 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
         studyspecdict['studyshortname'] = spname
         studyspecdict['id'] = studyid
 
-        # A control file with a unique identifier (uuid4) is created.
+        # A study control ("studycon") file w/unique identifier (uuid4) is created.
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
                         "study": studyspecdict, "control_options": control_options,
                         "code_version": version,
                         "run_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
-        unique_control_file = os.path.join(get_control_dir(), 'step1_study_control_' + str(uuid.uuid4()) + '.yaml')
+        unique_control_file = os.path.join(get_control_dir(), 'step1_studycon' + str(uuid.uuid4()) + '.yaml')
         with open(unique_control_file, "w") as f:
             yaml.safe_dump(control_dict, f, default_flow_style=False)
 
