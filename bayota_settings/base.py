@@ -108,31 +108,26 @@ def create_workspace_directory_and_set_up_user_config_files(verbose=True):
     _create_file_in_config_dir_if_doesnt_exist(file_path=bash_config, example_file=example_bash_config)
     _create_file_in_config_dir_if_doesnt_exist(file_path=log_config, example_file=example_log_config)
 
-
+def get_workspace_dir() -> str:
+    return _make_or_get_user_dir('top_paths', 'workspace_top')
 def get_source_csvs_dir() -> str:
     datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
     if not os.path.isdir(datadir_top_level):
         raise ValueError('Source CSVs directory (%s) specified in config does not exist!' % datadir_top_level)
 
     return datadir_top_level
-
-
 def get_metadata_csvs_dir() -> str:
     datadir_top_level = _parse_user_config()['data_directories']['metadatacsvs']
     if not os.path.isdir(datadir_top_level):
         raise ValueError('Metadata CSVs directory (%s) specified in config does not exist!' % datadir_top_level)
 
     return datadir_top_level
-
-
 def get_raw_data_dir() -> str:
     rawdatadir = _parse_user_config()['data_directories']['rawdata']
     if not os.path.isdir(rawdatadir):
         raise ValueError('Raw data directory (%s) specified in config does not exist!' % rawdatadir)
 
     return rawdatadir
-
-
 def get_output_dir() -> str:
     return _make_or_get_user_dir('output_directories', 'general')
 def get_scripts_dir() -> str:
