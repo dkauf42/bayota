@@ -22,7 +22,7 @@ from argparse import ArgumentParser
 
 from bayota_util.spec_handler import read_spec, notdry
 from bayota_settings.base import get_bayota_version, get_model_instances_dir, get_workspace_dir, \
-    get_scripts_dir, get_spec_files_dir, get_control_dir, get_model_specs_dir, get_experiment_specs_dir
+    get_spec_files_dir, get_control_dir, get_model_specs_dir, get_experiment_specs_dir
 from bayota_settings.log_setup import root_logger_setup
 from bayota_util.str_manip import compact_capitalized_geography_string
 from castjeeves.jeeves import Jeeves
@@ -32,14 +32,6 @@ batch = boto3.client('batch', region_name='us-east-1')
 
 docker_client = docker.from_env()
 docker_image = 'bayota_conda_then_ipopt_app'
-
-model_generator_script = os.path.join(get_scripts_dir(), 'run_step2_generatemodel.py')
-
-incontainer_control_dir = get_control_dir()
-# incontainer_specfiles_dir = incontainer_workspace + '/specification_files'
-incontainer_specfiles_dir = get_spec_files_dir()
-# incontainer_modelinstances_dir = incontainer_workspace + '/temp/specification_files'
-incontainer_modelinstances_dir = get_model_instances_dir()
 
 
 def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
