@@ -146,7 +146,7 @@ def read_control_file(control_file, version):
 
     # Experiments
     experiments = studydict['experiments']
-    control_dict['experiments'] = experiments
+    control_dict['experiments'] = experiments.copy()
 
     # Base Loading Condition
     baseloadingfilename = studydict['base_loading_file_name']
