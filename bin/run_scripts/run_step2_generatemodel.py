@@ -81,6 +81,7 @@ def main(geography_name, model_spec_file, control_file=None,
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
+    logger.info(f"*model saved as pickle to {savepath}*")
 
     return 0  # a clean, no-issue, exit
 
