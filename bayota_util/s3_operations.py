@@ -23,7 +23,7 @@ class S3ops():
 
         self.s3 = boto3.client('s3')
 
-    def get_from_s3(self, s3path, local_path):
+    def get_from_s3(self, s3path, local_path, move_directory=False):
         """ Get files from S3
 
         Args:
@@ -37,7 +37,10 @@ class S3ops():
             >>> S3ops.get_from_s3(s3path='s3://modeling-data/data_dir', local_path='/modeling/local_dir')
 
         """
-        CMD = f"aws s3 sync {s3path} {local_path}"
+        if move_directory:
+            CMD = f"aws s3 sync {s3path} {local_path}"
+        else:
+            CMD = f"aws s3 cp {s3path} {local_path}"
         subprocess.Popen([CMD], shell=True)
 
         return 0
