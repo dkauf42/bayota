@@ -16,18 +16,15 @@ import json
 import pyomo.environ as pyo
 
 from bayota_util.spec_handler import read_spec, notdry
+from bayota_util.s3_operations import S3ops
 from bayom_e.solver_handling import solvehandler
 
 from bayom_e.model_handling.utils import load_model_pickle
 
-from bayota_settings.base import get_model_instances_dir, \
-    get_output_dir, get_scripts_dir, get_logging_dir
+from bayota_settings.base import get_model_instances_dir, get_output_dir, get_logging_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 logprefix = '** Single Trial **: '
-
-move_to_s3_script = os.path.join(get_scripts_dir(), 'move_to_s3.py')
-_S3BUCKET = 's3://modeling-data.chesapeakebay.net/'
 
 
 def main(saved_model_file=None, model_modification_string=None, trial_name=None,
@@ -81,6 +78,11 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                                    also_logtoconsole=True,
                                                    add_filehandler_if_already_exists=False,
                                                    add_consolehandler_if_already_exists=False)
+
+    try:
+        s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+    except EnvironmentError as e:
+        logger.info(e)
 
     # *****************************
     # Make Model Modification(s)
@@ -149,21 +151,9 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         s3_destination_dir = s3_base_path + compact_geo_entity_str + '/' + objective_and_constraint_str + '/'
 
         if move_solution_to_s3:
-            # A shell command is built for this job submission.
-            CMD = f"{move_to_s3_script} " \
-                  f"-lp {outputdfpath_bayotaformat} " \
-                  f"-dp {s3_destination_dir + solution_shortname} "
-
-            # Job is submitted.
-            logger.info(f'Job command is: "{CMD}"')
-            if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
-                p1 = subprocess.Popen([CMD], shell=True)
-                p1.wait()
-                # Get return code from process
-                return_code = p1.returncode
-                if p1.returncode != 0:
-                    logger.error(f"Move-the-solution-to-s3 script exited with non-zero code <{return_code}>")
-                    return 1
+            return_code = s3ops.move_to_s3(local_path=outputdfpath_bayotaformat,
+                                           destination_path=f"{s3_destination_dir + solution_shortname}")
+            logger.info(f"Move-the-solution-to-s3 script exited with code <{return_code}>")
 
         # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
         if translate_to_cast_format:
@@ -183,21 +173,9 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
             if move_CASTformatted_solution_to_s3:
-                # A shell command is built for this job submission.
-                CMD = f"{move_to_s3_script} " \
-                      f"-lp {outputdfpath_castformat} " \
-                      f"-dp {s3_destination_dir + solution_shortname_castformat} "
-
-                # Job is submitted.
-                logger.info(f'Job command is: "{CMD}"')
-                if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
-                    p1 = subprocess.Popen([CMD], shell=True)
-                    p1.wait()
-                    # Get return code from process
-                    return_code = p1.returncode
-                    if p1.returncode != 0:
-                        logger.error(f"Move-the-cast-formatted-solution-to-s3 script exited with non-zero code <{return_code}>")
-                        return 1
+                return_code = s3ops.move_to_s3(local_path=outputdfpath_castformat,
+                                               destination_path=f"{s3_destination_dir + solution_shortname_castformat}")
+                logger.info(f"Move-the-solution-to-s3 script exited with code <{return_code}>")
 
     return 0  # a clean, no-issue, exit
 
