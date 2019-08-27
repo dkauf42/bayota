@@ -123,20 +123,22 @@ class S3ops():
         # prefixing the argument with -- means it's optional
         parser.add_argument("s3_path", help="s3 path of directory")
         parser.add_argument("local_path", help="local path to which directory should be moved")
+        parser.add_argument("-r", "--recursive", dest='recursive', action='store_true',
+                            help="use this flag to move an entire directory, retaining dir structure")
         parser.add_argument("-v", "--verbose", dest='verbose',
                             action="count", default=0)
         # now that we're inside a subcommand, ignore the first
         # TWO argvs, ie the command (s3_operations) and the subcommand (pull)
         args = parser.parse_args(sys.argv[2:])
 
-        return self.get_from_s3(s3path=args.s3_path, local_path=args.local_path)
+        return self.get_from_s3(s3path=args.s3_path, local_path=args.local_path, move_directory=args.recursive)
 
     def push(self):
         parser = ArgumentParser(description='Move a file to s3')
         # prefixing the argument with -- means it's optional
         parser.add_argument("local_path", help="local path of file/dir to move")
         parser.add_argument("s3_path", help="destination path for files to move")
-        parser.add_argument("--recursive", dest='move_directory', action='store_true',
+        parser.add_argument("-r", "--recursive", dest='recursive', action='store_true',
                             help="use this flag to move an entire directory, retaining dir structure")
         parser.add_argument("-v", "--verbose", dest='verbose',
                             action="count", default=0)
@@ -146,7 +148,7 @@ class S3ops():
 
         return self.move_to_s3(local_path=args.local_path,
                                destination_path=args.s3_path,
-                               move_directory=args.move_directory,
+                               move_directory=args.recursive,
                                verbose=args.verbose)
 
 
