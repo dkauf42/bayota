@@ -1,4 +1,27 @@
 #!/usr/bin/env python
+##################################################
+# Danny Kaufman
+# 2019 Aug 27
+#
+# Move files between S3 and local
+#
+# Command
+#   {push, pull}
+#
+# [pull] Arguments:
+#   s3_path           = s3 path of file/directory
+#   local_path        = local path to which file/directory should be moved
+#   -r || --recursive = if target is a directory, this flag is required
+#
+# [push] Arguments:
+#   local_path        = local path of file/directory
+#   s3_path           = s3 path to which file/directory should be moved
+#   -r || --recursive = if target is a directory, this flag is required
+#
+# Example:
+#   $ ./s3_oeprations.py pull --recursive s3://modeling-data/data_dir -l /modeling/local_dir
+#
+##################################################
 import os
 import sys
 import boto3
@@ -131,7 +154,9 @@ class S3ops():
         # TWO argvs, ie the command (s3_operations) and the subcommand (pull)
         args = parser.parse_args(sys.argv[2:])
 
-        return self.get_from_s3(s3path=args.s3_path, local_path=args.local_path, move_directory=args.recursive)
+        return self.get_from_s3(s3path=args.s3_path,
+                                local_path=args.local_path,
+                                move_directory=args.recursive)
 
     def push(self):
         parser = ArgumentParser(description='Move a file to s3')
