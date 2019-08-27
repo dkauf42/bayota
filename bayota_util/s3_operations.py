@@ -107,7 +107,6 @@ class S3ops():
         parser.add_argument('command', action="store", type=str, choices=['pull', 'push'])
         # parse_args defaults to [1:] for args, but you need to
         # exclude the rest of the args too, or validation will fail
-        print(sys.argv[1:2])
         args = parser.parse_args(sys.argv[1:2])
         if not hasattr(self, args.command):
             print('Unrecognized command')
@@ -148,59 +147,6 @@ class S3ops():
                                verbose=args.verbose)
 
 
-
-# class MyParser():
-#     def __init__(self):
-#         # Input arguments are parsed.
-#         parser = ArgumentParser()
-#         # Arguments for top-level
-#         parser.add_argument('command', action="store", type=str, choices=['pull', 'push'])
-#         # parse_args defaults to [1:] for args, but you need to
-#         # exclude the rest of the args too, or validation will fail
-#         args = parser.parse_args(sys.argv[1:2])
-#         if not hasattr(self, args.command):
-#             print('Unrecognized command')
-#             parser.print_help()
-#             exit(1)
-#         # use dispatch pattern to invoke method with same name
-#         self.response = getattr(self, args.command)()
-#
-#     def pull(self):
-#         parser = ArgumentParser(description='Retrieve a file from s3')
-#         # prefixing the argument with -- means it's optional
-#         parser.add_argument("s3_path", help="s3 path of directory")
-#         parser.add_argument("local_path", help="local path to which directory should be moved")
-#         parser.add_argument("-v", "--verbose", dest='verbose',
-#                             action="count", default=0)
-#         # now that we're inside a subcommand, ignore the first
-#         # TWO argvs, ie the command (s3_operations) and the subcommand (pull)
-#         args = parser.parse_args(sys.argv[2:])
-#         print(f"Running pull command, from={args.s3_path}, to={args.local_path}")
-#         return args
-#
-#     def push(self):
-#         parser = ArgumentParser(description='Move a file to s3')
-#         # prefixing the argument with -- means it's optional
-#         parser.add_argument("local_path", help="local path of file/dir to move")
-#         parser.add_argument("s3_path", help="destination path for files to move")
-#         parser.add_argument("--recursive", dest='move_directory', action='store_true',
-#                             help="use this flag to move an entire directory, retaining dir structure")
-#         parser.add_argument("-v", "--verbose", dest='verbose',
-#                             action="count", default=0)
-#         # now that we're inside a subcommand, ignore the first
-#         # TWO argvs, ie the command (s3_operations) and the subcommand (push)
-#         args = parser.parse_args(sys.argv[2:])
-#         print(f"Running push command, from={args.local_path}, to={args.s3_path}, recursive?={args.move_directory}")
-#         return args
-
-
 if __name__ == '__main__':
-    args = sys.argv[:]
-    print(args)
     s3ops = S3ops()
-    s3ops.cli(args)
-    # S3ops.cli(args)
-
-    # sys.exit(main(opts.s3path,
-    #               opts.local_path,
-    #               verbose=opts.verbose))
+    s3ops.cli(sys.argv[:])
