@@ -37,14 +37,6 @@ class NonlinearVariant(ModelBuilder):
 
         # PARCELS
         model.LRSEGS = pyo.Set(initialize=dataplate.LRSEGS)
-        # if geoscale == 'lrseg':
-        #     model.LRSEGS = pyo.Set(initialize=dataplate.LRSEGS)
-        # elif geoscale == 'county':
-        #     model.COUNTIES = pyo.Set(initialize=dataplate.COUNTIES)
-        #     model.LRSEGS = pyo.Set(initialize=dataplate.LRSEGS)
-        #     model.CNTYLRSEGLINKS = pyo.Set(initialize=dataplate.CNTYLRSEGLINKS, dimen=2)
-        # else:
-        #     raise ValueError('unrecognized geoscale <%s>' % geoscale)
         model.LOADSRCS = pyo.Set(initialize=dataplate.LOADSRCS)
         model.AGENCIES = pyo.Set(initialize=dataplate.AGENCIES)
         model.PARCELS = pyo.Set(initialize=dataplate.PARCELS, within=model.LRSEGS*model.LOADSRCS*model.AGENCIES)
@@ -87,27 +79,11 @@ class NonlinearVariant(ModelBuilder):
                                           for k, v in dataplate.phi.items()},
                               mutable=True)
 
-        # model.phi = pyo.Param(model.LRSEGS,
-        #                       model.LOADSRCS,
-        #                       doc='base nutrient load per load source',
-        #                       within=pyo.NonNegativeReals,
-        #                       initialize={(k[0], k[1]): v
-        #                                   for k, v in dataplate.phi.items()
-        #                                   if k[2] == 'N'},
-        #                       mutable=True)
-
         model.alpha = pyo.Param(model.PARCELS,
                                 doc='total acres available in an lrseg/loadsource/agency',
                                 within=pyo.NonNegativeReals,
                                 mutable=True,
                                 initialize={k: v for k, v in dataplate.alpha.items()})
-
-        # model.alpha = pyo.Param(model.LRSEGS,
-        #                         model.LOADSRCS,
-        #                         doc='total acres available in an lrseg/load source',
-        #                         within=pyo.NonNegativeReals,
-        #                         mutable=True,
-        #                         initialize={k: v for k, v in dataplate.alpha.items()})
 
         # *************************
         #  MUTABLE PARAMETERS
@@ -127,11 +103,5 @@ class NonlinearVariant(ModelBuilder):
                           domain=pyo.NonNegativeReals,
                           bounds=_bounds_rule,
                           doc='Amount of each BMP to implement.')
-
-        # model.x = pyo.Var(model.BMPS,
-        #                   model.LRSEGS,
-        #                   model.LOADSRCS,
-        #                   domain=pyo.NonNegativeReals,
-        #                   doc='Amount of each BMP to implement.')
 
         return model
