@@ -10,7 +10,7 @@ def costmin_model_for_singlelrseg(request):
     THIS_DIR = os.path.dirname(os.path.abspath(__file__))
     costmin_model_spec_path = os.path.join(THIS_DIR, 'costmin_total_Npercentreduction.yaml')
 
-    model, dataplate = build_model(model_spec_file=costmin_model_spec_path,
+    model, dataplate = build_model(model_spec=costmin_model_spec_path,
                                    geoscale='lrseg',
                                    geoentities=['N51133RL0_6450_0000'],
                                    savedata2file=False,

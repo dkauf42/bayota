@@ -13,7 +13,7 @@ def costmin_model_spec_path(request):
 
 
 def test_default_modelgen_NorthUmberlandLrseg(costmin_model_spec_path):
-    model, dataplate = build_model(model_spec_file=costmin_model_spec_path,
+    model, dataplate = build_model(model_spec=costmin_model_spec_path,
                                    geoscale='lrseg',
                                    geoentities=['N51133RL0_6450_0000'],
                                    savedata2file=False,
@@ -26,7 +26,7 @@ def test_default_modelgen_NorthUmberlandLrseg(costmin_model_spec_path):
 
 
 def test_default_modelgen_BroomeNYCounty(costmin_model_spec_path):
-    model, dataplate = build_model(model_spec_file=costmin_model_spec_path,
+    model, dataplate = build_model(model_spec=costmin_model_spec_path,
                                    geoscale='county',
                                    geoentities='Broome, NY',
                                    savedata2file=False,
@@ -38,7 +38,7 @@ def test_default_modelgen_BroomeNYCounty(costmin_model_spec_path):
 
 
 def test_default_modelgen_AdamsPACounty(costmin_model_spec_path):
-    model, dataplate = build_model(model_spec_file=costmin_model_spec_path,
+    model, dataplate = build_model(model_spec=costmin_model_spec_path,
                                    geoscale='county',
                                    geoentities='Adams, PA',
                                    savedata2file=False,
@@ -49,7 +49,7 @@ def test_default_modelgen_AdamsPACounty(costmin_model_spec_path):
     assert pyo.value(model.original_load_expr['N']) > 0
 
 def test_expression_pickling_AdamsPA(costmin_model_spec_path):
-    model, dataplate = build_model(model_spec_file=costmin_model_spec_path,
+    model, dataplate = build_model(model_spec=costmin_model_spec_path,
                                    geoscale='county',
                                    geoentities='Adams, PA',
                                    savedata2file=False,

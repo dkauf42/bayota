@@ -183,7 +183,7 @@ from bayom_e.solver_handling import solvehandler
 
 # Create a model instance
 model_spec_file = '/bayota/bayom_e/tests/costmin_total_Npercentreduction.yaml'
-model, dataplate = build_model(model_spec_file=model_spec_file,
+model, dataplate = build_model(model_spec=model_spec_file,
                                geoscale='county',
                                geoentities='Perry, PA',
                                savedata2file=False,

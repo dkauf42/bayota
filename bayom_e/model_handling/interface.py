@@ -72,12 +72,12 @@ def check_for_problems_post_model_construction(model, logger):
         logger.debug(original_loadsource_problems_dataframe(model).head())
 
 
-def build_model(model_spec_file, geoscale, geoentities, baseloadingfilename,
+def build_model(model_spec, geoscale, geoentities, baseloadingfilename,
                 savedata2file=False, log_level='INFO'):
     """Generate a model for the efficiency BMPs.
 
     Args:
-        model_spec_file (str): path to a model specification file
+        model_spec (str or dict): path to a model specification file or a dictionary of model spec values
         geoscale (str):
         geoentities (list):
         baseloadingfilename (str):
@@ -88,7 +88,7 @@ def build_model(model_spec_file, geoscale, geoentities, baseloadingfilename,
         a Pyomo ConcreteModel
 
     """
-    logger = set_up_detailedfilelogger(loggername=os.path.splitext(os.path.basename(model_spec_file))[0],
+    logger = set_up_detailedfilelogger(loggername=__name__,
                                        filename='bayota_model_generation.log',
                                        level=log_level,
                                        also_logtoconsole=True,
@@ -96,8 +96,12 @@ def build_model(model_spec_file, geoscale, geoentities, baseloadingfilename,
                                        add_consolehandler_if_already_exists=False)
 
     """ Initialization; Get Data """
-    # parse_model_spec(specdict=read_spec(model_spec_file))
-    specdict = read_spec(model_spec_file)
+    if isinstance(model_spec, str):
+        specdict = read_spec(model_spec)
+    elif isinstance(model_spec, dict):
+        specdict = model_spec
+    else:
+        logger.error('model_spec must be a path string or a dictionary')
     dataplate = get_dataplate(geoscale=geoscale, geoentities=[geoentities],
                               savedata2file=savedata2file, baseloadingfilename=baseloadingfilename)
     check_for_problems_in_data_before_model_construction(data=dataplate, logger=logger)
@@ -110,7 +114,7 @@ def build_model(model_spec_file, geoscale, geoentities, baseloadingfilename,
         builder = LinearVariant(logger=logger)
     else:
         raise ValueError(f"unrecognized model variant <{variant}>")
-    print(specdict.items())
+
     model = builder.build_model(dataplate, geoscale=geoscale, specdict=specdict)
 
     """ The model is validated. """

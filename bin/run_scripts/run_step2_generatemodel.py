@@ -71,7 +71,7 @@ def main(geography_name, model_spec_file, control_file=None,
     if notdry(dryrun, logger, '--Dryrun-- Would generate model'):
         starttime_modelinstantiation = time.time()  # Wall time - clock starts.
 
-        my_model, dataplate = build_model(model_spec_file=model_spec_file,
+        my_model, dataplate = build_model(model_spec=model_spec_file,
                                           geoscale=geography_scale.lower(),
                                           geoentities=geography_entity,
                                           savedata2file=savedata2file,
