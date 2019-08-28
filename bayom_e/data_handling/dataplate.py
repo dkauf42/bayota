@@ -1,6 +1,7 @@
 """ DATAPLATE class
 
 """
+from typing import List, Tuple, Dict, Set
 import pandas as pd
 from dataclasses import dataclass, InitVar
 from bayota_util.str_manip import numstr
@@ -13,16 +14,65 @@ class NLP_DataPlate:
     """
 
     # Sets
-    PLTNTS: pd.DataFrame()
-    LRSEGS: pd.DataFrame()
-    LOADSRCS: pd.DataFrame()
-    AGENCIES: pd.DataFrame()
-    PARCELS: pd.DataFrame()
-    BMPS: pd.DataFrame()
-    BMPGRPS: pd.DataFrame()
-    BMPGRPING: pd.DataFrame()
-    BMPSRCLINKS: pd.DataFrame()
-    BMPGRPSRCLINKS: pd.DataFrame()
+    PLTNTS: List[str]
+    """ Example:
+            ['N', 'P', 'S']
+    """
+
+    LRSEGS: List[str]
+    """ Example:
+            ['N42001PU0_3000_3090', 'N42001PU2_2790_3290', 'N42001PM2_2860_3040']
+    """
+
+    LOADSRCS: List[str]
+    """ Example:
+            ['aop', 'soy', 'gwm']
+    """
+
+    AGENCIES: Set[str]
+    """ Example:
+            {'dod', 'nonfed', 'nps'}
+    """
+
+    PARCELS: List[Tuple]
+    """ Example:
+            [('N42001PM3_3040_3340', 'aop', 'dod'),
+             ('N42001PM3_3040_3340', 'soy', 'dod'),
+             ('N42001PM3_3040_3340', 'gwm', 'dod')]
+    """
+
+    BMPS: List[str]
+    """ Example:
+            ['conplan',
+             'advancedgi',
+             'agstormeff']
+    """
+
+    BMPGRPS: List
+    """ Example:
+            [3, 13, 16]
+    """
+
+    BMPGRPING: Dict
+    """ Example {BmpGroup:bmps} :
+        {3: ['conplan'],
+         13: ['septiceffadvanced', 'septicsecadvanced', 'septicdeadvanced'],
+         16: ['agstormeff']}
+    """
+
+    BMPSRCLINKS: Dict
+    """ Example  {LoadSource:bmps} :
+        {'aop': ['conplan', 'watercontstruc', 'ditchfilter'],
+         'cch': ['imperviousdisconnection'],
+         'cci': ['imperviousdisconnection']}
+    """
+
+    BMPGRPSRCLINKS: Dict
+    """ Example  {LoadSource:BmpGroups} :
+        {'aop': [3, 41, 97],
+         'cch': [42],
+         'cci': [42]}
+    """
 
     # Parameters
     theta: pd.DataFrame()  # target nutrient load (lb)
