@@ -167,7 +167,6 @@ def setup_docker_arguments(logger=None):
     return volumes_dict, env_variables
 
 
-
 def read_batch_spec_file(batch_spec_file, logger):
     jeeves = Jeeves()
 
