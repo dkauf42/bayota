@@ -30,8 +30,14 @@ import subprocess
 from argparse import ArgumentParser
 
 
-class S3ops():
+class S3ops:
     def __init__(self, bucketname='modeling-data.chesapeakebay.net', verbose=False):
+        """
+
+        Args:
+            bucketname:
+            verbose:
+        """
         # Check if running on AWS
         self.resp = None
         self.bucketname = bucketname
