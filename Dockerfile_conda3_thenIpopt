@@ -55,9 +55,6 @@ RUN echo "conda activate bayota3" > ~/.bashrc
 ENV PATH /opt/conda/envs/bayota3/bin:$PATH
 RUN conda clean -afy
 
-# add vim for basic editing and checking
-RUN apt-get update && apt-get install vim -y
-
 # --- Install basic requirements ---
 RUN apt-get update && apt-get install -y \
     curl \
@@ -67,17 +64,18 @@ RUN apt-get update && apt-get install -y \
     patch \
  && rm -rf /var/lib/apt/lists/*
 
+# add vim for basic editing and checking
+RUN apt-get install vim -y
+
 # --- Get the IPOPT code ---
 WORKDIR /
-RUN apt-get update \
-    && curl --remote-name https://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.12.tgz \
+RUN curl --remote-name https://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.12.tgz \
     \
     && tar -xvzf Ipopt-3.12.12.tgz \
     && mv /Ipopt-3.12.12 /CoinIpopt
 
 # --- Download external code packages ---
-RUN apt-get update \
-    && cd /CoinIpopt/ThirdParty/Blas \
+RUN cd /CoinIpopt/ThirdParty/Blas \
     \
     && ./get.Blas \
     && cd ../Lapack \
@@ -88,15 +86,13 @@ RUN apt-get update \
     && ./get.Mumps
 
 # --- Run IPOPT configure script ---
-RUN apt-get update && apt-get install -y \
-    && mkdir /CoinIpopt/build \
+RUN mkdir /CoinIpopt/build \
     && cd /CoinIpopt/build \
     \
     && /CoinIpopt/configure
 
 # --- Build the IPOPT code ---
-RUN apt-get update && apt-get install -y \
-    make \
+RUN make \
     && cd /CoinIpopt/build \
     && make \
     && make test \
