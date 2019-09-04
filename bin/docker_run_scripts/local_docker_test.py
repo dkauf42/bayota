@@ -28,4 +28,4 @@ CMD = f"{model_generator_script} -cf {study_control_file}"
 print(f'Job command is: "{CMD}"')
 
 # Job command is run in docker image.
-response = docker_client.containers.run('bayota_conda_app', CMD, volumes=volumes_dict)
+response = docker_client.containers.run('bayota_conda3_app', CMD, volumes=volumes_dict)
