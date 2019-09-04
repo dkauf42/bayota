@@ -3,7 +3,7 @@
 Note: No SLURM commands are submitted within this script.
 
 Example usage command:
-  >> ./bin/run_scripts/run_step4_solveonetrial.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step4_trial_control_2bd8452b-2560-48f6-8e36-a03cfa31e0e9.yaml
+  >> ./bin/slurm_scripts/run_step4_solveonetrial.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step4_trial_control_2bd8452b-2560-48f6-8e36-a03cfa31e0e9.yaml
 ================================================================================
 """
 

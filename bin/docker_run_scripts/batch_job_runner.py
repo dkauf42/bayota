@@ -3,7 +3,7 @@
 This submits Docker CMDs to launch the model generation, experiments, and trials.
 
 Example usage command:
-  >> ./bin/run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
+  >> ./bin/docker_run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
 
 # Daniel Kaufman, Chesapeake Research Consortium, Inc.
 # 23 August 2019
@@ -34,7 +34,7 @@ docker_client = docker.from_env()
 docker_image = 'bayota_conda_then_ipopt_app'
 
 
-def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
+def main(batch_spec_file, dryrun=False, log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
     logger.debug(locals())
 
@@ -98,7 +98,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
         """ GENERATE MODEL VIA DOCKER IMAGE """
         volumes_dict, env_variables = setup_docker_arguments(logger=logger)
         # A command is built for this job submission.
-        model_generator_script = '/root/bayota/bin/run_scripts/run_step2_generatemodel.py'
+        model_generator_script = '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py'
         CMD = f"{model_generator_script} -cf {study_control_file} --log_level={log_level}"
         logger.info(f'For image -- job command is: "{CMD}"')
         # Job is submitted.
@@ -143,7 +143,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
                 yaml.safe_dump(control_dict, f, default_flow_style=False)
 
             # A command is built for this job submission.
-            experiment_script = '/root/bayota/bin/run_scripts/run_step3_conductexperiment.py'
+            experiment_script = '/root/bayota/bin/slurm_scripts/run_step3_conductexperiment.py'
             CMD = f"{experiment_script}  -cf {unique_control_file} --no_slurm --log_level={log_level}"
             logger.info(f'For image -- job command is: "{CMD}"')
             # Job is submitted.
@@ -261,9 +261,6 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
-    parser.add_argument("--no_slurm", action='store_true',
-                        help="don't use AWS or slurm facilities")
-
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help="change logging level to {debug, info, warning, error, critical}")
@@ -280,5 +277,5 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     sys.exit(main(opts.batch_spec_filepath,
-                  dryrun=opts.dryrun, no_slurm=opts.no_slurm,
+                  dryrun=opts.dryrun,
                   log_level=opts.log_level))

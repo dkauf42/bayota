@@ -22,10 +22,10 @@ print(volumes_dict)
 print(type(volumes_dict))
 
 # Job command is composed.
-model_generator_script = '/root/bayota/bin/run_scripts/run_step2_generatemodel.py'
+model_generator_script = '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py'
 study_control_file = os.path.join(incontainer_control_dir, 'step1_studycon65929049-0ceb-46aa-a002-9bb8804175ae.yaml')
 CMD = f"{model_generator_script} -cf {study_control_file}"
 print(f'Job command is: "{CMD}"')
 
 # Job command is run in docker image.
-response = docker_client.containers.run('bayota_conda_app', CMD, volumes=volumes_dict)
+response = docker_client.containers.run('bayota_conda3_app', CMD, volumes=volumes_dict)
