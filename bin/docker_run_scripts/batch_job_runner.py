@@ -3,7 +3,7 @@
 This submits Docker CMDs to launch the model generation, experiments, and trials.
 
 Example usage command:
-  >> ./bin/run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
+  >> ./bin/docker_run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
 
 # Daniel Kaufman, Chesapeake Research Consortium, Inc.
 # 23 August 2019
@@ -98,7 +98,7 @@ def main(batch_spec_file, dryrun=False, log_level='INFO') -> int:
         """ GENERATE MODEL VIA DOCKER IMAGE """
         volumes_dict, env_variables = setup_docker_arguments(logger=logger)
         # A command is built for this job submission.
-        model_generator_script = '/root/bayota/bin/run_scripts/run_step2_generatemodel.py'
+        model_generator_script = '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py'
         CMD = f"{model_generator_script} -cf {study_control_file} --log_level={log_level}"
         logger.info(f'For image -- job command is: "{CMD}"')
         # Job is submitted.
@@ -143,7 +143,7 @@ def main(batch_spec_file, dryrun=False, log_level='INFO') -> int:
                 yaml.safe_dump(control_dict, f, default_flow_style=False)
 
             # A command is built for this job submission.
-            experiment_script = '/root/bayota/bin/run_scripts/run_step3_conductexperiment.py'
+            experiment_script = '/root/bayota/bin/slurm_scripts/run_step3_conductexperiment.py'
             CMD = f"{experiment_script}  -cf {unique_control_file} --no_slurm --log_level={log_level}"
             logger.info(f'For image -- job command is: "{CMD}"')
             # Job is submitted.
