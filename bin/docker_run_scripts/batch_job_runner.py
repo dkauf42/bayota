@@ -34,7 +34,7 @@ docker_client = docker.from_env()
 docker_image = 'bayota_conda_then_ipopt_app'
 
 
-def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
+def main(batch_spec_file, dryrun=False, log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
     logger.debug(locals())
 
@@ -261,9 +261,6 @@ def parse_cli_arguments():
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
-    parser.add_argument("--no_slurm", action='store_true',
-                        help="don't use AWS or slurm facilities")
-
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help="change logging level to {debug, info, warning, error, critical}")
@@ -280,5 +277,5 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     sys.exit(main(opts.batch_spec_filepath,
-                  dryrun=opts.dryrun, no_slurm=opts.no_slurm,
+                  dryrun=opts.dryrun,
                   log_level=opts.log_level))
