@@ -66,6 +66,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     gfortran \
     patch \
+    make \
  && rm -rf /var/lib/apt/lists/*
 
 # --- Get the IPOPT code ---
@@ -93,7 +94,8 @@ RUN mkdir /CoinIpopt/build \
     && /CoinIpopt/configure
 
 # --- Build the IPOPT code ---
-RUN make \
+RUN ls -alht \
+    && pwd \
     && cd /CoinIpopt/build \
     && make \
     && make test \
