@@ -23,10 +23,15 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Dockerfile
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-      - docker tag $BASE_IMAGE_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG     
+      - docker build -t $IMAGE_REPO_NAME:latest .
+      - docker tag $BASE_IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest     
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image to AWS ECR...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+      - MY_MANIFEST=$(aws ecr batch-get-image --repository-name $IMAGE_REPO_NAME --image-ids imageTag=latest --region $AWS_DEFAULT_REGION --query images[].imageManifest --output text)
+      - IMAGE_TAG=$IMAGE_TAG"_"$JENKINS_ID
+      - IMAGE_TAG=$(echo "$IMAGE_TAG" | sed 's#/#\_#g')
+      - echo $IMAGE_TAG
+      - aws ecr put-image --repository-name $IMAGE_REPO_NAME --image-tag $IMAGE_TAG --image-manifest "$MY_MANIFEST" --region $AWS_DEFAULT_REGION
