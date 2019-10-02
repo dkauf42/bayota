@@ -44,18 +44,17 @@ class SolutionHandler:
         if nonzerodf.empty:
             raise ValueError('No non-zero decision variables identified in model instance dataframe')
 
-        # TODO: figure out how to add cost information, now that we're are not passing around a "Model Handler" object
-        # if addcosttbldata is not None:
-        #     # add cost/unit data to results table
-        #     costsubtbl = addcosttbldata
-        #     # Retain only those costs pertaining to bmps in our set
-        #     includecols = ['totalannualizedcostperunit', 'bmpshortname']
-        #     nonzerodf = nonzerodf.merge(costsubtbl.loc[:, includecols],
-        #                                 how='left')
-        #
-        #     # Add total cost of each BMP to results table for this instance
-        #     nonzerodf['totalinstancecost'] = np.multiply(nonzerodf['totalannualizedcostperunit'].values,
-        #                                                  nonzerodf['acres'].values)
+        if addcosttbldata is not None:
+            # add cost/unit data to results table
+            costsubtbl = addcosttbldata
+            # Retain only those costs pertaining to bmps in our set
+            includecols = ['totalannualizedcostperunit', 'bmpshortname']
+            nonzerodf = nonzerodf.merge(costsubtbl.loc[:, includecols],
+                                        how='left', on='bmpshortname')
+
+            # Add total cost of each BMP to results table for this instance
+            nonzerodf['totalinstancecost'] = np.multiply(nonzerodf['totalannualizedcostperunit'].values,
+                                                         nonzerodf['acres'].values)
 
         return nonzerodf
 
@@ -152,13 +151,13 @@ class SolutionHandler:
 #                 print('(%s, %s): %d' % (b, u, bval))
 
 
-def initial_solution_parse_to_dataframe(get_suffixes, solved_instance):
+def initial_solution_parse_to_dataframe(get_suffixes, solved_instance, costsdf):
     # ---- PARSE SOLUTION OUTPUT ----
     # Parse out only the optimal variable values that are nonzero
     # nzvnames, nzvvalues = get_nonzero_var_names_and_values(self.instance)
     solution_handler = SolutionHandler()
     merged_df = solution_handler.get_nonzero_var_df(solved_instance,
-                                                    addcosttbldata=None)
+                                                    addcosttbldata=costsdf)
 
     merged_df['acres'] = merged_df['acres'].apply(lambda x: round(x, 1))
 
