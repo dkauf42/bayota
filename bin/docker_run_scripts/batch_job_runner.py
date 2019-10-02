@@ -51,6 +51,9 @@ def main(batch_spec_file, dryrun=False, log_level='INFO') -> int:
     #     - list of geographies
     #     - control options
 
+    # TODO: push the workspace to s3, get path to s3 ws-copy ready for passing to docker image script.
+    # TODO: or should we wait to push the ws to s3 until after we create each studycon file?
+
     # (Geography, Model+Experiments) are combined to form studies, which are submitted as jobs.
     for index, sp in enumerate(study_pairs):
         studyid = '{:04}'.format(index+1)
