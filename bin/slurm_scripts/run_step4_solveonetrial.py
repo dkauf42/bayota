@@ -161,15 +161,9 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             solution_fullname_castformat = f"castformat_{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
 
             outputdfpath_castformat = os.path.join(solutions_dir, solution_fullname_castformat)
-            # solution_dict['cast_formatted_df'].to_csv(outputdfpath,
-            #                                           sep='\t', header=True, index=False, line_terminator='\r\n')
-
-            with open(outputdfpath_castformat, 'wb') as dst:
-                solution_dict['cast_formatted_df'].to_csv(outputdfpath_castformat,
-                                                          sep='\t', header=True,
-                                                          index=False, line_terminator='\r\n')
-                dst.seek(-1, os.SEEK_END)  # <---- 1 : len('\n') to remove blank line at end of file
-                dst.truncate()
+            csv_string = solution_dict['cast_formatted_df'].to_csv(None, sep='\t', header=True,
+                                                                   index=False, line_terminator='\r\n')
+            open(outputdfpath_castformat, 'w').write(csv_string[:-2])  # -2 to remove blank line at end of file
             logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
             if move_CASTformatted_solution_to_s3:
