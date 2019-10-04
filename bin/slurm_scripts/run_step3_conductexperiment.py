@@ -128,6 +128,7 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
             if not no_slurm:
                 srun_opts = f"--nodes={1} " \
                             f"--ntasks={1} " \
+                            f"--cpus-per-task={2} " \
                             f"--exclusive "
                 CMD = "srun " + srun_opts + CMD
 
