@@ -83,6 +83,12 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
     except EnvironmentError as e:
         logger.info(e)
+        logger.info('trying again')
+        try:
+            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+        except EnvironmentError as e:
+            logger.info(e)
+
 
     # *****************************
     # Make Model Modification(s)
