@@ -100,7 +100,7 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
     starttime_modelsolve = time.time()
 
     if localsolver:
-        solver = SolverFactory(solvername)
+        solver = SolverFactory(solvername, options="mumps_mem_percent=5")
 
         if get_suffixes:
             instance.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT)
@@ -323,7 +323,6 @@ def basic_solve(mdl, output_file_str='', fileprintlevel=4,
     #   8 for variable values at all iterations
     #   10 for all iterations
     modify_ipopt_options(options_file_path, newfileprintlevel=fileprintlevel)
-    modify_ipopt_options(options_file_path, mumps_mem_percent='5')
 
     # ---- SOLVE ----
     get_suffixes = False
