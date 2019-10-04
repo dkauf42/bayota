@@ -108,8 +108,12 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
             instance.ipopt_zU_out = pyo.Suffix(direction=pyo.Suffix.IMPORT)
             setattr(instance, 'lambda', pyo.Suffix(direction=pyo.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
-        results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
-                               keepfiles=False, logfile=logfilename)
+        try:
+            results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
+                                   keepfiles=False, logfile=logfilename)
+        except ValueError as e:
+            logger.info(e)
+
     else:
         opt = SolverFactory("cbc")
         solver_manager = SolverManagerFactory('neos')
@@ -192,7 +196,7 @@ def get_solver_paths(solvername):
     return solver_path, options_file_path
 
 
-def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintlevel=None):
+def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintlevel=None, mumps_mem_percent=None):
     rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
 
     def _parse_line(string):
@@ -232,6 +236,11 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
                     if parsed['key'] == 'file_print_level':
                         if not not newfileprintlevel:
                             line = line.replace(parsed['value'], str(newfileprintlevel))
+                            if not anyfilechange:
+                                anyfilechange = True
+                    if parsed['key'] == 'mumps_mem_percent':
+                        if not not mumps_mem_percent:
+                            line = line.replace(parsed['value'], str(mumps_mem_percent))
                             if not anyfilechange:
                                 anyfilechange = True
                 # Copy input file to temporary file, modifying as we go
@@ -314,6 +323,7 @@ def basic_solve(mdl, output_file_str='', fileprintlevel=4,
     #   8 for variable values at all iterations
     #   10 for all iterations
     modify_ipopt_options(options_file_path, newfileprintlevel=fileprintlevel)
+    modify_ipopt_options(options_file_path, mumps_mem_percent='5')
 
     # ---- SOLVE ----
     get_suffixes = False
