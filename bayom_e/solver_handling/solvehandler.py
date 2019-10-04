@@ -101,7 +101,7 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
 
     if localsolver:
         solver = SolverFactory(solvername)
-        solver.options['mumps_mem_percent'] = '5'
+        solver.options['OF_mumps_mem_percent'] = '5'
 
         if get_suffixes:
             instance.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT)
