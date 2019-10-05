@@ -101,10 +101,10 @@ def read_batch_spec_file(batch_spec_file, logger):
     if type(strpattern) is list:
         GEOAREAS = []
         for sp in strpattern:
-            for item in areas.loc[areas.str.match(sp)].tolist():
+            for item in areas.loc[areas.str.lower().str.match(sp.lower())].tolist():
                 GEOAREAS.append(item)
     else:
-        GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
+        GEOAREAS = areas.loc[areas.str.lower().str.match(strpattern.lower())].tolist()
 
     # Get study specification file names
     STUDIES = batchdict['study_specs']
