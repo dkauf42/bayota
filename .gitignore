@@ -1,6 +1,10 @@
 
 old__maybe_obsolete/
 
+# Slurm output files
+*.err
+*.out
+
 # Pyomo/Ipopt temporary files
 *.col
 *.row
