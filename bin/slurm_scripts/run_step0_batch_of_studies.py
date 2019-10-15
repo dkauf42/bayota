@@ -13,15 +13,13 @@ import sys
 import uuid
 import yaml
 import datetime
-import itertools
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_util.spec_handler import read_spec, notdry
+from bayota_util.spec_handler import notdry, read_batch_spec_file
 from bayota_settings.base import get_bayota_version, \
     get_scripts_dir, get_spec_files_dir, get_control_dir
 from bayota_settings.log_setup import root_logger_setup
-from castjeeves.jeeves import Jeeves
 
 
 def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
@@ -75,7 +73,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
                           f"--ntasks-per-node={NUM_CORES} " \
                           f"--output=slurm_job_{spname}_%j-%2t.out " \
                           f"--error=slurm_job_{spname}_%j-%2t.err " \
-                          f"--time=01:00:00 "  # time requested in hour:minute:second
+                          f"--time=04:00:00 "  # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD
         else:
             CMD = CMD + " --no_slurm"
@@ -86,39 +84,6 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
             subprocess.Popen([CMD], shell=True)
 
     return 0  # a clean, no-issue, exit
-
-
-def read_batch_spec_file(batch_spec_file, logger):
-    jeeves = Jeeves()
-
-    batchdict = read_spec(batch_spec_file)
-
-    # Process geographies, and expand any (by matching string pattern) if necessary
-    geo_scale = batchdict['geography_scale']
-    areas = jeeves.geo.geonames_from_geotypename(geotype=geo_scale)
-    strpattern = batchdict['geography_entities']['strmatch']
-
-    if type(strpattern) is list:
-        GEOAREAS = []
-        for sp in strpattern:
-            for item in areas.loc[areas.str.match(sp)].tolist():
-                GEOAREAS.append(item)
-    else:
-        GEOAREAS = areas.loc[areas.str.match(strpattern)].tolist()
-
-    # Get study specification file names
-    STUDIES = batchdict['study_specs']
-    study_pairs = list(itertools.product(GEOAREAS, STUDIES))
-
-    # read other options
-    control_options = batchdict['control_options']
-
-    logger.info('%d %s to be conducted: %s' %
-                (len(study_pairs),
-                 'study' if len(study_pairs) == 1 else 'studies',
-                 study_pairs))
-
-    return geo_scale, study_pairs, control_options
 
 
 def parse_cli_arguments():

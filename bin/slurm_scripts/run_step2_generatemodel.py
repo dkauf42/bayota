@@ -13,41 +13,53 @@ import time
 from argparse import ArgumentParser
 
 from bayom_e.model_handling.interface import build_model
-from bayota_util.spec_handler import read_spec, notdry
+from bayota_util.spec_handler import notdry, read_model_controlfile
 
 from bayom_e.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_specs_dir,\
-    get_spec_files_dir, get_model_instances_dir
+    get_spec_files_dir, get_model_instances_dir, get_workspace_dir, get_control_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
-from bayota_util.str_manip import compact_capitalized_geography_string
 
-
-geo_spec_file = os.path.join(get_spec_files_dir(), 'geography_specs.yaml')
+from bayota_util.s3_operations import S3ops
 
 
 def main(geography_name, model_spec_file, control_file=None,
-         saved_model_file=None, dryrun=False, baseloadingfilename='', log_level='INFO') -> int:
+         saved_model_file=None, dryrun=False, baseloadingfilename='', s3_workspace_dir=None,
+         log_level='INFO') -> int:
 
-    # The control file is read.
-    if not not control_file:
-        control_dict = read_spec(control_file)
-
-        geography_scale = control_dict['geography']['scale']
-        geography_entity = control_dict['geography']['entity']
-        compact_geo_entity_str = control_dict['geography']['shortname']
-
-        model_spec_file = control_dict['model']['spec_file']
-        saved_model_file = control_dict['model']['saved_file_for_this_study']
-        baseloadingfilename = control_dict['base_loading_file_name']
-        savedata2file = control_dict['control_options']['save_model_instance_data_to_file']
+    if not not s3_workspace_dir:
+        """ Workspace is copied in full from S3 """
+        try:
+            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+        except EnvironmentError as e:
+            print(e)
+            print('run_step2_generatemodel; trying again')
+            try:
+                s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+            except EnvironmentError as e:
+                print(e)
+                raise e
+        # Workspace is copied.
+        s3ops.get_from_s3(s3path=s3_workspace_dir,
+                          local_path=get_workspace_dir(),
+                          move_directory=True)
+        print(f"copied s3 workspace from {s3_workspace_dir} to local location: {get_workspace_dir()}")
     else:
-        geodict = read_spec(geo_spec_file)[geography_name]
-        geography_scale = geodict['scale']
-        geography_entity = geodict['entities']
-        compact_geo_entity_str = compact_capitalized_geography_string(geography_entity)
+        print('<< no s3 workspace directory provided. '
+              'defaulting to using local workspace for run_step2_generatemodel.py >>')
 
-        savedata2file = False
+    baseloadingfilename, \
+    compact_geo_entity_str, \
+    geography_entity, \
+    geography_scale, \
+    model_spec_file, \
+    saved_model_file, \
+    savedata2file = read_model_controlfile(baseloadingfilename,
+                                           control_file,
+                                           geography_name,
+                                           model_spec_file,
+                                           saved_model_file)
 
     logger = set_up_detailedfilelogger(loggername=os.path.splitext(os.path.basename(model_spec_file))[0],
                                        filename=f"step2_modelgeneration_{compact_geo_entity_str}.log",
@@ -98,6 +110,8 @@ def parse_cli_arguments():
                                   help="path for this model's specification file")
     one_or_the_other.add_argument("-cf", "--control_filepath", dest="control_filepath", default=None,
                                   help="path for this study's control file")
+    one_or_the_other.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
+                                  help="name for this study's control file")
 
     parser.add_argument("-g", "--geography", dest="geography_name",
                         help="name for a geography defined in geography_specs.yaml")
@@ -111,6 +125,9 @@ def parse_cli_arguments():
     parser.add_argument("-bl", "--base_loading", dest="baseloadingfilename",
                         help="name of the base loading file to read from data/raw")
 
+    parser.add_argument("--s3workspace", dest="s3_workspace_dir",
+                        help="path to the workspace copy in an s3 bucket")
+
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
@@ -121,17 +138,20 @@ def parse_cli_arguments():
     opts = parser.parse_args()
 
     if not opts.control_filepath:  # control file was not specified
-        # MODEL SPEC
-        if not opts.model_spec_filepath:  # name was specified
-            opts.model_spec_file = os.path.join(get_model_specs_dir(), opts.model_name + '.yaml')
-        else:  # filepath was specified
-            opts.model_spec_file = opts.model_spec_filepath
+        if not opts.control_filename:
+            # MODEL SPEC
+            if not opts.model_spec_filepath:  # name was specified
+                opts.model_spec_file = os.path.join(get_model_specs_dir(), opts.model_name + '.yaml')
+            else:  # filepath was specified
+                opts.model_spec_file = opts.model_spec_filepath
 
-        # MODEL SAVE FILE
-        if not opts.saved_model_filepath:  # name was specified
-            opts.saved_model_file = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
-        else:  # filepath was specified
-            opts.saved_model_file = opts.saved_model_filepath
+            # MODEL SAVE FILE
+            if not opts.saved_model_filepath:  # name was specified
+                opts.saved_model_file = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
+            else:  # filepath was specified
+                opts.saved_model_file = opts.saved_model_filepath
+        else:
+            opts.control_filepath = os.path.join(get_control_dir(), opts.control_filename + '.yaml')
     else:
         opts.model_spec_file = None
         opts.saved_model_file = None
@@ -147,4 +167,5 @@ if __name__ == '__main__':
                   control_file=opts.control_filepath,
                   saved_model_file=opts.saved_model_file, dryrun=opts.dryrun,
                   baseloadingfilename=opts.baseloadingfilename,
+                  s3_workspace_dir=opts.s3_workspace_dir,
                   log_level=opts.log_level))

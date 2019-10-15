@@ -12,17 +12,15 @@ import os
 import sys
 import uuid
 import yaml
-import datetime
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_util.spec_handler import read_spec, notdry
+from bayota_util.spec_handler import read_spec, notdry, read_study_control_file
 
-from bayota_settings.base import get_output_dir, get_scripts_dir, get_model_instances_dir, \
+from bayota_settings.base import get_output_dir, get_scripts_dir, \
     get_bayota_version, get_experiment_specs_dir, \
-    get_control_dir, get_model_specs_dir
+    get_control_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
-from bayota_util.str_manip import compact_capitalized_geography_string
 
 outdir = get_output_dir()
 
@@ -41,7 +39,7 @@ def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> i
     compact_geo_entity_str, \
     model_spec_name, \
     studyshortname, \
-    studyid = read_control_file(control_file, version)
+    studyid = read_study_control_file(control_file, version)
 
     logger = set_up_detailedfilelogger(loggername=studyshortname,  # same name as module, so logger is shared
                                        filename=f"step1_s{studyid}_{compact_geo_entity_str}.log",
@@ -114,54 +112,6 @@ def main(control_file=None, dryrun=False, no_slurm=False, log_level='INFO') -> i
         [p.wait() for p in p_list]
 
     return 0  # a clean, no-issue, exit
-
-
-def read_control_file(control_file, version):
-    if not control_file:
-        raise ValueError('A control file must be specified.')
-
-    control_dict = read_spec(control_file)
-
-    studydict = control_dict['study']
-    studyshortname = studydict['studyshortname']
-    studyid = studydict['id']
-
-    # Geography
-    geodict = control_dict['geography']
-    geo_entity_name = geodict['entity']
-    compact_geo_entity_str = compact_capitalized_geography_string(geo_entity_name)
-    geodict['shortname'] = compact_geo_entity_str
-    control_dict['geography'] = geodict
-
-    # Model Specification
-    model_spec_name = studydict['model_spec']
-    model_spec_file = os.path.join(get_model_specs_dir(), model_spec_name + '.yaml')
-    model_dict = read_spec(model_spec_file)  # Model generation details are saved to control file.
-    saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
-                                                   'mdlspec--' + model_spec_name + '--_geo--' + compact_geo_entity_str + '--.pickle')
-    control_dict['model'] = {'spec_file': model_spec_file,
-                             'objectiveshortname': model_dict['objectiveshortname'],
-                             'constraintshortname': model_dict['constraintshortname'],
-                             'saved_file_for_this_study': saved_model_file_for_this_study}
-
-    # Experiments
-    experiments = studydict['experiments']
-    control_dict['experiments'] = experiments.copy()
-
-    # Base Loading Condition
-    baseloadingfilename = studydict['base_loading_file_name']
-    control_dict['base_loading_file_name'] = baseloadingfilename
-
-    # Run log
-    control_dict['code_version']: version
-    control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-
-    # Write (or replace existing) study control file with updated dictionary entries
-    with open(control_file, "w") as f:
-        yaml.safe_dump(control_dict, f, default_flow_style=False)
-
-    return experiments, baseloadingfilename, control_dict, \
-           geo_entity_name, compact_geo_entity_str, model_spec_name, studyshortname, studyid
 
 
 def parse_cli_arguments():

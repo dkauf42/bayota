@@ -21,17 +21,39 @@ from bayom_e.solver_handling import solvehandler
 
 from bayom_e.model_handling.utils import load_model_pickle
 
-from bayota_settings.base import get_model_instances_dir, get_output_dir, get_logging_dir
+from bayota_settings.base import get_model_instances_dir, get_output_dir, \
+    get_logging_dir, get_control_dir, get_workspace_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 logprefix = '** Single Trial **: '
 
 
 def main(saved_model_file=None, model_modification_string=None, trial_name=None,
-         control_file=None, solutions_folder_name=None,
+         control_file=None, solutions_folder_name=None, s3_workspace_dir=None,
          dryrun=False, translate_to_cast_format=False,
          move_solution_to_s3=False, move_CASTformatted_solution_to_s3=False,
          log_level='INFO') -> int:
+
+    if not not s3_workspace_dir:
+        """ Workspace is copied in full from S3 """
+        try:
+            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+        except EnvironmentError as e:
+            print(e)
+            print('run_step2_generatemodel; trying again')
+            try:
+                s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+            except EnvironmentError as e:
+                print(e)
+                raise e
+        # Workspace is copied.
+        s3ops.get_from_s3(s3path=s3_workspace_dir,
+                          local_path=get_workspace_dir(),
+                          move_directory=True)
+        print(f"copied s3 workspace from {s3_workspace_dir} to local location: {get_workspace_dir()}")
+    else:
+        print('<< no s3 workspace directory provided. '
+              'defaulting to using local workspace for run_step2_generatemodel.py >>')
 
     # The control file is read.
     if not not control_file:
@@ -218,6 +240,8 @@ def parse_cli_arguments():
                                             help="path for the saved (pickled) model file")
     one_or_the_other.add_argument("-cf", "--control_filepath", dest="control_filepath", default=None,
                                   help="path for this study's control file")
+    one_or_the_other.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
+                                  help="name for this study's control file")
 
     parser.add_argument("-m", "--model_modification_string", dest='model_modification_string',
                         help="modifications to be made to the model after loading and before solving trial instance")
@@ -244,6 +268,8 @@ def parse_cli_arguments():
 
     if not not opts.control_filepath:
         pass
+    elif not not opts.control_filename:  # a control filename was specified
+        opts.control_filepath = os.path.join(get_control_dir(), opts.control_filename + '.yaml')
     else:
         # MODEL SAVE FILE
         if not opts.saved_model_filepath:  # name was specified instead
@@ -259,6 +285,7 @@ if __name__ == '__main__':
     sys.exit(main(saved_model_file=opts.saved_model_filepath,
                   model_modification_string=opts.model_modification_string,
                   control_file=opts.control_filepath,
+                  s3_workspace_dir=opts.s3_workspace_dir,
                   trial_name=opts.trial_name,
                   solutions_folder_name=opts.solutions_folder_name,
                   dryrun=opts.dryrun,
