@@ -30,6 +30,14 @@ def print_head(mdl_component, n=5):
         if i > n:
             break
 
+def print_var_head(mdl_var, n=5):
+    i = 0
+    print(f"key: stale, fixed, lb, value, ub")
+    for k, v in mdl_var.items():
+        i += 1
+        print(f"{k}: {v.stale}, {v.fixed}, {v.lb}, {v.value}, {v.ub}")
+        if i > n:
+            break
 
 def diff_pd(df1, df2):
     """Identify differences between two pandas DataFrames"""

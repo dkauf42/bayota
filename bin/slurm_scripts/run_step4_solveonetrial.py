@@ -59,7 +59,9 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     if not not control_file:
         control_dict = read_spec(control_file)
 
-        studyid = control_dict['study']['id']
+        studydict = control_dict['study']
+        studyid = studydict['id']
+        studyshortname = studydict['studyshortname']
         expid = control_dict['experiment']['id']
 
         model_modification_string = control_dict['trial']['modification'].lstrip('\'').rstrip('\'')
@@ -81,6 +83,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         s3_base_path = s3_dict['base_path_from_modeling-data']
     else:
         studyid = '0000'
+        studyshortname = 'study0000'
         expid = '0000'
         trialidstr = '0000'
         compact_geo_entity_str = ''
@@ -94,6 +97,12 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                        also_logtoconsole=True,
                                        add_filehandler_if_already_exists=True,
                                        add_consolehandler_if_already_exists=False)
+    logger_study = set_up_detailedfilelogger(loggername=studyshortname,  # same name as module, so logger is shared
+                                             filename=f"step1_s{studyid}_{compact_geo_entity_str}.log",
+                                             level=log_level,
+                                             also_logtoconsole=True,
+                                             add_filehandler_if_already_exists=True,
+                                             add_consolehandler_if_already_exists=False)
     logger_feasibility = set_up_detailedfilelogger(loggername='feasibility',
                                                    filename='bayota_feasibility.log',
                                                    level='info',
@@ -105,6 +114,12 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
     except EnvironmentError as e:
         logger.info(e)
+        logger.info('trying again')
+        try:
+            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+        except EnvironmentError as e:
+            logger.info(e)
+
 
     # *****************************
     # Make Model Modification(s)
@@ -134,6 +149,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                     f"(@{solution_dict['timestamp']})! "
                     f"<Solution feasible? --> {solution_dict['feasible']}> ")
         logger_feasibility.info(f"<feasible: {solution_dict['feasible']}> for {modelname_full}_{trial_name}")
+        logger_study.info(f"trial {trial_name} is DONE")
 
         # Optimization objective value is added to the solution table.
         ii = 0
@@ -169,6 +185,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
         outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_fullname)
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
         logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
+        logger_study.info(f"<trial {trial_name} - solution written to: {outputdfpath_bayotaformat}>")
 
         s3_destination_dir = s3_base_path + compact_geo_entity_str + '/' + objective_and_constraint_str + '/'
 
@@ -176,6 +193,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             return_code = s3ops.move_to_s3(local_path=outputdfpath_bayotaformat,
                                            destination_path=f"{s3_destination_dir + solution_shortname}")
             logger.info(f"Move-the-solution-to-s3 script exited with code <{return_code}>")
+            logger_study.info(f"trial {trial_name} - move-the-solution-to-s3 script exited with code <{return_code}>")
 
         # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
         if translate_to_cast_format:
@@ -183,15 +201,9 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
             solution_fullname_castformat = f"castformat_{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
 
             outputdfpath_castformat = os.path.join(solutions_dir, solution_fullname_castformat)
-            # solution_dict['cast_formatted_df'].to_csv(outputdfpath,
-            #                                           sep='\t', header=True, index=False, line_terminator='\r\n')
-
-            with open(outputdfpath_castformat, 'wb') as dst:
-                solution_dict['cast_formatted_df'].to_csv(outputdfpath_castformat,
-                                                          sep='\t', header=True,
-                                                          index=False, line_terminator='\r\n')
-                dst.seek(-1, os.SEEK_END)  # <---- 1 : len('\n') to remove blank line at end of file
-                dst.truncate()
+            csv_string = solution_dict['cast_formatted_df'].to_csv(None, sep='\t', header=True,
+                                                                   index=False, line_terminator='\r\n')
+            open(outputdfpath_castformat, 'w').write(csv_string[:-2])  # -2 to remove blank line at end of file
             logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
             if move_CASTformatted_solution_to_s3:

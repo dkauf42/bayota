@@ -55,7 +55,7 @@ class NonlinearVariant(ModelBuilder):
         self.create_2dim_set_component(model, dataplate.BMPGRPSRCLINKS, 'BMPGRPSRCLINKS')
 
         # *************************
-        #  IMMUTABLE PARAMETERS
+        # IMMUTABLE PARAMETERS
         # *************************
         model.tau = pyo.Param(model.BMPS,
                               doc="""cost per acre of BMP b ($)""",

@@ -421,7 +421,7 @@ class DataHandlerBase:
         # Groupby groups are converted to a dictionary ( with tuple->value structure ).
         grouped = costsdf.groupby(['bmpshortname'])
         self.tau = grouped['totalannualizedcostperunit'].apply(lambda x: list(x)[0]).to_dict()
-        if self.save2file:
+        if True:  # self.save2file:
             costsdf.loc[:, ['bmpshortname',
                             'totalannualizedcostperunit']].to_csv(os.path.join(self.instdatadir, 'data_tau.tab'),
                                                                   sep=' ', index=False, header=['BMPS', 'tau'])

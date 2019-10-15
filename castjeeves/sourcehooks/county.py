@@ -53,8 +53,11 @@ class County(SourceHook):
         TblCounty = self.source.TblCounty  # get relevant source data
 
         rowmask = self.validate_countystatestrs(getfrom)
+        rowmask['countyname'] = rowmask['countyname'].str.lower()
         columnmask = ['countyid', 'countyname', 'stateabbreviation']
-        countyids = TblCounty.loc[:, columnmask].merge(rowmask, how='inner').loc[:, 'countyid']
+        subtbl = TblCounty.loc[:, columnmask]
+        subtbl['countyname'] = subtbl['countyname'].str.lower()
+        countyids = subtbl.merge(rowmask, how='inner').loc[:, 'countyid']
 
         if isinstance(getfrom, list):
             countyids = countyids.tolist()

@@ -7,8 +7,8 @@ import pyomo.environ as pyo
 from bayom_e.data_handling.data_interface import get_dataplate
 from bayota_util.spec_handler import read_spec
 
-from bayom_e.model_handling.builders.nonlinear_variant import NonlinearVariant
-from bayom_e.model_handling.builders.linear_variant import LinearVariant
+from bayom_e.model_handling.builders.nonlinear import NonlinearVariant
+from bayom_e.model_handling.builders.linear import LinearVariant
 
 from bayota_settings.log_setup import set_up_detailedfilelogger
 

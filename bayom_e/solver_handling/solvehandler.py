@@ -16,7 +16,7 @@ from bayom_e.solution_handling.solutionhandler import SolutionHandler, \
 from castjeeves.jeeves import Jeeves
 
 from bayota_util.infeasible import *
-from bayota_settings.base import get_output_dir, get_raw_data_dir
+from bayota_settings.base import get_output_dir, get_raw_data_dir, get_model_instances_dir
 
 import logging
 logger = logging.getLogger(__name__)
@@ -101,6 +101,7 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
 
     if localsolver:
         solver = SolverFactory(solvername)
+        solver.options['OF_mumps_mem_percent'] = '5'  # "OF_" prefix signals to Pyomo to create a temporary options file
 
         if get_suffixes:
             instance.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT)
@@ -108,8 +109,12 @@ def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.
             instance.ipopt_zU_out = pyo.Suffix(direction=pyo.Suffix.IMPORT)
             setattr(instance, 'lambda', pyo.Suffix(direction=pyo.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
-        results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
-                               keepfiles=False, logfile=logfilename)
+        try:
+            results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
+                                   keepfiles=False, logfile=logfilename)
+        except ValueError as e:
+            logger.info(e)
+
     else:
         opt = SolverFactory("cbc")
         solver_manager = SolverManagerFactory('neos')
@@ -192,7 +197,7 @@ def get_solver_paths(solvername):
     return solver_path, options_file_path
 
 
-def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintlevel=None):
+def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintlevel=None, mumps_mem_percent=None):
     rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
 
     def _parse_line(string):
@@ -232,6 +237,11 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
                     if parsed['key'] == 'file_print_level':
                         if not not newfileprintlevel:
                             line = line.replace(parsed['value'], str(newfileprintlevel))
+                            if not anyfilechange:
+                                anyfilechange = True
+                    if parsed['key'] == 'mumps_mem_percent':
+                        if not not mumps_mem_percent:
+                            line = line.replace(parsed['value'], str(mumps_mem_percent))
                             if not anyfilechange:
                                 anyfilechange = True
                 # Copy input file to temporary file, modifying as we go
@@ -350,8 +360,12 @@ def basic_solve(mdl, output_file_str='', fileprintlevel=4,
         if translate_to_cast_format:
             cast_formatted_df = pd.DataFrame()
     else:
+        # Get cost data
+        costsdf = pd.read_csv(os.path.join(get_model_instances_dir(), 'data_tau.tab'), sep=' ')
+        costsdf.rename(columns={'BMPS': 'bmpshortname', 'tau': 'totalannualizedcostperunit'}, inplace=True)
+
         # Populate dataframe with solution info
-        merged_df = initial_solution_parse_to_dataframe(get_suffixes, solved_instance)
+        merged_df = initial_solution_parse_to_dataframe(get_suffixes, solved_instance, costsdf)
 
         # Add BMP full name
         merged_df['bmpfullname'] = jeeves.bmp.fullnames_from_shortnames(merged_df)
