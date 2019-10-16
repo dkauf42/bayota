@@ -26,8 +26,7 @@ from bayota_settings.base import get_bayota_version, get_workspace_dir, \
 from bayota_settings.log_setup import root_logger_setup
 
 from bayota_util.s3_operations import S3ops
-s3_client = boto3.client('s3')
-batch = boto3.client('batch', region_name='us-east-1')
+# batch = boto3.client('batch', region_name='us-east-1')
 
 docker_client = docker.from_env()
 docker_image = 'bayota_conda_then_ipopt_app'
