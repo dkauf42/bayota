@@ -29,6 +29,8 @@ import requests
 import subprocess
 from argparse import ArgumentParser
 
+import logging
+logger = logging.getLogger(__name__)
 
 class S3ops:
     def __init__(self, bucketname='modeling-data.chesapeakebay.net', verbose=False):
@@ -46,7 +48,7 @@ class S3ops:
         try:
             resp = requests.get('http://169.254.169.254', timeout=0.001)
             if verbose:
-                print('In AWS')
+                logger.info('In AWS')
         except:
             raise EnvironmentError('Not In AWS')
 
@@ -93,7 +95,7 @@ class S3ops:
         """
         if move_directory:
             if not os.path.isdir(local_path):
-                print('Local directory <%s> does not exist' % local_path)
+                logger.info('Local directory <%s> does not exist' % local_path)
                 return 1
 
             # enumerate local files recursively
@@ -108,11 +110,11 @@ class S3ops:
                     s3_path = os.path.join(destination_path, relative_path)
 
                     if verbose:
-                        print('Searching "%s" in "%s"' % (s3_path, self.bucketname))
+                        logger.info('Searching "%s" in "%s"' % (s3_path, self.bucketname))
                     try:
                         self.s3.head_object(Bucket=self.bucketname, Key=s3_path)
                         if verbose:
-                            print("Path found on S3! Skipping %s..." % s3_path)
+                            logger.info("Path found on S3! Skipping %s..." % s3_path)
 
                         # try:
                         # client.delete_object(Bucket=bucket, Key=s3_path)
@@ -120,13 +122,15 @@ class S3ops:
                         # print "Unable to delete %s..." % s3_path
                     except:
                         if verbose:
-                            print("Uploading %s..." % s3_path)
+                            logger.info("Uploading %s..." % s3_path)
                         self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
         else:
+            if verbose:
+                logger.info("Uploading %s..." % destination_path)
             # Upload a file
             self.s3.upload_file(Key=destination_path,  # The name of the key to upload to.
-                           Bucket=self.bucketname,  # The name of the bucket to upload to.
-                           Filename=local_path)  # The path to the file to upload.
+                                Bucket=self.bucketname,  # The name of the bucket to upload to.
+                                Filename=local_path)  # The path to the file to upload.
 
         return 0  # a clean, no-issue, exit
 
@@ -141,7 +145,7 @@ class S3ops:
         # exclude the rest of the args too, or validation will fail
         args = parser.parse_args(sys.argv[1:2])
         if not hasattr(self, args.command):
-            print('Unrecognized command')
+            logger.info('Unrecognized command')
             parser.print_help()
             exit(1)
         # use dispatch pattern to invoke method with same name
