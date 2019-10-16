@@ -120,10 +120,12 @@ class S3ops:
                         # client.delete_object(Bucket=bucket, Key=s3_path)
                         # except:
                         # print "Unable to delete %s..." % s3_path
-                    except:
+                    except ValueError as e:
+                        logger.info(f"it raised error! <{e}>")
                         if verbose:
                             logger.info("Uploading %s..." % s3_path)
                         self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
+
         else:
             if verbose:
                 logger.info("Uploading %s..." % destination_path)
