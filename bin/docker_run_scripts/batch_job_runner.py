@@ -70,10 +70,10 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
                 logger.error(e)
                 raise e
         # Workspace is copied.
+        logger.info(f"copying local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
         s3ops.move_to_s3(local_path=get_workspace_dir(),
                          destination_path=f"{s3_ws_dir}",
                          move_directory=True)
-        logger.info(f"copied local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
     else:
         logger.info(f"would copy local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
     common_path = os.path.commonpath([get_workspace_dir(), get_control_dir()])
