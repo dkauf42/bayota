@@ -97,6 +97,7 @@ install_requires = ['pyomo',
                     'matplotlib',
                     'pytest',
                     'boto3',  # necessary for moving files in aws s3
+                    'botocore',
                     'requests',  # necessary for moving files in aws s3
                     'scipy',
                     'docker',
