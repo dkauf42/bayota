@@ -80,6 +80,7 @@ class S3ops:
         else:
             CMD = f"aws s3 cp {s3path} {local_path}"
 
+        self.logger.info(f"submitting command: {CMD}")
         p1 = subprocess.Popen([CMD], shell=True)
         p1.wait()
         # Get return code from process
