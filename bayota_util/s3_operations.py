@@ -29,17 +29,22 @@ import requests
 import subprocess
 from argparse import ArgumentParser
 
-import logging
-logger = logging.getLogger(__name__)
 
 class S3ops:
-    def __init__(self, bucketname='modeling-data.chesapeakebay.net', verbose=False):
+    def __init__(self, bucketname='modeling-data.chesapeakebay.net', log_level='INFO'):
         """
 
         Args:
             bucketname:
             verbose:
         """
+        self.logger = set_up_detailedfilelogger(loggername='s3_operations',  # same name as module, so logger is shared
+                                       filename=f"s3ops.log",
+                                       level=log_level,
+                                       also_logtoconsole=True,
+                                       add_filehandler_if_already_exists=True,
+                                       add_consolehandler_if_already_exists=False)
+
         # Check if running on AWS
         self.resp = None
         self.bucketname = bucketname
@@ -47,8 +52,7 @@ class S3ops:
 
         try:
             resp = requests.get('http://169.254.169.254', timeout=0.001)
-            if verbose:
-                logger.info('In AWS')
+            self.logger.info('In AWS')
         except:
             raise EnvironmentError('Not In AWS')
 
@@ -95,7 +99,7 @@ class S3ops:
         """
         if move_directory:
             if not os.path.isdir(local_path):
-                logger.info('Local directory <%s> does not exist' % local_path)
+                self.logger.info('Local directory <%s> does not exist' % local_path)
                 return 1
 
             # enumerate local files recursively
@@ -109,26 +113,22 @@ class S3ops:
                     relative_path = os.path.relpath(local_file, local_path)
                     s3_path = os.path.join(destination_path, relative_path)
 
-                    if verbose:
-                        logger.info('Searching "%s" in "%s"' % (s3_path, self.bucketname))
+                    self.logger.info('Searching "%s" in "%s"' % (s3_path, self.bucketname))
                     try:
                         self.s3.head_object(Bucket=self.bucketname, Key=s3_path)
-                        if verbose:
-                            logger.info("Path found on S3! Skipping %s..." % s3_path)
+                        self.logger.info("Path found on S3! Skipping %s..." % s3_path)
 
                         # try:
                         # client.delete_object(Bucket=bucket, Key=s3_path)
                         # except:
                         # print "Unable to delete %s..." % s3_path
                     except ValueError as e:
-                        logger.info(f"it raised error! <{e}>")
-                        if verbose:
-                            logger.info("Uploading %s..." % s3_path)
+                        self.logger.info(f"it raised error! <{e}>")
+                        self.logger.info("Uploading %s..." % s3_path)
                         self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
 
         else:
-            if verbose:
-                logger.info("Uploading %s..." % destination_path)
+            self.logger.info("Uploading %s..." % destination_path)
             # Upload a file
             self.s3.upload_file(Key=destination_path,  # The name of the key to upload to.
                                 Bucket=self.bucketname,  # The name of the bucket to upload to.
@@ -147,7 +147,7 @@ class S3ops:
         # exclude the rest of the args too, or validation will fail
         args = parser.parse_args(sys.argv[1:2])
         if not hasattr(self, args.command):
-            logger.info('Unrecognized command')
+            self.logger.info('Unrecognized command')
             parser.print_help()
             exit(1)
         # use dispatch pattern to invoke method with same name
