@@ -81,21 +81,11 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
             except EnvironmentError as e:
                 logger.error(e)
                 raise e
-        # logger.info(f"copying local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
-        # s3ops.move_to_s3(local_path=get_workspace_dir(),
-        #                  destination_path=f"{s3_ws_dir}",
-        #                  move_directory=True)
-
         # Specification files are copied.
         logger.info(f"copying local workspace from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
         s3ops.move_to_s3(local_path=get_spec_files_dir(),
                          destination_path=f"{s3_specfiles_dir}",
                          move_directory=True)
-        # # Control files are copied.
-        # logger.info(f"copying local workspace from {get_control_dir()} to the s3 location: {s3_control_dir}")
-        # s3ops.move_to_s3(local_path=get_control_dir(),
-        #                  destination_path=f"{s3_control_dir}",
-        #                  move_directory=True)
     else:
         logger.info(f"would copy local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
 
