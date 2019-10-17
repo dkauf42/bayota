@@ -75,51 +75,18 @@ class S3ops:
             >>> S3ops.get_from_s3(s3path='s3://modeling-data/data_dir', local_path='/modeling/local_dir')
 
         """
-        prefix = s3path
-        local = local_path
-        bucket = self.bucketname
-        client = self.s3
-        """
-        params:
-        - prefix: pattern to match in s3
-        - local: local path to folder in which to place files
-        - bucket: s3 bucket with target contents
-        - client: initialized s3 client object
-        """
         if move_directory:
-            keys = []
-            dirs = []
-            next_token = ''
-            base_kwargs = {
-                    'Bucket': bucket,
-                    'Prefix': prefix,
-            }
-            while next_token is not None:
-                kwargs = base_kwargs.copy()
-                if next_token != '':
-                    kwargs.update({'ContinuationToken': next_token})
-                results = client.list_objects_v2(**kwargs)
-                contents = results.get('Contents')
-                for i in contents:
-                    k = i.get('Key')
-                    if k[-1] != '/':
-                        keys.append(k)
-                    else:
-                        dirs.append(k)
-                next_token = results.get('NextContinuationToken')
-            for d in dirs:
-                dest_pathname = os.path.join(local, d)
-                if not os.path.exists(os.path.dirname(dest_pathname)):
-                    os.makedirs(os.path.dirname(dest_pathname))
-            for k in keys:
-                dest_pathname = os.path.join(local, k)
-                if not os.path.exists(os.path.dirname(dest_pathname)):
-                    os.makedirs(os.path.dirname(dest_pathname))
-                client.download_file(bucket, k, dest_pathname)
-
+            CMD = f"aws s3 sync {s3path} {local_path}"
         else:
             CMD = f"aws s3 cp {s3path} {local_path}"
-            subprocess.Popen([CMD], shell=True)
+
+        p1 = subprocess.Popen([CMD], shell=True)
+        p1.wait()
+        # Get return code from process
+        return_code = p1.returncode
+        if p1.returncode != 0:
+            print(f"ERROR: get_from_s3 finished with non-zero code <{return_code}>")
+            return 1
 
         return 0
 
