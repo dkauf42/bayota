@@ -144,13 +144,12 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
                                controlfile_localpath=study_control_file, controlfile_name=studycon_name)
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
-        env_variables = setup_docker_arguments(logger=logger)
         # A command is built for this job submission.
         CMD = f"{model_generator_script} -cn {studycon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
         logger.info(f'For image -- job command is: "{CMD}"')
         # Job is submitted.
         if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-            response = docker_client.containers.run(docker_image, CMD, environment=env_variables)
+            response = docker_client.containers.run(docker_image, CMD)
             logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
 
         # To use AWS Batch, we submit the job with a job definition/queue specified.
@@ -166,7 +165,6 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
         # print("Job ID is {}.".format(response['jobId']))
 
         """ Each experiment is iterated over. """
-        env_variables = setup_docker_arguments(logger=logger)
         # A job is submitted for each experiment in the list.
         p_list = []
         for ii, exp in enumerate(experiments):
@@ -207,7 +205,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
             logger.info(f'For image -- job command is: "{CMD}"')
             # Job is submitted.
             if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-                response = docker_client.containers.run(docker_image, CMD, environment=env_variables)
+                response = docker_client.containers.run(docker_image, CMD)
                 logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
 
             """ Each trial is iterated over. """
@@ -266,7 +264,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
                     logger.info(f'For image -- job command is: "{CMD}"')
                     # Job is submitted.
                     if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-                        response = docker_client.containers.run(docker_image, CMD, environment=env_variables)
+                        response = docker_client.containers.run(docker_image, CMD)
                         logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
 
     return 0  # a clean, no-issue, exit
