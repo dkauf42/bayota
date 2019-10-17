@@ -45,6 +45,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
     logger.info('v----------------------------------------------v')
     logger.info(' ******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
     logger.info(' ************** Batch of studies **************')
+    logger.info(f" docker image: '{docker_image}' ")
     logger.info('^----------------------------------------------^')
 
     """ Batch specification file is read. """
