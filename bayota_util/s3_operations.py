@@ -29,6 +29,8 @@ import requests
 import subprocess
 from argparse import ArgumentParser
 
+from bayota_settings.log_setup import set_up_detailedfilelogger
+
 
 class S3ops:
     def __init__(self, bucketname='modeling-data.chesapeakebay.net', log_level='INFO'):
@@ -39,11 +41,11 @@ class S3ops:
             verbose:
         """
         self.logger = set_up_detailedfilelogger(loggername='s3_operations',  # same name as module, so logger is shared
-                                       filename=f"s3ops.log",
-                                       level=log_level,
-                                       also_logtoconsole=True,
-                                       add_filehandler_if_already_exists=True,
-                                       add_consolehandler_if_already_exists=False)
+                                                filename=f"s3ops.log",
+                                                level=log_level,
+                                                also_logtoconsole=True,
+                                                add_filehandler_if_already_exists=True,
+                                                add_consolehandler_if_already_exists=False)
 
         # Check if running on AWS
         self.resp = None

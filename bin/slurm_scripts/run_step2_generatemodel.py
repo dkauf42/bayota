@@ -31,12 +31,12 @@ def main(geography_name, model_spec_file, control_file=None,
     if not not s3_workspace_dir:
         """ Workspace is copied in full from S3 """
         try:
-            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
             print(e)
             print('run_step2_generatemodel; trying again')
             try:
-                s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
             except EnvironmentError as e:
                 print(e)
                 raise e

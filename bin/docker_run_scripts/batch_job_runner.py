@@ -71,12 +71,12 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
     s3ops = None
     if not no_s3:
         try:
-            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', logger=logger)
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
             logger.info(e)
             logger.info('trying again')
             try:
-                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', logger=logger)
+                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
             except EnvironmentError as e:
                 logger.error(e)
                 raise e
