@@ -65,20 +65,20 @@ class S3ops:
         """ Get files from S3
 
         Args:
-            s3path: s3 path of directory
+            s3path: s3 path of directory (not including s3://<bucket_name>)
             local_path: local path to which directory should be moved
             verbose:
 
         Returns:
 
         Example:
-            >>> S3ops.get_from_s3(s3path='s3://modeling-data/data_dir', local_path='/modeling/local_dir')
+            >>> S3ops.get_from_s3(s3path='data_dir/subfolder', local_path='/modeling/local_dir')
 
         """
         if move_directory:
-            CMD = f"aws s3 sync {s3path} {local_path}"
+            CMD = f"aws s3 sync s3://{self.bucketname}/{s3path} {local_path}"
         else:
-            CMD = f"aws s3 cp {s3path} {local_path}"
+            CMD = f"aws s3 cp s3://{self.bucketname}/{s3path} {local_path}"
 
         self.logger.info(f"submitting command: {CMD}")
         p1 = subprocess.Popen([CMD], shell=True)
