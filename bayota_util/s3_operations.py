@@ -25,6 +25,7 @@
 import os
 import sys
 import boto3
+import botocore
 import requests
 import subprocess
 from argparse import ArgumentParser
@@ -124,8 +125,14 @@ class S3ops:
                         # client.delete_object(Bucket=bucket, Key=s3_path)
                         # except:
                         # print "Unable to delete %s..." % s3_path
+                    except botocore.exceptions.ClientError as e:
+                        if e.response['Error']['Code'] == "404":
+                            # The object does not exist.
+                            self.logger.info(f"s3 ops raised a botocore ClientError!")
+                            self.logger.info("Uploading %s..." % s3_path)
+                            self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
                     except ValueError as e:
-                        self.logger.info(f"it raised error! <{e}>")
+                        self.logger.info(f"s3 ops raised a ValueError! <{e}>")
                         self.logger.info("Uploading %s..." % s3_path)
                         self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
 
