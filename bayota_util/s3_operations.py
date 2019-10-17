@@ -116,10 +116,10 @@ class S3ops:
                     relative_path = os.path.relpath(local_file, local_path)
                     s3_path = os.path.join(destination_path, relative_path)
 
-                    self.logger.info('Searching "%s" in "%s"' % (s3_path, self.bucketname))
+                    self.logger.debug('Searching "%s" in "%s"' % (s3_path, self.bucketname))
                     try:
                         self.s3.head_object(Bucket=self.bucketname, Key=s3_path)
-                        self.logger.info("Path found on S3! Skipping %s..." % s3_path)
+                        self.logger.debug("Path found on S3! Skipping %s..." % s3_path)
 
                         # try:
                         # client.delete_object(Bucket=bucket, Key=s3_path)
@@ -128,12 +128,12 @@ class S3ops:
                     except botocore.exceptions.ClientError as e:
                         if e.response['Error']['Code'] == "404":
                             # The object does not exist.
-                            self.logger.info(f"s3 ops raised a botocore ClientError!")
-                            self.logger.info("Uploading %s..." % s3_path)
+                            self.logger.debug(f"s3 ops raised a botocore ClientError!")
+                            self.logger.debug("Uploading %s..." % s3_path)
                             self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
                     except ValueError as e:
-                        self.logger.info(f"s3 ops raised a ValueError! <{e}>")
-                        self.logger.info("Uploading %s..." % s3_path)
+                        self.logger.debug(f"s3 ops raised a ValueError! <{e}>")
+                        self.logger.debug("Uploading %s..." % s3_path)
                         self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
 
         else:
