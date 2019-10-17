@@ -128,11 +128,11 @@ class S3ops:
                     except botocore.exceptions.ClientError as e:
                         if e.response['Error']['Code'] == "404":
                             # The object does not exist.
-                            self.logger.info(f"s3 ops raised a botocore ClientError!")
+                            self.logger.debug(f"s3 ops raised a botocore ClientError!")
                             self.logger.info("Uploading %s..." % s3_path)
                             self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
                     except ValueError as e:
-                        self.logger.info(f"s3 ops raised a ValueError! <{e}>")
+                        self.logger.debug(f"s3 ops raised a ValueError! <{e}>")
                         self.logger.info("Uploading %s..." % s3_path)
                         self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
 
