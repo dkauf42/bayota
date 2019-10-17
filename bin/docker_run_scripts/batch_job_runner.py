@@ -53,10 +53,21 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
     #     - list of study pairs, i.e. a list of tuples with (geo, model_form_dict)
     #     - control options (a dictionary)
 
-    """ Workspace is copied in full to S3 """
+    """ Workspace directories are copied to S3 """
+    # We just want "config/" and "specification_files"
     ws_dir_name = os.path.basename(os.path.normpath(get_workspace_dir()))
     s3_ws_base_path = 'optimization/ws_copies/'
     s3_ws_dir = s3_ws_base_path + ws_dir_name
+
+    # Relative path (for specification files)
+    common_path = os.path.commonpath([get_workspace_dir(), get_spec_files_dir()])
+    relative_path_for_specfiles_dir = os.path.relpath(get_spec_files_dir(), common_path)
+    s3_specfiles_dir = s3_ws_dir + '/' + relative_path_for_specfiles_dir + '/'
+    # Relative path (for control files)
+    common_path = os.path.commonpath([get_workspace_dir(), get_control_dir()])
+    relative_path_for_control_dir = os.path.relpath(get_control_dir(), common_path)
+    s3_control_dir = s3_ws_dir + '/' + relative_path_for_control_dir + '/'
+
     s3ops = None
     if not no_s3:
         try:
@@ -69,16 +80,23 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
             except EnvironmentError as e:
                 logger.error(e)
                 raise e
-        # Workspace is copied.
-        logger.info(f"copying local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
-        s3ops.move_to_s3(local_path=get_workspace_dir(),
-                         destination_path=f"{s3_ws_dir}",
+        # logger.info(f"copying local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
+        # s3ops.move_to_s3(local_path=get_workspace_dir(),
+        #                  destination_path=f"{s3_ws_dir}",
+        #                  move_directory=True)
+
+        # Specification files are copied.
+        logger.info(f"copying local workspace from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
+        s3ops.move_to_s3(local_path=get_spec_files_dir(),
+                         destination_path=f"{s3_specfiles_dir}",
+                         move_directory=True)
+        # Control files are copied.
+        logger.info(f"copying local workspace from {get_control_dir()} to the s3 location: {s3_control_dir}")
+        s3ops.move_to_s3(local_path=get_control_dir(),
+                         destination_path=f"{s3_control_dir}",
                          move_directory=True)
     else:
         logger.info(f"would copy local workspace from {get_workspace_dir()} to the s3 location: {s3_ws_dir}")
-    common_path = os.path.commonpath([get_workspace_dir(), get_control_dir()])
-    relative_path_for_control_dir = os.path.relpath(get_control_dir(), common_path)
-    s3_control_dir = s3_ws_dir + '/' + relative_path_for_control_dir + '/'
 
     """ Each study (geography, model form) is iterated over. """
     for index, sp in enumerate(study_pairs):
