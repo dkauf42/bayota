@@ -56,16 +56,15 @@ ENV PATH /opt/conda/envs/bayota3/bin:$PATH
 RUN conda clean -afy
 
 # --- Install basic requirements ---
+# (note: currently adding vim for basic editing and checking. eventually remove)
 RUN apt-get update && apt-get install -y \
     curl \
     gcc \
     g++ \
     gfortran \
     patch \
+    vim \
  && rm -rf /var/lib/apt/lists/*
-
-# add vim for basic editing and checking
-RUN apt-get install vim -y
 
 # --- Get the IPOPT code ---
 WORKDIR /
