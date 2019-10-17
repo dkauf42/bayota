@@ -127,8 +127,8 @@ def read_study_control_file(control_file, version):
 
     # Model Specification
     model_spec_name = studydict['model_spec']
-    model_spec_file = os.path.join(get_model_specs_dir(), model_spec_name + '.yaml')
-    model_dict = read_spec(model_spec_file)  # Model generation details are saved to control file.
+    model_spec_file = model_spec_name
+    model_dict = read_spec(os.path.join(get_model_specs_dir(), model_spec_name + '.yaml'))  # Model generation details are saved to control file.
     saved_model_file_for_this_study = os.path.join(get_model_instances_dir(),
                                                    'mdlspec--' + model_spec_name + '--_geo--' + compact_geo_entity_str + '--.pickle')
     control_dict['model'] = {'spec_file': model_spec_file,
