@@ -15,7 +15,7 @@ from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, read_study_control_file, write_control_with_uniqueid
 
-from bayota_settings.base import get_output_dir, get_scripts_dir, get_bayota_version
+from bayota_settings.base import get_output_dir, get_scripts_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 outdir = get_output_dir()
@@ -25,8 +25,6 @@ experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment
 
 
 def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
-    version = get_bayota_version()
-
     # Load and save new control file
     experiments, \
     baseloadingfilename, \
@@ -35,7 +33,7 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     compact_geo_entity_str, \
     model_spec_name, \
     studyshortname, \
-    studyid = read_study_control_file(control_file, version)
+    studyid = read_study_control_file(control_file)
 
     logger = set_up_detailedfilelogger(loggername=studyshortname,  # same name as module, so logger is shared
                                        filename=f"step1_s{studyid}_{compact_geo_entity_str}.log",

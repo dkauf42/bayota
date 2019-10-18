@@ -122,7 +122,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
         compact_geo_entity_str, \
         model_spec_name, \
         studyshortname, \
-        studyid = read_study_control_file(studycon_name, version)
+        studyid = read_study_control_file(studycon_name)
 
         logger.info('v----------------------------------------------v')
         logger.info(' *************** Single Study *****************')

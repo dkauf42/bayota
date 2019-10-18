@@ -6,6 +6,7 @@ import uuid
 
 import yaml
 
+from bayota_settings.base import get_bayota_version
 from bayota_settings.base import get_model_instances_dir, get_control_dir, \
     get_batch_studies_specs_dir, get_experiment_specs_dir, get_model_specs_dir
 from bayota_util.str_manip import compact_capitalized_geography_string
@@ -114,7 +115,7 @@ def parse_batch_spec(batch_spec_name, logger):
     return geo_scale, study_pairs, control_options
 
 
-def read_study_control_file(control_file_name, version):
+def read_study_control_file(control_file_name):
     """ The control file is read. """
     control_dict = read_control(control_file_name)
 
@@ -147,7 +148,7 @@ def read_study_control_file(control_file_name, version):
     control_dict['base_loading_file_name'] = baseloadingfilename
 
     # Run log
-    control_dict['code_version']: version
+    control_dict['code_version']: get_bayota_version()
     control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
 
     # Write (or replace existing) study control file with updated dictionary entries
