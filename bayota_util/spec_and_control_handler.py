@@ -54,6 +54,13 @@ def read_control(control_file_name):
     return read_yaml_to_dict(control_filepath)
 
 
+def overwrite_control(control_file_name, control_dict):
+    """ Write (or replace existing) control file with updated dictionary entries """
+    control_filepath = os.path.join(get_control_dir(), control_file_name + '.yaml')
+    with open(control_filepath, "w") as f:
+        yaml.safe_dump(control_dict, f, default_flow_style=False)
+
+
 def write_control_with_uniqueid(control_dict, control_name_prefix):
     unique_control_name = control_name_prefix + str(uuid.uuid4())
     filepath = os.path.join(get_control_dir(), unique_control_name + '.yaml')
@@ -144,8 +151,7 @@ def read_study_control_file(control_file_name, version):
     control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
 
     # Write (or replace existing) study control file with updated dictionary entries
-    with open(control_file_name, "w") as f:
-        yaml.safe_dump(control_dict, f, default_flow_style=False)
+    overwrite_control(control_file_name=control_file_name, control_dict=control_dict)
 
     return experiments, baseloadingfilename, control_dict, \
            geo_entity_name, compact_geo_entity_str, model_spec_name, studyshortname, studyid
