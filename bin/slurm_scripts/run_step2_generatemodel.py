@@ -18,7 +18,7 @@ from bayota_util.spec_handler import notdry, read_model_controlfile
 from bayom_e.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_specs_dir,\
-    get_spec_files_dir, get_model_instances_dir, get_workspace_dir, get_control_dir
+    get_model_instances_dir, get_workspace_dir, get_control_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 from bayota_util.s3_operations import S3ops
