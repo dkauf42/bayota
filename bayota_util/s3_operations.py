@@ -218,7 +218,7 @@ def get_workspace_from_s3(log_level, s3_workspace_dir):
         s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
     except EnvironmentError as e:
         print(e)
-        print('run_step2_generatemodel; trying again')
+        print('get_workspace_from_s3; trying again')
         try:
             s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
