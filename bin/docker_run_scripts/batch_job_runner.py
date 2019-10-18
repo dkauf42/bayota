@@ -20,6 +20,7 @@ import sys
 import boto3
 import docker
 import datetime
+import subprocess
 from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
@@ -40,7 +41,7 @@ modify_model_script = '/root/bayota/bin/slurm_scripts/run_step3b_modifymodel.py'
 solve_trial_script = '/root/bayota/bin/slurm_scripts/run_step4_solveonetrial.py'
 
 
-def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
+def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
     logger.debug(locals())
 
@@ -112,8 +113,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
                         "study": studyspecdict, "control_options": control_options,
                         "code_version": version,
                         "run_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
-        studycon_name = write_control_with_uniqueid(control_dict=control_dict,
-                                                    control_name_prefix='step1_studycon')
+        studycon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step1_studycon')
+
         # The local study control file is read....
         experiments, \
         baseloadingfilename, \
@@ -136,11 +137,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # A command is built for this job submission.
         CMD = f"{model_generator_script} -cn {studycon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
-        logger.info(f'For image -- job command is: "{CMD}"')
-        # Job is submitted.
-        if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-            response = docker_client.containers.run(docker_image, CMD)
-            logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
+        my_run_command(CMD, dryrun, logger, no_docker)
 
         # To use AWS Batch, we submit the job with a job definition/queue specified.
         # response = batch.submit_job(jobName='Model_Generation',
@@ -187,12 +184,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
             logger.info('^--------------------------------------------^')
             move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=expcon_name)
 
+            """ MODIFY MODEL VIA DOCKER IMAGE """
             CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
-            logger.info(f'For image -- job command is: "{CMD}"')
-            # Job is submitted.
-            if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-                response = docker_client.containers.run(docker_image, CMD)
-                logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
+            my_run_command(CMD, dryrun, logger, no_docker)
 
             """ Each trial is iterated over. """
             # List of trial sets to be conducted for this experiment are logged.
@@ -243,13 +237,26 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
                     CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
-                    logger.info(f'For image -- job command is: "{CMD}"')
-                    # Job is submitted.
-                    if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
-                        response = docker_client.containers.run(docker_image, CMD)
-                        logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
+                    my_run_command(CMD, dryrun, logger, no_docker)
 
     return 0  # a clean, no-issue, exit
+
+
+def my_run_command(CMD, dryrun, logger, no_docker):
+    logger.info(f'job command is: "{CMD}"')
+    # Job is submitted.
+    if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
+        if no_docker:
+            p1 = subprocess.Popen([CMD], shell=True)
+            p1.wait()
+            return_code = p1.returncode  # Get return code from process
+            if p1.returncode != 0:
+                logger.error(f"command finished with non-zero code <{return_code}>")
+                return 1
+        else:
+            response = docker_client.containers.run(docker_image, CMD)
+            logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
+    return 0
 
 
 def move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name):
@@ -280,11 +287,14 @@ def parse_cli_arguments():
     parser.add_argument("-n", "--batch_spec_name", dest="batch_spec_name", default=None,
                                   help="name for this batch, which should match the batch specification file")
 
+    parser.add_argument("-d", "--dryrun", action='store_true',
+                        help="run through the script without triggering any other scripts")
+
     parser.add_argument("--no_s3", action='store_true',
                         help="don't move files to AWS S3 buckets")
 
-    parser.add_argument("-d", "--dryrun", action='store_true',
-                        help="run through the script without triggering any other scripts")
+    parser.add_argument("--no_docker", action='store_true',
+                        help="run through the script locally, without calling a docker image")
 
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -297,6 +307,7 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     sys.exit(main(opts.batch_spec_name,
-                  no_s3=opts.no_s3,
                   dryrun=opts.dryrun,
+                  no_s3=opts.no_s3,
+                  no_docker=opts.no_docker,
                   log_level=opts.log_level))
