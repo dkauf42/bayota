@@ -42,17 +42,17 @@
 # #################################################
 # --- START ---
 # #################################################
-FROM continuumio/miniconda3 as builder
+FROM continuumio/miniconda3
 # Add the IPOPT directory generated in the `builder` container above
 #COPY --from=builder /CoinIpopt /CoinIpopt
 
 # Setup Conda Environment
 RUN conda update -n base -c defaults conda -y
-RUN conda create --name bayota3
+#RUN conda create --name bayota3
 # Activate Environment
 # Pull the environment name out of the environment.yml
-RUN echo "conda activate bayota3" > ~/.bashrc
-ENV PATH /opt/conda/envs/bayota3/bin:$PATH
+#RUN echo "conda activate bayota3" > ~/.bashrc
+#ENV PATH /opt/conda/envs/bayota3/bin:$PATH
 RUN conda clean -afy
 
 # Do not install user tools on unmanaged images
@@ -74,7 +74,8 @@ WORKDIR /
 RUN curl --remote-name https://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.12.tgz \
     \
     && tar -xvzf Ipopt-3.12.12.tgz \
-    && mv /Ipopt-3.12.12 /CoinIpopt
+    && mv /Ipopt-3.12.12 /CoinIpopt \
+    && rm Ipopt-3.12.12.tgz
 
 # --- Download external code packages ---
 RUN cd /CoinIpopt/ThirdParty/Blas \
