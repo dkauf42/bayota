@@ -36,9 +36,9 @@ docker_client = docker.from_env()
 docker_image = 'bayota_conda_then_ipopt_app'
 
 # Script locations in the docker image
-model_generator_script = '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py'
-modify_model_script = '/root/bayota/bin/slurm_scripts/run_step3b_modifymodel.py'
-solve_trial_script = '/root/bayota/bin/slurm_scripts/run_step4_solveonetrial.py'
+model_generator_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step2_generatemodel.py'
+modify_model_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step3b_modifymodel.py'
+solve_trial_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step4_solveonetrial.py'
 
 
 def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level='INFO') -> int:
