@@ -1,11 +1,10 @@
 import math
-import os
 import pandas as pd
 
 import pyomo.environ as pyo
 
 from bayom_e.data_handling.data_interface import get_dataplate
-from bayota_util.spec_handler import read_spec
+from bayota_util.spec_and_control_handler import read_spec
 
 from bayom_e.model_handling.builders.nonlinear import NonlinearVariant
 from bayom_e.model_handling.builders.linear import LinearVariant
@@ -72,12 +71,11 @@ def check_for_problems_post_model_construction(model, logger):
         logger.debug(original_loadsource_problems_dataframe(model).head())
 
 
-def build_model(model_spec, geoscale, geoentities, baseloadingfilename,
-                savedata2file=False, log_level='INFO'):
+def build_model(model_spec_name, geoscale, geoentities, baseloadingfilename, savedata2file=False, log_level='INFO'):
     """Generate a model for the efficiency BMPs.
 
     Args:
-        model_spec (str or dict): path to a model specification file or a dictionary of model spec values
+        model_spec_name (str or dict): path to a model specification file or a dictionary of model spec values
         geoscale (str):
         geoentities (list):
         baseloadingfilename (str):
@@ -96,12 +94,7 @@ def build_model(model_spec, geoscale, geoentities, baseloadingfilename,
                                        add_consolehandler_if_already_exists=False)
 
     """ Initialization; Get Data """
-    if isinstance(model_spec, str):
-        specdict = read_spec(model_spec)
-    elif isinstance(model_spec, dict):
-        specdict = model_spec
-    else:
-        logger.error('model_spec must be a path string or a dictionary')
+    specdict = read_spec(spec_file_name=model_spec_name, spectype='model')
     dataplate = get_dataplate(geoscale=geoscale, geoentities=[geoentities],
                               savedata2file=savedata2file, baseloadingfilename=baseloadingfilename)
     check_for_problems_in_data_before_model_construction(data=dataplate, logger=logger)

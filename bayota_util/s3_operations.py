@@ -30,6 +30,7 @@ import requests
 import subprocess
 from argparse import ArgumentParser
 
+from bayota_settings.base import get_workspace_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 
@@ -209,3 +210,22 @@ class S3ops:
 if __name__ == '__main__':
     s3ops = S3ops()
     s3ops.cli(sys.argv[:])
+
+
+def get_workspace_from_s3(log_level, s3_workspace_dir):
+    """ Workspace is copied in full from S3 """
+    try:
+        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+    except EnvironmentError as e:
+        print(e)
+        print('run_step2_generatemodel; trying again')
+        try:
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+        except EnvironmentError as e:
+            print(e)
+            raise e
+    # Workspace is copied.
+    s3ops.get_from_s3(s3path=s3_workspace_dir,
+                      local_path=get_workspace_dir(),
+                      move_directory=True)
+    print(f"copied s3 workspace from {s3_workspace_dir} to local location: {get_workspace_dir()}")

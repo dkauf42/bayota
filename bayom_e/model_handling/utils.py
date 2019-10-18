@@ -5,7 +5,7 @@ from itertools import compress
 
 import pyomo.environ as pyo
 
-from bayota_util.spec_handler import notdry
+from bayota_util.spec_and_control_handler import notdry
 
 import logging
 logger = logging.getLogger('root')

@@ -17,17 +17,15 @@ Example usage command:
 
 import os
 import sys
-import uuid
-import yaml
 import boto3
 import docker
 import datetime
 from argparse import ArgumentParser
 
-from bayota_util.spec_handler import read_spec, notdry, read_batch_spec_file, \
-    read_study_control_file, read_expcon_file
+from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
+    read_study_control_file, read_expcon_file, write_control_with_uniqueid
 from bayota_settings.base import get_bayota_version, get_workspace_dir, \
-    get_spec_files_dir, get_control_dir, get_experiment_specs_dir
+    get_spec_files_dir, get_control_dir
 from bayota_settings.log_setup import root_logger_setup
 
 from bayota_util.s3_operations import S3ops
@@ -54,7 +52,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
     logger.info('^----------------------------------------------^')
 
     """ Batch specification file is read. """
-    geo_scale, study_pairs, control_options = read_batch_spec_file(batch_spec_file, logger=logger)
+    geo_scale, study_pairs, control_options = parse_batch_spec(batch_spec_file, logger=logger)
     # From the batch spec, we retrieve:
     #     - list of study pairs, i.e. a list of tuples with (geo, model_form_dict)
     #     - control options (a dictionary)
@@ -114,10 +112,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
                         "study": studyspecdict, "control_options": control_options,
                         "code_version": version,
                         "run_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
-        studycon_name = 'step1_studycon' + str(uuid.uuid4())
-        study_control_file = os.path.join(get_control_dir(), studycon_name) + '.yaml'
-        with open(study_control_file, "w") as f:
-            yaml.safe_dump(control_dict, f, default_flow_style=False)
+        studycon_name = write_control_with_uniqueid(control_dict=control_dict,
+                                                    control_name_prefix='step1_studycon')
         # The local study control file is read....
         experiments, \
         baseloadingfilename, \
@@ -126,7 +122,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
         compact_geo_entity_str, \
         model_spec_name, \
         studyshortname, \
-        studyid = read_study_control_file(study_control_file, version)
+        studyid = read_study_control_file(studycon_name, version)
 
         logger.info('v----------------------------------------------v')
         logger.info(' *************** Single Study *****************')
@@ -135,8 +131,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
         logger.info(f" Experiments = {experiments}")
         logger.info(f" Base_loading_file_name = {baseloadingfilename}")
         logger.info('^----------------------------------------------^')
-        move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops,
-                               controlfile_localpath=study_control_file, controlfile_name=studycon_name)
+        move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=studycon_name)
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # A command is built for this job submission.
@@ -162,11 +157,10 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
         """ Each experiment is iterated over. """
         # A job is submitted for each experiment in the list.
         p_list = []
-        for ii, exp in enumerate(experiments):
-            expspec_file = os.path.join(get_experiment_specs_dir(), exp)
-            expactiondict = read_spec(expspec_file + '.yaml')
+        for ii, exp_spec_name in enumerate(experiments):
+            expactiondict = read_spec(spec_file_name=exp_spec_name, spectype='experiment')
             expid = '{:04}'.format(ii + 1)
-            logger.info(f"Exp. #{expid}: {exp}")
+            logger.info(f"Exp. #{expid}: {exp_spec_name}")
 
             # "EXPCON": An experiment control file w/unique identifier (uuid4) is written by adding to studycon file.
             try:
@@ -175,11 +169,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
                 logger.info("Key 'experiments' not found")
             expactiondict['id'] = expid
             control_dict['experiment'] = expactiondict
-            control_dict['experiment_file'] = expspec_file
-            expcon_name = 'step3_expcon' + str(uuid.uuid4())
-            exp_control_file = os.path.join(get_control_dir(), expcon_name) + '.yaml'
-            with open(exp_control_file, "w") as f:
-                yaml.safe_dump(control_dict, f, default_flow_style=False)
+            control_dict['experiment_name'] = exp_spec_name
+            expcon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step3_expcon')
+
             # The local experiment control file is read....
             actionlist, \
             compact_geo_entity_str, \
@@ -188,13 +180,12 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
             expname, \
             list_of_trialdicts, \
             saved_model_file, \
-            studyid = read_expcon_file(exp_control_file)
+            studyid = read_expcon_file(expcon_name)
 
             logger.info('v--------------------------------------------v')
             logger.info(' ************* Model Modification ***********')
             logger.info('^--------------------------------------------^')
-            move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops,
-                                   controlfile_localpath=exp_control_file, controlfile_name=expcon_name)
+            move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=expcon_name)
 
             CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
             logger.info(f'For image -- job command is: "{CMD}"')
@@ -246,13 +237,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
                     control_dict['code_version']: version
                     control_dict['run_timestamps']['step4_trial'] = datetime.datetime.today().strftime(
                         '%Y-%m-%d-%H:%M:%S')
-                    trialcon_name = 'step4_trialcon' + str(uuid.uuid4())
-                    trial_control_file = os.path.join(get_control_dir(), trialcon_name) + '.yaml'
-                    with open(trial_control_file, "w") as f:
-                        yaml.safe_dump(control_dict, f, default_flow_style=False)
-
-                    move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops,
-                                           controlfile_localpath=trial_control_file, controlfile_name=trialcon_name)
+                    trialcon_name = write_control_with_uniqueid(control_dict=control_dict,
+                                                                control_name_prefix='step4_trialcon')
+                    move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=trialcon_name)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
                     CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
@@ -265,8 +252,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, log_level='INFO') -> int:
     return 0  # a clean, no-issue, exit
 
 
-def move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_localpath, controlfile_name):
-    # The local control file is copied to the S3-based workspace.
+def move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name):
+    """ The local control file is copied to the S3-based workspace. """
+    controlfile_localpath = os.path.join(get_control_dir(), controlfile_name) + '.yaml'
     controlfile_s3path = s3_control_dir + controlfile_name + '.yaml'
     if not no_s3:
         s3ops.move_to_s3(local_path=controlfile_localpath, destination_path=f"{controlfile_s3path}")
@@ -287,13 +275,13 @@ def setup_docker_arguments(logger=None):
 
 
 def parse_cli_arguments():
-    # Input arguments are parsed.
+    """ Input arguments are parsed. """
     parser = ArgumentParser()
-    one_or_the_other = parser.add_mutually_exclusive_group(required=True)
-    one_or_the_other.add_argument("-n", "--batch_spec_name", dest="batch_name", default=None,
+    parser.add_argument("-n", "--batch_spec_name", dest="batch_spec_name", default=None,
                                   help="name for this batch, which should match the batch specification file")
-    one_or_the_other.add_argument("-f", "--batch_spec_filepath", dest="batch_spec_filepath", default=None,
-                                  help="path for this batch's specification file")
+
+    parser.add_argument("--no_s3", action='store_true',
+                        help="don't move files to AWS S3 buckets")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
@@ -302,20 +290,13 @@ def parse_cli_arguments():
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help="change logging level to {debug, info, warning, error, critical}")
 
-    parser.add_argument("--no_s3", action='store_true')
-
-    opts = parser.parse_args()
-
-    if not opts.batch_spec_filepath:  # name was specified
-        opts.batch_spec_filepath = os.path.join(get_spec_files_dir(), 'batch_study_specs', opts.batch_name + '.yaml')
-
-    return opts
+    return parser.parse_args()
 
 
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
-    sys.exit(main(opts.batch_spec_filepath,
-                  dryrun=opts.dryrun,
+    sys.exit(main(opts.batch_spec_name,
                   no_s3=opts.no_s3,
+                  dryrun=opts.dryrun,
                   log_level=opts.log_level))

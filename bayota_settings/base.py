@@ -138,8 +138,6 @@ def get_logging_dir() -> str:
     return _make_or_get_user_dir('output_directories', 'logs')
 def get_spec_files_dir() -> str:
     return _make_or_get_user_dir('workspace_directories', 'spec_files')
-def get_single_study_specs_dir() -> str:
-    return _make_or_get_user_dir('specification_file_directories', 'single_studies')
 def get_batch_studies_specs_dir() -> str:
     return _make_or_get_user_dir('specification_file_directories', 'batch_studies')
 def get_model_specs_dir() -> str:

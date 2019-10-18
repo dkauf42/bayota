@@ -182,13 +182,8 @@ from bayom_e.model_handling.interface import build_model
 from bayom_e.solver_handling import solvehandler
 
 # Create a model instance
-model_spec_file = '/bayota/bayom_e/tests/costmin_total_Npercentreduction.yaml'
-model, dataplate = build_model(model_spec=model_spec_file,
-                               geoscale='county',
-                               geoentities='Perry, PA',
-                               savedata2file=False,
-                               baseloadingfilename='2010NoActionLoads_updated.csv',
-                               log_level='INFO')
+model_spec_name = 'costmin_total_Npercentreduction'
+model, dataplate = build_model(model_spec_name=model_spec_name,geoscale='county',geoentities='Perry, PA',baseloadingfilename='2010NoActionLoads_updated.csv',savedata2file=False,log_level='INFO')
 
 # Set a constraint level
 model.percent_reduction_minimum['N'] = 20
