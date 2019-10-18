@@ -37,12 +37,12 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     if not not s3_workspace_dir:
         """ Workspace is copied in full from S3 """
         try:
-            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
             print(e)
             print('run_step2_generatemodel; trying again')
             try:
-                s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
             except EnvironmentError as e:
                 print(e)
                 raise e
@@ -68,7 +68,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         trialidstr = control_dict['trial']['id']
         trial_name = control_dict['trial']['trial_name']
-        saved_model_file = control_dict['model']['saved_file_for_this_study']
+        saved_model_file = os.path.join(get_model_instances_dir(), control_dict['model']['saved_file_for_this_study'])
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
         compact_geo_entity_str = control_dict['geography']['shortname']
 
@@ -111,12 +111,12 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                                    add_consolehandler_if_already_exists=False)
 
     try:
-        s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
     except EnvironmentError as e:
         logger.info(e)
         logger.info('trying again')
         try:
-            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
             logger.info(e)
 

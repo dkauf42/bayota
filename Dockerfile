@@ -5,12 +5,12 @@
 # Example commands...
 #
 #  Create a docker image:
-#     >> docker build -f Dockerfile_conda3_thenIpopt --tag bayota_conda_then_ipopt_app .
+#     >> docker build -f Dockerfile --tag bayota_conda_then_ipopt_app .
 #
 #    -- Create a first-stage docker image from the 'builder' stage:
-#       >> docker build -f Dockerfile_conda3_thenIpopt --tag bayota_app_builder . --target builder
+#       >> docker build -f Dockerfile --tag bayota_app_builder . --target builder
 #    -- Create a second-stage docker image from the 'builder2' stage:
-#       >> docker build -f Dockerfile_conda3_thenIpopt --tag bayota_app_builder2 . --target builder2
+#       >> docker build -f Dockerfile --tag bayota_app_builder2 . --target builder2
 #
 #
 #  MANAGE IMAGES

@@ -22,7 +22,7 @@ fileDEBUGfmt = logging.Formatter(log_format_config['formatters']['file']['debug'
 defaultfmt = logging.Formatter(log_format_config['formatters']['default'][0],
                                log_format_config['formatters']['default'][1])
 
-root_logfilename = 'efficiencysubproblem_debug.log'
+root_logfilename = 'bayota_debug.log'
 root_logfilename = os.path.join(get_logging_dir(), root_logfilename)
 
 

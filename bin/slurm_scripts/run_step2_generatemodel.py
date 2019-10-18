@@ -31,12 +31,12 @@ def main(geography_name, model_spec_file, control_file=None,
     if not not s3_workspace_dir:
         """ Workspace is copied in full from S3 """
         try:
-            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
             print(e)
             print('run_step2_generatemodel; trying again')
             try:
-                s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
             except EnvironmentError as e:
                 print(e)
                 raise e
@@ -152,6 +152,8 @@ def parse_cli_arguments():
                 opts.saved_model_file = opts.saved_model_filepath
         else:
             opts.control_filepath = os.path.join(get_control_dir(), opts.control_filename + '.yaml')
+            opts.model_spec_file = None
+            opts.saved_model_file = None
     else:
         opts.model_spec_file = None
         opts.saved_model_file = None
@@ -165,7 +167,8 @@ if __name__ == '__main__':
     # The main function is called.
     sys.exit(main(opts.geography_name, opts.model_spec_file,
                   control_file=opts.control_filepath,
-                  saved_model_file=opts.saved_model_file, dryrun=opts.dryrun,
+                  saved_model_file=opts.saved_model_file,
+                  dryrun=opts.dryrun,
                   baseloadingfilename=opts.baseloadingfilename,
                   s3_workspace_dir=opts.s3_workspace_dir,
                   log_level=opts.log_level))
