@@ -2,6 +2,11 @@
 """
 This submits Docker CMDs to launch the model generation, experiments, and trials.
 
+(This takes the place of:
+  - run_step0_batch_of_studies.py
+  - run_step1_single_study.py
+  - and part of run_step3_conductexperiment.py)
+
 Example usage command:
   >> ./bin/docker_run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
 
