@@ -35,11 +35,6 @@ from bayota_util.s3_operations import S3ops
 docker_client = docker.from_env()
 docker_image = 'bayota_conda_then_ipopt_app'
 
-# Script locations in the docker image
-model_generator_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step2_generatemodel.py'
-modify_model_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step3b_modifymodel.py'
-solve_trial_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step4_solveonetrial.py'
-
 
 def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level='INFO') -> int:
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
@@ -51,6 +46,16 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
     logger.info(' ************** Batch of studies **************')
     logger.info(f" docker image: '{docker_image}' ")
     logger.info('^----------------------------------------------^')
+
+    # Script locations in the docker image
+    if no_docker:
+        model_generator_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step2_generatemodel.py'
+        modify_model_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step3b_modifymodel.py'
+        solve_trial_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step4_solveonetrial.py'
+    else:
+        model_generator_script = '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py'
+        modify_model_script = '/root/bayota/bin/slurm_scripts/run_step3b_modifymodel.py'
+        solve_trial_script = '/root/bayota/bin/slurm_scripts/run_step4_solveonetrial.py'
 
     """ Batch specification file is read. """
     geo_scale, study_pairs, control_options = parse_batch_spec(batch_spec_file, logger=logger)
