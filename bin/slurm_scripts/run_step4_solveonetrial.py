@@ -68,7 +68,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
 
         trialidstr = control_dict['trial']['id']
         trial_name = control_dict['trial']['trial_name']
-        saved_model_file = control_dict['model']['saved_file_for_this_study']
+        saved_model_file = os.path.join(get_model_instances_dir(), control_dict['model']['saved_file_for_this_study'])
         solutions_folder_name = control_dict['trial']['solutions_folder_name']
         compact_geo_entity_str = control_dict['geography']['shortname']
 
