@@ -16,7 +16,7 @@ from bayom_e.solution_handling.solutionhandler import SolutionHandler, \
 from castjeeves.jeeves import Jeeves
 
 from bayota_util.infeasible import *
-from bayota_settings.base import get_output_dir, get_raw_data_dir, get_model_instances_dir
+from bayota_settings.base import get_output_dir, get_raw_data_dir
 
 import logging
 logger = logging.getLogger(__name__)
@@ -171,12 +171,8 @@ class SolveHandler:
             if translate_to_cast_format:
                 cast_formatted_df = pd.DataFrame()
         else:
-            # Get cost data
-            costsdf = pd.read_csv(os.path.join(get_model_instances_dir(), 'data_tau.tab'), sep=' ')
-            costsdf.rename(columns={'BMPS': 'bmpshortname', 'tau': 'totalannualizedcostperunit'}, inplace=True)
-
             # Populate dataframe with solution info
-            merged_df = initial_solution_parse_to_dataframe(get_suffixes, solved_instance, costsdf)
+            merged_df = initial_solution_parse_to_dataframe(get_suffixes, solved_instance)
 
             # Add BMP full name
             merged_df['bmpfullname'] = self.jeeves.bmp.fullnames_from_shortnames(merged_df)
