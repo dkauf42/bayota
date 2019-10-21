@@ -75,7 +75,7 @@ def main(batch_spec_file, dryrun=False, no_slurm=False, log_level='INFO') -> int
                           f"--ntasks-per-node={NUM_CORES} " \
                           f"--output=slurm_job_{spname}_%j-%2t.out " \
                           f"--error=slurm_job_{spname}_%j-%2t.err " \
-                          f"--time=04:00:00 "  # time requested in hour:minute:second
+                          f"--time=12:00:00 "  # time requested in hour:minute:second
             CMD = "sbatch " + sbatch_opts + CMD
         else:
             CMD = CMD + " --no_slurm"
