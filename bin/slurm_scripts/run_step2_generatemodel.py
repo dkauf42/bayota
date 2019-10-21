@@ -16,10 +16,10 @@ from bayota_util.spec_and_control_handler import notdry, read_model_controlfile
 
 from bayom_e.model_handling.utils import save_model_pickle
 
-from bayota_settings.base import get_model_instances_dir
+from bayota_settings.base import get_model_instances_dir, get_workspace_dir, get_s3workspace_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import get_workspace_from_s3
+from bayota_util.s3_operations import S3ops, get_workspace_from_s3
 
 
 def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') -> int:
@@ -69,7 +69,28 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
     logger.info(f"*model saved as pickle to {savepath}*")
 
+    logger.info(f"moving model pickle to s3")
+    try:
+        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+    except EnvironmentError as e:
+        logger.info(e)
+        logger.info('trying again')
+        try:
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+        except EnvironmentError as e:
+            logger.info(e)
+    # Relative path (for modelinstance files)
+    common_path = os.path.commonpath([get_workspace_dir(), get_model_instances_dir()])
+    relative_path_for_modelinstances_dir = os.path.relpath(get_model_instances_dir(), common_path)
+    s3_modelinstances_dir = get_s3workspace_dir() + '/' + relative_path_for_modelinstances_dir + '/'
+    move_model_pickle_to_s3(logger, s3_modelinstances_dir, s3ops, savepath)
+
     return 0  # a clean, no-issue, exit
+
+def move_model_pickle_to_s3(logger, s3_model_instances_dir, s3ops, savepath):
+    """ The local control file is copied to the S3-based workspace. """
+    modelinstance_s3path = s3_model_instances_dir + os.path.basename(savepath)
+    s3ops.move_to_s3(local_path=savepath, destination_path=f"{modelinstance_s3path}")
 
 
 def parse_cli_arguments():
