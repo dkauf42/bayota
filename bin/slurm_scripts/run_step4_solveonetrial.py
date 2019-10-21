@@ -16,7 +16,7 @@ import pyomo.environ as pyo
 
 from bayota_util.spec_and_control_handler import notdry, read_trialcon_file
 from bayota_util.s3_operations import S3ops, get_workspace_from_s3
-from bayom_e.solver_handling import solvehandler
+from bayom_e.solver_handling.solvehandler import SolveHandler
 
 from bayom_e.model_handling.utils import load_model_pickle
 
@@ -97,6 +97,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(), f"solution_{trial_name}_<timestamp>.csv")
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
+        solvehandler = SolveHandler()
         # The problem is solved.
         solution_dict = solvehandler.basic_solve(mdl=my_model,
                                                  translate_to_cast_format=translate_to_cast_format,
