@@ -5,7 +5,7 @@
 import os
 import sys
 
-from bayota_settings.base import get_bayota_version, get_workspace_dir, \
+from bayota_settings.base import get_bayota_version, get_workspace_dir, get_s3workspace_dir, \
     get_source_csvs_dir, get_raw_data_dir, get_metadata_csvs_dir
 from bayota_settings.log_setup import root_logger_setup
 from bayota_util.s3_operations import S3ops
@@ -22,22 +22,18 @@ def main(log_level='INFO') -> int:
     logger.info('^----------------------------------------------^')
 
     """ Data directories are copied to S3 """
-    ws_dir_name = os.path.basename(os.path.normpath(get_workspace_dir()))
-    s3_ws_base_path = 'optimization/ws_copies/'
-    s3_ws_dir = s3_ws_base_path + ws_dir_name
-
     # Relative path (for source CSV files)
     common_path = os.path.commonpath([get_workspace_dir(), get_source_csvs_dir()])
     relative_path_for_sourcecsv_dir = os.path.relpath(get_source_csvs_dir(), common_path)
-    s3_sourcecsvs_dir = s3_ws_dir + '/' + relative_path_for_sourcecsv_dir + '/'
+    s3_sourcecsvs_dir = get_s3workspace_dir() + '/' + relative_path_for_sourcecsv_dir + '/'
     # Relative path (for metadata CSV files)
     common_path = os.path.commonpath([get_workspace_dir(), get_metadata_csvs_dir()])
     relative_path_for_metadatacsv_dir = os.path.relpath(get_metadata_csvs_dir(), common_path)
-    s3_metadatacsvs_dir = s3_ws_dir + '/' + relative_path_for_metadatacsv_dir + '/'
+    s3_metadatacsvs_dir = get_s3workspace_dir() + '/' + relative_path_for_metadatacsv_dir + '/'
     # Relative path (for raw data files)
     common_path = os.path.commonpath([get_workspace_dir(), get_raw_data_dir()])
     relative_path_for_rawdata_dir = os.path.relpath(get_raw_data_dir(), common_path)
-    s3_rawdata_dir = s3_ws_dir + '/' + relative_path_for_rawdata_dir + '/'
+    s3_rawdata_dir = get_s3workspace_dir() + '/' + relative_path_for_rawdata_dir + '/'
 
     s3ops = None
     try:

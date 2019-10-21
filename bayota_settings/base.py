@@ -110,6 +110,9 @@ def create_workspace_directory_and_set_up_user_config_files(verbose=True):
 
 def get_workspace_dir() -> str:
     return _make_or_get_user_dir('top_paths', 'workspace_top')
+def get_s3workspace_dir() -> str:
+    s3_workspace_top = _parse_user_config()['top_paths']['s3_workspace_top']
+    return s3_workspace_top
 def get_source_csvs_dir() -> str:
     datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
     if not os.path.isdir(datadir_top_level):

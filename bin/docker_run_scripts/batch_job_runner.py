@@ -25,7 +25,7 @@ from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
     read_study_control_file, read_expcon_file, write_control_with_uniqueid
-from bayota_settings.base import get_bayota_version, get_workspace_dir, \
+from bayota_settings.base import get_bayota_version, get_workspace_dir, get_s3workspace_dir, \
     get_spec_files_dir, get_control_dir
 from bayota_settings.log_setup import root_logger_setup
 
@@ -63,20 +63,15 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
     #     - list of study pairs, i.e. a list of tuples with (geo, model_form_dict)
     #     - control options (a dictionary)
 
-    """ Workspace directories are copied to S3 """
-    # We just want "config/" and "specification_files"
-    ws_dir_name = os.path.basename(os.path.normpath(get_workspace_dir()))
-    s3_ws_base_path = 'optimization/ws_copies/'
-    s3_ws_dir = s3_ws_base_path + ws_dir_name
-
+    """ Config and Specification file directories are copied to S3 """
     # Relative path (for specification files)
     common_path = os.path.commonpath([get_workspace_dir(), get_spec_files_dir()])
     relative_path_for_specfiles_dir = os.path.relpath(get_spec_files_dir(), common_path)
-    s3_specfiles_dir = s3_ws_dir + '/' + relative_path_for_specfiles_dir + '/'
+    s3_specfiles_dir = get_s3workspace_dir() + '/' + relative_path_for_specfiles_dir + '/'
     # Relative path (for control files)
     common_path = os.path.commonpath([get_workspace_dir(), get_control_dir()])
     relative_path_for_control_dir = os.path.relpath(get_control_dir(), common_path)
-    s3_control_dir = s3_ws_dir + '/' + relative_path_for_control_dir + '/'
+    s3_control_dir = get_s3workspace_dir() + '/' + relative_path_for_control_dir + '/'
 
     s3ops = None
     if not no_s3:
@@ -96,7 +91,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                          destination_path=f"{s3_specfiles_dir}",
                          move_directory=True)
     else:
-        logger.info(f"would copy local specification files from {get_spec_files_dir()} to the s3 location: {s3_ws_dir}")
+        logger.info(f"would copy local specification files from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
 
     """ Each study (geography, model form) is iterated over. """
     for index, sp in enumerate(study_pairs):
@@ -141,7 +136,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # A command is built for this job submission.
-        CMD = f"{model_generator_script} -cn {studycon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
+        CMD = f"{model_generator_script} -cn {studycon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
         my_run_command(CMD, dryrun, logger, no_docker)
 
         # To use AWS Batch, we submit the job with a job definition/queue specified.
@@ -190,7 +185,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=expcon_name)
 
             """ MODIFY MODEL VIA DOCKER IMAGE """
-            CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
+            CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
             my_run_command(CMD, dryrun, logger, no_docker)
 
             """ Each trial is iterated over. """
@@ -241,7 +236,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=trialcon_name)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
-                    CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {s3_ws_dir} --log_level={log_level}"
+                    CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
                     my_run_command(CMD, dryrun, logger, no_docker)
 
     return 0  # a clean, no-issue, exit
