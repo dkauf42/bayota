@@ -91,12 +91,12 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                 logger.error(e)
                 raise e
         # Specification files are copied.
-        logger.info(f"copying specifcation files from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
+        logger.info(f"copying specification files from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
         s3ops.move_to_s3(local_path=get_spec_files_dir(),
                          destination_path=f"{s3_specfiles_dir}",
                          move_directory=True)
     else:
-        logger.info(f"would copy local specifcation files from {get_spec_files_dir()} to the s3 location: {s3_ws_dir}")
+        logger.info(f"would copy local specification files from {get_spec_files_dir()} to the s3 location: {s3_ws_dir}")
 
     """ Each study (geography, model form) is iterated over. """
     for index, sp in enumerate(study_pairs):
