@@ -26,14 +26,14 @@ from argparse import ArgumentParser
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
     read_study_control_file, read_expcon_file, write_control_with_uniqueid
 from bayota_settings.base import get_bayota_version, get_workspace_dir, get_s3workspace_dir, \
-    get_spec_files_dir, get_control_dir
+    get_docker_image_name, get_spec_files_dir, get_control_dir
 from bayota_settings.log_setup import root_logger_setup
 
 from bayota_util.s3_operations import S3ops
 # batch = boto3.client('batch', region_name='us-east-1')
 
 docker_client = docker.from_env()
-docker_image = 'bayota_conda_then_ipopt_app'
+docker_image = get_docker_image_name()
 
 
 def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level='INFO') -> int:

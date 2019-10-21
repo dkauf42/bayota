@@ -113,6 +113,9 @@ def get_workspace_dir() -> str:
 def get_s3workspace_dir() -> str:
     s3_workspace_top = _parse_user_config()['top_paths']['s3_workspace_top']
     return s3_workspace_top
+def get_docker_image_name() -> str:
+    docker_image_name = _parse_user_config()['version']['docker_image_name']
+    return docker_image_name
 def get_source_csvs_dir() -> str:
     datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
     if not os.path.isdir(datadir_top_level):
