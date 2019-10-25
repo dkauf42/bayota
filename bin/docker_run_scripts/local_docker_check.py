@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ Run the setup.py tests for BayOTA
 
 """
