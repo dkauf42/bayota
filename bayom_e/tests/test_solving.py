@@ -8,7 +8,7 @@ from bayom_e.solver_handling import solvehandler
 @pytest.fixture(scope='module')
 def costmin_model_for_singlelrseg(request):
     THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-    costmin_model_spec_path = os.path.join(THIS_DIR, 'costmin_total_Npercentreduction.yaml')
+    costmin_model_spec_path = os.path.join(THIS_DIR, 'costmin_total_Npercentreduction')
 
     model, dataplate = build_model(model_spec_name=costmin_model_spec_path, geoscale='lrseg',
                                    geoentities=['N51133RL0_6450_0000'],

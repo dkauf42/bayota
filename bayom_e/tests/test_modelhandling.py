@@ -9,7 +9,7 @@ from bayom_e.model_handling.interface import build_model
 @pytest.fixture(scope='module')
 def costmin_model_spec_path(request):
     THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(THIS_DIR, 'costmin_total_Npercentreduction.yaml')
+    return os.path.join(THIS_DIR, 'costmin_total_Npercentreduction')
 
 
 def test_default_modelgen_NorthUmberlandLrseg(costmin_model_spec_path):
