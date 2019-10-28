@@ -1,6 +1,5 @@
 import time
 import cloudpickle
-import pyomo.environ as pe
 from itertools import compress
 
 import pyomo.environ as pyo
@@ -13,7 +12,7 @@ logger = logging.getLogger('root')
 
 def extract_indexed_expression_values(indexed_expr):
     """Returns the values of an indexed expression (PYOMO object)."""
-    return dict((ind, pe.value(val)) for ind, val in indexed_expr.items())  # changed for use with python3, from iteritems()
+    return dict((ind, pyo.value(val)) for ind, val in indexed_expr.items())  # changed for use with python3, from iteritems()
 
 
 def modify_model(model, actiondict=None):
@@ -21,7 +20,7 @@ def modify_model(model, actiondict=None):
         if actiondict['component_type'] == 'Param':
             # logger.info(actiondict['args'])
             # Set the model Object
-            setattr(model, actiondict['name'], pe.Param(**actiondict['args']))
+            setattr(model, actiondict['name'], pyo.Param(**actiondict['args']))
 
         # elif actiondict['component_type'] == 'Constraint':
         #     print(actiondict['args'])
