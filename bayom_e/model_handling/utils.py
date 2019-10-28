@@ -15,6 +15,9 @@ def extract_indexed_expression_values(indexed_expr):
     return dict((ind, pyo.value(val)) for ind, val in indexed_expr.items())  # changed for use with python3, from iteritems()
 
 
+def get_list_of_index_sets(mdl_component):
+    return [s.name for s in mdl_component._implicit_subsets]
+
 def modify_model(model, actiondict=None):
     if actiondict['action'] == 'add_component':
         if actiondict['component_type'] == 'Param':

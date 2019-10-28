@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 import pyomo.environ as pyo
+from bayom_e.model_handling.utils import get_list_of_index_sets
 
 from castjeeves.jeeves import Jeeves
 
@@ -62,29 +63,33 @@ def diff_pd(df1, df2):
 
 
 def get_dataframe_of_original_load_for_each_loadsource(mdl, pltnt):
+    my_component = mdl.original_load_for_each_loadsource_expr
+
+    compsets = get_list_of_index_sets(my_component)
+
     d = []
-    for k, v in mdl.original_load_for_each_loadsource_expr.items():
-        if k[0] == pltnt:
-            d.append({'loadsourceshortname': k[1],
+    for k, v in my_component.items():
+        if k[compsets.index('PLTNTS')] == pltnt:
+            d.append({'loadsourceshortname': k[compsets.index('LOADSRCS')],
                       'v': pyo.value(v)})
 
     df = pd.DataFrame(d).sort_values('loadsourceshortname', ascending=True).reset_index()
-    df['loadsource'] = jeeves.loadsource.fullnames_from_shortnames(df['loadsourceshortname'],
-                                                                   use_order_of_sourcetbl=False)
+    df['loadsource'] = jeeves.loadsource.fullnames_from_shortnames(df['loadsourceshortname'])
     return df
 
 
 def get_dataframe_of_original_load_for_each_loadsource_for_a_specific_lrseg(mdl, pltnt, lrsegstr):
     try:
-        mdl.original_load_for_one_parcel_expr
+        my_component = mdl.original_load_for_one_parcel_expr
     except AttributeError:
         raise AttributeError("Add 'original_load_for_one_parcel_expr' to the model first!")
+    compsets = get_list_of_index_sets(my_component)
 
     d = []
-    for k, v in mdl.original_load_for_one_parcel_expr.items():
-        if k[0] == pltnt:
-            if k[1] == lrsegstr:
-                d.append({'loadsourceshortname': k[2],
+    for k, v in my_component.items():
+        if k[compsets.index('PLTNTS')] == pltnt:
+            if k[compsets.index('LRSEGS')] == lrsegstr:
+                d.append({'loadsourceshortname': k[compsets.index('LOADSRCS')],
                           'v': pyo.value(v)})
 
     df = pd.DataFrame(d).sort_values('loadsourceshortname', ascending=True).reset_index()
@@ -94,11 +99,14 @@ def get_dataframe_of_original_load_for_each_loadsource_for_a_specific_lrseg(mdl,
 
 
 def get_dataframe_of_phi_for_each_loadsource_for_a_specific_lrseg(mdl, pltnt, lrsegstr):
+    my_component = mdl.phi
+    compsets = get_list_of_index_sets(my_component)
+
     d = []
-    for k, v in mdl.phi.items():
-        if k[0] == lrsegstr:
-            if k[2] == pltnt:
-                d.append({'loadsourceshortname': k[1],
+    for k, v in my_component.items():
+        if k[compsets.index('LRSEGS')] == lrsegstr:
+            if k[compsets.index('PLTNTS')] == pltnt:
+                d.append({'loadsourceshortname': k[compsets.index('LOADSRCS')],
                           'v': pyo.value(v)})
 
     df = pd.DataFrame(d).sort_values('loadsourceshortname', ascending=True).reset_index()
@@ -117,10 +125,13 @@ def get_dataframe_of_T_for_each_loadsource_aggregating_all_lrsegs(mdl):
         pd.DataFrame
 
     """
+    my_component = mdl.alpha
+    compsets = get_list_of_index_sets(my_component)
+
     d = []
-    for k, v in mdl.alpha.items():
-        d.append({'lrseg': k[0],
-                  'loadsourceshortname': k[1],
+    for k, v in my_component.items():
+        d.append({'lrseg': k[compsets.index('LRSEGS')],
+                  'loadsourceshortname': k[compsets.index('LOADSRCS')],
                   'v': v})
 
     df = pd.DataFrame(d)
