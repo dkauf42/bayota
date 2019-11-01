@@ -77,6 +77,21 @@ def get_dataframe_of_original_load_for_each_loadsource(mdl, pltnt):
     df['loadsource'] = jeeves.loadsource.fullnames_from_shortnames(df['loadsourceshortname'])
     return df
 
+def get_dataframe_of_new_load_for_each_loadsource(mdl, pltnt):
+    my_component = mdl.new_load_for_each_loadsource_expr
+
+    compsets = get_list_of_index_sets(my_component)
+
+    d = []
+    for k, v in my_component.items():
+        if k[compsets.index('PLTNTS')] == pltnt:
+            d.append({'loadsourceshortname': k[compsets.index('LOADSRCS')],
+                      'v': pyo.value(v)})
+
+    df = pd.DataFrame(d).sort_values('loadsourceshortname', ascending=True).reset_index()
+    df['loadsource'] = jeeves.loadsource.fullnames_from_shortnames(df['loadsourceshortname'])
+    return df
+
 
 def get_dataframe_of_original_load_for_each_loadsource_for_a_specific_lrseg(mdl, pltnt, lrsegstr):
     try:
