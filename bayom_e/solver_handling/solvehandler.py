@@ -95,12 +95,18 @@ class SolveHandler:
             sys.stdout.write(line)
 
 
-def solve(localsolver, solvername, instance, logfilename='logfile_loadobjective.log', get_suffixes=True):
+def solve(localsolver, solvername, instance,
+          logfilename='logfile_loadobjective.log', get_suffixes=True, solver_options=None):
     # Wall time - clock starts.
     starttime_modelsolve = time.time()
 
     if localsolver:
         solver = SolverFactory(solvername)
+
+        # Configure with solver options
+        if solver_options:
+            for k, v in solver_options.items():
+                solver.options[k] = v
         solver.options['OF_mumps_mem_percent'] = '5'  # "OF_" prefix signals to Pyomo to create a temporary options file
 
         if get_suffixes:
@@ -317,13 +323,16 @@ def basic_solve(mdl, output_file_str='', fileprintlevel=4,
         ipopt_log_file = solverlogfile
 
     # ---- MODIFY IPOPT OPTIONS ----
-    modify_ipopt_options(options_file_path, newoutputfilepath=output_file_name)
-    # file_print_levels (Output Level-of-Detail):
-    #   4 for just # of iterations, and final objective, infeas,etc. values
-    #   6 for summary information about all iterations, but not variable values
-    #   8 for variable values at all iterations
-    #   10 for all iterations
-    modify_ipopt_options(options_file_path, newfileprintlevel=fileprintlevel)
+    solver_options = dict()   # "OF_" prefix signals to Pyomo to create a temporary options file
+    solver_options['OF_output_file'] = output_file_name
+    solver_options['OF_file_print_level'] = fileprintlevel
+    # modify_ipopt_options(options_file_path, newoutputfilepath=output_file_name)
+    # # file_print_levels (Output Level-of-Detail):
+    # #   4 for just # of iterations, and final objective, infeas,etc. values
+    # #   6 for summary information about all iterations, but not variable values
+    # #   8 for variable values at all iterations
+    # #   10 for all iterations
+    # modify_ipopt_options(options_file_path, newfileprintlevel=fileprintlevel)
 
     # ---- SOLVE ----
     get_suffixes = False
@@ -331,7 +340,8 @@ def basic_solve(mdl, output_file_str='', fileprintlevel=4,
                                                       solvername,
                                                       mdl,
                                                       logfilename=ipopt_log_file,
-                                                      get_suffixes=get_suffixes)
+                                                      get_suffixes=get_suffixes,
+                                                      solver_options=solver_options)
 
     df_headers = ['acres',
                   'bmpshortname',
