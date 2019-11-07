@@ -54,11 +54,12 @@ class S3ops:
         self.bucketname = bucketname
         self.s3 = None
 
-        try:
-            resp = requests.get('http://169.254.169.254', timeout=0.001)
-            self.logger.info('In AWS')
-        except:
-            raise EnvironmentError('Not In AWS')
+        # TODO: replace the following code with a better check for whether we're are in AWS (e.g. on an EC2 host)
+        # try:
+        #     resp = requests.get('http://169.254.169.254', timeout=0.001)
+        #     self.logger.info('In AWS')
+        # except:
+        #     raise EnvironmentError('Not In AWS')
 
         self.s3 = boto3.client('s3')
 
