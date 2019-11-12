@@ -120,4 +120,4 @@ RUN pip install .
 # --- Ensure IPOPT is in path variable ---
 ENV PATH="${PATH}:/CoinIpopt/build/bin"
 
-CMD ["/bin/echo", "executing CMD"]
+CMD ["python", "/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py","-cn","step1_studycon1d6c68f6-326c-4487-8d85-5c5113f67bd7", "--s3workspace", "optimization/ws_copies/bayota_ws_0.1b2", "--log_level=INFO"]
