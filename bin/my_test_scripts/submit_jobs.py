@@ -33,7 +33,7 @@ def main():
 
     response = batch.submit_job(jobName='Bayota_Testing',
                         jobQueue='Modeling',
-                        jobDefinition='Modeling-Bayota:5',
+                        jobDefinition='Modeling-Bayota:6',
                         containerOverrides={
                             "command": ['python', '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py', '-cn' , 'step1_studycon1d6c68f6-326c-4487-8d85-5c5113f67bd7' , '--s3workspace', 'optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'], 
                         })
@@ -47,7 +47,7 @@ def main():
                                 'type': 'N_TO_N'
                             },
                         ],
-                        jobDefinition='Modeling-Bayota:5',
+                        jobDefinition='Modeling-Bayota:6',
                         containerOverrides={
                             "command": ['python', '/root/bayota/bin/slurm_scripts/run_step3b_modifymodel.py', '-cn' , 'step3_expcon70ab6881-1c51-4f03-bcf2-fdef72e5662d' , '--s3workspace','optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'], 
                         })
@@ -61,7 +61,7 @@ def main():
                                 'type': 'N_TO_N'
                             },
                         ],
-                        jobDefinition='Modeling-Bayota:5',
+                        jobDefinition='Modeling-Bayota:6',
                         containerOverrides={
                             "command": ['python', '/root/bayota/bin/slurm_scripts/run_step4_solveonetrial.py', '-cn' , 'step4_trialcon2534e7f9-9e4b-4544-b351-4fe231bb4f0a' , '--s3workspace','optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'], 
                         })
