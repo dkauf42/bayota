@@ -51,7 +51,7 @@ def main():
                         containerOverrides={
                             "command": ['python', '/root/bayota/bin/slurm_scripts/run_step3b_modifymodel.py', '-cn' , 'step3_expcon70ab6881-1c51-4f03-bcf2-fdef72e5662d' , '--s3workspace','optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'], 
                         })
-    print("Job ID is {}.".format(response['jobId']))
+    print("Job ID is {}.".format(response2['jobId']))
 
     response3 = batch.submit_job(jobName='Bayota_Testing_step3',
                         jobQueue='Modeling',
