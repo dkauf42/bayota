@@ -5,9 +5,9 @@ import logging.handlers
 
 from bayota_settings.base import get_logging_dir, log_config
 
-from bayota_util.spec_handler import read_spec
+from bayota_util.spec_and_control_handler import read_yaml_to_dict
 
-log_format_config = read_spec(log_config)
+log_format_config = read_yaml_to_dict(log_config)
 
 consoleINFOfmt = logging.Formatter(log_format_config['formatters']['console']['info'][0],
                                    log_format_config['formatters']['console']['info'][1])
@@ -22,7 +22,7 @@ fileDEBUGfmt = logging.Formatter(log_format_config['formatters']['file']['debug'
 defaultfmt = logging.Formatter(log_format_config['formatters']['default'][0],
                                log_format_config['formatters']['default'][1])
 
-root_logfilename = 'efficiencysubproblem_debug.log'
+root_logfilename = 'bayota_debug.log'
 root_logfilename = os.path.join(get_logging_dir(), root_logfilename)
 
 

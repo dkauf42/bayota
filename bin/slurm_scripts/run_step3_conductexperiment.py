@@ -9,48 +9,32 @@ Example usage command:
 """
 import os
 import sys
-import uuid
-import yaml
 import datetime
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_util.spec_handler import read_spec, notdry
-from bayom_e.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
+from bayota_util.spec_and_control_handler import notdry, read_expcon_file, write_control_with_uniqueid
 
-from bayota_settings.base import get_experiment_specs_dir,\
-    get_scripts_dir, get_model_instances_dir, get_control_dir, get_bayota_version
+from bayota_settings.base import get_scripts_dir, get_bayota_version
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 logprefix = '** Single Experiment **: '
 
+modify_model_script = os.path.join(get_scripts_dir(), 'run_step3b_modifymodel.py')
 solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py')
 
 
-def main(experiment_spec_file, saved_model_file=None, control_file=None,
-         dryrun=False, no_slurm=False, log_level='INFO') -> int:
+def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     version = get_bayota_version()
 
-    # The control file is read.
-    if not not control_file:
-        control_dict = read_spec(control_file)
-
-        studyid = control_dict['study']['id']
-        expid = control_dict['experiment']['id']
-
-        expname = os.path.splitext(os.path.basename(control_dict['experiment_file']))[0]
-        saved_model_file = control_dict['model']['saved_file_for_this_study']
-        actionlist = control_dict['experiment']['exp_setup']
-        list_of_trialdicts = control_dict['experiment']['trials']
-        compact_geo_entity_str = control_dict['geography']['shortname']
-    else:
-        control_dict = dict()
-        studyid = '0000'
-        expid = '0000'
-        expname = os.path.splitext(os.path.basename(experiment_spec_file))[0]
-        actionlist = read_spec(experiment_spec_file)['exp_setup']
-        list_of_trialdicts = read_spec(experiment_spec_file)['trials']
-        compact_geo_entity_str = ''
+    actionlist, \
+    compact_geo_entity_str, \
+    control_dict, \
+    expid, \
+    expname, \
+    list_of_trialdicts, \
+    saved_model_file, \
+    studyid = read_expcon_file(control_file)
 
     logger = set_up_detailedfilelogger(loggername=expname,  # same name as module, so logger is shared
                                        filename=f"step3_s{studyid}_e{expid}_{compact_geo_entity_str}.log",
@@ -60,24 +44,31 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
                                        add_consolehandler_if_already_exists=False)
 
     logger.info('----------------------------------------------')
-    logger.info('************ Experiment Launching ************')
+    logger.info('************* Model Modification *************')
     logger.info('----------------------------------------------')
 
-    # The model is modified according to specified experiment set-up
-    logger.info(f"{logprefix} {expname} - modification action list = {actionlist}")
-    if notdry(dryrun, logger, '--Dryrun-- Would modify model with action <%s>' % actionlist):
+    CMD = f"{modify_model_script}  -cn {control_file} --log_level={log_level}"
+    if not no_slurm:
+        srun_opts = f"--nodes={1} " \
+                    f"--ntasks={1} " \
+                    f"--cpus-per-task={1} " \
+                    f"--exclusive "
+        CMD = "srun " + srun_opts + CMD
 
-        # Check whether any model modifications are specified
-        if actionlist[0] == 'none':
-            logger.info(f"{logprefix} {expname} - no model modifications made")
-        else:
-            # Load the model object
-            my_model = load_model_pickle(savepath=saved_model_file, dryrun=dryrun)
+    # Job is submitted.
+    logger.info(f'Job command is: "{CMD}"')
+    if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
+        p1 = subprocess.Popen([CMD], shell=True)
+        p1.wait()
+        # Get return code from process
+        return_code = p1.returncode
+        if p1.returncode != 0:
+            logger.error(f"Model Modification finished with non-zero code <{return_code}>")
+            return 1
 
-            for a in actionlist:
-                modify_model(my_model, actiondict=a)
-
-            save_model_pickle(model=my_model, savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
+    logger.info('----------------------------------------------')
+    logger.info('*************** Trials looping ***************')
+    logger.info('----------------------------------------------')
 
     # List of trial sets to be conducted for this experiment are logged.
     tempstr = 'set' if len(list_of_trialdicts) == 1 else 'sets'
@@ -111,20 +102,18 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
                               f"\"value\": {vi}, " \
                               f"\"indexer\": \"{varindexer}\"}}\'"
 
-            # A trial control ("trialcon") file w/unique identifier (uuid4) is generated by adding to the expcon file.
-            unique_control_file = os.path.join(get_control_dir(), 'step4_trialcon' + str(uuid.uuid4()) + '.yaml')
+            # A trial control ("trialcon") file is generated by adding to the expcon file.
             control_dict['trial'] = {'id': trialidstr,
                                      'trial_name': 'exp--' + expname + '--_modvar--' + modvar + '--_trial' + trialidstr,
                                      'modification': modificationstr,
                                      'solutions_folder_name': expname}
             control_dict['code_version']: version
             control_dict['run_timestamps']['step4_trial'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-
-            with open(unique_control_file, "w") as f:
-                yaml.safe_dump(control_dict, f, default_flow_style=False)
+            unique_control_name = write_control_with_uniqueid(control_dict=control_dict,
+                                                              control_name_prefix='step4_trialcon')
 
             # A shell command is built for this job submission.
-            CMD = f"{solve_trial_script}  -cf {unique_control_file} --log_level={log_level}"
+            CMD = f"{solve_trial_script}  -cn {unique_control_name} --log_level={log_level}"
             if not no_slurm:
                 srun_opts = f"--nodes={1} " \
                             f"--ntasks={1} " \
@@ -143,23 +132,10 @@ def main(experiment_spec_file, saved_model_file=None, control_file=None,
 
 
 def parse_cli_arguments():
-    # Input arguments are parsed.
+    """ Input arguments are parsed. """
     parser = ArgumentParser()
-
-    # Arguments for top-level
-    one_or_the_other = parser.add_mutually_exclusive_group()
-    one_or_the_other.add_argument("-n", "--experiment_spec_name", dest="experiment_name", default=None,
-                                  help="name for this experiment, which should match the experiment specification file")
-    one_or_the_other.add_argument("-f", "--experiment_spec_filepath", dest="experiment_spec_filepath", default=None,
-                                  help="path for this experiment's specification file")
-    one_or_the_other.add_argument("-cf", "--control_filepath", dest="control_filepath", default=None,
-                                  help="path for this study's control file")
-
-    one_or_the_other_savemodel = parser.add_mutually_exclusive_group()
-    one_or_the_other_savemodel.add_argument("-sn", "--saved_model_name", dest="saved_model_name",
-                                            help="name for the saved (pickled) model file")
-    one_or_the_other_savemodel.add_argument("-sf", "--saved_model_filepath", dest="saved_model_filepath",
-                                            help="path for the saved (pickled) model file")
+    parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
+                                  help="name for this study's control file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
@@ -173,16 +149,6 @@ def parse_cli_arguments():
 
     opts = parser.parse_args()
 
-    if not not opts.control_filepath:  # a control file was specified
-        pass
-    else:
-        # EXPERIMENT SPEC
-        if not opts.experiment_spec_filepath:  # name was specified instead
-            opts.experiment_spec_filepath = os.path.join(get_experiment_specs_dir(), opts.experiment_name + '.yaml')
-        # MODEL SAVE FILE
-        if not opts.saved_model_filepath:  # name was specified instead
-            opts.saved_model_filepath = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
-
     return opts
 
 
@@ -190,9 +156,7 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(opts.experiment_spec_filepath,
-                  saved_model_file=opts.saved_model_filepath,
-                  control_file=opts.control_filepath,
+    sys.exit(main(control_file=opts.control_filename,
                   dryrun=opts.dryrun,
                   no_slurm=opts.no_slurm,
                   log_level=opts.log_level))

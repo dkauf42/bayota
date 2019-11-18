@@ -9,64 +9,44 @@ Example usage command:
 
 import os
 import sys
-import subprocess
 from argparse import ArgumentParser
 import json
 
 import pyomo.environ as pyo
 
-from bayota_util.spec_handler import read_spec, notdry
-from bayota_util.s3_operations import S3ops
-from bayom_e.solver_handling import solvehandler
+from bayota_util.spec_and_control_handler import notdry, read_trialcon_file
+from bayota_util.s3_operations import S3ops, get_workspace_from_s3
+from bayom_e.solver_handling.solvehandler import SolveHandler
 
 from bayom_e.model_handling.utils import load_model_pickle
 
-from bayota_settings.base import get_model_instances_dir, get_output_dir, get_logging_dir
+from bayota_settings.base import get_output_dir, get_logging_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 logprefix = '** Single Trial **: '
 
 
-def main(saved_model_file=None, model_modification_string=None, trial_name=None,
-         control_file=None, solutions_folder_name=None,
-         dryrun=False, translate_to_cast_format=False,
-         move_solution_to_s3=False, move_CASTformatted_solution_to_s3=False,
-         log_level='INFO') -> int:
-
-    # The control file is read.
-    if not not control_file:
-        control_dict = read_spec(control_file)
-
-        studydict = control_dict['study']
-        studyid = studydict['id']
-        studyshortname = studydict['studyshortname']
-        expid = control_dict['experiment']['id']
-
-        model_modification_string = control_dict['trial']['modification'].lstrip('\'').rstrip('\'')
-
-        trialidstr = control_dict['trial']['id']
-        trial_name = control_dict['trial']['trial_name']
-        saved_model_file = control_dict['model']['saved_file_for_this_study']
-        solutions_folder_name = control_dict['trial']['solutions_folder_name']
-        compact_geo_entity_str = control_dict['geography']['shortname']
-
-        objective_and_constraint_str = control_dict['model']['objectiveshortname'] + '_' + \
-                                       control_dict['model']['constraintshortname']
-
-        # Control Options
-        translate_to_cast_format = control_dict['control_options']['translate_solution_table_to_cast_format']
-        s3_dict = control_dict['control_options']['move_files_to_s3']
-        move_solution_to_s3 = bool(s3_dict['basic_solution'])
-        move_CASTformatted_solution_to_s3 = bool(s3_dict['CASTformmated_solution'])
-        s3_base_path = s3_dict['base_path_from_modeling-data']
+def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') -> int:
+    if not not s3_workspace_dir:
+        get_workspace_from_s3(log_level, s3_workspace_dir)
     else:
-        studyid = '0000'
-        studyshortname = 'study0000'
-        expid = '0000'
-        trialidstr = '0000'
-        compact_geo_entity_str = ''
-        objective_and_constraint_str = ''
-        s3_base_path = ''
+        print('<< no s3 workspace directory provided. '
+              'defaulting to using local workspace for run_step2_generatemodel.py >>')
+
+    compact_geo_entity_str, \
+    expid, \
+    model_modification_string, \
+    move_CASTformatted_solution_to_s3, \
+    move_solution_to_s3, \
+    objective_and_constraint_str, \
+    s3_base_path, \
+    saved_model_file, \
+    solutions_folder_name, \
+    studyid, \
+    studyshortname, \
+    translate_to_cast_format, \
+    trial_name, \
+    trialidstr = read_trialcon_file(control_file_name=control_file)
 
     trial_logfilename = f"bayota_step4_s{studyid}_e{expid}_t{trialidstr}_{compact_geo_entity_str}"
     logger = set_up_detailedfilelogger(loggername=trial_name,  # same name as module, so logger is shared
@@ -89,15 +69,14 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
                                                    add_consolehandler_if_already_exists=False)
 
     try:
-        s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
     except EnvironmentError as e:
         logger.info(e)
         logger.info('trying again')
         try:
-            s3ops = S3ops(verbose=True, bucketname='modeling-data.chesapeakebay.net')
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
             logger.info(e)
-
 
     # *****************************
     # Make Model Modification(s)
@@ -118,6 +97,7 @@ def main(saved_model_file=None, model_modification_string=None, trial_name=None,
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(), f"solution_{trial_name}_<timestamp>.csv")
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
+        solvehandler = SolveHandler()
         # The problem is solved.
         solution_dict = solvehandler.basic_solve(mdl=my_model,
                                                  translate_to_cast_format=translate_to_cast_format,
@@ -219,62 +199,29 @@ def make_model_modification(dictwithtrials, dryrun, model, logger):
 
 
 def parse_cli_arguments():
-    # Input arguments are parsed.
+    """ Input arguments are parsed. """
     parser = ArgumentParser()
+    parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
+                                  help="name for this study's control file")
 
-    # Arguments for top-level
-    one_or_the_other = parser.add_mutually_exclusive_group()
-    one_or_the_other.add_argument("-sn", "--saved_model_name", dest="saved_model_name",
-                                            help="name for the saved (pickled) model file")
-    one_or_the_other.add_argument("-sf", "--saved_model_filepath", dest="saved_model_filepath",
-                                            help="path for the saved (pickled) model file")
-    one_or_the_other.add_argument("-cf", "--control_filepath", dest="control_filepath", default=None,
-                                  help="path for this study's control file")
-
-    parser.add_argument("-m", "--model_modification_string", dest='model_modification_string',
-                        help="modifications to be made to the model after loading and before solving trial instance")
+    parser.add_argument("--s3workspace", dest="s3_workspace_dir",
+                        help="path to the workspace copy in an s3 bucket")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
-
-    parser.add_argument("--no_s3", action='store_false',
-                        help="don't move files to AWS S3 buckets")
-
-    parser.add_argument("--translate_to_cast_format", action='store_true')
-
-    parser.add_argument("-tn", "--trial_name", dest='trial_name',
-                        help="unique name to identify this trial (used for saving results)")
-
-    parser.add_argument("--solutions_folder_name", dest='solutions_folder_name',
-                        help="the name of the folder to create and save the solution files to")
 
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help="change logging level to {debug, info, warning, error, critical}")
 
-    opts = parser.parse_args()
-
-    if not not opts.control_filepath:
-        pass
-    else:
-        # MODEL SAVE FILE
-        if not opts.saved_model_filepath:  # name was specified instead
-            opts.saved_model_filepath = os.path.join(get_model_instances_dir(), opts.saved_model_name + '.yaml')
-
-    return opts
+    return parser.parse_args()
 
 
 if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(saved_model_file=opts.saved_model_filepath,
-                  model_modification_string=opts.model_modification_string,
-                  control_file=opts.control_filepath,
-                  trial_name=opts.trial_name,
-                  solutions_folder_name=opts.solutions_folder_name,
+    sys.exit(main(control_file=opts.control_filename,
+                  s3_workspace_dir=opts.s3_workspace_dir,
                   dryrun=opts.dryrun,
-                  move_solution_to_s3=opts.no_s3,
-                  move_CASTformatted_solution_to_s3=opts.no_s3,
-                  translate_to_cast_format=opts.translate_to_cast_format,
                   log_level=opts.log_level))

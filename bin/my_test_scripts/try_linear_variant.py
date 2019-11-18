@@ -23,5 +23,5 @@ with open(modelspec, 'r') as stream:
 modelspec_dict['variant'] = 'lp'
 
 print(modelspec_dict)
-my_model, dp = build_model(modelspec_dict, geoscale, geoentities, baseloadingfilename,
-                           savedata2file=False, log_level='INFO')
+my_model, dp = build_model(modelspec_dict, geoscale, geoentities, baseloadingfilename, savedata2file=False,
+                           log_level='INFO')

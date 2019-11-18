@@ -110,6 +110,12 @@ def create_workspace_directory_and_set_up_user_config_files(verbose=True):
 
 def get_workspace_dir() -> str:
     return _make_or_get_user_dir('top_paths', 'workspace_top')
+def get_s3workspace_dir() -> str:
+    s3_workspace_top = _parse_user_config()['top_paths']['s3_workspace_top']
+    return s3_workspace_top
+def get_docker_image_name() -> str:
+    docker_image_name = _parse_user_config()['version']['docker_image_name']
+    return docker_image_name
 def get_source_csvs_dir() -> str:
     datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
     if not os.path.isdir(datadir_top_level):
@@ -138,8 +144,6 @@ def get_logging_dir() -> str:
     return _make_or_get_user_dir('output_directories', 'logs')
 def get_spec_files_dir() -> str:
     return _make_or_get_user_dir('workspace_directories', 'spec_files')
-def get_single_study_specs_dir() -> str:
-    return _make_or_get_user_dir('specification_file_directories', 'single_studies')
 def get_batch_studies_specs_dir() -> str:
     return _make_or_get_user_dir('specification_file_directories', 'batch_studies')
 def get_model_specs_dir() -> str:

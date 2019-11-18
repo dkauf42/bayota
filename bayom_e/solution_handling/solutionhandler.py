@@ -1,3 +1,6 @@
+""" Here, info is extracted from the solutions.
+
+"""
 import math
 import numpy as np
 import pandas as pd
@@ -151,8 +154,12 @@ class SolutionHandler:
 #                 print('(%s, %s): %d' % (b, u, bval))
 
 
-def initial_solution_parse_to_dataframe(get_suffixes, solved_instance, costsdf):
-    # ---- PARSE SOLUTION OUTPUT ----
+def initial_solution_parse_to_dataframe(get_suffixes, solved_instance):
+    """ ---- PARSE SOLUTION OUTPUT ---- """
+    # Get cost data
+    costsdf = pd.DataFrame.from_dict(solved_instance.tau.items()).rename(columns={0: 'bmpshortname',
+                                                                                  1: 'totalannualizedcostperunit'})
+
     # Parse out only the optimal variable values that are nonzero
     # nzvnames, nzvvalues = get_nonzero_var_names_and_values(self.instance)
     solution_handler = SolutionHandler()

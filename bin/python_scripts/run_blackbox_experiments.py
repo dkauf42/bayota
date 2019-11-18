@@ -23,10 +23,9 @@ def main(dryrun=False):
     saved_model_file = os.path.join(get_model_instances_dir(),
                                            'modelinstance_costmin_total_percentreduction_CalvertMD.pickle')
 
-    run_step2_generatemodel.main(model_spec_file='costmin_total_percentreduction',
-                                 geography_name='CalvertMD',
-                                 saved_model_file=saved_model_file,
-                                 dryrun=False, baseloadingfilename='2010NoActionLoads.csv')
+    run_step2_generatemodel.main(geography_name='CalvertMD', model_spec_name='costmin_total_percentreduction',
+                                 saved_model_name=saved_model_file, dryrun=False,
+                                 baseloadingfilename='2010NoActionLoads.csv')
 
     mdlhandler = load_model_pickle(savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
 

@@ -16,16 +16,15 @@ from bayom_e.solution_handling.solutionhandler import SolutionHandler, \
 from castjeeves.jeeves import Jeeves
 
 from bayota_util.infeasible import *
-from bayota_settings.base import get_output_dir, get_raw_data_dir, get_model_instances_dir
+from bayota_settings.base import get_output_dir, get_raw_data_dir
 
 import logging
 logger = logging.getLogger(__name__)
 
-jeeves = Jeeves()
-
 
 class SolveHandler:
     def __init__(self, instance=None, localsolver=False, solvername=''):
+        self.jeeves = Jeeves()
 
         self.instance = instance
         self.solvername = solvername
@@ -93,6 +92,142 @@ class SolveHandler:
                     if not not newfileprintlevel:
                         line = line.replace(parsed['value'], str(newfileprintlevel))
             sys.stdout.write(line)
+
+    def basic_solve(self, mdl, output_file_str='', fileprintlevel=4,
+                    translate_to_cast_format=False, solverlogfile=None):
+        """
+
+        Args:
+            mdl:
+            output_file_str:
+            fileprintlevel:
+            translate_to_cast_format:
+
+        Returns:
+
+        """
+        # ---- Solver details ----
+        localsolver = True
+        solvername = 'ipopt'
+
+        solver_path, options_file_path = get_solver_paths(solvername)
+
+        solvetimestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+        if not solverlogfile:
+            # ---- Output (Iterations and IPOPT Log) Filenames ----
+            if not output_file_str:
+                output_file_name = os.path.join(get_output_dir(),
+                                                'output_' + solvetimestamp + '.iters')
+            else:
+                output_file_name = os.path.join(get_output_dir(),
+                                                'output_' + output_file_str + '_' + solvetimestamp + '.iters')
+            ipopt_log_file = os.path.join(get_output_dir(), 'ipopt_logfile_' + solvetimestamp + '.log')
+        else:
+            output_file_name = solverlogfile
+            ipopt_log_file = solverlogfile
+
+        # ---- MODIFY IPOPT OPTIONS ----
+        modify_ipopt_options(options_file_path, newoutputfilepath=output_file_name)
+        # file_print_levels (Output Level-of-Detail):
+        #   4 for just # of iterations, and final objective, infeas,etc. values
+        #   6 for summary information about all iterations, but not variable values
+        #   8 for variable values at all iterations
+        #   10 for all iterations
+        modify_ipopt_options(options_file_path, newfileprintlevel=fileprintlevel)
+
+        # ---- SOLVE ----
+        get_suffixes = False
+        solved_instance, solved_results, feasible = solve(localsolver,
+                                                          solvername,
+                                                          mdl,
+                                                          logfilename=ipopt_log_file,
+                                                          get_suffixes=get_suffixes)
+
+        df_headers = ['acres',
+                      'bmpshortname',
+                      'landriversegment',
+                      'loadsource',
+                      'totalannualizedcostperunit',
+                      'totalinstancecost',
+                      'bmpfullname',
+                      'original_load_N',
+                      'original_load_P',
+                      'original_load_S',
+                      'new_load_N',
+                      'new_load_P',
+                      'new_load_S',
+                      'feasible',
+                      'solution_objective',
+                      'percent_reduction_minimum'
+                      ]
+
+        if not feasible:
+            # Create empty dataframes
+            merged_df = pd.DataFrame([[None] * len(df_headers)], columns=df_headers)
+            merged_df['feasible'] = feasible
+
+            cast_formatted_df = None
+            if translate_to_cast_format:
+                cast_formatted_df = pd.DataFrame()
+        else:
+            # Populate dataframe with solution info
+            merged_df = initial_solution_parse_to_dataframe(get_suffixes, solved_instance)
+
+            # Add BMP full name
+            merged_df['bmpfullname'] = self.jeeves.bmp.fullnames_from_shortnames(merged_df)
+
+            # Add Nutrient Load information
+            merged_df['original_load_N'] = pyo.value(solved_instance.original_load_expr['N'])
+            merged_df['original_load_P'] = pyo.value(solved_instance.original_load_expr['P'])
+            merged_df['original_load_S'] = pyo.value(solved_instance.original_load_expr['S'])
+            merged_df['new_load_N'] = pyo.value(solved_instance.new_load_expr['N'])
+            merged_df['new_load_P'] = pyo.value(solved_instance.new_load_expr['P'])
+            merged_df['new_load_S'] = pyo.value(solved_instance.new_load_expr['S'])
+
+            cast_formatted_df = None
+            if translate_to_cast_format:
+                # Add state abbreviations to the solution table
+                # merged_df = jeeves.bmp.appendBmpType_to_table_with_bmpshortnames(merged_df)
+
+                # Data table generated by separate python script, the set of load source *groups* where each load source *group* contains one and only one load source
+                singlelsgrpdf = pd.read_csv(os.path.join(get_raw_data_dir(), 'single-ls_groups.csv'))
+                cast_formatted_df = singlelsgrpdf.loc[:, ['loadsourceshortname',
+                                                          'loadsourcegroup']].merge(merged_df,
+                                                                                    how='inner',
+                                                                                    left_on='loadsourceshortname',
+                                                                                    right_on='loadsource')
+
+                # Add state abbreviations to the solution table
+                lrsegids = self.jeeves.geo.lrseg.ids_from_names(cast_formatted_df['landriversegment'])
+                cast_formatted_df['StateAbbreviation'] = self.jeeves.geo.statenames_from_lrsegids(lrsegids)
+
+                # Rename Columns
+                cast_formatted_df = cast_formatted_df.rename(index=str, columns={"landriversegment": "GeographyName"})
+                cast_formatted_df = cast_formatted_df.rename(index=str, columns={"loadsourcegroup": "LoadSourceGroup"})
+                cast_formatted_df = cast_formatted_df.rename(index=str, columns={"bmpshortname": "BmpShortname"})
+                cast_formatted_df = cast_formatted_df.rename(index=str, columns={"acres": "Amount"})
+
+                # Add Columns
+                cast_formatted_df['AgencyCode'] = 'nonfed'
+                cast_formatted_df['Unit'] = 'acres'
+                cast_formatted_df['StateUniqueIdentifier'] = 'none'
+
+                # Retain only the necessary columns
+                cast_formatted_df = cast_formatted_df.loc[:,
+                                    ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation',
+                                     'BmpShortname', 'GeographyName', 'LoadSourceGroup',
+                                     'Amount', 'Unit']]
+
+        solution_dict = {'output_file_name': output_file_name,
+                         'solution_df': merged_df,
+                         'cast_formatted_df': cast_formatted_df,
+                         'timestamp': solvetimestamp,
+                         'feasible': feasible,
+                         'solved_results': solved_results,
+                         'model_object': mdl}
+
+        return solution_dict
 
 
 def solve(localsolver, solvername, instance,
@@ -286,150 +421,6 @@ def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintle
     #     with fileinput.FileInput(filename, inplace=True, backup='.bak') as file:
     #         for line in file:
     #             print(multipleReplace(line, myDict), end='')
-
-
-def basic_solve(mdl, output_file_str='', fileprintlevel=4,
-                translate_to_cast_format=False, solverlogfile=None):
-    """
-
-    Args:
-        mdl:
-        output_file_str:
-        fileprintlevel:
-        translate_to_cast_format:
-
-    Returns:
-
-    """
-    # ---- Solver details ----
-    localsolver = True
-    solvername = 'ipopt'
-
-    solver_path, options_file_path = get_solver_paths(solvername)
-
-    solvetimestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-
-    if not solverlogfile:
-        # ---- Output (Iterations and IPOPT Log) Filenames ----
-        if not output_file_str:
-            output_file_name = os.path.join(get_output_dir(),
-                                            'output_' + solvetimestamp + '.iters')
-        else:
-            output_file_name = os.path.join(get_output_dir(),
-                                            'output_' + output_file_str + '_' + solvetimestamp + '.iters')
-        ipopt_log_file = os.path.join(get_output_dir(), 'ipopt_logfile_' + solvetimestamp + '.log')
-    else:
-        output_file_name = solverlogfile
-        ipopt_log_file = solverlogfile
-
-    # ---- MODIFY IPOPT OPTIONS ----
-    solver_options = dict()   # "OF_" prefix signals to Pyomo to create a temporary options file
-    solver_options['OF_output_file'] = output_file_name
-    solver_options['OF_file_print_level'] = fileprintlevel
-    # modify_ipopt_options(options_file_path, newoutputfilepath=output_file_name)
-    # # file_print_levels (Output Level-of-Detail):
-    # #   4 for just # of iterations, and final objective, infeas,etc. values
-    # #   6 for summary information about all iterations, but not variable values
-    # #   8 for variable values at all iterations
-    # #   10 for all iterations
-    # modify_ipopt_options(options_file_path, newfileprintlevel=fileprintlevel)
-
-    # ---- SOLVE ----
-    get_suffixes = False
-    solved_instance, solved_results, feasible = solve(localsolver,
-                                                      solvername,
-                                                      mdl,
-                                                      logfilename=ipopt_log_file,
-                                                      get_suffixes=get_suffixes,
-                                                      solver_options=solver_options)
-
-    df_headers = ['acres',
-                  'bmpshortname',
-                  'landriversegment',
-                  'loadsource',
-                  'totalannualizedcostperunit',
-                  'totalinstancecost',
-                  'bmpfullname',
-                  'original_load_N',
-                  'original_load_P',
-                  'original_load_S',
-                  'new_load_N',
-                  'new_load_P',
-                  'new_load_S',
-                  'feasible',
-                  'solution_objective',
-                  'percent_reduction_minimum'
-                  ]
-
-    if not feasible:
-        # Create empty dataframes
-        merged_df = pd.DataFrame([[None] * len(df_headers)], columns=df_headers)
-        merged_df['feasible'] = feasible
-
-        cast_formatted_df = None
-        if translate_to_cast_format:
-            cast_formatted_df = pd.DataFrame()
-    else:
-        # Get cost data
-        costsdf = pd.read_csv(os.path.join(get_model_instances_dir(), 'data_tau.tab'), sep=' ')
-        costsdf.rename(columns={'BMPS': 'bmpshortname', 'tau': 'totalannualizedcostperunit'}, inplace=True)
-
-        # Populate dataframe with solution info
-        merged_df = initial_solution_parse_to_dataframe(get_suffixes, solved_instance, costsdf)
-
-        # Add BMP full name
-        merged_df['bmpfullname'] = jeeves.bmp.fullnames_from_shortnames(merged_df)
-
-        # Add Nutrient Load information
-        merged_df['original_load_N'] = pyo.value(solved_instance.original_load_expr['N'])
-        merged_df['original_load_P'] = pyo.value(solved_instance.original_load_expr['P'])
-        merged_df['original_load_S'] = pyo.value(solved_instance.original_load_expr['S'])
-        merged_df['new_load_N'] = pyo.value(solved_instance.new_load_expr['N'])
-        merged_df['new_load_P'] = pyo.value(solved_instance.new_load_expr['P'])
-        merged_df['new_load_S'] = pyo.value(solved_instance.new_load_expr['S'])
-
-        cast_formatted_df = None
-        if translate_to_cast_format:
-            # Add state abbreviations to the solution table
-            # merged_df = jeeves.bmp.appendBmpType_to_table_with_bmpshortnames(merged_df)
-
-            # Data table generated by separate python script, the set of load source *groups* where each load source *group* contains one and only one load source
-            singlelsgrpdf = pd.read_csv(os.path.join(get_raw_data_dir(), 'single-ls_groups.csv'))
-            cast_formatted_df = singlelsgrpdf.loc[:, ['loadsourceshortname',
-                                                      'loadsourcegroup']].merge(merged_df,
-                                                                                how='inner',
-                                                                                left_on='loadsourceshortname',
-                                                                                right_on='loadsource')
-
-            # Add state abbreviations to the solution table
-            lrsegids = jeeves.geo.lrseg.ids_from_names(cast_formatted_df['landriversegment'])
-            cast_formatted_df['StateAbbreviation'] = jeeves.geo.statenames_from_lrsegids(lrsegids)
-
-            # Rename Columns
-            cast_formatted_df = cast_formatted_df.rename(index=str, columns={"landriversegment": "GeographyName"})
-            cast_formatted_df = cast_formatted_df.rename(index=str, columns={"loadsourcegroup": "LoadSourceGroup"})
-            cast_formatted_df = cast_formatted_df.rename(index=str, columns={"bmpshortname": "BmpShortname"})
-            cast_formatted_df = cast_formatted_df.rename(index=str, columns={"acres": "Amount"})
-
-            # Add Columns
-            cast_formatted_df['AgencyCode'] = 'nonfed'
-            cast_formatted_df['Unit'] = 'acres'
-            cast_formatted_df['StateUniqueIdentifier'] = 'none'
-
-            # Retain only the necessary columns
-            cast_formatted_df = cast_formatted_df.loc[:, ['StateUniqueIdentifier', 'AgencyCode', 'StateAbbreviation',
-                                                          'BmpShortname', 'GeographyName', 'LoadSourceGroup',
-                                                          'Amount', 'Unit']]
-
-    solution_dict = {'output_file_name': output_file_name,
-                     'solution_df': merged_df,
-                     'cast_formatted_df': cast_formatted_df,
-                     'timestamp': solvetimestamp,
-                     'feasible': feasible,
-                     'solved_results': solved_results,
-                     'model_object': mdl}
-
-    return solution_dict
 
 
 def solve_problem_instance(modelhandler, mdl, randomstart=False, output_file_str='', fileprintlevel=4):
