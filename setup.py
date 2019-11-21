@@ -102,7 +102,7 @@ install_requires = ['pyomo',
                     'docker',
                     'pytest-runner',
                     'awscli',
-                    'python-dateutil<=2.8.0'
+                    'python-dateutil'
                     #'pyutilib'
                     ]
 # boto3 and requests are also required IF using AWS and you want to move files to s3
