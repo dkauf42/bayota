@@ -53,10 +53,6 @@ class model_as_func_for_pygmo:
         """ Return number of objectives """
         return 2
 
-    def get_nic(self):
-        """ Return inequality constraints """
-        return 1
-
     def get_name(self):
         return "cast optimization function"
 
