@@ -7,9 +7,25 @@ Example usage command:
 
 import math
 import yaml
+import logging
 import numpy as np
 import pandas as pd
 from itertools import product
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument("--log_level", dest="loglvl", nargs=None, default='INFO',
+                    choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                    help="change logging level to {debug, info, warning, error, critical}")
+opts = parser.parse_args()
+
+# Set up logging
+level_config = {'debug': logging.DEBUG, 'info': logging.INFO,
+                'warning': logging.WARNING, 'error': logging.ERROR, 'critical': logging.CRITICAL}
+log_level = level_config[opts.loglvl[0].lower()]
+logging.basicConfig(level=log_level)
+logger = logging.getLogger(__name__)
+logging.debug('This will get logged')
 
 import pyomo.environ as pyo
 
@@ -45,31 +61,44 @@ baseloadingfilename = '2010NoActionLoads_updated.csv'
 # modelspec_dict['variant'] = 'lp'
 # display(modelspec_dict)
 
-my_model, dp = build_model(model_spec_name, geoscale, geoentities, baseloadingfilename,
-                           savedata2file=False, log_level='INFO')
+def main():
 
-prob_dim = len(my_model.x)
-print(f"--DIAGNOSTIC--\nprob_dim={prob_dim}")
+    my_model, dp = build_model(model_spec_name, geoscale, geoentities, baseloadingfilename,
+                               savedata2file=False, log_level='INFO')
 
-my_prob = model_as_func_for_pygmo(prob_dim, pyomo_model=my_model,
-                                  objective1_name='total_cost_expr', objective1_indexer=None, objective1_sign=1,
-                                  objective2_name='percent_reduction_expr', objective2_indexer='N', objective2_sign=-1)
+    prob_dim = len(my_model.x)
+    print(f"--DIAGNOSTIC--\nprob_dim={prob_dim}")
 
-# create UDP
-prob = pg.problem(my_prob)
+    my_prob = model_as_func_for_pygmo(prob_dim, pyomo_model=my_model,
+                                      objective1_name='total_cost_expr', objective1_indexer=None, objective1_sign=1,
+                                      objective2_name='percent_reduction_expr', objective2_indexer='N', objective2_sign=-1)
 
-# create population
-pop = pg.population(prob, size=20)
+    # create UDP
+    prob = pg.problem(my_prob)
 
-# select algorithm
-algo = pg.algorithm(pg.nsga2(gen=40))
+    # create population
+    pop = pg.population(prob, size=20)
 
-# run optimization
-pop = algo.evolve(pop)
+    # select algorithm
+    algo = pg.algorithm(pg.nsga2(gen=40))
 
-# extract results
-fits, vectors = pop.get_f(), pop.get_x()
-print(f"--DIAGNOSTIC--\nfits={fits}")
+    # run optimization
+    pop = algo.evolve(pop)
 
-# extract and print non-dominated fronts
-ndf, dl, dc, ndr = pg.fast_non_dominated_sorting(fits)
+    # extract results
+    fits, vectors = pop.get_f(), pop.get_x()
+    print(f"--DIAGNOSTIC--\nfits={fits}")
+
+    # extract and print non-dominated fronts
+    ndf, dl, dc, ndr = pg.fast_non_dominated_sorting(fits)
+
+def parse_cli_arguments():
+    """ Input arguments are parsed. """
+    parser = ArgumentParser()
+    parser.add_argument("--log_level", nargs=None, default='INFO',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="change logging level to {debug, info, warning, error, critical}")
+
+    opts = parser.parse_args()
+
+    return opts
