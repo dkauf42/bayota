@@ -137,35 +137,19 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=studycon_name)
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
-        # A command is built for this job submission.
-        # CMD = f"{model_generator_script} -cn {studycon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
-        # my_run_command(CMD, dryrun, logger, no_docker)
-
         # To use AWS Batch, we submit the job with a job definition/queue specified.
+        CMD = ['python', model_generator_script, '-cn', studycon_name,
+               '--s3workspace', get_s3workspace_dir(), f"--log_level={log_level}"]
         response = batch.submit_job(jobName=f"BAYOTA_modelgeneration_using_{studycon_name}",
                                     jobQueue='Modeling',
                                     jobDefinition='Modeling-Bayota:6',
-                                    containerOverrides={
-                                            "command": ['python',
-                                                        model_generator_script,
-                                                        '-cn', studycon_name,
-                                                        '--s3workspace', get_s3workspace_dir(),
-                                                        f"--log_level={log_level}"]},
+                                    containerOverrides={"command": CMD},
                                     retryStrategy={'attempts': 2}
                                     )
+        print(f"submitted command: {CMD}")
         print("Job ID is {}.".format(response['jobId']))
         jobids['study'][studyid] = dict()
         jobids['study'][studyid]['self'] = response['jobId']
-        # response = batch.submit_job(jobName='Model_Generation',
-        #                             jobQueue='GIS-Dev-queue',
-        #                             jobDefinition='GIS-Merge-Rasters:3',
-        #                             containerOverrides={
-        #                                     "command": ['python',
-        #                                                 f"{model_generator_script}",
-        #                                                 f"-cf {study_control_file}",
-        #                                                 f"--log_level={log_level}"],
-        #                             })
-        # print("Job ID is {}.".format(response['jobId']))
 
         """ Each experiment is iterated over. """
         # A job is submitted for each experiment in the list.
@@ -202,21 +186,17 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=expcon_name)
 
             """ MODIFY MODEL VIA DOCKER IMAGE """
-            # CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
-            # my_run_command(CMD, dryrun, logger, no_docker)
             # To use AWS Batch, we submit the job with a job definition/queue specified.
+            CMD = ['python', modify_model_script, '-cn', expcon_name,
+                   '--s3workspace', get_s3workspace_dir(), f"--log_level={log_level}"]
             response = batch.submit_job(jobName=f"Bayota_modelmods_using_{expcon_name}",
                                         jobQueue='Modeling',
                                         jobDefinition='Modeling-Bayota:6',
                                         dependsOn=[{'jobId': jobids['study'][studyid]['self']}],
-                                        containerOverrides={
-                                                "command": ['python',
-                                                            modify_model_script,
-                                                            '-cn', expcon_name,
-                                                            '--s3workspace', get_s3workspace_dir(),
-                                                            f"--log_level={log_level}"]},
+                                        containerOverrides={"command": CMD},
                                         retryStrategy={'attempts': 2}
                                         )
+            print(f"submitted command: {CMD}")
             print("Job ID is {}.".format(response['jobId']))
             jobids['study'][studyid]['exp'][expid] = dict()
             jobids['study'][studyid]['exp'][expid]['self'] = response['jobId']
@@ -270,20 +250,16 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=trialcon_name)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
-                    # CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
-                    # my_run_command(CMD, dryrun, logger, no_docker)
+                    CMD = ['python', solve_trial_script, '-cn', trialcon_name,
+                           '--s3workspace', get_s3workspace_dir(), f"--log_level={log_level}"]
                     response = batch.submit_job(jobName=f"Bayota_solvetrial_using_{trialcon_name}",
                                                 jobQueue='Modeling',
                                                 jobDefinition='Modeling-Bayota:6',
                                                 dependsOn=[{'jobId': jobids['study'][studyid]['exp'][expid]['self']}],
-                                                containerOverrides={
-                                                        "command": ['python',
-                                                                    solve_trial_script,
-                                                                    '-cn', trialcon_name,
-                                                                    '--s3workspace', get_s3workspace_dir(),
-                                                                    f"--log_level={log_level}"]},
+                                                containerOverrides={"command": CMD},
                                                 retryStrategy={'attempts': 2}
                                                 )
+                    print(f"submitted command: {CMD}")
                     print("Job ID is {}.".format(response['jobId']))
                     jobids['study'][studyid]['exp'][expid]['trial'][trialidstr] = dict()
                     jobids['study'][studyid]['exp'][expid]['trial'][trialidstr]['self'] = response['jobId']
