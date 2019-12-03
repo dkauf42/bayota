@@ -9,7 +9,7 @@ import sys
 import argparse
 import boto3
 
-client = boto3.client('batch')
+client = boto3.client('logs')
 
 
 def main(logstreamname):
