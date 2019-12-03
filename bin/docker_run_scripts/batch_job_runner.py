@@ -30,7 +30,7 @@ from bayota_settings.base import get_bayota_version, get_workspace_dir, get_s3wo
 from bayota_settings.log_setup import root_logger_setup
 
 from bayota_util.s3_operations import S3ops
-# batch = boto3.client('batch', region_name='us-east-1')
+batch = boto3.client('batch', region_name='us-east-1')
 
 docker_client = docker.from_env()
 docker_image = get_docker_image_name()
@@ -136,10 +136,21 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # A command is built for this job submission.
-        CMD = f"{model_generator_script} -cn {studycon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
-        my_run_command(CMD, dryrun, logger, no_docker)
+        # CMD = f"{model_generator_script} -cn {studycon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
+        # my_run_command(CMD, dryrun, logger, no_docker)
 
         # To use AWS Batch, we submit the job with a job definition/queue specified.
+        response = batch.submit_job(jobName='Bayota_Testing',
+                                    jobQueue='Modeling',
+                                    jobDefinition='Modeling-Bayota:6',
+                                    containerOverrides={
+                                            "command": ['python',
+                                                        model_generator_script,
+                                                        '-cn', studycon_name,
+                                                        '--s3workspace', get_s3workspace_dir(),
+                                                        f"--log_level={log_level}"],
+                                    })
+        print("Job ID is {}.".format(response['jobId']))
         # response = batch.submit_job(jobName='Model_Generation',
         #                             jobQueue='GIS-Dev-queue',
         #                             jobDefinition='GIS-Merge-Rasters:3',
@@ -185,8 +196,20 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=expcon_name)
 
             """ MODIFY MODEL VIA DOCKER IMAGE """
-            CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
-            my_run_command(CMD, dryrun, logger, no_docker)
+            # CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
+            # my_run_command(CMD, dryrun, logger, no_docker)
+            # To use AWS Batch, we submit the job with a job definition/queue specified.
+            response = batch.submit_job(jobName='Bayota_Testing',
+                                        jobQueue='Modeling',
+                                        jobDefinition='Modeling-Bayota:6',
+                                        containerOverrides={
+                                                "command": ['python',
+                                                            modify_model_script,
+                                                            '-cn', expcon_name,
+                                                            '--s3workspace', get_s3workspace_dir(),
+                                                            f"--log_level={log_level}"],
+                                        })
+            print("Job ID is {}.".format(response['jobId']))
 
             """ Each trial is iterated over. """
             # List of trial sets to be conducted for this experiment are logged.
@@ -236,8 +259,19 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=trialcon_name)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
-                    CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
-                    my_run_command(CMD, dryrun, logger, no_docker)
+                    # CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
+                    # my_run_command(CMD, dryrun, logger, no_docker)
+                    response = batch.submit_job(jobName='Bayota_Testing',
+                                                jobQueue='Modeling',
+                                                jobDefinition='Modeling-Bayota:6',
+                                                containerOverrides={
+                                                        "command": ['python',
+                                                                    solve_trial_script,
+                                                                    '-cn', trialcon_name,
+                                                                    '--s3workspace', get_s3workspace_dir(),
+                                                                    f"--log_level={log_level}"],
+                                                })
+                    print("Job ID is {}.".format(response['jobId']))
 
     return 0  # a clean, no-issue, exit
 
