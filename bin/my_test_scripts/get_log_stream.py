@@ -25,7 +25,7 @@ def parse_cli_arguments():
     """ Input arguments are parsed. """
     parser = argparse.ArgumentParser(description='get some logs.')
 
-    parser.add_argument('logstreamname', metavar='NAME', type=str, nargs='+',
+    parser.add_argument('logstreamname', metavar='NAME', type=str,
                         help='logstream names for which to get the text')
 
     return parser.parse_args()
