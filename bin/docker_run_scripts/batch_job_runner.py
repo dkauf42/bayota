@@ -95,7 +95,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
 
     """ Each study (geography, model form) is iterated over. """
     jobids = dict()
-    jobids['by_study'] = dict()
+    jobids['study'] = dict()
     for index, sp in enumerate(study_pairs):
         # (ModelGeography, ModelForm+Experiments) are combined to form studies, which are submitted as jobs.
 
@@ -153,8 +153,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                         f"--log_level={log_level}"],
                                     })
         print("Job ID is {}.".format(response['jobId']))
-        jobids['by_study'][studyid] = dict()
-        jobids['by_study'][studyid]['self'] = response['jobId']
+        jobids['study'][studyid] = dict()
+        jobids['study'][studyid]['self'] = response['jobId']
         # response = batch.submit_job(jobName='Model_Generation',
         #                             jobQueue='GIS-Dev-queue',
         #                             jobDefinition='GIS-Merge-Rasters:3',
@@ -169,7 +169,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         """ Each experiment is iterated over. """
         # A job is submitted for each experiment in the list.
         p_list = []
-        jobids['by_study'][studyid]['by_exp'] = dict()
+        jobids['study'][studyid]['exp'] = dict()
         for ii, exp_spec_name in enumerate(experiments):
             expactiondict = read_spec(spec_file_name=exp_spec_name, spectype='experiment')
             expid = '{:04}'.format(ii + 1)
@@ -207,7 +207,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             response = batch.submit_job(jobName=f"Bayota_modelmods_using_{expcon_name}",
                                         jobQueue='Modeling',
                                         jobDefinition='Modeling-Bayota:6',
-                                        dependsOn=[{'jobId': jobids['by_study'][studyid]['self'],
+                                        dependsOn=[{'jobId': jobids['study'][studyid]['self'],
                                                     'type': 'N_TO_N'}],
                                         containerOverrides={
                                                 "command": ['python',
@@ -217,8 +217,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                             f"--log_level={log_level}"],
                                         })
             print("Job ID is {}.".format(response['jobId']))
-            jobids['by_study'][studyid]['by_exp'][expid] = dict()
-            jobids['by_study'][studyid]['by_exp'][expid]['self'] = response['jobId']
+            jobids['study'][studyid]['exp'][expid] = dict()
+            jobids['study'][studyid]['exp'][expid]['self'] = response['jobId']
 
             """ Each trial is iterated over. """
             # List of trial sets to be conducted for this experiment are logged.
@@ -226,7 +226,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             logger.debug(f"** Single Experiment **: {expname} - trial {tempstr} to be conducted: {list_of_trialdicts}")
             trialnum = 0
             p_list = []
-            jobids['by_study'][studyid]['by_exp'][expid]['by_trial'] = dict()
+            jobids['study'][studyid]['exp'][expid]['trial'] = dict()
             for i, dictwithtrials in enumerate(list_of_trialdicts):
                 logger.info('v--------------------------------------------v')
                 logger.info(' **************** Trial Set *****************')
@@ -274,7 +274,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     response = batch.submit_job(jobName=f"Bayota_solvetrial_using_{trialcon_name}",
                                                 jobQueue='Modeling',
                                                 jobDefinition='Modeling-Bayota:6',
-                                                dependsOn=[{'jobId': jobids['by_study'][studyid]['by_exp'][expid]['self'],
+                                                dependsOn=[{'jobId': jobids['study'][studyid]['exp'][expid]['self'],
                                                             'type': 'N_TO_N'}],
                                                 containerOverrides={
                                                         "command": ['python',
@@ -284,8 +284,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                                     f"--log_level={log_level}"],
                                                 })
                     print("Job ID is {}.".format(response['jobId']))
-                    jobids['by_study'][studyid]['by_exp'][expid]['by_trial'][trialidstr] = dict()
-                    jobids['by_study'][studyid]['by_exp'][expid]['by_trial'][trialidstr]['self'] = response['jobId']
+                    jobids['study'][studyid]['exp'][expid]['trial'][trialidstr] = dict()
+                    jobids['study'][studyid]['exp'][expid]['trial'][trialidstr]['self'] = response['jobId']
 
     print(jobids)
     return 0  # a clean, no-issue, exit
