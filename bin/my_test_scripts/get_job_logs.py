@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # get_job_logs.py
 # Get aws log streams from a job id
 # Author: DKaufman

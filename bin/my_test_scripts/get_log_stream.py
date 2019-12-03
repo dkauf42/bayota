@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # get_log_stream.py
 # Get aws log streams
 # Author: DKaufman
