@@ -150,8 +150,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                         model_generator_script,
                                                         '-cn', studycon_name,
                                                         '--s3workspace', get_s3workspace_dir(),
-                                                        f"--log_level={log_level}"],
-                                    })
+                                                        f"--log_level={log_level}"]},
+                                    retryStrategy={'attempts': 2}
+                                    )
         print("Job ID is {}.".format(response['jobId']))
         jobids['study'][studyid] = dict()
         jobids['study'][studyid]['self'] = response['jobId']
@@ -213,8 +214,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                             modify_model_script,
                                                             '-cn', expcon_name,
                                                             '--s3workspace', get_s3workspace_dir(),
-                                                            f"--log_level={log_level}"],
-                                        })
+                                                            f"--log_level={log_level}"]},
+                                        retryStrategy={'attempts': 2}
+                                        )
             print("Job ID is {}.".format(response['jobId']))
             jobids['study'][studyid]['exp'][expid] = dict()
             jobids['study'][studyid]['exp'][expid]['self'] = response['jobId']
@@ -279,8 +281,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                                     solve_trial_script,
                                                                     '-cn', trialcon_name,
                                                                     '--s3workspace', get_s3workspace_dir(),
-                                                                    f"--log_level={log_level}"],
-                                                })
+                                                                    f"--log_level={log_level}"]},
+                                                retryStrategy={'attempts': 2}
+                                                )
                     print("Job ID is {}.".format(response['jobId']))
                     jobids['study'][studyid]['exp'][expid]['trial'][trialidstr] = dict()
                     jobids['study'][studyid]['exp'][expid]['trial'][trialidstr]['self'] = response['jobId']
