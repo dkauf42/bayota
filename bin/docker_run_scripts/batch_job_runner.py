@@ -94,6 +94,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         logger.info(f"would copy local specification files from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
 
     """ Each study (geography, model form) is iterated over. """
+    jobids = dict()
+    jobids['by_study'] = dict()
     for index, sp in enumerate(study_pairs):
         # (ModelGeography, ModelForm+Experiments) are combined to form studies, which are submitted as jobs.
 
@@ -140,7 +142,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         # my_run_command(CMD, dryrun, logger, no_docker)
 
         # To use AWS Batch, we submit the job with a job definition/queue specified.
-        response = batch.submit_job(jobName='Bayota_Testing',
+        response = batch.submit_job(jobName=f"BAYOTA_modelgeneration_using_{studycon_name}",
                                     jobQueue='Modeling',
                                     jobDefinition='Modeling-Bayota:6',
                                     containerOverrides={
@@ -151,6 +153,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                         f"--log_level={log_level}"],
                                     })
         print("Job ID is {}.".format(response['jobId']))
+        jobids['by_study'][studyid] = response['jobId']
         # response = batch.submit_job(jobName='Model_Generation',
         #                             jobQueue='GIS-Dev-queue',
         #                             jobDefinition='GIS-Merge-Rasters:3',
@@ -165,6 +168,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         """ Each experiment is iterated over. """
         # A job is submitted for each experiment in the list.
         p_list = []
+        jobids['by_study'][studyid]['by_exp'] = dict()
         for ii, exp_spec_name in enumerate(experiments):
             expactiondict = read_spec(spec_file_name=exp_spec_name, spectype='experiment')
             expid = '{:04}'.format(ii + 1)
@@ -199,9 +203,11 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             # CMD = f"{modify_model_script} -cn {expcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
             # my_run_command(CMD, dryrun, logger, no_docker)
             # To use AWS Batch, we submit the job with a job definition/queue specified.
-            response = batch.submit_job(jobName='Bayota_Testing',
+            response = batch.submit_job(jobName=f"Bayota_modelmods_using_{expcon_name}",
                                         jobQueue='Modeling',
                                         jobDefinition='Modeling-Bayota:6',
+                                        dependsOn=[{'jobId': jobids['by_study'][studyid],
+                                                    'type': 'N_TO_N'}],
                                         containerOverrides={
                                                 "command": ['python',
                                                             modify_model_script,
@@ -210,6 +216,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                             f"--log_level={log_level}"],
                                         })
             print("Job ID is {}.".format(response['jobId']))
+            jobids['by_study'][studyid]['by_exp'][expid] = response['jobId']
 
             """ Each trial is iterated over. """
             # List of trial sets to be conducted for this experiment are logged.
@@ -217,6 +224,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             logger.debug(f"** Single Experiment **: {expname} - trial {tempstr} to be conducted: {list_of_trialdicts}")
             trialnum = 0
             p_list = []
+            jobids['by_study'][studyid]['by_exp'][expid]['by_trial'] = dict()
             for i, dictwithtrials in enumerate(list_of_trialdicts):
                 logger.info('v--------------------------------------------v')
                 logger.info(' **************** Trial Set *****************')
@@ -261,9 +269,11 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
                     # CMD = f"{solve_trial_script} -cn {trialcon_name} --s3workspace {get_s3workspace_dir()} --log_level={log_level}"
                     # my_run_command(CMD, dryrun, logger, no_docker)
-                    response = batch.submit_job(jobName='Bayota_Testing',
+                    response = batch.submit_job(jobName=f"Bayota_solvetrial_using_{trialcon_name}",
                                                 jobQueue='Modeling',
                                                 jobDefinition='Modeling-Bayota:6',
+                                                dependsOn=[{'jobId': jobids['by_study'][studyid]['by_exp'][expid],
+                                                            'type': 'N_TO_N'}],
                                                 containerOverrides={
                                                         "command": ['python',
                                                                     solve_trial_script,
@@ -272,7 +282,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                                     f"--log_level={log_level}"],
                                                 })
                     print("Job ID is {}.".format(response['jobId']))
+                    jobids['by_study'][studyid]['by_exp'][expid]['by_trial'][trialidstr] = response['jobId']
 
+    print(jobids)
     return 0  # a clean, no-issue, exit
 
 
