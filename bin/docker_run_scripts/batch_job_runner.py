@@ -153,7 +153,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                         f"--log_level={log_level}"],
                                     })
         print("Job ID is {}.".format(response['jobId']))
-        jobids['by_study'][studyid] = response['jobId']
+        jobids['by_study'][studyid] = dict()
+        jobids['by_study'][studyid]['self'] = response['jobId']
         # response = batch.submit_job(jobName='Model_Generation',
         #                             jobQueue='GIS-Dev-queue',
         #                             jobDefinition='GIS-Merge-Rasters:3',
@@ -216,7 +217,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                             f"--log_level={log_level}"],
                                         })
             print("Job ID is {}.".format(response['jobId']))
-            jobids['by_study'][studyid]['by_exp'][expid] = response['jobId']
+            jobids['by_study'][studyid]['by_exp'][expid] = dict()
+            jobids['by_study'][studyid]['by_exp'][expid]['self'] = response['jobId']
 
             """ Each trial is iterated over. """
             # List of trial sets to be conducted for this experiment are logged.
@@ -282,7 +284,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                                     f"--log_level={log_level}"],
                                                 })
                     print("Job ID is {}.".format(response['jobId']))
-                    jobids['by_study'][studyid]['by_exp'][expid]['by_trial'][trialidstr] = response['jobId']
+                    jobids['by_study'][studyid]['by_exp'][expid]['by_trial'][trialidstr] = dict()
+                    jobids['by_study'][studyid]['by_exp'][expid]['by_trial'][trialidstr]['self'] = response['jobId']
 
     print(jobids)
     return 0  # a clean, no-issue, exit
