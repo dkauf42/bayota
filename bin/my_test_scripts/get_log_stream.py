@@ -18,7 +18,10 @@ def main(logstreamname):
             logGroupName='/aws/batch/job',
             logStreamName=logstreamname)
 
-    print(response)
+    for e in response['events']:
+        print(e)
+    print(f"nextForwardToken: {response['nextForwardToken']}")
+    print(f"nextBackwardToken: {response['nextBackwardToken']}")
 
 
 def parse_cli_arguments():
