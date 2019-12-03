@@ -15,9 +15,9 @@ client = boto3.client('batch')
 
 def main(jobid):
     response = client.describe_jobs(jobs=jobid)
+    print("jobid | status | jobname")
     for job in response['jobs']:
-        print(f"jobid: {job['jobId']} | jobname: {job['jobName']}")
-        print(f"  status: {job['status']}")
+        print(f"{job['jobId']} | {job['status']:<9} | {job['jobName']}")
         for attempt in job['attempts']:
             print(f"  logstream: {attempt['container']['logStreamName']}")
 
