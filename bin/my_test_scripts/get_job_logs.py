@@ -13,19 +13,27 @@ import boto3
 client = boto3.client('batch')
 
 
-def main(jobid):
+def main(jobid, verbose=False):
     response = client.describe_jobs(jobs=jobid)
     print("jobid | status | jobname")
     for job in response['jobs']:
         print(f"{job['jobId']} | {job['status']:<9} | {job['jobName']}")
         for attempt in job['attempts']:
-            print(f"  logstream: {attempt['container']['logStreamName']}")
+            if 'exitCode' in attempt['container']:
+                exitcode = attempt['container']['exitCode']
+            else:
+                exitcode = 'NA'
+            print(f"  exitcode: {exitcode:<2} | logstream: {attempt['container']['logStreamName']}")
+            if verbose and ('reason' in attempt['container']):
+                print(f"    reason: {attempt['container']['reason']}")
 
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
     parser = argparse.ArgumentParser(description='get some logs.')
 
+    parser.add_argument('-v', '--verbose', action = 'store_true',
+                        help='modify output verbosity') 
     parser.add_argument('jobid', metavar='ID', type=str, nargs='+',
                         help='a job for which to get its logstream ids')
 
@@ -35,4 +43,4 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opt = parse_cli_arguments()
 
-    sys.exit(main(opt.jobid))
+    sys.exit(main(opt.jobid, verbose=opt.verbose))
