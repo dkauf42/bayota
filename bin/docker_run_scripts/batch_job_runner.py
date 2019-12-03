@@ -207,8 +207,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             response = batch.submit_job(jobName=f"Bayota_modelmods_using_{expcon_name}",
                                         jobQueue='Modeling',
                                         jobDefinition='Modeling-Bayota:6',
-                                        dependsOn=[{'jobId': jobids['study'][studyid]['self'],
-                                                    'type': 'N_TO_N'}],
+                                        dependsOn=[{'jobId': jobids['study'][studyid]['self']}],
                                         containerOverrides={
                                                 "command": ['python',
                                                             modify_model_script,
@@ -274,8 +273,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     response = batch.submit_job(jobName=f"Bayota_solvetrial_using_{trialcon_name}",
                                                 jobQueue='Modeling',
                                                 jobDefinition='Modeling-Bayota:6',
-                                                dependsOn=[{'jobId': jobids['study'][studyid]['exp'][expid]['self'],
-                                                            'type': 'N_TO_N'}],
+                                                dependsOn=[{'jobId': jobids['study'][studyid]['exp'][expid]['self']}],
                                                 containerOverrides={
                                                         "command": ['python',
                                                                     solve_trial_script,
