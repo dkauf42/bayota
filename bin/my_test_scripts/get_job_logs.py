@@ -14,18 +14,23 @@ client = boto3.client('batch')
 
 
 def main(jobid, verbose=False):
-    response = client.describe_jobs(jobs=jobid)
+
+    jobids_100_at_a_time = [jobid[i:i+100] for i in range(0, len(jobid), 100)]
+
     print("jobid | status | jobname")
-    for job in response['jobs']:
-        print(f"{job['jobId']} | {job['status']:<9} | {job['jobName']}")
-        for attempt in job['attempts']:
-            if 'exitCode' in attempt['container']:
-                exitcode = attempt['container']['exitCode']
-            else:
-                exitcode = 'NA'
-            print(f"  exitcode: {exitcode:<2} | logstream: {attempt['container']['logStreamName']}")
-            if verbose and ('reason' in attempt['container']):
-                print(f"    reason: {attempt['container']['reason']}")
+    for jobidlist in jobids_100_at_a_time:
+        response = client.describe_jobs(jobs=jobidlist)
+
+        for job in response['jobs']:
+            print(f"{job['jobId']} | {job['status']:<9} | {job['jobName']}")
+            for attempt in job['attempts']:
+                if 'exitCode' in attempt['container']:
+                    exitcode = attempt['container']['exitCode']
+                else:
+                    exitcode = 'NA'
+                print(f"  exitcode: {exitcode:<2} | logstream: {attempt['container']['logStreamName']}")
+                if verbose and ('reason' in attempt['container']):
+                    print(f"    reason: {attempt['container']['reason']}")
 
 
 def parse_cli_arguments():
