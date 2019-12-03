@@ -288,6 +288,17 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     jobids['study'][studyid]['exp'][expid]['trial'][trialidstr]['self'] = response['jobId']
 
     print(jobids)
+
+    def myprint(d):
+        for k, v in d.items():
+            if isinstance(v, dict):
+                myprint(v)
+            else:
+                print(v, end=' ')
+    print('jobids all together:')
+    print('------------------------------')
+    myprint(jobids)
+    print('\n------------------------------')
     return 0  # a clean, no-issue, exit
 
 
