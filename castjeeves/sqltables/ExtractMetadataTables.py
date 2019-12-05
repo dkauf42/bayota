@@ -1,10 +1,13 @@
+#!/usr/bin/env python
 """ An example of how we can extract metadata tables given a scenarioId from SQL Server
 
 Example:
     `python ExtractMetadataTables.py <server> <databasename> <source dir> <userpwdfile>`
-    `python ExtractMetadataTables.py SQL2T ScenarioBuilderV3Source ../../data/test_source userpwdfile
+    `python ExtractMetadataTables.py SQL2T ScenarioBuilderV3Source ../../data/test_source userpwdfile`
+    `./castjeeves/sqltables/ExtractMetadataTables.py SQL2T ScenarioBuilderV3Metadata /home/dkaufman/bayota_ws_0.1b2/data/repull20191205 ~/.sql/cast_id`
 
 """
+import csv
 import sys
 import time
 import pyodbc
@@ -19,6 +22,10 @@ server = sys.argv[1]  # 'SQL2D' or 'localhost'
 database = sys.argv[2]  # 'ScenarioBuilderV3Metadata'
 METADATA_PATH = sys.argv[3]  # data/test_metadata
 userpwdfile = sys.argv[4]
+
+scenarioid = None
+if len(sys.argv) > 5:
+    scenarioid = sys.argv[5:]  #
 
 # read in the userid and password from the given file
 kvars = {}
@@ -39,16 +46,33 @@ cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}' +
 metadata = Metadata()
 for tblName in metadata.getTblList():
     print("extracting table:", tblName)
-    query = "SELECT * from dbo."+tblName
-    #df = pd.read_sql(query, cnxn)
-
-    # To read in chunks
-    df = pd.DataFrame()
-    for chunks in pd.read_sql(query, con=cnxn, chunksize=500000):
-        df = df.append(chunks)
-
-    df = df.rename(columns={column: column.lower() for column in df.columns})
+    
+    if (tblName == 'ImpBmpSubmittedLand') or (tblName == 'InvalidBmpSubmittedLand'):
+        if not scenarioid:
+            print(f"scenarioid not defined. skipping {tblName} table.")
+            continue
+        query = f"SELECT * FROM dbo.{tblName} WHERE ScenarioId in ({', '.join(scenarioid)})"
+    else:
+        query = "SELECT * from dbo."+tblName
+    print(f"  using query=={query}")
     
     output_file = METADATA_PATH+"/"+tblName+".csv"
-    df.to_csv(output_file, sep=',', encoding='utf-8', index=False)
+
+    cursor = cnxn.cursor()
+    cursor.execute(query)
+    blocksize = 500000
+    with open(output_file, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        writer.writerow([x[0] for x in cursor.description])  # column headers
+
+        i = 0
+        while True:
+            i += 1
+            results = cursor.fetchmany(blocksize)
+            print(f"Block {i} - fetching ", blocksize," rows")
+            if not results:
+                break
+            for row in results:
+                writer.writerow(row)
+
     time.sleep(0.1)
