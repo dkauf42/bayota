@@ -53,7 +53,7 @@ for tblName in metadata.getTblList():
             continue
         query = f"SELECT * FROM dbo.{tblName} WHERE ScenarioId in ({', '.join(scenarioid)})"
     else:
-        query = "SELECT * from dbo."+tblName
+        query = f"SELECT * from dbo.{tblName}"
     print(f"  using query=={query}")
     
     output_file = METADATA_PATH+"/"+tblName+".csv"
@@ -69,7 +69,7 @@ for tblName in metadata.getTblList():
         while True:
             i += 1
             results = cursor.fetchmany(blocksize)
-            print(f"Block {i} - fetching ", blocksize," rows")
+            print(f"Block {i} - fetching ", blocksize, " rows")
             if not results:
                 break
             for row in results:
