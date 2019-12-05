@@ -4,7 +4,7 @@
 Example:
     `python ExtractMetadataTables.py <server> <databasename> <source dir> <userpwdfile>`
     `python ExtractMetadataTables.py SQL2T ScenarioBuilderV3Source ../../data/test_source userpwdfile`
-    `./castjeeves/sqltables/ExtractMetadataTables.py SQL2T ScenarioBuilderV3Metadata /home/dkaufman/bayota_ws_0.1b2/data/repull20191205 ~/.sql/cast_id`
+    `./castjeeves/sqltables/ExtractMetadataTables.py SQL2T ScenarioBuilderV3Metadata ~/bayota_ws_0.1b2/data ~/.sql/cast_id 5388`
 
 """
 import csv
