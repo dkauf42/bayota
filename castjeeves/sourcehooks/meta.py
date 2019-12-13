@@ -3,7 +3,7 @@ from .sourcehooks import SourceHook
 
 class Meta(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Metadata Methods """
+        """ Methods for querying CAST Metadata """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Methods to get metadata options

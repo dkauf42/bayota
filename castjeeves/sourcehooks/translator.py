@@ -5,7 +5,9 @@ from .sourcehooks import SourceHook
 
 class Translator(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Sector Methods """
+        """ Methods for converting the format of data tables
+        Note: This class was used in earlier tests, but has not been used since early 2018
+        """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Translation methods (from IDs to NAMEs)

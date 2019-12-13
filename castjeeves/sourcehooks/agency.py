@@ -6,7 +6,7 @@ from .lrseg import Lrseg
 
 class Agency(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Agency Methods """
+        """ Methods for querying CAST data related to Agencies """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)

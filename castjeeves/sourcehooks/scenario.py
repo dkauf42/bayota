@@ -3,7 +3,7 @@ from .sourcehooks import SourceHook
 
 class Scenario(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Agency Methods """
+        """ Methods for querying CAST data related to Scenarios """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     def get_baseconditionid(self,
