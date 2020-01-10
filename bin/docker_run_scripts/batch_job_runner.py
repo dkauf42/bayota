@@ -17,6 +17,7 @@ Example usage command:
 
 import os
 import sys
+import time
 import boto3
 import docker
 import datetime
@@ -37,6 +38,8 @@ docker_image = get_docker_image_name()
 
 
 def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level='INFO') -> int:
+    starttime = time.time()
+
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
     logger.debug(locals())
 
@@ -276,6 +279,10 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
     print('------------------------------')
     myprint(jobids)
     print('\n------------------------------')
+
+    endtime = time.time()
+    print(f"time elapsed (seconds) since starting the batch_job_runner: {endtime - starttime}")
+
     return 0  # a clean, no-issue, exit
 
 
