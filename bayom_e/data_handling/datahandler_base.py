@@ -581,6 +581,40 @@ class DataHandlerBase:
                        'acres']].to_csv(os.path.join(self.instdatadir, 'data_alpha.tab'), sep=' ', index=False,
                                         header=['LRSEGS', 'LOADSRCS', 'AGENCIES', 'alpha'])
 
+    def _load_already_implemented_bmps_in_a_given_scenario(self, ImpBmpSubmittedLand,
+                                                           TblGeography, TblGeographyType,
+                                                           TblGeographyLrSeg, TblLandRiverSegment):
+        """ Implemented BMPs and their acreages
+        """
+        # TODO: Make this method work
+        # Grab the implementation amounts for the desired scenario
+        impBmp_df = ImpBmpSubmittedLand[ImpBmpSubmittedLand['scenarioid'] == scenarioid]
+        """ columns in this dataframe include:
+            ['ScenarioId', 'BmpSubmittedId', 'StateUniqueIdentifier', 'AgencyCode',
+             'StateAbbreviation', 'BmpShortname', 'GeographyName', 'LoadSourceGroup',
+             'Amount', 'Unit', 'AgencyId', 'StateId', 'BmpId', 'GeographyId',
+             'LoadSourceGroupId', 'UnitId']
+        """
+
+        # get the values for the specified geographies (go from 'GeographyName' to 'landriversegments'
+        impBmp_df = impBmp_df.merge(...)
+
+        # get the values for only the efficiency BMPs
+        """ probably will need to use one of these:
+            self.bmpsetlist = bmp_list.copy()
+            self.bmpsetidlist = bmpsdf['bmpid'].tolist()
+            self.BMPS = bmp_list
+            
+            # Maybe this ->> impBmp_df = impBmp_df[impBmp_df['BmpShortname'].isin(self.bmpsetlist)]
+        """
+
+        # Convert units to Acres where needed
+
+        # put the values into a new dataframe of this form: ['LandRiverSegment', 'LoadSource', 'Agency', 'BmpShortName', 'Amount', 'Unit']
+
+
+
+
 # dl = Lrseg(save2file=False, geolist=['N51059PL7_4960_0000'])
 # print(dl.lrsegsetlist)
 # print(dl.lrsegsetidlist)
