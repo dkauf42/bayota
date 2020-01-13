@@ -15,6 +15,13 @@ Each version should:
 
 [Current Development]
 
+## [0.1b2] -- 2019-10-08
+### Added
+
+### Changed
+
+### Fixed
+
 ## [0.1b1] -- 2019-04-02
 ### Added
 - efficiencysubproblem
