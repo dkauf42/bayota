@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from typing import Dict
 from itertools import product
 import pyomo.environ as pyo
@@ -55,6 +56,22 @@ class LinearVariant(ModelBuilder):
 
         # BMPGRPs in each LOADSRC
         self.create_2dim_set_component(model, dataplate.BMPGRPSRCLINKS, 'BMPGRPSRCLINKS')
+
+        # Find most cost-efficient feasible assignments for every load source (u)
+        model.BMPS,
+        model.LRSEGS,
+        model.LOADSRCS,
+        model.PLTNTS,
+        dataplate.eta
+        for k, v in dataplate.eta.items():
+            this_bmp = k[0]
+            this_lrseg = k[1]
+            this_loadsrc = k[2]
+            this_pltnt = k[3]
+            this_val = v
+
+        df = pd.DataFrame_from_dict(dataplate.eta)
+
 
         # Feasible Assignments
         #   enumerate all combinations of bmps (with one from each group)
