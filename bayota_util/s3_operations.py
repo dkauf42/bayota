@@ -78,9 +78,9 @@ class S3ops:
 
         """
         if move_directory:
-            CMD = f"aws s3 sync s3://{self.bucketname}/{s3path} {local_path}"
+            CMD = f"aws s3 sync s3://{self.bucketname}/{s3path} {local_path} --quiet"
         else:
-            CMD = f"aws s3 cp s3://{self.bucketname}/{s3path} {local_path}"
+            CMD = f"aws s3 cp s3://{self.bucketname}/{s3path} {local_path} --quiet"
 
         self.logger.info(f"submitting command: {CMD}")
         p1 = subprocess.Popen([CMD], shell=True)
