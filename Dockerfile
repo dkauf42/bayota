@@ -5,7 +5,7 @@
 # Example commands...
 #
 #  Create a docker image:
-#     >> docker build -f Dockerfile --tag bayota_conda_then_ipopt_app .
+#     >> docker build -f Dockerfile --tag bayota_app .
 #
 #    -- Create a first-stage docker image from the 'builder' stage:
 #       >> docker build -f Dockerfile --tag bayota_app_builder . --target builder
