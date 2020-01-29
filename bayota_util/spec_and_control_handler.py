@@ -219,6 +219,6 @@ def read_trialcon_file(control_file_name):
     move_CASTformatted_solution_to_s3 = bool(s3_dict['CASTformmated_solution'])
     s3_base_path = s3_dict['base_path_from_modeling-data']
 
-    return compact_geo_entity_str, expid, model_modification_string, move_CASTformatted_solution_to_s3, \
+    return compact_geo_entity_str, expid, control_dict, model_modification_string, move_CASTformatted_solution_to_s3, \
            move_solution_to_s3, objective_and_constraint_str, s3_base_path, saved_model_file, \
            solutions_folder_name, studyid, studyshortname, translate_to_cast_format, trial_name, trialidstr
