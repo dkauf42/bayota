@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-
+Run this when switching versions so that the data files are in the necessary S3 location
 """
 import os
 import sys
@@ -57,7 +57,7 @@ def main(log_level='INFO') -> int:
                      destination_path=f"{s3_metadatacsvs_dir}",
                      move_directory=True)
     # Raw Data files are copied.
-    logger.info(f"copying specification files from {get_raw_data_dir()} to the s3 location: {s3_rawdata_dir}")
+    logger.info(f"copying other raw data files from {get_raw_data_dir()} to the s3 location: {s3_rawdata_dir}")
     s3ops.move_to_s3(local_path=get_raw_data_dir(),
                      destination_path=f"{s3_rawdata_dir}",
                      move_directory=True)
