@@ -49,11 +49,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     logger.info(' geographies specification: %s' % geography_entity)
     logger.info('----------------------------------------------')
 
-    if not saved_model_name:
-        savepath = os.path.join(get_model_instances_dir(), 'saved_instance.pickle')
-    else:
-        savepath = saved_model_name
-
+    # Generate the model
     my_model = None
     if notdry(dryrun, logger, '--Dryrun-- Would generate model'):
         starttime_modelinstantiation = time.time()  # Wall time - clock starts.
@@ -66,9 +62,14 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
+    # Save the model
+    if not saved_model_name:
+        saved_model_name = 'saved_instance.pickle'
+    savepath = os.path.join(get_model_instances_dir(), saved_model_name)
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
     logger.info(f"*model saved as pickle to {savepath}*")
 
+    # Move the model to s3
     if not not s3_workspace_dir:
         logger.info(f"moving model pickle to s3")
         try:
