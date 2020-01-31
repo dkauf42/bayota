@@ -89,9 +89,9 @@ with open('VERSION') as version_file:
 with open('LICENSE') as f:
     license_text = f.read()
 
-install_requires = ['pyomo',
+install_requires = ['pyomo==5.6.7',
                     'cloudpickle',
-                    'pyyaml',
+                    'pyyaml==5.1',
                     'numpy',
                     'pandas',
                     'matplotlib',
@@ -102,7 +102,7 @@ install_requires = ['pyomo',
                     'docker',
                     'pytest-runner',
                     'awscli',
-                    'python-dateutil'
+                    'python-dateutil==2.8.0'
                     #'pyutilib'
                     ]
 # boto3 and requests are also required IF using AWS and you want to move files to s3
