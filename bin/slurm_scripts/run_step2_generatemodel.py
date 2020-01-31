@@ -69,21 +69,22 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
     logger.info(f"*model saved as pickle to {savepath}*")
 
-    logger.info(f"moving model pickle to s3")
-    try:
-        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-    except EnvironmentError as e:
-        logger.info(e)
-        logger.info('trying again')
+    if not not s3_workspace_dir:
+        logger.info(f"moving model pickle to s3")
         try:
             s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
         except EnvironmentError as e:
             logger.info(e)
-    # Relative path (for modelinstance files)
-    common_path = os.path.commonpath([get_workspace_dir(), get_model_instances_dir()])
-    relative_path_for_modelinstances_dir = os.path.relpath(get_model_instances_dir(), common_path)
-    s3_modelinstances_dir = get_s3workspace_dir() + '/' + relative_path_for_modelinstances_dir + '/'
-    move_model_pickle_to_s3(logger, s3_modelinstances_dir, s3ops, savepath)
+            logger.info('trying again')
+            try:
+                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+            except EnvironmentError as e:
+                logger.info(e)
+        # Relative path (for modelinstance files)
+        common_path = os.path.commonpath([get_workspace_dir(), get_model_instances_dir()])
+        relative_path_for_modelinstances_dir = os.path.relpath(get_model_instances_dir(), common_path)
+        s3_modelinstances_dir = get_s3workspace_dir() + '/' + relative_path_for_modelinstances_dir + '/'
+        move_model_pickle_to_s3(logger, s3_modelinstances_dir, s3ops, savepath)
 
     return 0  # a clean, no-issue, exit
 
