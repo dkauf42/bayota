@@ -43,7 +43,7 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
                                        add_consolehandler_if_already_exists=False)
 
     logger.info('----------------------------------------------')
-    logger.info('******* %s *******' % ('BayOTA version ' + version).center(30, ' '))
+    logger.info('******* %s *******' % ('BayOTA').center(30, ' '))
     logger.info('*************** Single Study *****************')
     logger.info('----------------------------------------------')
 
