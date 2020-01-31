@@ -4,7 +4,7 @@ Note: This submits a SLURM "sbatch" command to launch the 'step1_single_study' s
       if CLI argument '--no_slurm' is not passed.
 
 Example usage command:
-  >> ./bin/slurm_scripts/run_step0_batch_of_studies.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
+  >> ./bin/slurm_scripts/run_step0_batch_of_studies.py --dryrun -n maryland_counties
 ================================================================================
 """
 
@@ -86,7 +86,7 @@ def parse_cli_arguments():
     """ Input arguments are parsed. """
     parser = ArgumentParser()
     parser.add_argument("-n", "--batch_spec_name", dest="batch_spec_name", default=None,
-                                  help="name for this batch, which should match the batch specification file")
+                        help="name for this batch, which should match the batch specification file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
