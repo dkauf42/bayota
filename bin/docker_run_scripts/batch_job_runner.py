@@ -7,6 +7,11 @@ This submits Docker CMDs to launch the model generation, experiments, and trials
   - run_step1_single_study.py
   - and part of run_step3_conductexperiment.py)
 
+It calls the following subordinate scripts to be run in the docker container:
+A model_generator_script: "run_step2_generatemodel.py"
+A modify_model_script: "run_step3b_modifymodel.py"
+A solve_trial_script: "run_step4_solveonetrial.py"
+
 Example usage command:
   >> ./bin/docker_run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
 
@@ -26,11 +31,12 @@ from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
     read_study_control_file, read_expcon_file, write_control_with_uniqueid
-from bayota_settings.base import get_bayota_version, get_workspace_dir, get_s3workspace_dir, \
-    get_docker_image_name, get_spec_files_dir, get_control_dir
+from bayota_settings.base import get_bayota_version, get_s3workspace_dir, \
+    get_docker_image_name, get_spec_files_dir
 from bayota_settings.log_setup import root_logger_setup
 
-from bayota_util.s3_operations import S3ops
+from bayota_util.s3_operations import S3ops, move_controlfile_to_s3, get_s3_control_dir, get_s3_specfiles_dir
+
 batch = boto3.client('batch', region_name='us-east-1')
 
 docker_client = docker.from_env()
@@ -66,15 +72,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
     #     - list of study pairs, i.e. a list of tuples with (geo, model_form_dict)
     #     - control options (a dictionary)
 
-    """ Config and Specification file directories are copied to S3 """
-    # Relative path (for specification files)
-    common_path = os.path.commonpath([get_workspace_dir(), get_spec_files_dir()])
-    relative_path_for_specfiles_dir = os.path.relpath(get_spec_files_dir(), common_path)
-    s3_specfiles_dir = get_s3workspace_dir() + '/' + relative_path_for_specfiles_dir + '/'
-    # Relative path (for control files)
-    common_path = os.path.commonpath([get_workspace_dir(), get_control_dir()])
-    relative_path_for_control_dir = os.path.relpath(get_control_dir(), common_path)
-    s3_control_dir = get_s3workspace_dir() + '/' + relative_path_for_control_dir + '/'
+    """ Config and Specification file directories are needed for copying to S3 """
+    s3_specfiles_dir = get_s3_specfiles_dir()
+    s3_control_dir = get_s3_control_dir()
 
     s3ops = None
     if not no_s3:
@@ -137,7 +137,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         logger.info(f" Experiments = {experiments}")
         logger.info(f" Base_loading_file_name = {baseloadingfilename}")
         logger.info('^----------------------------------------------^')
-        move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=studycon_name)
+        move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=studycon_name, no_s3=no_s3)
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # To use AWS Batch, we submit the job with a job definition/queue specified.
@@ -186,7 +186,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             logger.info('v--------------------------------------------v')
             logger.info(' ************* Model Modification ***********')
             logger.info('^--------------------------------------------^')
-            move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=expcon_name)
+            move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=expcon_name, no_s3=no_s3)
 
             """ MODIFY MODEL VIA DOCKER IMAGE """
             # To use AWS Batch, we submit the job with a job definition/queue specified.
@@ -250,7 +250,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                         '%Y-%m-%d-%H:%M:%S')
                     trialcon_name = write_control_with_uniqueid(control_dict=control_dict,
                                                                 control_name_prefix='step4_trialcon')
-                    move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name=trialcon_name)
+                    move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=trialcon_name, no_s3=no_s3)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
                     CMD = ['python', solve_trial_script, '-cn', trialcon_name,
@@ -301,16 +301,6 @@ def my_run_command(CMD, dryrun, logger, no_docker):
             response = docker_client.containers.run(docker_image, CMD)
             logger.info(f"*command submitted to image <{docker_image}>* - response is <{response}>")
     return 0
-
-
-def move_controlfile_to_s3(logger, no_s3, s3_control_dir, s3ops, controlfile_name):
-    """ The local control file is copied to the S3-based workspace. """
-    controlfile_localpath = os.path.join(get_control_dir(), controlfile_name) + '.yaml'
-    controlfile_s3path = s3_control_dir + controlfile_name + '.yaml'
-    if not no_s3:
-        s3ops.move_to_s3(local_path=controlfile_localpath, destination_path=f"{controlfile_s3path}")
-    else:
-        logger.info(f"would copy control file to {controlfile_s3path}")
 
 
 def setup_docker_arguments(logger=None):

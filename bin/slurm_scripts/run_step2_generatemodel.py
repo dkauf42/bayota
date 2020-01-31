@@ -16,10 +16,10 @@ from bayota_util.spec_and_control_handler import notdry, read_model_controlfile
 
 from bayom_e.model_handling.utils import save_model_pickle
 
-from bayota_settings.base import get_model_instances_dir, get_workspace_dir, get_s3workspace_dir
+from bayota_settings.base import get_model_instances_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import S3ops, get_workspace_from_s3
+from bayota_util.s3_operations import S3ops, get_workspace_from_s3, get_s3_modelinstancs_dir
 
 
 def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') -> int:
@@ -80,13 +80,10 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
                 s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
             except EnvironmentError as e:
                 logger.info(e)
-        # Relative path (for modelinstance files)
-        common_path = os.path.commonpath([get_workspace_dir(), get_model_instances_dir()])
-        relative_path_for_modelinstances_dir = os.path.relpath(get_model_instances_dir(), common_path)
-        s3_modelinstances_dir = get_s3workspace_dir() + '/' + relative_path_for_modelinstances_dir + '/'
-        move_model_pickle_to_s3(logger, s3_modelinstances_dir, s3ops, savepath)
+        move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
 
     return 0  # a clean, no-issue, exit
+
 
 def move_model_pickle_to_s3(logger, s3_model_instances_dir, s3ops, savepath):
     """ The local control file is copied to the S3-based workspace. """
