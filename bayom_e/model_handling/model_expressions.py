@@ -69,8 +69,8 @@ def original_load_for_each_lrseg_expr(model) -> pyo.ConcreteModel:
 def new_load_expr(model) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(mdl, p):
-        newload = sum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
-                      pyo.prod([(1 - pyo.quicksum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
+        newload = pyo.quicksum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
+                      pyo.prod([(1 - sum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
                                          if ((pyo.value(mdl.alpha[l, u, h]) > 1e-6) &
                                              ((b, gamma) in mdl.BMPGRPING) &
                                              ((b, u) in mdl.BMPSRCLINKS))
@@ -91,8 +91,8 @@ def new_load_expr(model) -> pyo.ConcreteModel:
 def new_load_for_each_loadsource_expr(model) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(mdl, thisu, p):
-        newload = sum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
-                      pyo.prod([(1 - pyo.quicksum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
+        newload = pyo.quicksum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
+                      pyo.prod([(1 - sum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
                                          if ((pyo.value(mdl.alpha[l, u, h]) > 1e-6) &
                                              ((b, gamma) in mdl.BMPGRPING) &
                                              ((b, u) in mdl.BMPSRCLINKS))
@@ -116,8 +116,8 @@ def new_load_for_each_loadsource_expr(model) -> pyo.ConcreteModel:
 def new_load_for_each_lrseg_expr(model) -> pyo.ConcreteModel:
     """ New Loa (quantified for each lrseg) """
     def new_load_rule_for_each_lrseg(mdl, thisl, p):
-        newload = sum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
-                      pyo.prod([(1 - pyo.quicksum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
+        newload = pyo.quicksum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
+                      pyo.prod([(1 - sum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
                                          if ((pyo.value(mdl.alpha[l, u, h]) > 1e-6) &
                                              ((b, gamma) in mdl.BMPGRPING) &
                                              ((b, u) in mdl.BMPSRCLINKS))
