@@ -70,6 +70,8 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
                                                    add_filehandler_if_already_exists=False,
                                                    add_consolehandler_if_already_exists=False)
 
+    logger.debug(f"control file being used is: {control_file}")
+
     try:
         s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
     except EnvironmentError as e:
