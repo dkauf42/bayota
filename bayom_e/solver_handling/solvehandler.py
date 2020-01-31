@@ -111,6 +111,7 @@ class SolveHandler:
         solvername = 'ipopt'
 
         solver_path, options_file_path = get_solver_paths(solvername)
+        logger.debug(f"using solver <{solvername}> at path <{solver_path}>")
 
         solvetimestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
@@ -250,11 +251,8 @@ def solve(localsolver, solvername, instance,
             instance.ipopt_zU_out = pyo.Suffix(direction=pyo.Suffix.IMPORT)
             setattr(instance, 'lambda', pyo.Suffix(direction=pyo.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
-        try:
-            results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
-                                   keepfiles=False, logfile=logfilename)
-        except ValueError as e:
-            logger.info(e)
+        results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
+                               keepfiles=False, logfile=logfilename)
 
     else:
         opt = SolverFactory("cbc")
