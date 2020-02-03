@@ -87,7 +87,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
     # The progress file is updated.
     progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
     progress_dict['run_timestamps']['step4_trial_start'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-    progress_file_name = write_progress_file(control_dict, control_name=control_dict['study']['uuid'] + '-' + trialidstr)
+    progress_file_name = write_progress_file(progress_dict, control_name=control_dict['study']['uuid'] + '-' + trialidstr)
     if not not s3_workspace_dir:
         move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
                                controlfile_name=progress_file_name, no_s3=False, )
@@ -126,7 +126,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         # The progress file is updated.
         progress_dict = read_control(control_file_name=control_dict['study']['uuid'] + '-' + trialidstr)
         progress_dict['run_timestamps']['step4_trial_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-        progress_file_name = write_progress_file(control_dict,
+        progress_file_name = write_progress_file(progress_dict,
                                                  control_name=control_dict['study']['uuid'] + '-' + trialidstr)
         if not not s3_workspace_dir:
             move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
