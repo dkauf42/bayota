@@ -87,7 +87,8 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
     # The progress file is updated.
     progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
     progress_dict['run_timestamps']['step4_trial_start'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-    progress_file_name = write_progress_file(progress_dict, control_name=control_dict['study']['uuid'] + '-' + trialidstr)
+    trial_uuid = control_dict['study']['uuid'] + '-' + trialidstr
+    progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
     if not not s3_workspace_dir:
         move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
                                controlfile_name=progress_file_name, no_s3=False, )
@@ -112,10 +113,13 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
         solvehandler = SolveHandler()
+
+        solver_log_file = os.path.join(get_logging_dir(), trial_logfilename + '_ipopt.log')
+        solver_iters_file = os.path.join(get_logging_dir(), trial_uuid + '_ipopt.iters')
+
         # The problem is solved.
-        solution_dict = solvehandler.basic_solve(mdl=my_model,
-                                                 translate_to_cast_format=translate_to_cast_format,
-                                                 solverlogfile=os.path.join(get_logging_dir(), trial_logfilename + '_ipopt.log'))
+        solution_dict = solvehandler.basic_solve(mdl=my_model, translate_to_cast_format=translate_to_cast_format,
+                                                 solverlogfile=solver_log_file, solveritersfile=solver_iters_file)
         solution_dict['solution_df']['feasible'] = solution_dict['feasible']
         logger.info(f"Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
@@ -126,18 +130,18 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         # The progress file is updated.
         progress_dict = read_control(control_file_name=control_dict['study']['uuid'] + '-' + trialidstr)
         progress_dict['run_timestamps']['step4_trial_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-        progress_file_name = write_progress_file(progress_dict,
-                                                 control_name=control_dict['study']['uuid'] + '-' + trialidstr)
+        progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
         if not not s3_workspace_dir:
             move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
                                    controlfile_name=progress_file_name, no_s3=False, )
-        # A progress file is written.
-        # control_dict['run_timestamps']['step4_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-        # unique_progress_name = write_control_with_uniqueid(control_dict=control_dict,
-        #                                                    control_name_prefix='step4_done')
-        # if not not s3_workspace_dir:
-        #     move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
-        #                            controlfile_name=unique_progress_name, no_s3=False, )
+
+        return_code = s3ops.move_to_s3(local_path=solver_log_file,
+                                       destination_path=f"{os.path.join(get_s3_control_dir(), trial_uuid + '_ipopt.log')}")
+        logger.info(f"Move the solver log file to s3 - exited with code <{return_code}>")
+
+        return_code = s3ops.move_to_s3(local_path=solver_iters_file,
+                                       destination_path=f"{os.path.join(get_s3_control_dir(), trial_uuid + '_ipopt.iters')}")
+        logger.info(f"Move the solver iters file to s3 - exited with code <{return_code}>")
 
         # Optimization objective value is added to the solution table.
         ii = 0

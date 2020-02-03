@@ -93,8 +93,9 @@ class SolveHandler:
                         line = line.replace(parsed['value'], str(newfileprintlevel))
             sys.stdout.write(line)
 
-    def basic_solve(self, mdl, output_file_str='', fileprintlevel=4,
-                    translate_to_cast_format=False, solverlogfile=None):
+    def basic_solve(self, mdl, fileprintlevel=4,
+                    translate_to_cast_format=False, solverlogfile=None,
+                    solveritersfile=None):
         """
 
         Args:
@@ -117,15 +118,13 @@ class SolveHandler:
 
         if not solverlogfile:
             # ---- Output (Iterations and IPOPT Log) Filenames ----
-            if not output_file_str:
-                output_file_name = os.path.join(get_output_dir(),
-                                                'output_' + solvetimestamp + '.iters')
+            if not solveritersfile:
+                output_file_name = os.path.join(get_output_dir(), 'output_' + solvetimestamp + '.iters')
             else:
-                output_file_name = os.path.join(get_output_dir(),
-                                                'output_' + output_file_str + '_' + solvetimestamp + '.iters')
+                output_file_name = solveritersfile
             ipopt_log_file = os.path.join(get_output_dir(), 'ipopt_logfile_' + solvetimestamp + '.log')
         else:
-            output_file_name = solverlogfile
+            output_file_name = solveritersfile
             ipopt_log_file = solverlogfile
 
         # ---- MODIFY IPOPT OPTIONS ----
@@ -143,7 +142,8 @@ class SolveHandler:
                                                           solvername,
                                                           mdl,
                                                           logfilename=ipopt_log_file,
-                                                          get_suffixes=get_suffixes)
+                                                          get_suffixes=get_suffixes,
+                                                          outputfile=output_file_name)
 
         df_headers = ['acres',
                       'bmpshortname',
@@ -232,7 +232,8 @@ class SolveHandler:
 
 
 def solve(localsolver, solvername, instance,
-          logfilename='logfile_loadobjective.log', get_suffixes=True, solver_options=None):
+          logfilename='logfile_loadobjective.log',
+          get_suffixes=True, solver_options=None, outputfile=None):
     # Wall time - clock starts.
     starttime_modelsolve = time.time()
 
@@ -244,6 +245,7 @@ def solve(localsolver, solvername, instance,
             for k, v in solver_options.items():
                 solver.options[k] = v
         solver.options['OF_mumps_mem_percent'] = '5'  # "OF_" prefix signals to Pyomo to create a temporary options file
+        solver.options['OF_output_file'] = outputfile
 
         if get_suffixes:
             instance.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT)
