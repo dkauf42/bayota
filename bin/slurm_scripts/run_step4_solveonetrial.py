@@ -34,9 +34,9 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         print('<< no s3 workspace directory provided. '
               'defaulting to using local workspace for run_step2_generatemodel.py >>')
 
+    control_dict, \
     compact_geo_entity_str, \
     expid, \
-    control_dict, \
     model_modification_string, \
     move_CASTformatted_solution_to_s3, \
     move_solution_to_s3, \

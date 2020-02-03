@@ -26,9 +26,9 @@ experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment
 
 def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     # Load and save new control file
+    control_dict, \
     experiments, \
     baseloadingfilename, \
-    control_dict, \
     geography_name, \
     compact_geo_entity_str, \
     model_spec_name, \

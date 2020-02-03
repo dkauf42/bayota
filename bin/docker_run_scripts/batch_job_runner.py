@@ -121,9 +121,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         studycon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step1_studycon')
 
         # The local study control file is read....
+        control_dict, \
         experiments, \
         baseloadingfilename, \
-        control_dict, \
         geography_name, \
         compact_geo_entity_str, \
         model_spec_name, \
@@ -174,9 +174,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             expcon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step3_expcon')
 
             # The local experiment control file is read....
+            control_dict, \
             actionlist, \
             compact_geo_entity_str, \
-            control_dict, \
             expid, \
             expname, \
             list_of_trialdicts, \

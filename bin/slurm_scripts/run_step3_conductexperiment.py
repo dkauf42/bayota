@@ -27,9 +27,9 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py
 def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     version = get_bayota_version()
 
+    control_dict, \
     actionlist, \
     compact_geo_entity_str, \
-    control_dict, \
     expid, \
     expname, \
     list_of_trialdicts, \

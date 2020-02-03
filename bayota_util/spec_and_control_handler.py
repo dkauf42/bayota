@@ -154,7 +154,7 @@ def read_study_control_file(control_file_name):
     # Write (or replace existing) study control file with updated dictionary entries
     overwrite_control(control_file_name=control_file_name, control_dict=control_dict)
 
-    return experiments, baseloadingfilename, control_dict, \
+    return control_dict, experiments, baseloadingfilename, \
            geo_entity_name, compact_geo_entity_str, model_spec_name, studyshortname, studyid
 
 
@@ -171,7 +171,7 @@ def read_model_controlfile(control_file_name):
     baseloadingfilename = control_dict['base_loading_file_name']
     savedata2file = control_dict['control_options']['save_model_instance_data_to_file']
 
-    return baseloadingfilename, compact_geo_entity_str, geography_entity, geography_scale, \
+    return control_dict, baseloadingfilename, compact_geo_entity_str, geography_entity, geography_scale, \
            model_spec_name, saved_model_name, savedata2file
 
 
@@ -188,7 +188,7 @@ def read_expcon_file(control_file_name):
     list_of_trialdicts = control_dict['experiment']['trials']
     compact_geo_entity_str = control_dict['geography']['shortname']
 
-    return actionlist, compact_geo_entity_str, control_dict, expid, expname, list_of_trialdicts, \
+    return control_dict, actionlist, compact_geo_entity_str, expid, expname, list_of_trialdicts, \
            saved_model_name, studyid
 
 
@@ -219,6 +219,6 @@ def read_trialcon_file(control_file_name):
     move_CASTformatted_solution_to_s3 = bool(s3_dict['CASTformmated_solution'])
     s3_base_path = s3_dict['base_path_from_modeling-data']
 
-    return compact_geo_entity_str, expid, control_dict, model_modification_string, move_CASTformatted_solution_to_s3, \
+    return control_dict, compact_geo_entity_str, expid, model_modification_string, move_CASTformatted_solution_to_s3, \
            move_solution_to_s3, objective_and_constraint_str, s3_base_path, saved_model_file, \
            solutions_folder_name, studyid, studyshortname, translate_to_cast_format, trial_name, trialidstr
