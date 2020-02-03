@@ -19,6 +19,7 @@ from bayota_util.spec_and_control_handler import notdry, read_trialcon_file, \
     write_control_with_uniqueid, read_control, write_progress_file
 from bayota_util.s3_operations import S3ops, get_workspace_from_s3, move_controlfile_to_s3, get_s3_control_dir
 from bayom_e.solver_handling.solvehandler import SolveHandler
+from bayom_e.solution_handling.ipopt_parser import IpoptParser
 
 from bayom_e.model_handling.utils import load_model_pickle
 
@@ -130,6 +131,12 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         # The progress file is updated.
         progress_dict = read_control(control_file_name=control_dict['study']['uuid'] + '-' + trialidstr)
         progress_dict['run_timestamps']['step4_trial_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+        iters, ipopt_time, regu, n_vars, n_ineq_constraints, n_eq_constraints = IpoptParser().quickparse(solver_log_file)
+        progress_dict['solve_characteristics'] = {'iters': iters,
+                                                  'solve_time': ipopt_time,
+                                                  'n_vars': n_vars,
+                                                  'n_ineq_constraints': n_ineq_constraints,
+                                                  'n_eq_constraints': n_eq_constraints}
         progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
         if not not s3_workspace_dir:
             move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
