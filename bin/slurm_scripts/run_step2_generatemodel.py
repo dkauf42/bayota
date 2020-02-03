@@ -59,8 +59,8 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
         except EnvironmentError as e:
             logger.info(e)
 
-    # The progress file is updated.
-    progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
+    # A progress file is created.
+    progress_dict = control_dict.copy()
     progress_dict['run_timestamps'] = {'step2_generatemodel_start': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}
     progress_file_name = write_progress_file(progress_dict, control_name=control_dict['study']['uuid'])
     if not not s3_workspace_dir:

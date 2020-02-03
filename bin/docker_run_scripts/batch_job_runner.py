@@ -131,10 +131,6 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         studyid = read_study_control_file(studycon_name)
         move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=studycon_name, no_s3=no_s3)
 
-        # ALso write a 'progress' file, which will be updated within the docker containers as the steps are run.
-        progress_file_name = write_progress_file(control_dict, control_name=control_dict['study']['uuid'])
-        move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=progress_file_name, no_s3=no_s3)
-
         logger.info('v----------------------------------------------v')
         logger.info(' *************** Single Study *****************')
         logger.info(f" Geography = {geography_name}")
