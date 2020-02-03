@@ -70,6 +70,13 @@ def write_control_with_uniqueid(control_dict, control_name_prefix):
     return unique_control_name
 
 
+def write_progress_file(control_dict, control_name):
+    filepath = os.path.join(get_control_dir(), control_name + '.yaml')
+    with open(filepath, "w") as f:
+        yaml.safe_dump(control_dict, f, default_flow_style=False)
+    return control_name
+
+
 def parse_batch_spec(batch_spec_name, logger):
     """
 
@@ -139,6 +146,9 @@ def read_study_control_file(control_file_name):
                              'constraintshortname': model_dict['constraintshortname'],
                              'saved_name_for_this_study': saved_model_name_for_this_study}
 
+    # Study Unique ID
+    control_dict['study']['uuid'] = studyid + '-' + str(uuid.uuid4())
+
     # Experiments
     experiments = studydict['experiments']
     control_dict['experiments'] = experiments.copy()
@@ -149,7 +159,7 @@ def read_study_control_file(control_file_name):
 
     # Run log
     control_dict['code_version']: get_bayota_version()
-    control_dict['run_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+    control_dict['submission_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
 
     # Write (or replace existing) study control file with updated dictionary entries
     overwrite_control(control_file_name=control_file_name, control_dict=control_dict)

@@ -9,17 +9,20 @@ Example usage command:
 import os
 import sys
 import time
+import datetime
 from argparse import ArgumentParser
 
 from bayom_e.model_handling.interface import build_model
-from bayota_util.spec_and_control_handler import notdry, read_model_controlfile
+from bayota_util.spec_and_control_handler import notdry, read_model_controlfile, write_progress_file, \
+    write_control_with_uniqueid, read_control
 
 from bayom_e.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_instances_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import S3ops, get_workspace_from_s3, get_s3_modelinstancs_dir
+from bayota_util.s3_operations import S3ops, get_workspace_from_s3, get_s3_modelinstancs_dir, \
+    get_s3_control_dir, move_controlfile_to_s3
 
 
 def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') -> int:
@@ -44,6 +47,25 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
                                        also_logtoconsole=True,
                                        add_filehandler_if_already_exists=True,
                                        add_consolehandler_if_already_exists=False)
+
+    # Connection with S3 is established.
+    try:
+        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+    except EnvironmentError as e:
+        logger.info(e)
+        logger.info('trying again')
+        try:
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+        except EnvironmentError as e:
+            logger.info(e)
+
+    # The progress file is updated.
+    progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
+    progress_dict['run_timestamps']['step2_generatemodel_start'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+    progress_file_name = write_progress_file(control_dict, control_name=control_dict['study']['uuid'])
+    if not not s3_workspace_dir:
+        move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
+                               controlfile_name=progress_file_name, no_s3=False, )
 
     logger.info('----------------------------------------------')
     logger.info('************** Model Generation **************')
@@ -71,18 +93,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     logger.info(f"*model saved as pickle to {savepath}*")
 
     # Move the model to s3
-    if not not s3_workspace_dir:
-        logger.info(f"moving model pickle to s3")
-        try:
-            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-        except EnvironmentError as e:
-            logger.info(e)
-            logger.info('trying again')
-            try:
-                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-            except EnvironmentError as e:
-                logger.info(e)
-        move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
+    move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
 
     return 0  # a clean, no-issue, exit
 

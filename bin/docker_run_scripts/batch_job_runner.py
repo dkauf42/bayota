@@ -24,13 +24,14 @@ import os
 import sys
 import time
 import boto3
+import uuid
 import docker
 import datetime
 import subprocess
 from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
-    read_study_control_file, read_expcon_file, write_control_with_uniqueid
+    read_study_control_file, read_expcon_file, write_control_with_uniqueid, write_progress_file
 from bayota_settings.base import get_bayota_version, get_s3workspace_dir, \
     get_docker_image_name, get_spec_files_dir
 from bayota_settings.log_setup import root_logger_setup
@@ -117,7 +118,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
                         "study": studyspecdict, "control_options": control_options,
                         "code_version": version,
-                        "run_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
+                        "submission_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
         studycon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step1_studycon')
 
         # The local study control file is read....
@@ -129,6 +130,11 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         model_spec_name, \
         studyshortname, \
         studyid = read_study_control_file(studycon_name)
+        move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=studycon_name, no_s3=no_s3)
+
+        # ALso write a 'progress' file, which will be updated within the docker containers as the steps are run.
+        progress_file_name = write_progress_file(control_dict, control_name=control_dict['study']['uuid'])
+        move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=progress_file_name, no_s3=no_s3)
 
         logger.info('v----------------------------------------------v')
         logger.info(' *************** Single Study *****************')
@@ -137,7 +143,6 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         logger.info(f" Experiments = {experiments}")
         logger.info(f" Base_loading_file_name = {baseloadingfilename}")
         logger.info('^----------------------------------------------^')
-        move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=studycon_name, no_s3=no_s3)
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # To use AWS Batch, we submit the job with a job definition/queue specified.
@@ -246,7 +251,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                              'modification': modificationstr,
                                              'solutions_folder_name': expname}
                     control_dict['code_version']: version
-                    control_dict['run_timestamps']['step4_trial'] = datetime.datetime.today().strftime(
+                    control_dict['submission_timestamps']['step4_trial'] = datetime.datetime.today().strftime(
                         '%Y-%m-%d-%H:%M:%S')
                     trialcon_name = write_control_with_uniqueid(control_dict=control_dict,
                                                                 control_name_prefix='step4_trialcon')
