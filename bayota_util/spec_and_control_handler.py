@@ -159,7 +159,7 @@ def read_study_control_file(control_file_name):
 
     # Run log
     control_dict['code_version']: get_bayota_version()
-    control_dict['submission_timestamps']['step1_study'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+    control_dict['submission_timestamps'] = {'step1_study': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}
 
     # Write (or replace existing) study control file with updated dictionary entries
     overwrite_control(control_file_name=control_file_name, control_dict=control_dict)

@@ -117,8 +117,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         # "STUDYCON": A study control file w/unique identifier (uuid4) is created and written locally.
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
                         "study": studyspecdict, "control_options": control_options,
-                        "code_version": version,
-                        "submission_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
+                        "code_version": version}
         studycon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step1_studycon')
 
         # The local study control file is read....
