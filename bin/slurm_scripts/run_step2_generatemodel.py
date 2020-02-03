@@ -61,7 +61,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
 
     # The progress file is updated.
     progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
-    progress_dict['run_timestamps']['step2_generatemodel_start'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+    progress_dict['run_timestamps'] = {'step2_generatemodel_start': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}
     progress_file_name = write_progress_file(control_dict, control_name=control_dict['study']['uuid'])
     if not not s3_workspace_dir:
         move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
