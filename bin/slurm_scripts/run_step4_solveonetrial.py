@@ -16,7 +16,7 @@ import json
 import pyomo.environ as pyo
 
 from bayota_util.spec_and_control_handler import notdry, read_trialcon_file, \
-    write_control_with_uniqueid, read_control, write_progress_file
+    write_control_with_uniqueid, read_control, write_progress_file, get_control_dir
 from bayota_util.s3_operations import S3ops, get_workspace_from_s3, move_controlfile_to_s3, get_s3_control_dir
 from bayom_e.solver_handling.solvehandler import SolveHandler
 from bayom_e.solution_handling.ipopt_parser import IpoptParser
@@ -113,6 +113,13 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(), f"solution_{trial_name}_<timestamp>.csv")
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
+        # ---- Directory preparation ----
+        s3_destination_dir = s3_base_path + compact_geo_entity_str + '/' + objective_and_constraint_str + '/'
+        # Solutions directory is created if it doesn't exist.
+        solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
+        logger.debug(f"solutions_dir = {solutions_dir}")
+        os.makedirs(solutions_dir, exist_ok=True)
+
         solvehandler = SolveHandler()
 
         solver_log_file = os.path.join(get_logging_dir(), trial_logfilename + '_ipopt.log')
@@ -128,7 +135,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         logger_feasibility.info(f"<feasible: {solution_dict['feasible']}> for {modelname_full}_{trial_name}")
         logger_study.info(f"trial {trial_name} is DONE")
 
-        # The progress file is updated.
+        # The progress file is updated, then moved to output directory in s3.
         progress_dict = read_control(control_file_name=control_dict['study']['uuid'] + '-' + trialidstr)
         progress_dict['run_timestamps']['step4_trial_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
         iters, ipopt_time, regu, n_vars, n_ineq_constraints, n_eq_constraints = IpoptParser().quickparse(solver_log_file)
@@ -138,16 +145,17 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
                                                   'n_ineq_constraints': n_ineq_constraints,
                                                   'n_eq_constraints': n_eq_constraints}
         progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
-        if not not s3_workspace_dir:
-            move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
-                                   controlfile_name=progress_file_name, no_s3=False, )
+        return_code = s3ops.move_to_s3(local_path=os.path.join(get_control_dir(), progress_file_name + '.yaml'),
+                                       destination_path=f"{s3_destination_dir + progress_file_name + '.yaml'}")
+        logger.info(f"Move the progress file to s3 - exited with code <{return_code}>")
 
+        # Solver output is moved to s3 also.
         return_code = s3ops.move_to_s3(local_path=solver_log_file,
-                                       destination_path=f"{os.path.join(get_s3_control_dir(), trial_uuid + '_ipopt.log')}")
+                                       destination_path=f"{s3_destination_dir + trial_uuid + '_ipopt.log'}")
         logger.info(f"Move the solver log file to s3 - exited with code <{return_code}>")
 
         return_code = s3ops.move_to_s3(local_path=solver_iters_file,
-                                       destination_path=f"{os.path.join(get_s3_control_dir(), trial_uuid + '_ipopt.iters')}")
+                                       destination_path=f"{s3_destination_dir + trial_uuid + '_ipopt.iters'}")
         logger.info(f"Move the solver iters file to s3 - exited with code <{return_code}>")
 
         # Optimization objective value is added to the solution table.
@@ -171,11 +179,9 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         solution_dict['solution_df'][modvar] = varvalue
         # solution_dict['solution_df']['solution_mainconstraint_Percent_Reduction'] = pyo.value(mdlhandler.model.Percent_Reduction['N'].body)
 
+        # *********************
         # Solution is saved.
-        # Solutions directory is created if it doesn't exist.
-        solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
-        logger.debug(f"solutions_dir = {solutions_dir}")
-        os.makedirs(solutions_dir, exist_ok=True)
+        # *********************
 
         # Optimization solution table is written to file (uses comma-delimiter and .csv extention)
         solution_shortname = f"{trial_name}_{solution_dict['timestamp']}.csv"
@@ -185,8 +191,6 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
         logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
         logger_study.info(f"<trial {trial_name} - solution written to: {outputdfpath_bayotaformat}>")
-
-        s3_destination_dir = s3_base_path + compact_geo_entity_str + '/' + objective_and_constraint_str + '/'
 
         if move_solution_to_s3:
             return_code = s3ops.move_to_s3(local_path=outputdfpath_bayotaformat,
