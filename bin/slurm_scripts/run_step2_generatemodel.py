@@ -84,8 +84,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
 
     # Progress report is finalized with timestamp and saved.
-    progress_dict['run_timestamps'] = {'step2_generatemodel_done':
-                                       datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}
+    progress_dict['run_timestamps']['step2_generatemodel_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
     progress_file_name = write_progress_file(progress_dict, control_name=control_dict['study']['uuid'])
     if not not s3_workspace_dir:
         move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
