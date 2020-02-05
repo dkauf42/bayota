@@ -7,14 +7,16 @@ Example usage command:
 ================================================================================
 """
 import sys
+import datetime
 from argparse import ArgumentParser
 
-from bayota_util.spec_and_control_handler import notdry, read_expcon_file
+from bayota_util.spec_and_control_handler import notdry, read_expcon_file, read_control, write_progress_file
 from bayom_e.model_handling.utils import modify_model, save_model_pickle, load_model_pickle
 
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import get_workspace_from_s3
+from bayota_util.s3_operations import get_workspace_from_s3, establish_s3_connection, \
+    move_controlfile_to_s3, get_s3_control_dir
 
 logprefix = '** Modifying Model **: '
 
@@ -44,6 +46,13 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
                                        add_filehandler_if_already_exists=True,
                                        add_consolehandler_if_already_exists=False)
 
+    # Connection with S3 is established.
+    s3ops = establish_s3_connection(log_level, logger)
+
+    # Progress report is updated.
+    progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
+    progress_dict['run_timestamps']['step3b_expmodification_start'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+
     # The model is modified according to specified experiment set-up
     logger.info(f"{logprefix} {expname} - modification action list = {actionlist}")
     if notdry(dryrun, logger, '--Dryrun-- Would modify model with action <%s>' % actionlist):
@@ -59,6 +68,14 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
                 modify_model(my_model, actiondict=a)
 
             save_model_pickle(model=my_model, savepath=saved_model_file, dryrun=dryrun, logprefix=logprefix)
+
+    # Progress report is finalized with timestamp and saved.
+    progress_dict['run_timestamps']['step3b_expmodification_done'] = datetime.datetime.today().strftime(
+        '%Y-%m-%d-%H:%M:%S')
+    progress_file_name = write_progress_file(progress_dict, control_name=control_dict['experiment']['uuid'])
+    if not not s3_workspace_dir:
+        move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
+                               controlfile_name=progress_file_name, no_s3=False, )
 
 
 def parse_cli_arguments():

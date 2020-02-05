@@ -164,6 +164,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             expactiondict['id'] = expid
             control_dict['experiment'] = expactiondict
             control_dict['experiment_name'] = exp_spec_name
+            control_dict['experiment']['uuid'] = control_dict['study']['uuid'] + '_e' + expid
             expcon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step3_expcon')
 
             # The local experiment control file is read....
@@ -238,6 +239,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                              'trial_name': 'exp--' + expname + '--_modvar--' + modvar + '--_trial' + trialidstr,
                                              'modification': modificationstr,
                                              'solutions_folder_name': expname}
+                    control_dict['trial']['uuid'] = control_dict['experiment']['uuid'] + '_t' + trialidstr
                     control_dict['code_version']: version
                     control_dict['submission_timestamps']['step4_trial'] = datetime.datetime.today().strftime(
                         '%Y-%m-%d-%H:%M:%S')

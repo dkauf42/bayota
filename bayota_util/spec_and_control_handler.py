@@ -147,7 +147,7 @@ def read_study_control_file(control_file_name):
                              'saved_name_for_this_study': saved_model_name_for_this_study}
 
     # Study Unique ID
-    control_dict['study']['uuid'] = studyid + '-' + str(uuid.uuid4())
+    control_dict['study']['uuid'] = 's' + studyid + '-' + str(uuid.uuid4())
 
     # Experiments
     experiments = studydict['experiments']

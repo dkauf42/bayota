@@ -79,14 +79,10 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
     # Connection with S3 is established.
     s3ops = establish_s3_connection(log_level, logger)
 
-    # Progress report is started.
-    progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
+    # Progress report is updated.
+    progress_dict = read_control(control_file_name=control_dict['experiment']['uuid'])
     progress_dict['run_timestamps']['step4_trial_start'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-    trial_uuid = control_dict['study']['uuid'] + '-' + trialidstr
-    progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
-    if not not s3_workspace_dir:
-        move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
-                               controlfile_name=progress_file_name, no_s3=False, )
+    trial_uuid = control_dict['trial']['uuid']
 
     # *****************************
     # Make Model Modification(s)
@@ -130,7 +126,6 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         logger_study.info(f"trial {trial_name} is DONE")
 
         # The progress file is updated, then moved to output directory in s3.
-        progress_dict = read_control(control_file_name=control_dict['study']['uuid'] + '-' + trialidstr)
         progress_dict['run_timestamps']['step4_trial_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
         iters, ipopt_time, regu, n_vars, n_ineq_constraints, n_eq_constraints = IpoptParser().quickparse(solver_log_file)
         progress_dict['solve_characteristics'] = {'n_iterations': iters,
