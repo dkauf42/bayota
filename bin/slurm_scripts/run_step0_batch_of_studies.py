@@ -64,7 +64,7 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
                           f"--cpus-per-task={2} " \
                           f"--nodes={1} " \
                           f"--ntasks={32} " \
-                          f"--ntasks-per-node={16} " \
+                          f"--ntasks-per-node={32} " \
                           f"--output=slurm_job_{spname}_%j-%2t.out " \
                           f"--error=slurm_job_{spname}_%j-%2t.err " \
                           f"--time=12:00:00 "  # time requested in hour:minute:second
