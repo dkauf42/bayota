@@ -109,6 +109,7 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
                                      'trial_name': 'exp--' + expname + '--_modvar--' + modvar + '--_trial' + trialidstr,
                                      'modification': modificationstr,
                                      'solutions_folder_name': expname}
+            control_dict['trial']['uuid'] = control_dict['experiment']['uuid'] + '_t' + trialidstr
             control_dict['code_version']: version
             control_dict['run_timestamps']['step4_trial'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
             unique_control_name = write_control_with_uniqueid(control_dict=control_dict,

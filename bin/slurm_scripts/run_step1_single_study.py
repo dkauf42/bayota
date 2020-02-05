@@ -88,6 +88,7 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
         control_dict['experiment_name'] = exp_spec_name
         expactiondict['id'] = expid
         control_dict['experiment'] = expactiondict
+        control_dict['experiment']['uuid'] = control_dict['study']['uuid'] + '_e' + expid
         unique_control_name = write_control_with_uniqueid(control_dict=control_dict,
                                                           control_name_prefix='step3_expcon')
 
