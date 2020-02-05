@@ -35,12 +35,6 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
     # Specification file is read.
     geo_scale, study_pairs, control_options = parse_batch_spec(batch_spec_name, logger=logger)
 
-    # SLURM job submission parameters are specified.
-    NUM_NODES = 1
-    NUM_TASKS = 32
-    NUM_CORES = 32
-    PRIORITY = 5000
-
     # Study pairs (Geography, Model+Experiments) are submitted as SLURM "sbatch" jobs.
     for index, sp in enumerate(study_pairs):
         studyid = '{:04}'.format(index+1)
@@ -62,14 +56,15 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
         logger.debug(f"control file is {unique_control_name}")
 
         # A shell command is built for this job submission.
+        #     Each Node has 36 cpus.  We want to use 32 of them.  Each task ("trial") will be able to use 2 cpus.
         CMD = f"{single_study_script} -cn {unique_control_name} --log_level={log_level}"
         if not no_slurm:
             sbatch_opts = f"--job-name={spname} " \
-                          f"--nice={PRIORITY} " \
+                          f"--nice={5000} " \
                           f"--cpus-per-task={2} " \
-                          f"--nodes={NUM_NODES} " \
-                          f"--ntasks={NUM_TASKS} " \
-                          f"--ntasks-per-node={NUM_CORES} " \
+                          f"--nodes={1} " \
+                          f"--ntasks={32} " \
+                          f"--ntasks-per-node={16} " \
                           f"--output=slurm_job_{spname}_%j-%2t.out " \
                           f"--error=slurm_job_{spname}_%j-%2t.err " \
                           f"--time=12:00:00 "  # time requested in hour:minute:second
