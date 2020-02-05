@@ -210,24 +210,18 @@ class S3ops:
 
 
 if __name__ == '__main__':
-    s3ops = S3ops()
-    s3ops.cli(sys.argv[:])
+    s3ops_obj = S3ops()
+    s3ops_obj.cli(sys.argv[:])
 
 
 
 
 def get_workspace_from_s3(log_level, s3_workspace_dir):
     """ Workspace is copied in full from S3 """
-    try:
-        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-    except EnvironmentError as e:
-        print(e)
-        print('get_workspace_from_s3; trying again')
-        try:
-            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-        except EnvironmentError as e:
-            print(e)
-            raise e
+
+    # Connection with S3 is established.
+    s3ops = establish_s3_connection(log_level, logger=None)
+
     # Workspace is copied.
     s3ops.get_from_s3(s3path=s3_workspace_dir,
                       local_path=get_workspace_dir(),
@@ -267,3 +261,25 @@ def get_s3_modelinstancs_dir():
     relative_path_for_modelinstances_dir = os.path.relpath(get_model_instances_dir(), common_path)
     s3_modelinstances_dir = get_s3workspace_dir() + '/' + relative_path_for_modelinstances_dir + '/'
     return s3_modelinstances_dir
+
+
+def establish_s3_connection(log_level, logger=None):
+    s3ops = None
+    # Connection with S3 is established.
+    try:
+        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+    except EnvironmentError as e:
+        if not logger:
+            print(e)
+            print('trying again')
+        else:
+            logger.info(e)
+            logger.info('trying again')
+        try:
+            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
+        except EnvironmentError as e:
+            if not logger:
+                print(e)
+            else:
+                logger.info(e)
+    return s3ops

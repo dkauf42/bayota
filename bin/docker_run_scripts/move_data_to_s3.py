@@ -8,7 +8,7 @@ import sys
 from bayota_settings.base import get_bayota_version, get_workspace_dir, get_s3workspace_dir, \
     get_source_csvs_dir, get_raw_data_dir, get_metadata_csvs_dir
 from bayota_settings.log_setup import root_logger_setup
-from bayota_util.s3_operations import S3ops
+from bayota_util.s3_operations import establish_s3_connection
 
 
 def main(log_level='INFO') -> int:
@@ -35,17 +35,9 @@ def main(log_level='INFO') -> int:
     relative_path_for_rawdata_dir = os.path.relpath(get_raw_data_dir(), common_path)
     s3_rawdata_dir = get_s3workspace_dir() + '/' + relative_path_for_rawdata_dir + '/'
 
-    s3ops = None
-    try:
-        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-    except EnvironmentError as e:
-        logger.info(e)
-        logger.info('trying again')
-        try:
-            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-        except EnvironmentError as e:
-            logger.error(e)
-            raise e
+    # Connection with S3 is established.
+    s3ops = establish_s3_connection(log_level, logger)
+
     # Source CSV files are copied.
     logger.info(f"copying source csv files from {get_source_csvs_dir()} to the s3 location: {s3_sourcecsvs_dir}")
     s3ops.move_to_s3(local_path=get_source_csvs_dir(),

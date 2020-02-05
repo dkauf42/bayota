@@ -13,16 +13,15 @@ import datetime
 from argparse import ArgumentParser
 
 from bayom_e.model_handling.interface import build_model
-from bayota_util.spec_and_control_handler import notdry, read_model_controlfile, write_progress_file, \
-    write_control_with_uniqueid, read_control
+from bayota_util.spec_and_control_handler import notdry, read_model_controlfile, write_progress_file
 
 from bayom_e.model_handling.utils import save_model_pickle
 
 from bayota_settings.base import get_model_instances_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import S3ops, get_workspace_from_s3, get_s3_modelinstancs_dir, \
-    get_s3_control_dir, move_controlfile_to_s3
+from bayota_util.s3_operations import get_workspace_from_s3, get_s3_modelinstancs_dir, \
+    get_s3_control_dir, move_controlfile_to_s3, establish_s3_connection
 
 
 def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') -> int:
@@ -32,6 +31,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
         print('<< no s3 workspace directory provided. '
               'defaulting to using local workspace for run_step2_generatemodel.py >>')
 
+    # Control file is read.
     control_dict, \
     baseloadingfilename, \
     compact_geo_entity_str, \
@@ -41,25 +41,22 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     saved_model_name, \
     savedata2file = read_model_controlfile(control_file_name=control_file)
 
+    # Logging formats are set up.
     logger = set_up_detailedfilelogger(loggername=model_spec_name,
                                        filename=f"step2_modelgeneration_{compact_geo_entity_str}.log",
                                        level=log_level,
                                        also_logtoconsole=True,
                                        add_filehandler_if_already_exists=True,
                                        add_consolehandler_if_already_exists=False)
+    logger.info('----------------------------------------------')
+    logger.info('************** Model Generation **************')
+    logger.info(' geographies specification: %s' % geography_entity)
+    logger.info('----------------------------------------------')
 
     # Connection with S3 is established.
-    try:
-        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-    except EnvironmentError as e:
-        logger.info(e)
-        logger.info('trying again')
-        try:
-            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-        except EnvironmentError as e:
-            logger.info(e)
+    s3ops = establish_s3_connection(log_level, logger)
 
-    # A progress file is created.
+    # A progress report is started.
     progress_dict = control_dict.copy()
     progress_dict['run_timestamps'] = {'step2_generatemodel_start': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}
     progress_file_name = write_progress_file(progress_dict, control_name=control_dict['study']['uuid'])
@@ -67,12 +64,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
         move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
                                controlfile_name=progress_file_name, no_s3=False, )
 
-    logger.info('----------------------------------------------')
-    logger.info('************** Model Generation **************')
-    logger.info(' geographies specification: %s' % geography_entity)
-    logger.info('----------------------------------------------')
-
-    # Generate the model
+    # Model is generated.
     my_model = None
     if notdry(dryrun, logger, '--Dryrun-- Would generate model'):
         starttime_modelinstantiation = time.time()  # Wall time - clock starts.
@@ -85,14 +77,14 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
         timefor_modelinstantiation = time.time() - starttime_modelinstantiation  # Wall time - clock stops.
         logger.info('*model instantiation done* <- it took %f seconds>' % timefor_modelinstantiation)
 
-    # Save the model
+    # Model is saved.
     if not saved_model_name:
         saved_model_name = 'saved_instance.pickle'
     savepath = os.path.join(get_model_instances_dir(), saved_model_name)
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
     logger.info(f"*model saved as pickle to {savepath}*")
 
-    # Move the model to s3
+    # Model is moved to s3.
     move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
 
     return 0  # a clean, no-issue, exit

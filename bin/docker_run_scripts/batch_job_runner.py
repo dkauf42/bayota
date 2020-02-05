@@ -24,19 +24,19 @@ import os
 import sys
 import time
 import boto3
-import uuid
 import docker
 import datetime
 import subprocess
 from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
-    read_study_control_file, read_expcon_file, write_control_with_uniqueid, write_progress_file
+    read_study_control_file, read_expcon_file, write_control_with_uniqueid
 from bayota_settings.base import get_bayota_version, get_s3workspace_dir, \
     get_docker_image_name, get_spec_files_dir
 from bayota_settings.log_setup import root_logger_setup
 
-from bayota_util.s3_operations import S3ops, move_controlfile_to_s3, get_s3_control_dir, get_s3_specfiles_dir
+from bayota_util.s3_operations import move_controlfile_to_s3, get_s3_control_dir, get_s3_specfiles_dir, \
+    establish_s3_connection
 
 batch = boto3.client('batch', region_name='us-east-1')
 
@@ -47,6 +47,7 @@ docker_image = get_docker_image_name()
 def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level='INFO') -> int:
     starttime = time.time()
 
+    # Logging formats are set up.
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
     logger.debug(locals())
 
@@ -79,16 +80,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
 
     s3ops = None
     if not no_s3:
-        try:
-            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-        except EnvironmentError as e:
-            logger.info(e)
-            logger.info('trying again')
-            try:
-                s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-            except EnvironmentError as e:
-                logger.error(e)
-                raise e
+        s3ops = establish_s3_connection(log_level, logger)
+
         # Specification files are copied.
         logger.info(f"copying specification files from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
         s3ops.move_to_s3(local_path=get_spec_files_dir(),

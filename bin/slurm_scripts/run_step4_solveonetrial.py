@@ -16,8 +16,9 @@ import json
 import pyomo.environ as pyo
 
 from bayota_util.spec_and_control_handler import notdry, read_trialcon_file, \
-    write_control_with_uniqueid, read_control, write_progress_file, get_control_dir
-from bayota_util.s3_operations import S3ops, get_workspace_from_s3, move_controlfile_to_s3, get_s3_control_dir
+    read_control, write_progress_file, get_control_dir
+from bayota_util.s3_operations import get_workspace_from_s3, move_controlfile_to_s3, get_s3_control_dir, \
+    establish_s3_connection
 from bayom_e.solver_handling.solvehandler import SolveHandler
 from bayom_e.solution_handling.ipopt_parser import IpoptParser
 
@@ -36,6 +37,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         print('<< no s3 workspace directory provided. '
               'defaulting to using local workspace for run_step2_generatemodel.py >>')
 
+    # Control file is read.
     control_dict, \
     compact_geo_entity_str, \
     expid, \
@@ -52,6 +54,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
     trial_name, \
     trialidstr = read_trialcon_file(control_file_name=control_file)
 
+    # Logging formats are set up.
     trial_logfilename = f"bayota_step4_s{studyid}_e{expid}_t{trialidstr}_{compact_geo_entity_str}"
     logger = set_up_detailedfilelogger(loggername=trial_name,  # same name as module, so logger is shared
                                        filename=trial_logfilename + '.log',
@@ -71,21 +74,12 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
                                                    also_logtoconsole=True,
                                                    add_filehandler_if_already_exists=False,
                                                    add_consolehandler_if_already_exists=False)
-
     logger.debug(f"control file being used is: {control_file}")
 
     # Connection with S3 is established.
-    try:
-        s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-    except EnvironmentError as e:
-        logger.info(e)
-        logger.info('trying again')
-        try:
-            s3ops = S3ops(bucketname='modeling-data.chesapeakebay.net', log_level=log_level)
-        except EnvironmentError as e:
-            logger.info(e)
+    s3ops = establish_s3_connection(log_level, logger)
 
-    # The progress file is updated.
+    # Progress report is started.
     progress_dict = read_control(control_file_name=control_dict['study']['uuid'])
     progress_dict['run_timestamps']['step4_trial_start'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
     trial_uuid = control_dict['study']['uuid'] + '-' + trialidstr
