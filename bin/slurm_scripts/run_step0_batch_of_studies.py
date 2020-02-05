@@ -66,7 +66,7 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
         if not no_slurm:
             sbatch_opts = f"--job-name={spname} " \
                           f"--nice={PRIORITY} " \
-                          f"--cpus-per-task={1} " \
+                          f"--cpus-per-task={2} " \
                           f"--nodes={NUM_NODES} " \
                           f"--ntasks={NUM_TASKS} " \
                           f"--ntasks-per-node={NUM_CORES} " \
