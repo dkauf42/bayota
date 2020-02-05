@@ -27,6 +27,7 @@ solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py
 def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     version = get_bayota_version()
 
+    # Control file is read.
     control_dict, \
     actionlist, \
     compact_geo_entity_str, \
@@ -36,6 +37,7 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     saved_model_file, \
     studyid = read_expcon_file(control_file)
 
+    # Logging formats are set up.
     logger = set_up_detailedfilelogger(loggername=expname,  # same name as module, so logger is shared
                                        filename=f"step3_s{studyid}_e{expid}_{compact_geo_entity_str}.log",
                                        level=log_level,

@@ -22,6 +22,7 @@ single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py
 
 
 def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int:
+    # Logging formats are set up.
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
     logger.debug(locals())
 

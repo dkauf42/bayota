@@ -26,6 +26,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
         print('<< no s3 workspace directory provided. '
               'defaulting to using local workspace for run_step2_generatemodel.py >>')
 
+    # Control file is read.
     control_dict, \
     actionlist, \
     compact_geo_entity_str, \
@@ -35,6 +36,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
     saved_model_file, \
     studyid = read_expcon_file(control_file)
 
+    # Logging formats are set up.
     logger = set_up_detailedfilelogger(loggername=expname,  # same name as module, so logger is shared
                                        filename=f"step3_s{studyid}_e{expid}_{compact_geo_entity_str}.log",
                                        level=log_level,
