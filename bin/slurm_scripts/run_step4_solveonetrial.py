@@ -134,18 +134,19 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
                                                   'n_ineq_constraints': n_ineq_constraints,
                                                   'n_eq_constraints': n_eq_constraints}
         progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
-        return_code = s3ops.move_to_s3(local_path=os.path.join(get_control_dir(), progress_file_name + '.yaml'),
-                                       destination_path=f"{s3_destination_dir + progress_file_name + '.yaml'}")
-        logger.info(f"Move the progress file to s3 - exited with code <{return_code}>")
 
-        # Solver output is moved to s3 also.
-        return_code = s3ops.move_to_s3(local_path=solver_log_file,
-                                       destination_path=f"{s3_destination_dir + trial_uuid + '_ipopt.log'}")
-        logger.info(f"Move the solver log file to s3 - exited with code <{return_code}>")
-
-        return_code = s3ops.move_to_s3(local_path=solver_iters_file,
-                                       destination_path=f"{s3_destination_dir + trial_uuid + '_ipopt.iters'}")
-        logger.info(f"Move the solver iters file to s3 - exited with code <{return_code}>")
+        if not not s3_workspace_dir:
+            # Progress file is moved to s3.
+            return_code = s3ops.move_to_s3(local_path=os.path.join(get_control_dir(), progress_file_name + '.yaml'),
+                                           destination_path=f"{s3_destination_dir + progress_file_name + '.yaml'}")
+            logger.info(f"Move the progress file to s3 - exited with code <{return_code}>")
+            # Solver output is moved to s3 also.
+            return_code = s3ops.move_to_s3(local_path=solver_log_file,
+                                           destination_path=f"{s3_destination_dir + trial_uuid + '_ipopt.log'}")
+            logger.info(f"Move the solver log file to s3 - exited with code <{return_code}>")
+            return_code = s3ops.move_to_s3(local_path=solver_iters_file,
+                                           destination_path=f"{s3_destination_dir + trial_uuid + '_ipopt.iters'}")
+            logger.info(f"Move the solver iters file to s3 - exited with code <{return_code}>")
 
         # Optimization objective value is added to the solution table.
         ii = 0

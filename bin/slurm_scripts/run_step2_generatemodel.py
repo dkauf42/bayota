@@ -80,8 +80,9 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
     logger.info(f"*model saved as pickle to {savepath}*")
 
-    # Model is moved to s3.
-    move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
+    if not not s3_workspace_dir:
+        # Model is moved to s3.
+        move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
 
     # Progress report is finalized with timestamp and saved.
     progress_dict['run_timestamps']['step2_generatemodel_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
