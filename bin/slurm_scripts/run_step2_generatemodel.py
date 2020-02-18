@@ -77,8 +77,9 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     if not saved_model_name:
         saved_model_name = 'saved_instance.pickle'
     savepath = os.path.join(get_model_instances_dir(), saved_model_name)
+    logger.debug(f"*saving model as pickle to {savepath}*")
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
-    logger.info(f"*model saved as pickle to {savepath}*")
+    logger.debug(f"*model saved*")
 
     if not not s3_workspace_dir:
         # Model is moved to s3.
