@@ -91,7 +91,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     if not not s3_workspace_dir:
         move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
                                controlfile_name=progress_file_name, no_s3=False, )
-
+    logger.debug(f"*model generation done*")
     return 0  # a clean, no-issue, exit
 
 
