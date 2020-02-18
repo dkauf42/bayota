@@ -103,6 +103,7 @@ def create_workspace_directory_and_set_up_user_config_files(verbose=True):
     if verbose:
         print('bayota_settings.base(): ws_dir = %s' % ws_dir)
     os.makedirs(ws_dir, exist_ok=True)
+    os.chmod(ws_dir, 0o774)
 
     _ensure_user_config_file_exists_with_current_version_number()
     _create_file_in_config_dir_if_doesnt_exist(file_path=bash_config, example_file=example_bash_config)
