@@ -148,7 +148,7 @@ class S3ops:
                         self.s3.upload_file(Key=s3_path, Bucket=self.bucketname, Filename=local_file)
 
         else:
-            self.logger.info("Uploading %s..." % destination_path)
+            self.logger.info(f"Uploading local file:{local_path}> to destination:{destination_path}")
             # Upload a file
             self.s3.upload_file(Key=destination_path,  # The name of the key to upload to.
                                 Bucket=self.bucketname,  # The name of the bucket to upload to.
