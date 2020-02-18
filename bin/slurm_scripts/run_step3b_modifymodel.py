@@ -77,6 +77,8 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
         move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
                                controlfile_name=progress_file_name, no_s3=False, )
 
+    return 0  # a clean, no-issue, exit
+
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
