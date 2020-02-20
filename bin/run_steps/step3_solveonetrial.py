@@ -17,7 +17,8 @@ import pyomo.environ as pyo
 
 from bayota_util.spec_and_control_handler import notdry, read_trialcon_file, \
     read_control, write_progress_file, get_control_dir
-from bayota_util.s3_operations import pull_entire_workspace_from_s3, establish_s3_connection
+from bayota_util.s3_operations import establish_s3_connection, pull_control_dir_from_s3, \
+    pull_data_dir_from_s3, pull_model_instance_from_s3
 from bayom_e.solver_handling.solvehandler import SolveHandler
 from bayom_e.solution_handling.ipopt_parser import IpoptParser
 
@@ -31,10 +32,11 @@ logprefix = '** Single Trial **: '
 
 def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
     if use_s3_ws:
-        pull_entire_workspace_from_s3(log_level)
-    else:
-        print('<< no s3 workspace directory provided. '
-              'defaulting to using local workspace for step1_generatemodel.py >>')
+        # Connection with S3 is established.
+        s3ops = establish_s3_connection(log_level, logger=None)
+        # Required workspace directories are pulled from S3
+        pull_control_dir_from_s3(log_level=log_level, s3ops=s3ops)
+        pull_data_dir_from_s3(log_level=log_level, s3ops=s3ops)
 
     # Control file is read.
     control_dict, \
@@ -75,8 +77,9 @@ def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
                                                    add_consolehandler_if_already_exists=False)
     logger.debug(f"control file being used is: {control_file}")
 
-    # Connection with S3 is established.
-    s3ops = establish_s3_connection(log_level, logger)
+    # If using s3, pull saved model instance from bucket
+    if use_s3_ws:
+        pull_model_instance_from_s3(log_level=log_level, model_instance_name=saved_model_file, s3ops=s3ops)
 
     # Progress report is updated.
     progress_dict = read_control(control_file_name=control_dict['experiment']['uuid'])

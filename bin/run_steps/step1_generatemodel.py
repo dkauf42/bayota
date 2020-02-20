@@ -20,21 +20,17 @@ from bayom_e.model_handling.utils import save_model_pickle
 from bayota_settings.base import get_model_instances_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import pull_entire_workspace_from_s3, \
-    move_controlfile_to_s3, establish_s3_connection, pull_workspace_dir_from_s3
+from bayota_util.s3_operations import establish_s3_connection, pull_control_dir_from_s3, pull_data_dir_from_s3, \
+    move_controlfile_to_s3
 
 
 def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
     if use_s3_ws:
-        # We needs control dir and data dir. Is that it?
-        pull_entire_workspace_from_s3(log_level)
-
-        # pull_workspace_dir_from_s3(log_level='INFO',
-        #                            s3_workspace_dir=s3_workspace_dir + '/control',
-        #                            local_dir=get_workspace_dir())
-    else:
-        print('<< no s3 workspace directory provided. '
-              'defaulting to using local workspace for step1_generatemodel.py >>')
+        # Connection with S3 is established.
+        s3ops = establish_s3_connection(log_level, logger=None)
+        # Required workspace directories are pulled from S3
+        pull_control_dir_from_s3(log_level=log_level, s3ops=s3ops)
+        pull_data_dir_from_s3(log_level=log_level, s3ops=s3ops)
 
     # Control file is read.
     control_dict, \
