@@ -3,7 +3,7 @@
 Note: No SLURM commands are submitted within this script.
 
 Example usage command:
-  >> ./bin/slurm_scripts/run_step4_solveonetrial.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step4_trial_control_2bd8452b-2560-48f6-8e36-a03cfa31e0e9.yaml
+  >> ./bin/run_steps/step3_solveonetrial.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step4_trial_control_2bd8452b-2560-48f6-8e36-a03cfa31e0e9.yaml
 ================================================================================
 """
 
@@ -35,7 +35,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
         get_workspace_from_s3(log_level, s3_workspace_dir)
     else:
         print('<< no s3 workspace directory provided. '
-              'defaulting to using local workspace for run_step2_generatemodel.py >>')
+              'defaulting to using local workspace for step1_generatemodel.py >>')
 
     # Control file is read.
     control_dict, \

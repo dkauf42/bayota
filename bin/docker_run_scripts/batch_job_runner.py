@@ -3,14 +3,14 @@
 This submits Docker CMDs to launch the model generation, experiments, and trials.
 
 (This takes the place of:
-  - run_step0_batch_of_studies.py
-  - run_step1_single_study.py
-  - and part of run_step3_conductexperiment.py)
+  - slurm_batch_runner.py
+  - slurm_batch_subrunner1_study.py
+  - and part of slurm_batch_subrunner2_experiment.py)
 
 It calls the following subordinate scripts to be run in the docker container:
-A model_generator_script: "run_step2_generatemodel.py"
-A modify_model_script: "run_step3b_modifymodel.py"
-A solve_trial_script: "run_step4_solveonetrial.py"
+A model_generator_script: "step1_generatemodel.py"
+A modify_model_script: "step2_modifymodel.py"
+A solve_trial_script: "step3_solveonetrial.py"
 
 Example usage command:
   >> ./bin/docker_run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
@@ -60,13 +60,13 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
 
     # Script locations in the docker image
     if no_docker:
-        model_generator_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step2_generatemodel.py'
-        modify_model_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step3b_modifymodel.py'
-        solve_trial_script = '${BAYOTA_HOME}/bin/slurm_scripts/run_step4_solveonetrial.py'
+        model_generator_script = '${BAYOTA_HOME}/bin/run_steps/step1_generatemodel.py'
+        modify_model_script = '${BAYOTA_HOME}/bin/run_steps/step2_modifymodel.py'
+        solve_trial_script = '${BAYOTA_HOME}/bin/run_steps/step3_solveonetrial.py'
     else:
-        model_generator_script = '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py'
-        modify_model_script = '/root/bayota/bin/slurm_scripts/run_step3b_modifymodel.py'
-        solve_trial_script = '/root/bayota/bin/slurm_scripts/run_step4_solveonetrial.py'
+        model_generator_script = '/root/bayota/bin/run_steps/step1_generatemodel.py'
+        modify_model_script = '/root/bayota/bin/run_steps/step2_modifymodel.py'
+        solve_trial_script = '/root/bayota/bin/run_steps/step3_solveonetrial.py'
 
     """ Batch specification file is read. """
     geo_scale, study_pairs, control_options = parse_batch_spec(batch_spec_file, logger=logger)

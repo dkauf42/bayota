@@ -127,15 +127,6 @@ class SolveHandler:
             output_file_name = solveritersfile
             ipopt_log_file = solverlogfile
 
-        # ---- MODIFY IPOPT OPTIONS ----
-        modify_ipopt_options(options_file_path, newoutputfilepath=output_file_name)
-        # file_print_levels (Output Level-of-Detail):
-        #   4 for just # of iterations, and final objective, infeas,etc. values
-        #   6 for summary information about all iterations, but not variable values
-        #   8 for variable values at all iterations
-        #   10 for all iterations
-        modify_ipopt_options(options_file_path, newfileprintlevel=fileprintlevel)
-
         # ---- SOLVE ----
         get_suffixes = False
         solved_instance, solved_results, feasible = solve(localsolver,
@@ -241,6 +232,11 @@ def solve(localsolver, solvername, instance,
         solver = SolverFactory(solvername)
 
         # Configure with solver options
+        # file_print_levels (Output Level-of-Detail):
+        #   4 for just # of iterations, and final objective, infeas,etc. values
+        #   6 for summary information about all iterations, but not variable values
+        #   8 for variable values at all iterations
+        #   10 for all iterations
         if solver_options:
             for k, v in solver_options.items():
                 solver.options[k] = v
@@ -336,91 +332,6 @@ def get_solver_paths(solvername):
         logger.debug('Solver_Path====%s' % options_file_path)
 
     return solver_path, options_file_path
-
-
-def modify_ipopt_options(options_file_path, newoutputfilepath='', newfileprintlevel=None, mumps_mem_percent=None):
-    rx_kv = re.compile(r'''^(?P<key>[\w._]+)\s(?P<value>[^\s]+)''')
-
-    def _parse_line(string):
-        """
-        Do a regex search against all defined regexes and
-        return the key and match result of the first matching regex
-
-        """
-        iterator = rx_kv.finditer(string)
-
-        row = None
-        for match in iterator:
-            if match:
-                row = {'key': match.group('key'),
-                       'value': match.group('value')
-                       }
-
-        return row
-
-    if not options_file_path:
-        raise FileNotFoundError('IPOPT options file path is not specified (should be on sys PATH)')
-
-    # Create temporary file read/write
-    with tempfile.NamedTemporaryFile(mode='w+') as t:
-        # Open input file read-only
-        anyfilechange = False
-        with open(options_file_path, 'r') as f:
-            line = f.readline()
-            while line:
-                parsed = _parse_line(line)
-                if parsed:
-                    if parsed['key'] == 'output_file':
-                        if not not newoutputfilepath:
-                            line = line.replace(parsed['value'], newoutputfilepath)
-                            if not anyfilechange:
-                                anyfilechange = True
-                    if parsed['key'] == 'file_print_level':
-                        if not not newfileprintlevel:
-                            line = line.replace(parsed['value'], str(newfileprintlevel))
-                            if not anyfilechange:
-                                anyfilechange = True
-                    if parsed['key'] == 'mumps_mem_percent':
-                        if not not mumps_mem_percent:
-                            line = line.replace(parsed['value'], str(mumps_mem_percent))
-                            if not anyfilechange:
-                                anyfilechange = True
-                # Copy input file to temporary file, modifying as we go
-                t.write(line.rstrip() + "\n")
-                line = f.readline()
-        t.seek(0)  # Rewind temporary file to beginning
-
-        # Check that there was a difference before modifying file
-        if anyfilechange:
-            with open(options_file_path, 'w') as f:  # Reopen input file writable
-                # Overwriting original file with temporary file contents
-                for line in t:
-                    f.write(line)
-        # Close temporary file, will cause it to be deleted
-
-    # for line in fileinput.FileInput(options_file_path, inplace=1):
-    #     parsed = _parse_line(line)
-    #     if parsed:
-    #         if parsed['key'] == 'output_file':
-    #             if not not newoutputfilepath:
-    #                 line = line.replace(parsed['value'], newoutputfilepath)
-    #         if parsed['key'] == 'file_print_level':
-    #             if not not newfileprintlevel:
-    #                 line = line.replace(parsed['value'], str(newfileprintlevel))
-    #     sys.stdout.write(line)
-
-    # # Check the contents are different before trying to modify
-    # with open(options_file_path, 'r') as f:
-    #     line = f.readline()
-    #     cnt = 1
-    #     while line:
-    #         parsed = _parse_line(line)
-    #         cnt += 1
-    #
-    # if any([key in content for key in wordDict.keys()]):  # check if old strings are found
-    #     with fileinput.FileInput(filename, inplace=True, backup='.bak') as file:
-    #         for line in file:
-    #             print(multipleReplace(line, myDict), end='')
 
 
 def solve_problem_instance(modelhandler, mdl, randomstart=False, output_file_str='', fileprintlevel=4):

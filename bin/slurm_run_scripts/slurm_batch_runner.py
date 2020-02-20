@@ -4,7 +4,7 @@ Note: This submits a SLURM "sbatch" command to launch the 'step1_single_study' s
       if CLI argument '--no_slurm' is not passed.
 
 Example usage command:
-  >> ./bin/slurm_scripts/run_step0_batch_of_studies.py --dryrun -n maryland_counties
+  >> ./bin/slurm_run_scripts/slurm_batch_runner.py --dryrun -n maryland_counties
 ================================================================================
 """
 
@@ -15,10 +15,10 @@ import subprocess
 from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import notdry, parse_batch_spec, write_control_with_uniqueid
-from bayota_settings.base import get_bayota_version, get_scripts_dir
+from bayota_settings.base import get_bayota_version, get_slurm_scripts_dir
 from bayota_settings.log_setup import root_logger_setup
 
-single_study_script = os.path.join(get_scripts_dir(), 'run_step1_single_study.py')
+single_study_script = os.path.join(get_slurm_scripts_dir(), 'slurm_batch_subrunner1_study.py')
 
 
 def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int:

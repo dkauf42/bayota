@@ -47,7 +47,8 @@ class DataHandlerBase:
 
     """
     def __init__(self, save2file=True, geolist=None, baseloadingfilename='',
-                 landchangemodelscenario='Historic Trends', baseyear='2010'):
+                 landchangemodelscenario='Historic Trends', baseyear='2010',
+                 ImpBmpScenarioId=None):
         self._geolist = geolist
 
         logger.debug(locals())
@@ -597,14 +598,14 @@ class DataHandlerBase:
                        'acres']].to_csv(os.path.join(self.instdatadir, 'data_alpha.tab'), sep=' ', index=False,
                                         header=['LRSEGS', 'LOADSRCS', 'AGENCIES', 'alpha'])
 
-    def _load_already_implemented_bmps_in_a_given_scenario(self, ImpBmpSubmittedLand,
+    def _load_already_implemented_bmps_in_a_given_scenario(self, ImpBmpSubmittedLand, ImpBmpScenarioId,
                                                            TblGeography, TblGeographyType,
                                                            TblGeographyLrSeg, TblLandRiverSegment):
         """ Implemented BMPs and their acreages
         """
         # TODO: Make this method work
         # Grab the implementation amounts for the desired scenario
-        impBmp_df = ImpBmpSubmittedLand[ImpBmpSubmittedLand['scenarioid'] == scenarioid]
+        impBmp_df = ImpBmpSubmittedLand[ImpBmpSubmittedLand['scenarioid'] == ImpBmpScenarioId]
         """ columns in this dataframe include:
             ['ScenarioId', 'BmpSubmittedId', 'StateUniqueIdentifier', 'AgencyCode',
              'StateAbbreviation', 'BmpShortname', 'GeographyName', 'LoadSourceGroup',
@@ -614,6 +615,9 @@ class DataHandlerBase:
 
         # get the values for the specified geographies (go from 'GeographyName' to 'landriversegments'
         impBmp_df = impBmp_df.merge(...)
+
+
+
 
         # get the values for only the efficiency BMPs
         """ probably will need to use one of these:

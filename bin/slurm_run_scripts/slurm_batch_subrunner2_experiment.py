@@ -4,7 +4,7 @@ Note: This submits a SLURM "srun" command to launch the 'step4_solveonetrial' sc
       if CLI argument '--no_slurm' is not passed.
 
 Example usage command:
-  >> ./bin/slurm_scripts/run_step3_conductexperiment.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step3_experiment_control_b940a328-bf05-4bc0-94e0-bb166eb5880a.yaml
+  >> ./bin/slurm_run_scripts/slurm_batch_subrunner2_experiment.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step3_experiment_control_b940a328-bf05-4bc0-94e0-bb166eb5880a.yaml
 ================================================================================
 """
 import os
@@ -15,13 +15,13 @@ from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import notdry, read_expcon_file, write_control_with_uniqueid
 
-from bayota_settings.base import get_scripts_dir, get_bayota_version
+from bayota_settings.base import get_bayota_version, get_run_steps_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 logprefix = '** Single Experiment **: '
 
-modify_model_script = os.path.join(get_scripts_dir(), 'run_step3b_modifymodel.py')
-solve_trial_script = os.path.join(get_scripts_dir(), 'run_step4_solveonetrial.py')
+modify_model_script = os.path.join(get_run_steps_dir(), 'step2_modifymodel.py')
+solve_trial_script = os.path.join(get_run_steps_dir(), 'step3_solveonetrial.py')
 
 
 def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:

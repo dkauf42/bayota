@@ -3,7 +3,7 @@
 Note: No SLURM commands are submitted within this script.
 
 Example usage command:
-  >> ./bin/slurm_scripts/run_step3b_modifymodel.py
+  >> ./bin/run_steps/step2_modifymodel.py
 ================================================================================
 """
 import sys
@@ -26,7 +26,7 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
         get_workspace_from_s3(log_level, s3_workspace_dir)
     else:
         print('<< no s3 workspace directory provided. '
-              'defaulting to using local workspace for run_step2_generatemodel.py >>')
+              'defaulting to using local workspace for step1_generatemodel.py >>')
 
     # Control file is read.
     control_dict, \

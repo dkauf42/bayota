@@ -4,7 +4,7 @@ Note: This submits a SLURM "srun" command to launch the 'step2_generatemodel' sc
       if CLI argument '--no_slurm' is not passed.
 
 Example usage command:
-  >> ./bin/slurm_scripts/run_step1_single_study.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938.yaml
+  >> ./bin/slurm_run_scripts/slurm_batch_subrunner1_study.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938.yaml
 ================================================================================
 """
 
@@ -15,13 +15,13 @@ from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, read_study_control_file, write_control_with_uniqueid
 
-from bayota_settings.base import get_output_dir, get_scripts_dir
+from bayota_settings.base import get_output_dir, get_slurm_scripts_dir, get_run_steps_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 outdir = get_output_dir()
 
-model_generator_script = os.path.join(get_scripts_dir(), 'run_step2_generatemodel.py')
-experiment_script = os.path.join(get_scripts_dir(), 'run_step3_conductexperiment.py')
+model_generator_script = os.path.join(get_run_steps_dir(), 'step1_generatemodel.py')
+experiment_script = os.path.join(get_slurm_scripts_dir(), 'slurm_batch_subrunner2_experiment.py')
 
 
 def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:

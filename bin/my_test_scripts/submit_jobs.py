@@ -35,7 +35,7 @@ def main():
                         jobQueue='Modeling',
                         jobDefinition='Modeling-Bayota:6',
                         containerOverrides={
-                            "command": ['python', '/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py', '-cn' , 'step1_studycon1d6c68f6-326c-4487-8d85-5c5113f67bd7' , '--s3workspace', 'optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'], 
+                            "command": ['python', '/root/bayota/bin/run_steps/step1_generatemodel.py', '-cn' , 'step1_studycon1d6c68f6-326c-4487-8d85-5c5113f67bd7' , '--s3workspace', 'optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'],
                         })
     print("Job ID is {}.".format(response['jobId']))
 
@@ -49,7 +49,7 @@ def main():
                         ],
                         jobDefinition='Modeling-Bayota:6',
                         containerOverrides={
-                            "command": ['python', '/root/bayota/bin/slurm_scripts/run_step3b_modifymodel.py', '-cn' , 'step3_expcon70ab6881-1c51-4f03-bcf2-fdef72e5662d' , '--s3workspace','optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'], 
+                            "command": ['python', '/root/bayota/bin/run_steps/step2_modifymodel.py', '-cn' , 'step3_expcon70ab6881-1c51-4f03-bcf2-fdef72e5662d' , '--s3workspace','optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'],
                         })
     print("Job ID is {}.".format(response2['jobId']))
 
@@ -63,7 +63,7 @@ def main():
                         ],
                         jobDefinition='Modeling-Bayota:6',
                         containerOverrides={
-                            "command": ['python', '/root/bayota/bin/slurm_scripts/run_step4_solveonetrial.py', '-cn' , 'step4_trialcon2534e7f9-9e4b-4544-b351-4fe231bb4f0a' , '--s3workspace','optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'], 
+                            "command": ['python', '/root/bayota/bin/run_steps/step3_solveonetrial.py', '-cn' , 'step4_trialcon2534e7f9-9e4b-4544-b351-4fe231bb4f0a' , '--s3workspace','optimization/ws_copies/bayota_ws_0.1b2','--log_level=INFO'],
                         })
     print("Job ID is {}.".format(response3['jobId']))
 

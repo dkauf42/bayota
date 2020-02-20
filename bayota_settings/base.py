@@ -137,8 +137,10 @@ def get_raw_data_dir() -> str:
     return rawdatadir
 def get_output_dir() -> str:
     return _make_or_get_user_dir('output_directories', 'general')
-def get_scripts_dir() -> str:
-    return _make_or_get_user_dir('top_paths', 'scripts')
+def get_slurm_scripts_dir() -> str:
+    return _make_or_get_user_dir('top_paths', 'slurm_scripts')
+def get_run_steps_dir() -> str:
+    return _make_or_get_user_dir('top_paths', 'run_steps')
 def get_control_dir() -> str:
     return _make_or_get_user_dir('workspace_directories', 'control')
 def get_logging_dir() -> str:

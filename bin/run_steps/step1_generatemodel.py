@@ -2,7 +2,7 @@
 """
 
 Example usage command:
-  >> ./bin/slurm_scripts/run_step2_generatemodel.py --dryrun -cn step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938
+  >> ./bin/slurm_run_scripts/step1_generatemodel.py --dryrun -cn step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938
 ================================================================================
 """
 
@@ -29,7 +29,7 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
         get_workspace_from_s3(log_level, s3_workspace_dir)
     else:
         print('<< no s3 workspace directory provided. '
-              'defaulting to using local workspace for run_step2_generatemodel.py >>')
+              'defaulting to using local workspace for step1_generatemodel.py >>')
 
     # Control file is read.
     control_dict, \
