@@ -30,8 +30,7 @@ import requests
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_settings.base import get_workspace_dir, get_control_dir, get_spec_files_dir, \
-    get_model_instances_dir
+from bayota_settings.base import get_workspace_dir, get_control_dir, get_data_dir, get_model_instances_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 
@@ -73,6 +72,8 @@ class S3ops:
             verbose:
 
         Returns:
+
+        Note: TODO: Determine and clarify in comments in which cases this will or will not overwrite local files.
 
         Example:
             >>> S3ops.get_from_s3(s3path='data_dir/subfolder', local_path='/modeling/local_dir')
@@ -226,16 +227,40 @@ def pull_entire_workspace_from_s3(log_level):
     print(f"copied s3 workspace from {s3path} to local location: {local_path}")
 
 
-def pull_workspace_dir_from_s3(log_level, s3_workspace_dir, local_dir):
-    """ Workspace is copied in full from S3 """
-    # Connection with S3 is established.
-    s3ops = establish_s3_connection(log_level, logger=None)
+def pull_control_dir_from_s3(log_level, s3ops=None):
+    if not s3ops:
+        # Connection with S3 is established.
+        s3ops = establish_s3_connection(log_level, logger=None)
 
     # Directory is copied.
-    s3path = s3_workspace_dir
-    local_path = local_dir
+    s3path = get_control_dir(s3=True)
+    local_path = get_control_dir(s3=False)
     s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
-    print(f"copied s3 location: {s3path} to local location: {local_path}")
+    print(f"copied workspace control directory from {s3path} to local location: {local_path}")
+
+
+def pull_data_dir_from_s3(log_level, s3ops=None):
+    if not s3ops:
+        # Connection with S3 is established.
+        s3ops = establish_s3_connection(log_level, logger=None)
+
+    # Directory is copied.
+    s3path = get_data_dir(s3=True)
+    local_path = get_data_dir(s3=False)
+    s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
+    print(f"copied workspace control directory from {s3path} to local location: {local_path}")
+
+
+def pull_model_instance_from_s3(log_level, model_instance_name, s3ops=None):
+    if not s3ops:
+        # Connection with S3 is established.
+        s3ops = establish_s3_connection(log_level, logger=None)
+
+    # File is copied.
+    s3path = get_model_instances_dir(s3=True) + model_instance_name
+    local_path = get_model_instances_dir(s3=False) + model_instance_name
+    s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
+    print(f"copied workspace control directory from {s3path} to local location: {local_path}")
 
 
 def move_controlfile_to_s3(logger, s3ops, controlfile_name, no_s3=False):
