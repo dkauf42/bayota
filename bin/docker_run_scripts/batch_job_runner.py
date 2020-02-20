@@ -31,12 +31,10 @@ from argparse import ArgumentParser
 
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
     read_study_control_file, read_expcon_file, write_control_with_uniqueid
-from bayota_settings.base import get_bayota_version, get_s3workspace_dir, \
-    get_docker_image_name, get_spec_files_dir
+from bayota_settings.base import get_bayota_version, get_docker_image_name, get_spec_files_dir
 from bayota_settings.log_setup import root_logger_setup
 
-from bayota_util.s3_operations import move_controlfile_to_s3, get_s3_control_dir, get_s3_specfiles_dir, \
-    establish_s3_connection
+from bayota_util.s3_operations import move_controlfile_to_s3, establish_s3_connection
 
 batch = boto3.client('batch', region_name='us-east-1')
 
@@ -74,21 +72,18 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
     #     - list of study pairs, i.e. a list of tuples with (geo, model_form_dict)
     #     - control options (a dictionary)
 
-    """ Config and Specification file directories are needed for copying to S3 """
-    s3_specfiles_dir = get_s3_specfiles_dir()
-    s3_control_dir = get_s3_control_dir()
-
+    """ Specification files are moved to s3. """
     s3ops = None
+    local_specfiles_path = get_spec_files_dir(s3=False)
+    s3_specfiles_path = get_spec_files_dir(s3=True)
     if not no_s3:
         s3ops = establish_s3_connection(log_level, logger)
-
-        # Specification files are copied.
-        logger.info(f"copying specification files from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
-        s3ops.move_to_s3(local_path=get_spec_files_dir(),
-                         destination_path=f"{s3_specfiles_dir}",
+        logger.info(f"copying specification files from {local_specfiles_path} to the s3 location: {s3_specfiles_path}")
+        s3ops.move_to_s3(local_path=local_specfiles_path,
+                         destination_path=s3_specfiles_path,
                          move_directory=True)
     else:
-        logger.info(f"would copy local specification files from {get_spec_files_dir()} to the s3 location: {s3_specfiles_dir}")
+        logger.info(f"would copy local specification files from {local_specfiles_path} to the s3 location: {s3_specfiles_path}")
 
     """ Each study (geography, model form) is iterated over. """
     jobids = dict()
@@ -122,7 +117,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         model_spec_name, \
         studyshortname, \
         studyid = read_study_control_file(studycon_name)
-        move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=studycon_name, no_s3=no_s3)
+        move_controlfile_to_s3(logger, s3ops, controlfile_name=studycon_name, no_s3=no_s3)
 
         logger.info('v----------------------------------------------v')
         logger.info(' *************** Single Study *****************')
@@ -135,7 +130,7 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # To use AWS Batch, we submit the job with a job definition/queue specified.
         CMD = ['python', model_generator_script, '-cn', studycon_name,
-               '--s3workspace', get_s3workspace_dir(), f"--log_level={log_level}"]
+               '--use_s3_ws',  f"--log_level={log_level}"]
         response = batch.submit_job(jobName=f"BAYOTA_modelgeneration_using_{studycon_name}",
                                     jobQueue='Modeling',
                                     jobDefinition='Modeling-Bayota:6',
@@ -180,12 +175,12 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             logger.info('v--------------------------------------------v')
             logger.info(' ************* Model Modification ***********')
             logger.info('^--------------------------------------------^')
-            move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=expcon_name, no_s3=no_s3)
+            move_controlfile_to_s3(logger, s3ops, controlfile_name=expcon_name, no_s3=no_s3)
 
             """ MODIFY MODEL VIA DOCKER IMAGE """
             # To use AWS Batch, we submit the job with a job definition/queue specified.
             CMD = ['python', modify_model_script, '-cn', expcon_name,
-                   '--s3workspace', get_s3workspace_dir(), f"--log_level={log_level}"]
+                   '--use_s3_ws', f"--log_level={log_level}"]
             response = batch.submit_job(jobName=f"Bayota_modelmods_using_{expcon_name}",
                                         jobQueue='Modeling',
                                         jobDefinition='Modeling-Bayota:6',
@@ -245,11 +240,11 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                         '%Y-%m-%d-%H:%M:%S')
                     trialcon_name = write_control_with_uniqueid(control_dict=control_dict,
                                                                 control_name_prefix='step4_trialcon')
-                    move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name=trialcon_name, no_s3=no_s3)
+                    move_controlfile_to_s3(logger, s3ops, controlfile_name=trialcon_name, no_s3=no_s3)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
                     CMD = ['python', solve_trial_script, '-cn', trialcon_name,
-                           '--s3workspace', get_s3workspace_dir(), f"--log_level={log_level}"]
+                           '--use_s3_ws', f"--log_level={log_level}"]
                     response = batch.submit_job(jobName=f"Bayota_solvetrial_using_{trialcon_name}",
                                                 jobQueue='Modeling',
                                                 jobDefinition='Modeling-Bayota:6',

@@ -44,16 +44,19 @@ config_obj.read(example_user_config)
 config_obj.set("version", "version", str(version))
 
 # Directories are retrieved from the example configuration.
-config_dir = config_obj['workspace_directories']['config']
+local_workspace_dir = config_obj['top_paths']['local_workspace_stem'] + \
+                      config_obj['top_paths']['workspace_name']
+default_config_dir = local_workspace_dir + config_obj['workspace_directories']['config']
+default_logging_dir = local_workspace_dir + config_obj['workspace_directories']['logs']
+default_output_dir = local_workspace_dir + config_obj['workspace_directories']['output']
 
-default_output_dir = config_obj['output_directories']['general']
-default_graphics_dir = config_obj['output_directories']['graphics']
-default_logging_dir = config_obj['output_directories']['logs']
+default_output_dir = default_output_dir + config_obj['output_directories']['general']
+default_graphics_dir = default_output_dir + config_obj['output_directories']['graphics']
 
 # Paths for configuration files are retrieved.
-user_config = config_obj['other_config']['userconfigcopy']
-bash_config = config_obj['other_config']['bashconfig']
-log_config = config_obj['other_config']['logconfig']
+user_config = default_config_dir + config_obj['other_config']['userconfigcopy']
+bash_config = default_config_dir + config_obj['other_config']['bashconfig']
+log_config = default_config_dir + config_obj['other_config']['logconfig']
 
 ''' "Private" helper functions '''
 
@@ -61,7 +64,7 @@ log_config = config_obj['other_config']['logconfig']
 def _create_file_in_config_dir_if_doesnt_exist(file_path, example_file) -> bool:
     created = False
     if not os.path.isfile(file_path):
-        os.makedirs(config_dir, exist_ok=True)
+        os.makedirs(default_config_dir, exist_ok=True)
         shutil.copyfile(example_file, file_path)
         created = True
     return created
@@ -90,16 +93,17 @@ def _parse_user_config() -> configparser.ConfigParser:
 
 
 def _make_or_get_user_dir(section, key) -> str:
-    dir = _parse_user_config()[section][key]
-    os.makedirs(dir, exist_ok=True)
-    return dir
+    my_dir = _parse_user_config()[section][key]
+    os.makedirs(my_dir, exist_ok=True)
+    return my_dir
 
 
 ''' "Public" set-up and getter functions '''
 
 
 def create_workspace_directory_and_set_up_user_config_files(verbose=True):
-    ws_dir = config_obj['top_paths']['workspace_top']
+    ws_dir = config_obj['top_paths']['local_workspace_stem'] + \
+             config_obj['top_paths']['workspace_name']
     if verbose:
         print('bayota_settings.base(): ws_dir = %s' % ws_dir)
     os.makedirs(ws_dir, exist_ok=True)
@@ -109,53 +113,92 @@ def create_workspace_directory_and_set_up_user_config_files(verbose=True):
     _create_file_in_config_dir_if_doesnt_exist(file_path=bash_config, example_file=example_bash_config)
     _create_file_in_config_dir_if_doesnt_exist(file_path=log_config, example_file=example_log_config)
 
-def get_workspace_dir() -> str:
-    return _make_or_get_user_dir('top_paths', 'workspace_top')
-def get_s3workspace_dir() -> str:
-    s3_workspace_top = _parse_user_config()['top_paths']['s3_workspace_top']
-    return s3_workspace_top
+def get_workspace_dir(s3=False) -> str:
+    if s3:
+        my_dir = _parse_user_config()['top_paths']['s3_workspace_stem'] + \
+                 _parse_user_config()['top_paths']['workspace_name']
+    else:
+        my_dir = _parse_user_config()['top_paths']['local_workspace_stem'] + \
+                 _parse_user_config()['top_paths']['workspace_name']
+        os.makedirs(my_dir, exist_ok=True)
+    return my_dir
+
+def get_workspace_subdir(subdir=None, s3=False) -> str:
+    my_dir = get_workspace_dir(s3=s3) + subdir
+    if not s3:
+        os.makedirs(my_dir, exist_ok=True)
+    return my_dir
+
+def get_source_csvs_dir(s3=False) -> str:
+    my_dir = get_workspace_dir(s3=s3) + \
+             _parse_user_config()['workspace_directories']['data'] + \
+             _parse_user_config()['data_directories']['sourcecsvs']
+    if not s3:
+        # datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
+        if not os.path.isdir(my_dir):
+            raise ValueError('Source CSVs directory (%s) specified in config does not exist!' % my_dir)
+    return my_dir
+def get_metadata_csvs_dir(s3=False) -> str:
+    my_dir = get_workspace_dir(s3=s3) + \
+                 _parse_user_config()['workspace_directories']['data'] + \
+                 _parse_user_config()['data_directories']['metadatacsvs']
+    # datadir_top_level = _parse_user_config()['data_directories']['metadatacsvs']
+    if not s3:
+        if not os.path.isdir(my_dir):
+            raise ValueError('Metadata CSVs directory (%s) specified in config does not exist!' % my_dir)
+    return my_dir
+def get_raw_data_dir(s3=False) -> str:
+    my_dir = get_workspace_dir(s3=s3) + \
+                 _parse_user_config()['workspace_directories']['data'] + \
+                 _parse_user_config()['data_directories']['rawdata']
+    if not s3:
+        if not os.path.isdir(my_dir):
+            raise ValueError('Raw data directory (%s) specified in config does not exist!' % my_dir)
+    return my_dir
+def get_output_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['output'] +
+                                       _parse_user_config()['output_directories']['general'],
+                                s3=s3)
+def get_control_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['control'],
+                                  s3=s3)
+def get_logging_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['logs'],
+                                s3=s3)
+def get_spec_files_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['spec_files'],
+                                s3=s3)
+def get_batch_studies_specs_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['spec_files'] +
+                                       _parse_user_config()['specification_file_directories']['batch_studies'],
+                                s3=s3)
+def get_model_specs_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['spec_files'] +
+                                       _parse_user_config()['specification_file_directories']['models'],
+                                s3=s3)
+def get_experiment_specs_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['spec_files'] +
+                                       _parse_user_config()['specification_file_directories']['experiments'],
+                                s3=s3)
+def get_graphics_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['output'] +
+                                       _parse_user_config()['output_directories']['graphics'],
+                                s3=s3)
+def get_source_pickles_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['temp'] +
+                                       _parse_user_config()['temp_directories']['source_pickles'],
+                                s3=s3)
+
+def get_model_instances_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['temp'] +
+                                       _parse_user_config()['temp_directories']['model_instances'],
+                                s3=s3)
+
 def get_docker_image_name() -> str:
-    docker_image_name = _parse_user_config()['version']['docker_image_name']
-    return docker_image_name
-def get_source_csvs_dir() -> str:
-    datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
-    if not os.path.isdir(datadir_top_level):
-        raise ValueError('Source CSVs directory (%s) specified in config does not exist!' % datadir_top_level)
+    return _parse_user_config()['version']['docker_image_name']
 
-    return datadir_top_level
-def get_metadata_csvs_dir() -> str:
-    datadir_top_level = _parse_user_config()['data_directories']['metadatacsvs']
-    if not os.path.isdir(datadir_top_level):
-        raise ValueError('Metadata CSVs directory (%s) specified in config does not exist!' % datadir_top_level)
-
-    return datadir_top_level
-def get_raw_data_dir() -> str:
-    rawdatadir = _parse_user_config()['data_directories']['rawdata']
-    if not os.path.isdir(rawdatadir):
-        raise ValueError('Raw data directory (%s) specified in config does not exist!' % rawdatadir)
-
-    return rawdatadir
-def get_output_dir() -> str:
-    return _make_or_get_user_dir('output_directories', 'general')
 def get_slurm_scripts_dir() -> str:
     return _make_or_get_user_dir('top_paths', 'slurm_run_scripts')
+
 def get_run_steps_dir() -> str:
     return _make_or_get_user_dir('top_paths', 'run_steps')
-def get_control_dir() -> str:
-    return _make_or_get_user_dir('workspace_directories', 'control')
-def get_logging_dir() -> str:
-    return _make_or_get_user_dir('output_directories', 'logs')
-def get_spec_files_dir() -> str:
-    return _make_or_get_user_dir('workspace_directories', 'spec_files')
-def get_batch_studies_specs_dir() -> str:
-    return _make_or_get_user_dir('specification_file_directories', 'batch_studies')
-def get_model_specs_dir() -> str:
-    return _make_or_get_user_dir('specification_file_directories', 'models')
-def get_experiment_specs_dir() -> str:
-    return _make_or_get_user_dir('specification_file_directories', 'experiments')
-def get_graphics_dir() -> str:
-    return _make_or_get_user_dir('output_directories', 'graphics')
-def get_source_pickles_dir() -> str:
-    return _make_or_get_user_dir('temp_directories', 'source_pickles')
-def get_model_instances_dir() -> str:
-    return _make_or_get_user_dir('temp_directories', 'model_instances')

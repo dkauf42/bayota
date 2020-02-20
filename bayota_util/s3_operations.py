@@ -30,7 +30,7 @@ import requests
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_settings.base import get_workspace_dir, get_control_dir, get_s3workspace_dir, get_spec_files_dir, \
+from bayota_settings.base import get_workspace_dir, get_control_dir, get_spec_files_dir, \
     get_model_instances_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
@@ -214,53 +214,38 @@ if __name__ == '__main__':
     s3ops_obj.cli(sys.argv[:])
 
 
-
-
-def get_workspace_from_s3(log_level, s3_workspace_dir):
+def pull_entire_workspace_from_s3(log_level):
     """ Workspace is copied in full from S3 """
-
     # Connection with S3 is established.
     s3ops = establish_s3_connection(log_level, logger=None)
 
-    # Workspace is copied.
-    s3ops.get_from_s3(s3path=s3_workspace_dir,
-                      local_path=get_workspace_dir(),
-                      move_directory=True)
-    print(f"copied s3 workspace from {s3_workspace_dir} to local location: {get_workspace_dir()}")
+    # Directory is copied.
+    s3path = get_workspace_dir(s3=True)
+    local_path = get_workspace_dir(s3=False)
+    s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
+    print(f"copied s3 workspace from {s3path} to local location: {local_path}")
 
 
-def move_controlfile_to_s3(logger, s3_control_dir, s3ops, controlfile_name, no_s3=False):
+def pull_workspace_dir_from_s3(log_level, s3_workspace_dir, local_dir):
+    """ Workspace is copied in full from S3 """
+    # Connection with S3 is established.
+    s3ops = establish_s3_connection(log_level, logger=None)
+
+    # Directory is copied.
+    s3path = s3_workspace_dir
+    local_path = local_dir
+    s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
+    print(f"copied s3 location: {s3path} to local location: {local_path}")
+
+
+def move_controlfile_to_s3(logger, s3ops, controlfile_name, no_s3=False):
     """ The local control file is copied to the S3-based workspace. """
-    controlfile_localpath = os.path.join(get_control_dir(), controlfile_name) + '.yaml'
-    controlfile_s3path = s3_control_dir + controlfile_name + '.yaml'
+    controlfile_localpath = os.path.join(get_control_dir(s3=False), controlfile_name) + '.yaml'
+    controlfile_s3path = get_control_dir(s3=True) + controlfile_name + '.yaml'
     if not no_s3:
         s3ops.move_to_s3(local_path=controlfile_localpath, destination_path=f"{controlfile_s3path}")
     else:
         logger.info(f"would copy control file to {controlfile_s3path}")
-
-
-def get_s3_control_dir():
-    # Relative path (for control files)
-    common_path = os.path.commonpath([get_workspace_dir(), get_control_dir()])
-    relative_path_for_control_dir = os.path.relpath(get_control_dir(), common_path)
-    s3_control_dir = get_s3workspace_dir() + '/' + relative_path_for_control_dir + '/'
-    return s3_control_dir
-
-
-def get_s3_specfiles_dir():
-    # Relative path (for specification files)
-    common_path = os.path.commonpath([get_workspace_dir(), get_spec_files_dir()])
-    relative_path_for_specfiles_dir = os.path.relpath(get_spec_files_dir(), common_path)
-    s3_specfiles_dir = get_s3workspace_dir() + '/' + relative_path_for_specfiles_dir + '/'
-    return s3_specfiles_dir
-
-
-def get_s3_modelinstancs_dir():
-    # Relative path (for modelinstance files)
-    common_path = os.path.commonpath([get_workspace_dir(), get_model_instances_dir()])
-    relative_path_for_modelinstances_dir = os.path.relpath(get_model_instances_dir(), common_path)
-    s3_modelinstances_dir = get_s3workspace_dir() + '/' + relative_path_for_modelinstances_dir + '/'
-    return s3_modelinstances_dir
 
 
 def establish_s3_connection(log_level, logger=None):

@@ -17,8 +17,7 @@ import pyomo.environ as pyo
 
 from bayota_util.spec_and_control_handler import notdry, read_trialcon_file, \
     read_control, write_progress_file, get_control_dir
-from bayota_util.s3_operations import get_workspace_from_s3, move_controlfile_to_s3, get_s3_control_dir, \
-    establish_s3_connection
+from bayota_util.s3_operations import pull_entire_workspace_from_s3, establish_s3_connection
 from bayom_e.solver_handling.solvehandler import SolveHandler
 from bayom_e.solution_handling.ipopt_parser import IpoptParser
 
@@ -30,9 +29,9 @@ from bayota_settings.log_setup import set_up_detailedfilelogger
 logprefix = '** Single Trial **: '
 
 
-def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') -> int:
-    if not not s3_workspace_dir:
-        get_workspace_from_s3(log_level, s3_workspace_dir)
+def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
+    if use_s3_ws:
+        pull_entire_workspace_from_s3(log_level)
     else:
         print('<< no s3 workspace directory provided. '
               'defaulting to using local workspace for step1_generatemodel.py >>')
@@ -100,20 +99,20 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
     # Solve
     # *********************
     modelname_full = os.path.splitext(os.path.basename(saved_model_file))[0]
-    notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(), f"solution_{trial_name}_<timestamp>.csv")
+    notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(s3=False), f"solution_{trial_name}_<timestamp>.csv")
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
         # ---- Directory preparation ----
         s3_destination_dir = s3_base_path + compact_geo_entity_str + '/' + objective_and_constraint_str + '/'
         # Solutions directory is created if it doesn't exist.
-        solutions_dir = os.path.join(get_output_dir(), solutions_folder_name)
+        solutions_dir = os.path.join(get_output_dir(s3=False), solutions_folder_name)
         logger.debug(f"solutions_dir = {solutions_dir}")
         os.makedirs(solutions_dir, exist_ok=True)
 
         solvehandler = SolveHandler()
 
-        solver_log_file = os.path.join(get_logging_dir(), trial_logfilename + '_ipopt.log')
-        solver_iters_file = os.path.join(get_logging_dir(), trial_uuid + '_ipopt.iters')
+        solver_log_file = os.path.join(get_logging_dir(s3=False), trial_logfilename + '_ipopt.log')
+        solver_iters_file = os.path.join(get_logging_dir(s3=False), trial_uuid + '_ipopt.iters')
 
         # The problem is solved.
         solution_dict = solvehandler.basic_solve(mdl=my_model, translate_to_cast_format=translate_to_cast_format,
@@ -135,9 +134,9 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO') ->
                                                   'n_eq_constraints': n_eq_constraints}
         progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
 
-        if not not s3_workspace_dir:
+        if use_s3_ws:
             # Progress file is moved to s3.
-            return_code = s3ops.move_to_s3(local_path=os.path.join(get_control_dir(), progress_file_name + '.yaml'),
+            return_code = s3ops.move_to_s3(local_path=os.path.join(get_control_dir(s3=False), progress_file_name + '.yaml'),
                                            destination_path=f"{s3_destination_dir + progress_file_name + '.yaml'}")
             logger.info(f"Move the progress file to s3 - exited with code <{return_code}>")
             # Solver output is moved to s3 also.
@@ -239,8 +238,8 @@ def parse_cli_arguments():
     parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
                                   help="name for this study's control file")
 
-    parser.add_argument("--s3workspace", dest="s3_workspace_dir",
-                        help="path to the workspace copy in an s3 bucket")
+    parser.add_argument("--use_s3_ws", dest="use_s3_ws", action='store_true',
+                        help="Pull workspace files from s3 bucket to local workspace at start of running this step")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
@@ -257,6 +256,6 @@ if __name__ == '__main__':
 
     # The main function is called.
     sys.exit(main(control_file=opts.control_filename,
-                  s3_workspace_dir=opts.s3_workspace_dir,
                   dryrun=opts.dryrun,
+                  use_s3_ws=opts.use_s3_ws,
                   log_level=opts.log_level))

@@ -20,13 +20,18 @@ from bayom_e.model_handling.utils import save_model_pickle
 from bayota_settings.base import get_model_instances_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import get_workspace_from_s3, get_s3_modelinstancs_dir, \
-    get_s3_control_dir, move_controlfile_to_s3, establish_s3_connection
+from bayota_util.s3_operations import pull_entire_workspace_from_s3, \
+    move_controlfile_to_s3, establish_s3_connection, pull_workspace_dir_from_s3
 
 
-def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') -> int:
-    if not not s3_workspace_dir:
-        get_workspace_from_s3(log_level, s3_workspace_dir)
+def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
+    if use_s3_ws:
+        # We needs control dir and data dir. Is that it?
+        pull_entire_workspace_from_s3(log_level)
+
+        # pull_workspace_dir_from_s3(log_level='INFO',
+        #                            s3_workspace_dir=s3_workspace_dir + '/control',
+        #                            local_dir=get_workspace_dir())
     else:
         print('<< no s3 workspace directory provided. '
               'defaulting to using local workspace for step1_generatemodel.py >>')
@@ -81,23 +86,22 @@ def main(control_file, dryrun=False, s3_workspace_dir=None, log_level='INFO') ->
     save_model_pickle(model=my_model, savepath=savepath, dryrun=dryrun)
     logger.debug(f"*model saved*")
 
-    if not not s3_workspace_dir:
+    if use_s3_ws:
         # Model is moved to s3.
-        move_model_pickle_to_s3(logger, get_s3_modelinstancs_dir(), s3ops, savepath)
+        move_model_pickle_to_s3(logger, s3ops, savepath)
 
     # Progress report is finalized with timestamp and saved.
     progress_dict['run_timestamps']['step2_generatemodel_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
     progress_file_name = write_progress_file(progress_dict, control_name=control_dict['study']['uuid'])
-    if not not s3_workspace_dir:
-        move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
-                               controlfile_name=progress_file_name, no_s3=False, )
+    if use_s3_ws:
+        move_controlfile_to_s3(logger, s3ops, controlfile_name=progress_file_name, no_s3=False)
     logger.debug(f"*model generation done*")
     return 0  # a clean, no-issue, exit
 
 
-def move_model_pickle_to_s3(logger, s3_model_instances_dir, s3ops, savepath):
+def move_model_pickle_to_s3(logger, s3ops, savepath):
     """ The local control file is copied to the S3-based workspace. """
-    modelinstance_s3path = s3_model_instances_dir + os.path.basename(savepath)
+    modelinstance_s3path = get_model_instances_dir(s3=True) + os.path.basename(savepath)
     s3ops.move_to_s3(local_path=savepath, destination_path=f"{modelinstance_s3path}")
 
 
@@ -106,10 +110,10 @@ def parse_cli_arguments():
     parser = ArgumentParser()
 
     parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
-                               help="name for this study's control file")
+                        help="name for this study's control file")
 
-    parser.add_argument("--s3workspace", dest="s3_workspace_dir",
-                        help="path to the workspace copy in an s3 bucket")
+    parser.add_argument("--use_s3_ws", dest="use_s3_ws", action='store_true',
+                        help="Pull workspace files from s3 bucket to local workspace at start of running this step")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
@@ -127,5 +131,5 @@ if __name__ == '__main__':
     # The main function is called.
     sys.exit(main(control_file=opts.control_filename,
                   dryrun=opts.dryrun,
-                  s3_workspace_dir=opts.s3_workspace_dir,
+                  use_s3_ws=opts.use_s3_ws,
                   log_level=opts.log_level))

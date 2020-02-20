@@ -15,15 +15,15 @@ from bayom_e.model_handling.utils import modify_model, save_model_pickle, load_m
 
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import get_workspace_from_s3, establish_s3_connection, \
-    move_controlfile_to_s3, get_s3_control_dir
+from bayota_util.s3_operations import pull_entire_workspace_from_s3, establish_s3_connection, \
+    move_controlfile_to_s3
 
 logprefix = '** Modifying Model **: '
 
 
-def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
-    if not not s3_workspace_dir:
-        get_workspace_from_s3(log_level, s3_workspace_dir)
+def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
+    if use_s3_ws:
+        pull_entire_workspace_from_s3(log_level)
     else:
         print('<< no s3 workspace directory provided. '
               'defaulting to using local workspace for step1_generatemodel.py >>')
@@ -73,9 +73,8 @@ def main(control_file, s3_workspace_dir=None, dryrun=False, log_level='INFO'):
     progress_dict['run_timestamps']['step3b_expmodification_done'] = datetime.datetime.today().strftime(
         '%Y-%m-%d-%H:%M:%S')
     progress_file_name = write_progress_file(progress_dict, control_name=control_dict['experiment']['uuid'])
-    if not not s3_workspace_dir:
-        move_controlfile_to_s3(logger, get_s3_control_dir(), s3ops,
-                               controlfile_name=progress_file_name, no_s3=False, )
+    if use_s3_ws:
+        move_controlfile_to_s3(logger, s3ops, controlfile_name=progress_file_name, no_s3=False, )
 
     return 0  # a clean, no-issue, exit
 
@@ -86,8 +85,8 @@ def parse_cli_arguments():
     parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
                         help="name for this study's control file")
 
-    parser.add_argument("--s3workspace", dest="s3_workspace_dir",
-                        help="path to the workspace copy in an s3 bucket")
+    parser.add_argument("--use_s3_ws", dest="use_s3_ws", action='store_true',
+                        help="Pull workspace files from s3 bucket to local workspace at start of running this step")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
@@ -105,5 +104,5 @@ if __name__ == '__main__':
     # The main function is called.
     sys.exit(main(control_file=opts.control_filename,
                   dryrun=opts.dryrun,
-                  s3_workspace_dir=opts.s3_workspace_dir,
+                  use_s3_ws=opts.use_s3_ws,
                   log_level=opts.log_level))

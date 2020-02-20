@@ -38,11 +38,11 @@ def read_yaml_to_dict(yaml_file):
 
 def read_spec(spec_file_name, spectype):
     if spectype == 'batch':
-        spec_dir = get_batch_studies_specs_dir()
+        spec_dir = get_batch_studies_specs_dir(s3=False)
     elif spectype == 'model':
-        spec_dir = get_model_specs_dir()
+        spec_dir = get_model_specs_dir(s3=False)
     elif spectype == 'experiment':
-        spec_dir = get_experiment_specs_dir()
+        spec_dir = get_experiment_specs_dir(s3=False)
     else:
         raise ValueError(f"Unexpected specification type <{spectype}>")
 
@@ -51,27 +51,27 @@ def read_spec(spec_file_name, spectype):
 
 
 def read_control(control_file_name):
-    control_filepath = os.path.join(get_control_dir(), control_file_name + '.yaml')
+    control_filepath = os.path.join(get_control_dir(s3=False), control_file_name + '.yaml')
     return read_yaml_to_dict(control_filepath)
 
 
 def overwrite_control(control_file_name, control_dict):
     """ Write (or replace existing) control file with updated dictionary entries """
-    control_filepath = os.path.join(get_control_dir(), control_file_name + '.yaml')
+    control_filepath = os.path.join(get_control_dir(s3=False), control_file_name + '.yaml')
     with open(control_filepath, "w") as f:
         yaml.safe_dump(control_dict, f, default_flow_style=False)
 
 
 def write_control_with_uniqueid(control_dict, control_name_prefix):
     unique_control_name = control_name_prefix + str(uuid.uuid4())
-    filepath = os.path.join(get_control_dir(), unique_control_name + '.yaml')
+    filepath = os.path.join(get_control_dir(s3=False), unique_control_name + '.yaml')
     with open(filepath, "w") as f:
         yaml.safe_dump(control_dict, f, default_flow_style=False)
     return unique_control_name
 
 
 def write_progress_file(control_dict, control_name):
-    filepath = os.path.join(get_control_dir(), control_name + '.yaml')
+    filepath = os.path.join(get_control_dir(s3=False), control_name + '.yaml')
     with open(filepath, "w") as f:
         yaml.safe_dump(control_dict, f, default_flow_style=False)
     return control_name
