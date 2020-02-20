@@ -138,7 +138,7 @@ def get_raw_data_dir() -> str:
 def get_output_dir() -> str:
     return _make_or_get_user_dir('output_directories', 'general')
 def get_slurm_scripts_dir() -> str:
-    return _make_or_get_user_dir('top_paths', 'slurm_scripts')
+    return _make_or_get_user_dir('top_paths', 'slurm_run_scripts')
 def get_run_steps_dir() -> str:
     return _make_or_get_user_dir('top_paths', 'run_steps')
 def get_control_dir() -> str:
