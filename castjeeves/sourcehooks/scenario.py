@@ -30,10 +30,10 @@ class Scenario(SourceHook):
         TblBC = self.source.TblBaseCondition  # get relevant source data
 
         row = TblLCMS.loc[TblLCMS['landchangemodelscenarioname'] == landchangemodelscenario]
-        lcmsid = row['landchangemodelscenarioid'].item()
+        lcmsid = row['landchangemodelscenarioid'].iloc[0]
 
         row = TblBC.loc[(TblBC['landchangemodelscenarioid'] == lcmsid) &
                         (TblBC['baseyear'] == baseyear)]
-        bcid = row['baseconditionid'].item()
+        bcid = row['baseconditionid'].iloc[0]
 
         return bcid
