@@ -129,6 +129,10 @@ def get_workspace_subdir(subdir=None, s3=False) -> str:
         os.makedirs(my_dir, exist_ok=True)
     return my_dir
 
+def get_data_dir(s3=False) -> str:
+    return get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['data'],
+                                s3=s3)
+
 def get_source_csvs_dir(s3=False) -> str:
     my_dir = get_workspace_dir(s3=s3) + \
              _parse_user_config()['workspace_directories']['data'] + \
