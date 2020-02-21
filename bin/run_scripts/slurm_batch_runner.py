@@ -4,7 +4,7 @@ Note: This submits a SLURM "sbatch" command to launch the 'step1_single_study' s
       if CLI argument '--no_slurm' is not passed.
 
 Example usage command:
-  >> ./bin/slurm_run_scripts/slurm_batch_runner.py --dryrun -n maryland_counties
+  >> ./bin/run_scripts/slurm_batch_runner.py --dryrun -n maryland_counties
 ================================================================================
 """
 import os

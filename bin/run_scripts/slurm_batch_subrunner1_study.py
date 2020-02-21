@@ -4,7 +4,7 @@ Note: This submits a SLURM "srun" command to launch the 'step2_generatemodel' sc
       if CLI argument '--no_slurm' is not passed.
 
 Example usage command:
-  >> ./bin/slurm_run_scripts/slurm_batch_subrunner1_study.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938.yaml
+  >> ./bin/run_scripts/slurm_batch_subrunner1_study.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938.yaml
 ================================================================================
 """
 import os

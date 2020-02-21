@@ -2,7 +2,7 @@
 """
 
 Example usage command:
-  >> ./bin/slurm_run_scripts/step1_generatemodel.py --dryrun -cn step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938
+  >> ./bin/run_scripts/step1_generatemodel.py --dryrun -cn step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938
 ================================================================================
 """
 

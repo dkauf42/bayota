@@ -13,7 +13,7 @@ A modify_model_script: "step2_modifymodel.py"
 A solve_trial_script: "step3_solveonetrial.py"
 
 Example usage command:
-  >> ./bin/docker_run_scripts/batch_job_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
+  >> ./bin/run_scripts/docker_batch_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
 
 # Daniel Kaufman, Chesapeake Research Consortium, Inc.
 # 23 August 2019

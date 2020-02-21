@@ -4,7 +4,7 @@ Note: This submits a SLURM "srun" command to launch the 'step4_solveonetrial' sc
       if CLI argument '--no_slurm' is not passed.
 
 Example usage command:
-  >> ./bin/slurm_run_scripts/slurm_batch_subrunner2_experiment.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step3_experiment_control_b940a328-bf05-4bc0-94e0-bb166eb5880a.yaml
+  >> ./bin/run_scripts/slurm_batch_subrunner2_experiment.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step3_experiment_control_b940a328-bf05-4bc0-94e0-bb166eb5880a.yaml
 ================================================================================
 """
 import os
