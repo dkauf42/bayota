@@ -127,6 +127,10 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         logger.info(f" Experiments = {experiments}")
         logger.info(f" Base_loading_file_name = {baseloadingfilename}")
         logger.info('^----------------------------------------------^')
+        logger.info('')
+        logger.info('v--------------------------------------------v')
+        logger.info(' ************** Model Generation ************')
+        logger.info('^--------------------------------------------^')
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
         # To use AWS Batch, we submit the job with a job definition/queue specified.

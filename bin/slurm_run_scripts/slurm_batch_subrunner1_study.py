@@ -7,7 +7,6 @@ Example usage command:
   >> ./bin/slurm_run_scripts/slurm_batch_subrunner1_study.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938.yaml
 ================================================================================
 """
-
 import os
 import sys
 import subprocess
@@ -46,11 +45,14 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     logger.info('******* %s *******' % ('BayOTA').center(30, ' '))
     logger.info('*************** Single Study *****************')
     logger.info('----------------------------------------------')
-
     logger.info(f"Geography = {geography_name}")
     logger.info(f"Model specification name = {model_spec_name}")
     logger.info(f"Experiments = {experiments}")
     logger.info(f"Base_loading_file_name = {baseloadingfilename}")
+    logger.info('')
+    logger.info('----------------------------------------------')
+    logger.info('************** Model Generation **************')
+    logger.info('----------------------------------------------')
 
     # A shell command is built for this job submission.
     CMD = f"{model_generator_script} -cn {control_file} --log_level={log_level}"

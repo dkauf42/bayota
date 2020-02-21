@@ -7,7 +7,6 @@ Example usage command:
   >> ./bin/slurm_run_scripts/slurm_batch_runner.py --dryrun -n maryland_counties
 ================================================================================
 """
-
 import os
 import sys
 import datetime
@@ -35,7 +34,7 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
     # Specification file is read.
     geo_scale, study_pairs, control_options = parse_batch_spec(batch_spec_name, logger=logger)
 
-    # Study pairs (Geography, Model+Experiments) are submitted as SLURM "sbatch" jobs.
+    # Study pairs (Geography, Model+Experiments) are looped through (and submitted as SLURM "sbatch" jobs).
     for index, sp in enumerate(study_pairs):
         studyid = '{:04}'.format(index+1)
         geoname = sp[0]
@@ -45,7 +44,7 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
         studyspecdict['studyshortname'] = spname
         studyspecdict['id'] = studyid
 
-        # A study control ("studycon") file w/unique identifier (uuid4) is created.
+        # A study control ("studycon") file with a unique identifier (uuid4) is created.
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
                         "study": studyspecdict, "control_options": control_options,
                         "code_version": version,
@@ -70,8 +69,6 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
             CMD = "sbatch " + sbatch_opts + CMD
         else:
             CMD = CMD + " --no_slurm"
-
-        # Job is submitted.
         logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun- Would submit command'):
             subprocess.Popen([CMD], shell=True)

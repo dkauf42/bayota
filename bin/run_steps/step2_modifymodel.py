@@ -47,7 +47,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
                                        add_filehandler_if_already_exists=True,
                                        add_consolehandler_if_already_exists=False)
 
-    # If using s3, pull saved model instance from bucket
+    # If using s3, saved model instance is pulled from bucket.
     if use_s3_ws:
         pull_model_instance_from_s3(log_level=log_level, model_instance_name=saved_model_file, s3ops=s3ops)
 
