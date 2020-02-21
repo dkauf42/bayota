@@ -60,12 +60,10 @@ def main(control_file, dryrun=False, no_slurm=False, save_to_s3=False, log_level
         CMD = 'srun ' + slurm_options + CMD
     logger.info(f'Job command is: "{CMD}"')
     if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
-        p1 = subprocess.Popen([CMD], shell=True)
-        p1.wait()
-        # Get return code from process
-        return_code = p1.returncode
-        if p1.returncode != 0:
-            logger.error(f"Model Modification finished with non-zero code <{return_code}>")
+        p = subprocess.Popen([CMD], shell=True)
+        p.wait()
+        if p.returncode != 0:  # Return code from process is checked.
+            logger.error(f"Model Modification finished with non-zero code <{p.returncode}>")
             return 1
 
     logger.info('----------------------------------------------')
