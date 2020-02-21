@@ -62,11 +62,13 @@ def overwrite_control(control_file_name, control_dict):
         yaml.safe_dump(control_dict, f, default_flow_style=False)
 
 
-def write_control_with_uniqueid(control_dict, control_name_prefix):
-    unique_control_name = control_name_prefix + str(uuid.uuid4())
+def write_control_with_uniqueid(control_dict, name_prefix, logger):
+    unique_control_name = name_prefix + str(uuid.uuid4())
     filepath = os.path.join(get_control_dir(s3=False), unique_control_name + '.yaml')
     with open(filepath, "w") as f:
         yaml.safe_dump(control_dict, f, default_flow_style=False)
+
+    logger.debug(f"control file is {unique_control_name}")
     return unique_control_name
 
 

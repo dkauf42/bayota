@@ -14,9 +14,9 @@ import datetime
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_util.spec_and_control_handler import notdry, parse_batch_spec, write_control_with_uniqueid
 from bayota_settings.base import get_bayota_version, get_slurm_scripts_dir
 from bayota_settings.log_setup import root_logger_setup
+from bayota_util.spec_and_control_handler import notdry, parse_batch_spec, write_control_with_uniqueid
 
 single_study_script = os.path.join(get_slurm_scripts_dir(), 'slurm_batch_subrunner1_study.py')
 
@@ -50,8 +50,8 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
                         "study": studyspecdict, "control_options": control_options,
                         "code_version": version,
                         "run_timestamps": {'step0_batch': datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')}}
-        unique_control_name = write_control_with_uniqueid(control_dict=control_dict,
-                                                          control_name_prefix='step1_studycon')
+        unique_control_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step1_studycon',
+                                                          logger=logger)
 
         logger.debug(f"control file is {unique_control_name}")
 

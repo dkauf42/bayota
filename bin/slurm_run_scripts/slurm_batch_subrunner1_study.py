@@ -13,10 +13,9 @@ import sys
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_util.spec_and_control_handler import read_spec, notdry, read_study_control_file, write_control_with_uniqueid
-
 from bayota_settings.base import get_output_dir, get_slurm_scripts_dir, get_run_steps_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
+from bayota_util.spec_and_control_handler import read_spec, notdry, read_study_control_file, write_control_with_uniqueid
 
 outdir = get_output_dir()
 
@@ -89,8 +88,8 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
         expactiondict['id'] = expid
         control_dict['experiment'] = expactiondict
         control_dict['experiment']['uuid'] = control_dict['study']['uuid'] + '_e' + expid
-        unique_control_name = write_control_with_uniqueid(control_dict=control_dict,
-                                                          control_name_prefix='step3_expcon')
+        unique_control_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step3_expcon',
+                                                          logger=logger)
 
         # A shell command is built for this job submission.
         CMD = f"{experiment_script}  -cn {unique_control_name} --log_level={log_level}"

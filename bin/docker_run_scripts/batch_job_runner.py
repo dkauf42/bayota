@@ -106,7 +106,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         control_dict = {"geography": {'scale': geo_scale, 'entity': geoname},
                         "study": studyspecdict, "control_options": control_options,
                         "code_version": version}
-        studycon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step1_studycon')
+        studycon_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step1_studycon',
+                                                    logger=logger)
 
         # The local study control file is read....
         control_dict, \
@@ -160,7 +161,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             control_dict['experiment'] = expactiondict
             control_dict['experiment_name'] = exp_spec_name
             control_dict['experiment']['uuid'] = control_dict['study']['uuid'] + '_e' + expid
-            expcon_name = write_control_with_uniqueid(control_dict=control_dict, control_name_prefix='step3_expcon')
+            expcon_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step3_expcon',
+                                                      logger=logger)
 
             # The local experiment control file is read....
             control_dict, \
@@ -238,8 +240,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     control_dict['code_version']: version
                     control_dict['submission_timestamps']['step4_trial'] = datetime.datetime.today().strftime(
                         '%Y-%m-%d-%H:%M:%S')
-                    trialcon_name = write_control_with_uniqueid(control_dict=control_dict,
-                                                                control_name_prefix='step4_trialcon')
+                    trialcon_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step4_trialcon',
+                                                                logger=logger)
                     move_controlfile_to_s3(logger, s3ops, controlfile_name=trialcon_name, no_s3=no_s3)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """

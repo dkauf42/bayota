@@ -13,10 +13,9 @@ import datetime
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_util.spec_and_control_handler import notdry, read_expcon_file, write_control_with_uniqueid
-
 from bayota_settings.base import get_bayota_version, get_run_steps_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
+from bayota_util.spec_and_control_handler import notdry, read_expcon_file, write_control_with_uniqueid
 
 logprefix = '** Single Experiment **: '
 
@@ -112,8 +111,8 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
             control_dict['trial']['uuid'] = control_dict['experiment']['uuid'] + '_t' + trialidstr
             control_dict['code_version']: version
             control_dict['run_timestamps']['step4_trial'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-            unique_control_name = write_control_with_uniqueid(control_dict=control_dict,
-                                                              control_name_prefix='step4_trialcon')
+            unique_control_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step4_trialcon',
+                                                              logger=logger)
 
             # A shell command is built for this job submission.
             CMD = f"{solve_trial_script}  -cn {unique_control_name} --log_level={log_level}"
