@@ -314,9 +314,10 @@ def setup_docker_arguments(logger=None):
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
-    parser = ArgumentParser()
-    parser.add_argument("-n", "--batch_spec_name", dest="batch_spec_name", required=True,
-                        help="name for this batch, which should match the batch specification file")
+    parser = ArgumentParser(description="Run a batch of optimization studies")
+
+    parser.add_argument('batch_spec_name', metavar='Batch Name', type=str,
+                        help='name for this batch, which should match the batch specification file')
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
