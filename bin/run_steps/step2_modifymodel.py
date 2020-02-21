@@ -15,8 +15,8 @@ from bayom_e.model_handling.utils import modify_model, save_model_pickle, load_m
 
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
-from bayota_util.s3_operations import establish_s3_connection, pull_control_dir_from_s3, \
-    pull_data_dir_from_s3, pull_model_instance_from_s3, move_controlfile_to_s3
+from bayota_util.s3_operations import establish_s3_connection, pull_workspace_subdir_from_s3, \
+    pull_model_instance_from_s3, move_controlfile_to_s3
 
 logprefix = '** Modifying Model **: '
 
@@ -28,8 +28,9 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
 
     # If using s3, required workspace directories are pulled from buckets.
     if use_s3_ws:
-        pull_control_dir_from_s3(log_level=log_level, s3ops=s3ops)
-        pull_data_dir_from_s3(log_level=log_level, s3ops=s3ops)
+        pull_workspace_subdir_from_s3(subdirname='control', s3ops=s3ops, log_level=log_level)
+        pull_workspace_subdir_from_s3(subdirname='data', s3ops=s3ops, log_level=log_level)
+        pull_workspace_subdir_from_s3(subdirname='specfiles', s3ops=s3ops, log_level=log_level)
 
     # Control file is read.
     control_dict, \

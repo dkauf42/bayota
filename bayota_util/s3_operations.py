@@ -30,7 +30,8 @@ import requests
 import subprocess
 from argparse import ArgumentParser
 
-from bayota_settings.base import get_workspace_dir, get_control_dir, get_data_dir, get_model_instances_dir
+from bayota_settings.base import get_workspace_dir, get_control_dir, get_data_dir, \
+    get_model_instances_dir, get_spec_files_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 
 
@@ -227,28 +228,27 @@ def pull_entire_workspace_from_s3(log_level):
     print(f"copied s3 workspace from {s3path} to local location: {local_path}")
 
 
-def pull_control_dir_from_s3(log_level, s3ops=None):
+def pull_workspace_subdir_from_s3(subdirname=None, s3ops=None, log_level='INFO'):
     if not s3ops:
         # Connection with S3 is established.
         s3ops = establish_s3_connection(log_level, logger=None)
 
+    # Paths are set.
+    if subdirname.lower() == 'control':
+        s3path = get_control_dir(s3=True)
+        local_path = get_control_dir(s3=False)
+    elif subdirname.lower() == 'specfiles':
+        s3path = get_spec_files_dir(s3=True)
+        local_path = get_spec_files_dir(s3=False)
+    elif subdirname.lower() == 'data':
+        s3path = get_data_dir(s3=True)
+        local_path = get_data_dir(s3=False)
+    else:
+        raise ValueError('unexpected subdirectory name for workspace')
+
     # Directory is copied.
-    s3path = get_control_dir(s3=True)
-    local_path = get_control_dir(s3=False)
     s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
-    print(f"copied workspace control directory from {s3path} to local location: {local_path}")
-
-
-def pull_data_dir_from_s3(log_level, s3ops=None):
-    if not s3ops:
-        # Connection with S3 is established.
-        s3ops = establish_s3_connection(log_level, logger=None)
-
-    # Directory is copied.
-    s3path = get_data_dir(s3=True)
-    local_path = get_data_dir(s3=False)
-    s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
-    print(f"copied workspace data directory from {s3path} to local location: {local_path}")
+    print(f"copied workspace subdirectory from s3path:{s3path} to local: {local_path}")
 
 
 def pull_model_instance_from_s3(log_level, model_instance_name, s3ops=None):
