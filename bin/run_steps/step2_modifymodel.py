@@ -85,9 +85,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
-    parser = ArgumentParser()
-    parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
-                        help="name for this study's control file")
+    parser = ArgumentParser(description="Modify a study's model")
 
     parser.add_argument("control_filename", metavar='Control Filename', type=str,
                         help="name for this model modification's control file")

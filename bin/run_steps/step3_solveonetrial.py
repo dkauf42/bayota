@@ -239,9 +239,7 @@ def make_model_modification(dictwithtrials, dryrun, model, logger):
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
-    parser = ArgumentParser()
-    parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
-                                  help="name for this study's control file")
+    parser = ArgumentParser(description="Solve an optimization trial")
 
     parser.add_argument("control_filename", metavar='Control Filename', type=str,
                         help="name for this trial's control file")
@@ -266,7 +264,7 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(control_file=opts.control_filename,
+    sys.exit(main(opts.control_filename,
                   dryrun=opts.dryrun,
                   use_s3_ws=opts.use_s3_ws,
                   save_to_s3=opts.save_to_s3,
