@@ -50,6 +50,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
     move_solution_to_s3, \
     objective_and_constraint_str, \
     s3_base_path, \
+    saved_model_name, \
     saved_model_file, \
     solutions_folder_name, \
     studyid, \
@@ -82,7 +83,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
 
     # If using s3, saved model instance is pulled from bucket.
     if use_s3_ws:
-        pull_model_instance_from_s3(log_level=log_level, model_instance_name=saved_model_file, s3ops=s3ops)
+        pull_model_instance_from_s3(log_level=log_level, model_instance_name=saved_model_name, s3ops=s3ops)
 
     # Progress report is updated.
     progress_dict = read_control(control_file_name=control_dict['experiment']['uuid'])
@@ -104,7 +105,6 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
     # *********************
     # Solve
     # *********************
-    modelname_full = os.path.splitext(os.path.basename(saved_model_file))[0]
     notreal_notimestamp_outputdfpath = os.path.join(get_output_dir(s3=False), f"solution_{trial_name}_<timestamp>.csv")
 
     if notdry(dryrun, logger, f"--Dryrun-- Would run trial and save outputdf at: {notreal_notimestamp_outputdfpath}"):
@@ -127,7 +127,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
         logger.info(f"Trial '{trial_name}' is DONE "
                     f"(@{solution_dict['timestamp']})! "
                     f"<Solution feasible? --> {solution_dict['feasible']}> ")
-        logger_feasibility.info(f"<feasible: {solution_dict['feasible']}> for {modelname_full}_{trial_name}")
+        logger_feasibility.info(f"<feasible: {solution_dict['feasible']}> for {saved_model_name}_{trial_name}")
         logger_study.info(f"trial {trial_name} is DONE")
 
         # The progress file is updated, then moved to output directory in s3.
@@ -180,7 +180,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
 
         # Optimization solution table is written to file (uses comma-delimiter and .csv extention)
         solution_shortname = f"{trial_name}_{solution_dict['timestamp']}.csv"
-        solution_fullname = f"{modelname_full}_{trial_name}_{solution_dict['timestamp']}.csv"
+        solution_fullname = f"{saved_model_name}_{trial_name}_{solution_dict['timestamp']}.csv"
 
         outputdfpath_bayotaformat = os.path.join(solutions_dir, solution_fullname)
         solution_dict['solution_df'].to_csv(outputdfpath_bayotaformat)
@@ -196,7 +196,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
         # CAST-formatted solution table is written to file (uses tab-delimiter and .txt extention).
         if translate_to_cast_format:
             solution_shortname_castformat = f"castformat_{trial_name}_{solution_dict['timestamp']}.txt"
-            solution_fullname_castformat = f"castformat_{modelname_full}_{trial_name}_{solution_dict['timestamp']}.txt"
+            solution_fullname_castformat = f"castformat_{saved_model_name}_{trial_name}_{solution_dict['timestamp']}.txt"
 
             outputdfpath_castformat = os.path.join(solutions_dir, solution_fullname_castformat)
             csv_string = solution_dict['cast_formatted_df'].to_csv(None, sep='\t', header=True,
