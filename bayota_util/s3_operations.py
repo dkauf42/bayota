@@ -248,7 +248,7 @@ def pull_data_dir_from_s3(log_level, s3ops=None):
     s3path = get_data_dir(s3=True)
     local_path = get_data_dir(s3=False)
     s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
-    print(f"copied workspace control directory from {s3path} to local location: {local_path}")
+    print(f"copied workspace data directory from {s3path} to local location: {local_path}")
 
 
 def pull_model_instance_from_s3(log_level, model_instance_name, s3ops=None):
