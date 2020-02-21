@@ -52,9 +52,7 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
         unique_control_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step1_studycon',
                                                           logger=logger)
 
-        logger.debug(f"control file is {unique_control_name}")
-
-        # A shell command is built for this job submission.
+        # Job command is built and submitted.
         #     Each Node has 36 cpus.  We want to use 32 of them.  Each task ("trial") will be able to use 2 cpus.
         CMD = f"{single_study_script} -cn {unique_control_name} --log_level={log_level}"
         if not no_slurm:

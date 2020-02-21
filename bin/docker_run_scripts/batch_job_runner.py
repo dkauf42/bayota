@@ -133,9 +133,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
         logger.info('^--------------------------------------------^')
 
         """ GENERATE MODEL VIA DOCKER IMAGE """
-        # To use AWS Batch, we submit the job with a job definition/queue specified.
-        CMD = ['python', model_generator_script, '-cn', studycon_name,
-               '--use_s3_ws',  f"--log_level={log_level}"]
+        # Job is submitted to AWS Batch.
+        CMD = ['python', model_generator_script, studycon_name,
+               '--use_s3_ws',  '--save_to_s3', f"--log_level={log_level}"]
         response = batch.submit_job(jobName=f"BAYOTA_modelgeneration_using_{studycon_name}",
                                     jobQueue='Modeling',
                                     jobDefinition='Modeling-Bayota:6',
@@ -184,9 +184,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
             move_controlfile_to_s3(logger, s3ops, controlfile_name=expcon_name, no_s3=no_s3)
 
             """ MODIFY MODEL VIA DOCKER IMAGE """
-            # To use AWS Batch, we submit the job with a job definition/queue specified.
-            CMD = ['python', modify_model_script, '-cn', expcon_name,
-                   '--use_s3_ws', f"--log_level={log_level}"]
+            # Job is submitted to AWS Batch.
+            CMD = ['python', modify_model_script, expcon_name,
+                   '--use_s3_ws', '--save_to_s3', f"--log_level={log_level}"]
             response = batch.submit_job(jobName=f"Bayota_modelmods_using_{expcon_name}",
                                         jobQueue='Modeling',
                                         jobDefinition='Modeling-Bayota:6',
@@ -249,8 +249,9 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                     move_controlfile_to_s3(logger, s3ops, controlfile_name=trialcon_name, no_s3=no_s3)
 
                     """ SOLVE TRIAL VIA DOCKER IMAGE """
-                    CMD = ['python', solve_trial_script, '-cn', trialcon_name,
-                           '--use_s3_ws', f"--log_level={log_level}"]
+                    # Job is submitted to AWS Batch.
+                    CMD = ['python', solve_trial_script, trialcon_name,
+                           '--use_s3_ws', '--save_to_s3', f"--log_level={log_level}"]
                     response = batch.submit_job(jobName=f"Bayota_solvetrial_using_{trialcon_name}",
                                                 jobQueue='Modeling',
                                                 jobDefinition='Modeling-Bayota:6',
