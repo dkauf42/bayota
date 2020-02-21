@@ -20,7 +20,7 @@ from bayota_util.spec_and_control_handler import notdry, parse_batch_spec, write
 single_study_script = os.path.join(get_slurm_scripts_dir(), 'slurm_batch_subrunner1_study.py')
 
 
-def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int:
+def main(batch_spec_name, dryrun=False, no_slurm=False, save_to_s3=False, log_level='INFO') -> int:
     # Logging formats are set up.
     logger = root_logger_setup(consolehandlerlevel=log_level, filehandlerlevel='DEBUG')
     logger.debug(locals())
@@ -54,7 +54,9 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
 
         # Job command is built and submitted.
         #     Each Node has 36 cpus.  We want to use 32 of them.  Each task ("trial") will be able to use 2 cpus.
-        CMD = f"{single_study_script} -cn {unique_control_name} --log_level={log_level}"
+        CMD = f"{single_study_script} {unique_control_name} --log_level={log_level}"
+        if save_to_s3:
+            CMD = CMD + ' --save_to_s3'
         if not no_slurm:
             sbatch_opts = f"--job-name={spname} " \
                           f"--nice={5000} " \
@@ -76,15 +78,19 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, log_level='INFO') -> int
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
-    parser = ArgumentParser()
-    parser.add_argument("-n", "--batch_spec_name", dest="batch_spec_name", default=None,
-                        help="name for this batch, which should match the batch specification file")
+    parser = ArgumentParser(description="Run a batch of optimization studies")
+
+    parser.add_argument('batch_spec_name', metavar='Batch Name', type=str,
+                        help='name for this batch, which should match the batch specification file')
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
     parser.add_argument("--no_slurm", action='store_true',
-                        help="don't use AWS or slurm facilities")
+                        help="don't use the Slurm job manager")
+
+    parser.add_argument("--save_to_s3", dest="save_to_s3", action='store_true',
+                        help="Move model instance and progress files from local workspace to s3 buckets")
 
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -97,5 +103,7 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     sys.exit(main(opts.batch_spec_name,
-                  dryrun=opts.dryrun, no_slurm=opts.no_slurm,
+                  dryrun=opts.dryrun,
+                  no_slurm=opts.no_slurm,
+                  save_to_s3=opts.save_to_s3,
                   log_level=opts.log_level))

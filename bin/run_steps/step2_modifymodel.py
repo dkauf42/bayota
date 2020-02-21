@@ -21,11 +21,13 @@ from bayota_util.s3_operations import establish_s3_connection, pull_control_dir_
 logprefix = '** Modifying Model **: '
 
 
-def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
-    if use_s3_ws:
+def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_level='INFO') -> int:
+    if save_to_s3 or use_s3_ws:
         # Connection with S3 is established.
         s3ops = establish_s3_connection(log_level, logger=None)
-        # Required workspace directories are pulled from S3
+
+    # If using s3, required workspace directories are pulled from buckets.
+    if use_s3_ws:
         pull_control_dir_from_s3(log_level=log_level, s3ops=s3ops)
         pull_data_dir_from_s3(log_level=log_level, s3ops=s3ops)
 
@@ -75,7 +77,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
     progress_dict['run_timestamps']['step3b_expmodification_done'] = datetime.datetime.today().strftime(
         '%Y-%m-%d-%H:%M:%S')
     progress_file_name = write_progress_file(progress_dict, control_name=control_dict['experiment']['uuid'])
-    if use_s3_ws:
+    if save_to_s3:
         move_controlfile_to_s3(logger, s3ops, controlfile_name=progress_file_name, no_s3=False, )
 
     return 0  # a clean, no-issue, exit
@@ -87,11 +89,17 @@ def parse_cli_arguments():
     parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
                         help="name for this study's control file")
 
-    parser.add_argument("--use_s3_ws", dest="use_s3_ws", action='store_true',
-                        help="Pull workspace files from s3 bucket to local workspace at start of running this step")
+    parser.add_argument("control_filename", metavar='Control Filename', type=str,
+                        help="name for this model modification's control file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
+
+    parser.add_argument("--use_s3_ws", dest="use_s3_ws", action='store_true',
+                        help="Pull workspace files from s3 bucket to local workspace at start of running this step")
+
+    parser.add_argument("--save_to_s3", dest="save_to_s3", action='store_true',
+                        help="Move model instance and progress files from local workspace to s3 buckets")
 
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -104,7 +112,8 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(control_file=opts.control_filename,
+    sys.exit(main(opts.control_filename,
                   dryrun=opts.dryrun,
                   use_s3_ws=opts.use_s3_ws,
+                  save_to_s3=opts.save_to_s3,
                   log_level=opts.log_level))

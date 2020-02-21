@@ -30,11 +30,13 @@ from bayota_settings.log_setup import set_up_detailedfilelogger
 logprefix = '** Single Trial **: '
 
 
-def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
-    if use_s3_ws:
+def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_level='INFO') -> int:
+    if save_to_s3 or use_s3_ws:
         # Connection with S3 is established.
         s3ops = establish_s3_connection(log_level, logger=None)
-        # Required workspace directories are pulled from S3
+
+    # If using s3, required workspace directories are pulled from buckets.
+    if use_s3_ws:
         pull_control_dir_from_s3(log_level=log_level, s3ops=s3ops)
         pull_data_dir_from_s3(log_level=log_level, s3ops=s3ops)
 
@@ -137,7 +139,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
                                                   'n_eq_constraints': n_eq_constraints}
         progress_file_name = write_progress_file(progress_dict, control_name=trial_uuid)
 
-        if use_s3_ws:
+        if save_to_s3:
             # Progress file is moved to s3.
             return_code = s3ops.move_to_s3(local_path=os.path.join(get_control_dir(s3=False), progress_file_name + '.yaml'),
                                            destination_path=f"{s3_destination_dir + progress_file_name + '.yaml'}")
@@ -184,7 +186,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
         logger.info(f"<Solution written to: {outputdfpath_bayotaformat}>")
         logger_study.info(f"<trial {trial_name} - solution written to: {outputdfpath_bayotaformat}>")
 
-        if move_solution_to_s3:
+        if save_to_s3 and move_solution_to_s3:
             return_code = s3ops.move_to_s3(local_path=outputdfpath_bayotaformat,
                                            destination_path=f"{s3_destination_dir + solution_shortname}")
             logger.info(f"Move-the-solution-to-s3 script exited with code <{return_code}>")
@@ -201,7 +203,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, log_level='INFO') -> int:
             open(outputdfpath_castformat, 'w').write(csv_string[:-2])  # -2 to remove blank line at end of file
             logger.info(f"<CAST-formatted solution written to: {outputdfpath_castformat}>")
 
-            if move_CASTformatted_solution_to_s3:
+            if save_to_s3 and move_CASTformatted_solution_to_s3:
                 return_code = s3ops.move_to_s3(local_path=outputdfpath_castformat,
                                                destination_path=f"{s3_destination_dir + solution_shortname_castformat}")
                 logger.info(f"Move-the-solution-to-s3 script exited with code <{return_code}>")
@@ -241,11 +243,17 @@ def parse_cli_arguments():
     parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
                                   help="name for this study's control file")
 
-    parser.add_argument("--use_s3_ws", dest="use_s3_ws", action='store_true',
-                        help="Pull workspace files from s3 bucket to local workspace at start of running this step")
+    parser.add_argument("control_filename", metavar='Control Filename', type=str,
+                        help="name for this trial's control file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
+
+    parser.add_argument("--use_s3_ws", dest="use_s3_ws", action='store_true',
+                        help="Pull workspace files from s3 bucket to local workspace at start of running this step")
+
+    parser.add_argument("--save_to_s3", dest="save_to_s3", action='store_true',
+                        help="Move model instance and progress files from local workspace to s3 buckets")
 
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -261,4 +269,5 @@ if __name__ == '__main__':
     sys.exit(main(control_file=opts.control_filename,
                   dryrun=opts.dryrun,
                   use_s3_ws=opts.use_s3_ws,
+                  save_to_s3=opts.save_to_s3,
                   log_level=opts.log_level))

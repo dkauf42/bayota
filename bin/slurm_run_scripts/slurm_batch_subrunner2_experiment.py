@@ -23,7 +23,7 @@ modify_model_script = os.path.join(get_run_steps_dir(), 'step2_modifymodel.py')
 solve_trial_script = os.path.join(get_run_steps_dir(), 'step3_solveonetrial.py')
 
 
-def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
+def main(control_file, dryrun=False, no_slurm=False, save_to_s3=False, log_level='INFO') -> int:
     version = get_bayota_version()
 
     # Control file is read.
@@ -48,7 +48,10 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
     logger.info('************* Model Modification *************')
     logger.info('----------------------------------------------')
 
-    CMD = f"{modify_model_script}  -cn {control_file} --log_level={log_level}"
+    # Job command is built and submitted.
+    CMD = f"{modify_model_script} {control_file} --log_level={log_level}"
+    if save_to_s3:
+        CMD = CMD + ' --save_to_s3'
     if not no_slurm:
         srun_opts = f"--nodes={1} " \
                     f"--ntasks={1} " \
@@ -114,8 +117,10 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
             unique_control_name = write_control_with_uniqueid(control_dict=control_dict, name_prefix='step4_trialcon',
                                                               logger=logger)
 
-            # A shell command is built for this job submission.
-            CMD = f"{solve_trial_script}  -cn {unique_control_name} --log_level={log_level}"
+            # Job command is built and submitted.
+            CMD = f"{solve_trial_script} {unique_control_name} --log_level={log_level}"
+            if save_to_s3:
+                CMD = CMD + ' --save_to_s3'
             if not no_slurm:
                 srun_opts = f"--nodes={1} " \
                             f"--ntasks={1} " \
@@ -135,15 +140,19 @@ def main(control_file, dryrun=False, no_slurm=False, log_level='INFO') -> int:
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
-    parser = ArgumentParser()
-    parser.add_argument("-cn", "--control_filename", dest="control_filename", default=None,
-                                  help="name for this study's control file")
+    parser = ArgumentParser(description="Run an optimization Experiment")
+
+    parser.add_argument("control_filename", metavar='Control Filename', type=str,
+                        help="name for this experiment's control file")
 
     parser.add_argument("-d", "--dryrun", action='store_true',
                         help="run through the script without triggering any other scripts")
 
     parser.add_argument("--no_slurm", action='store_true',
-                        help="don't use AWS or slurm facilities")
+                        help="don't use the Slurm job manager")
+
+    parser.add_argument("--save_to_s3", dest="save_to_s3", action='store_true',
+                        help="Move model instance and progress files from local workspace to s3 buckets")
 
     parser.add_argument("--log_level", nargs=None, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -158,7 +167,8 @@ if __name__ == '__main__':
     opts = parse_cli_arguments()
 
     # The main function is called.
-    sys.exit(main(control_file=opts.control_filename,
+    sys.exit(main(opts.control_filename,
                   dryrun=opts.dryrun,
                   no_slurm=opts.no_slurm,
+                  save_to_s3=opts.save_to_s3,
                   log_level=opts.log_level))
