@@ -59,12 +59,10 @@ def main(control_file, dryrun=False, no_slurm=False, save_to_s3=False, log_level
     if save_to_s3:
         CMD = CMD + ' --save_to_s3'
     if not no_slurm:
-        srun_opts = f"--nodes={1} " \
-                    f"--ntasks={1} " \
-                    f"--exclusive "
-        CMD = "srun " + srun_opts + CMD
-
-    # Job is submitted (to generate the model).
+        slurm_options = f"--nodes={1} " \
+                        f"--ntasks={1} " \
+                        f"--exclusive "
+        CMD = 'srun ' + slurm_options + CMD
     logger.info(f'Job command is: "{CMD}"')
     if notdry(dryrun, logger, '--Dryrun-- Would submit command, then wait.'):
         p1 = subprocess.Popen([CMD], shell=True)

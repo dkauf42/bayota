@@ -58,15 +58,15 @@ def main(batch_spec_name, dryrun=False, no_slurm=False, save_to_s3=False, log_le
         if save_to_s3:
             CMD = CMD + ' --save_to_s3'
         if not no_slurm:
-            sbatch_opts = f"--job-name={spname} " \
-                          f"--nice={5000} " \
-                          f"--cpus-per-task={2} " \
-                          f"--nodes={1} " \
-                          f"--ntasks={16} " \
-                          f"--output=slurm_job_{spname}_%j-%2t.out " \
-                          f"--error=slurm_job_{spname}_%j-%2t.err " \
-                          f"--time=12:00:00 "  # time requested in hour:minute:second
-            CMD = "sbatch " + sbatch_opts + CMD
+            slurm_options = f"--job-name={spname} " \
+                            f"--nice={5000} " \
+                            f"--cpus-per-task={2} " \
+                            f"--nodes={1} " \
+                            f"--ntasks={16} " \
+                            f"--output=slurm_job_{spname}_%j-%2t.out " \
+                            f"--error=slurm_job_{spname}_%j-%2t.err " \
+                            f"--time=12:00:00 "  # time requested in hour:minute:second
+            CMD = 'sbatch ' + slurm_options + CMD
         else:
             CMD = CMD + " --no_slurm"
         logger.info(f'Job command is: "{CMD}"')
