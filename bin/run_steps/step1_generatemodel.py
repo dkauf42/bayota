@@ -102,7 +102,7 @@ def move_model_pickle_to_s3(logger, s3ops, savepath):
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
-    parser = ArgumentParser()
+    parser = ArgumentParser(description="Generate a study's model")
 
     parser.add_argument("control_filename", metavar='Control Filename', type=str,
                         help="name for this model generation's control file")
