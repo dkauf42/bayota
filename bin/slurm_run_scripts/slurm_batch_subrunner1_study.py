@@ -101,8 +101,6 @@ def main(control_file, dryrun=False, no_slurm=False, save_to_s3=False, log_level
             CMD = CMD + ' --save_to_s3'
         if no_slurm:
             CMD = CMD + " --no_slurm"
-
-        # Job is submitted.
         logger.info(f'Job command is: "{CMD}"')
         if notdry(dryrun, logger, '--Dryrun-- Would submit command'):
             p_list.append(subprocess.Popen([CMD], shell=True))
