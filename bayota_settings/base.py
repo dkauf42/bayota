@@ -124,7 +124,7 @@ def get_workspace_dir(s3=False) -> str:
     return my_dir
 
 def get_workspace_subdir(subdir=None, s3=False) -> str:
-    my_dir = get_workspace_dir(s3=s3) + subdir
+    my_dir = get_workspace_dir(s3=s3) + subdir + '/'
     if not s3:
         os.makedirs(my_dir, exist_ok=True)
     return my_dir
