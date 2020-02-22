@@ -1,27 +1,86 @@
 import time
 import cloudpickle
-import pyomo.environ as pe
+import numpy as np
 from itertools import compress
 
 import pyomo.environ as pyo
 
-from bayota_util.spec_handler import notdry
+from bayota_util.spec_and_control_handler import notdry
 
 import logging
 logger = logging.getLogger('root')
 
 
+class model_as_func_for_pygmo:
+    """ For use with PYGMO black-box optimization package"""
+    def __init__(self, dim, pyomo_model=None,
+                 objective1_name=None, objective1_indexer=None, objective1_sign=1,
+                 objective2_name=None, objective2_indexer=None, objective2_sign=1):
+        self.dim = dim
+        self.model = pyomo_model
+
+        self.objective1_name = objective1_name
+        self.objective1_indexer = objective1_indexer
+        self.objective1_sign = objective1_sign
+
+        self.objective2_name = objective2_name
+        self.objective2_indexer = objective2_indexer
+        self.objective2_sign = objective2_sign
+
+    def fitness(self, x):
+        """ Define objectives """
+        # Values for the model variables are set.
+        varcomponent = self.model.x
+        for k, d in zip(varcomponent.items(), x):
+            varcomponent[k[0]] = d
+
+        # Objective value is evaluated.
+        obj1_att = getattr(self.model, self.objective1_name)
+        if self.objective2_indexer:
+            f1 = self.objective1_sign * pyo.value(obj1_att[self.objective1_indexer])
+        else:
+            f1 = self.objective1_sign * pyo.value(obj1_att)
+
+        obj2_att = getattr(self.model, self.objective2_name)
+        if self.objective2_indexer:
+            f2 = self.objective2_sign * pyo.value(obj2_att[self.objective2_indexer])
+        else:
+            f2 = self.objective2_sign * pyo.value(obj2_att)
+
+        return [f1, f2]
+
+    def get_nobj(self):
+        """ Return number of objectives """
+        return 2
+
+    def get_name(self):
+        return "cast optimization function"
+
+    def get_bounds(self):
+        """ Return bounds of decision variables """
+        upper = list()
+        lower = list()
+        for k, v in self.model.x.items():
+            upper.append(v.ub)
+            lower.append(v.lb)
+
+        return np.array(lower), np.array(upper)
+
+
 def extract_indexed_expression_values(indexed_expr):
     """Returns the values of an indexed expression (PYOMO object)."""
-    return dict((ind, pe.value(val)) for ind, val in indexed_expr.items())  # changed for use with python3, from iteritems()
+    return dict((ind, pyo.value(val)) for ind, val in indexed_expr.items())  # changed for use with python3, from iteritems()
 
+
+def get_list_of_index_sets(mdl_component):
+    return [s.name for s in mdl_component._implicit_subsets]
 
 def modify_model(model, actiondict=None):
     if actiondict['action'] == 'add_component':
         if actiondict['component_type'] == 'Param':
             # logger.info(actiondict['args'])
             # Set the model Object
-            setattr(model, actiondict['name'], pe.Param(**actiondict['args']))
+            setattr(model, actiondict['name'], pyo.Param(**actiondict['args']))
 
         # elif actiondict['component_type'] == 'Constraint':
         #     print(actiondict['args'])

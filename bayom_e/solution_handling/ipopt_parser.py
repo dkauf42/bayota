@@ -13,6 +13,59 @@ class IpoptParser:
         pass
 
     @staticmethod
+    def quickparse(filepath):
+        """ based on pyomo contrib code
+
+        Args:
+            filepath:
+
+        Returns:
+            iters: number of iters
+            time: solve time
+            regu: regularization value at solution
+            n_vars:
+            n_ineq_constraints:
+            n_eq_constraints:
+
+        """
+        iters = 0
+        time = 0
+        n_vars = 0
+        n_eq_constraints = 0
+        n_ineq_constraints = 0
+        regu = None
+        line_m_2 = None
+        line_m_1 = None
+
+        # parse the output file to get the iteration count, solver times, etc.
+        with open(filepath, 'r') as f:
+            for line in f:
+                if line.startswith('Total number of variables............................:'):
+                    tokens = line.split()
+                    n_vars += int(tokens[4])
+                elif line.startswith('Total number of equality constraints...............:'):
+                    tokens = line.split()
+                    n_eq_constraints += int(tokens[5])
+                elif line.startswith('Total number of inequality constraints...............:'):
+                    tokens = line.split()
+                    n_ineq_constraints += int(tokens[5])
+                elif line.startswith('Number of Iterations....:'):
+                    tokens = line.split()
+                    iters = int(tokens[3])
+                    tokens_m_2 = line_m_2.split()
+                    regu = str(tokens_m_2[6])
+                elif line.startswith('Total CPU secs in IPOPT (w/o function evaluations)   ='):
+                    tokens = line.split()
+                    time += float(tokens[9])
+                elif line.startswith('Total CPU secs in NLP function evaluations           ='):
+                    tokens = line.split()
+                    time += float(tokens[8])
+                line_m_2 = line_m_1
+                line_m_1 = line
+
+        return iters, time, regu, n_vars, n_ineq_constraints, n_eq_constraints
+
+    @staticmethod
     def parse_output_file(filepath):
         """
         Parse text at given filepath

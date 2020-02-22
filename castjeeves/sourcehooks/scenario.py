@@ -3,7 +3,7 @@ from .sourcehooks import SourceHook
 
 class Scenario(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Agency Methods """
+        """ Methods for querying CAST data related to Scenarios """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     def get_baseconditionid(self,
@@ -30,10 +30,10 @@ class Scenario(SourceHook):
         TblBC = self.source.TblBaseCondition  # get relevant source data
 
         row = TblLCMS.loc[TblLCMS['landchangemodelscenarioname'] == landchangemodelscenario]
-        lcmsid = row['landchangemodelscenarioid'].item()
+        lcmsid = row['landchangemodelscenarioid'].iloc[0]
 
         row = TblBC.loc[(TblBC['landchangemodelscenarioid'] == lcmsid) &
                         (TblBC['baseyear'] == baseyear)]
-        bcid = row['baseconditionid'].item()
+        bcid = row['baseconditionid'].iloc[0]
 
         return bcid

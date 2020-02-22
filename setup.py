@@ -91,7 +91,7 @@ with open('LICENSE') as f:
 
 install_requires = ['pyomo',
                     'cloudpickle',
-                    'pyyaml',
+                    'pyyaml<5.3',
                     'numpy',
                     'pandas',
                     'matplotlib',
@@ -99,7 +99,10 @@ install_requires = ['pyomo',
                     'boto3',  # necessary for moving files in aws s3
                     'requests',  # necessary for moving files in aws s3
                     'scipy',
-                    'docker'
+                    'docker',
+                    'pytest-runner',
+                    'awscli',
+                    'python-dateutil'
                     #'pyutilib'
                     ]
 # boto3 and requests are also required IF using AWS and you want to move files to s3

@@ -4,7 +4,7 @@ from .sourcehooks import SourceHook
 
 class Sector(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Sector Methods """
+        """ Methods for querying CAST data related to Sectors (e.g. Agriculture, Developed, Natural) """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     # Sector Methods

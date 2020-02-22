@@ -8,7 +8,7 @@ from .sourcehooks import SourceHook
 
 class Bmp(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ BMP Methods """
+        """ Methods for querying CAST data related to Best Management Practices (BMPs) """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
     def all_names(self, astype=pd.Series):

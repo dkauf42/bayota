@@ -8,7 +8,7 @@ from .county import County
 
 class Geo(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Geography Methods """
+        """ Methods for querying CAST data related to Geographies """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
         self.lrseg = Lrseg(sourcedata=sourcedata, metadata=metadata)

@@ -40,7 +40,7 @@ def original_load_expr(model) -> pyo.ConcreteModel:
 def original_load_for_each_loadsource_expr(model) -> pyo.ConcreteModel:
     """ Original Load Expression (with lrsegs aggregated together) """
     def original_load_rule_for_each_loadsource(mdl, thisu, p):
-        origload = sum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
+        origload = pyo.quicksum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
                        if (u == thisu)
                        else 0
                        for l, u, h in mdl.PARCELS)
@@ -55,7 +55,7 @@ def original_load_for_each_loadsource_expr(model) -> pyo.ConcreteModel:
 def original_load_for_each_lrseg_expr(model) -> pyo.ConcreteModel:
     """ Original Load Expression (quantified for each lrseg) """
     def original_load_rule_for_each_lrseg(mdl, thisl, p):
-        return sum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
+        return pyo.quicksum((mdl.phi[l, u, h, p] * mdl.alpha[l, u, h])
                    if (l == thisl)
                    else 0
                    for l, u, h in mdl.PARCELS)
@@ -69,7 +69,7 @@ def original_load_for_each_lrseg_expr(model) -> pyo.ConcreteModel:
 def new_load_expr(model) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(mdl, p):
-        newload = sum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
+        newload = pyo.quicksum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
                       pyo.prod([(1 - sum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
                                          if ((pyo.value(mdl.alpha[l, u, h]) > 1e-6) &
                                              ((b, gamma) in mdl.BMPGRPING) &
@@ -91,7 +91,7 @@ def new_load_expr(model) -> pyo.ConcreteModel:
 def new_load_for_each_loadsource_expr(model) -> pyo.ConcreteModel:
     """ New Load (with lrsegs aggregated together) """
     def new_load_rule(mdl, thisu, p):
-        newload = sum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
+        newload = pyo.quicksum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
                       pyo.prod([(1 - sum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
                                          if ((pyo.value(mdl.alpha[l, u, h]) > 1e-6) &
                                              ((b, gamma) in mdl.BMPGRPING) &
@@ -116,7 +116,7 @@ def new_load_for_each_loadsource_expr(model) -> pyo.ConcreteModel:
 def new_load_for_each_lrseg_expr(model) -> pyo.ConcreteModel:
     """ New Loa (quantified for each lrseg) """
     def new_load_rule_for_each_lrseg(mdl, thisl, p):
-        newload = sum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
+        newload = pyo.quicksum(mdl.phi[l, u, h, p] * mdl.alpha[l, u, h] *
                       pyo.prod([(1 - sum((mdl.x[b, l, u, h] / mdl.alpha[l, u, h]) * mdl.eta[b, l, u, p]
                                          if ((pyo.value(mdl.alpha[l, u, h]) > 1e-6) &
                                              ((b, gamma) in mdl.BMPGRPING) &

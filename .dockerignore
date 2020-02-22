@@ -2,5 +2,7 @@
 /sandbox/*
 /jnotebooks/*
 /graphics/*
+buildspec.yml
+Dockerfile_conda3_thenIpopt
 /.*
 **/.git

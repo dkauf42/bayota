@@ -5,12 +5,12 @@
 # Example commands...
 #
 #  Create a docker image:
-#     >> docker build -f Dockerfile_conda3_thenIpopt --tag bayota_conda_then_ipopt_app .
+#     >> docker build -f Dockerfile --tag bayota_app .
 #
 #    -- Create a first-stage docker image from the 'builder' stage:
-#       >> docker build -f Dockerfile_conda3_thenIpopt --tag bayota_app_builder . --target builder
+#       >> docker build -f Dockerfile --tag bayota_app_builder . --target builder
 #    -- Create a second-stage docker image from the 'builder2' stage:
-#       >> docker build -f Dockerfile_conda3_thenIpopt --tag bayota_app_builder2 . --target builder2
+#       >> docker build -f Dockerfile --tag bayota_app_builder2 . --target builder2
 #
 #
 #  MANAGE IMAGES
@@ -42,18 +42,22 @@
 # #################################################
 # --- START ---
 # #################################################
-FROM continuumio/miniconda3 as builder
+FROM continuumio/miniconda3
 # Add the IPOPT directory generated in the `builder` container above
 #COPY --from=builder /CoinIpopt /CoinIpopt
 
 # Setup Conda Environment
 RUN conda update -n base -c defaults conda -y
-RUN conda create --name bayota3
+#RUN conda create --name bayota3
 # Activate Environment
 # Pull the environment name out of the environment.yml
-RUN echo "conda activate bayota3" > ~/.bashrc
-ENV PATH /opt/conda/envs/bayota3/bin:$PATH
+#RUN echo "conda activate bayota3" > ~/.bashrc
+#ENV PATH /opt/conda/envs/bayota3/bin:$PATH
 RUN conda clean -afy
+
+# Do not install user tools on unmanaged images
+# add vim for basic editing and checking
+# RUN apt-get update && apt-get install vim -y
 
 # --- Install basic requirements ---
 RUN apt-get update && apt-get install -y \
@@ -62,17 +66,16 @@ RUN apt-get update && apt-get install -y \
     g++ \
     gfortran \
     patch \
+    make \
  && rm -rf /var/lib/apt/lists/*
-
-# add vim for basic editing and checking
-RUN apt-get install vim -y
 
 # --- Get the IPOPT code ---
 WORKDIR /
 RUN curl --remote-name https://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.12.tgz \
     \
     && tar -xvzf Ipopt-3.12.12.tgz \
-    && mv /Ipopt-3.12.12 /CoinIpopt
+    && mv /Ipopt-3.12.12 /CoinIpopt \
+    && rm Ipopt-3.12.12.tgz
 
 # --- Download external code packages ---
 RUN cd /CoinIpopt/ThirdParty/Blas \
@@ -92,7 +95,8 @@ RUN mkdir /CoinIpopt/build \
     && /CoinIpopt/configure
 
 # --- Build the IPOPT code ---
-RUN make \
+RUN ls -alht \
+    && pwd \
     && cd /CoinIpopt/build \
     && make \
     && make test \
@@ -116,4 +120,4 @@ RUN pip install .
 # --- Ensure IPOPT is in path variable ---
 ENV PATH="${PATH}:/CoinIpopt/build/bin"
 
-CMD ["/bin/echo", "executing CMD"]
+CMD ["python", "/root/bayota/bin/slurm_scripts/run_step2_generatemodel.py","-cn","step1_studycon1d6c68f6-326c-4487-8d85-5c5113f67bd7", "--s3workspace", "optimization/ws_copies/bayota_ws_0.1b2.dev1", "--log_level=INFO"]

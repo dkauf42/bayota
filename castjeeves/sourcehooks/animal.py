@@ -8,7 +8,7 @@ from .sourcehooks import SourceHook
 
 class Animal(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Load Source Methods """
+        """ Methods for querying CAST data related to Animals """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
         # self.agency = Agency(sourcedata=sourcedata)

@@ -9,10 +9,11 @@ from typing import List
 
 class SourceHook:
     def __init__(self, sourcedata=None, metadata=None):
-        """Base Class for source data queries.
+        """Base Class for CAST data queries.
 
         Attributes:
             source (SourceData): The source object contains all of the data tables
+            metadata_tables (MetaData): The metadata object contains all of the metadata tables
 
         Required Methods:
             all_names()

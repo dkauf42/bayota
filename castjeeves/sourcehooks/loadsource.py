@@ -9,7 +9,7 @@ from .sector import Sector
 
 class LoadSource(SourceHook):
     def __init__(self, sourcedata=None, metadata=None):
-        """ Load Source Methods """
+        """ Methods for querying CAST data related to Load Sources """
         SourceHook.__init__(self, sourcedata=sourcedata, metadata=metadata)
 
         self.agency = Agency(sourcedata=sourcedata, metadata=metadata)
