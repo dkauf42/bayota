@@ -248,7 +248,7 @@ def pull_workspace_subdir_from_s3(subdirname=None, s3ops=None, log_level='INFO')
 
     # Directory is copied.
     s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
-    print(f"copied workspace subdirectory from s3path:{s3path} to local: {local_path}")
+    print(f"copied workspace subdirectory from s3:{s3path} to local:{local_path}")
 
 
 def pull_model_instance_from_s3(log_level, model_instance_name, s3ops=None):
@@ -259,8 +259,8 @@ def pull_model_instance_from_s3(log_level, model_instance_name, s3ops=None):
     # File is copied.
     s3path = get_model_instances_dir(s3=True) + model_instance_name
     local_path = get_model_instances_dir(s3=False) + model_instance_name
-    s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=True)
-    print(f"copied workspace control directory from {s3path} to local location: {local_path}")
+    s3ops.get_from_s3(s3path=s3path, local_path=local_path, move_directory=False)
+    print(f"copied model instance from s3:{s3path} to local:{local_path}")
 
 
 def move_controlfile_to_s3(logger, s3ops, controlfile_name, no_s3=False):
