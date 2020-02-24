@@ -8,12 +8,14 @@
 
 import sys
 import argparse
-import boto3
+from collections import Counter
 
+import boto3
 client = boto3.client('batch')
 
 
 def main(jobid, verbose=False):
+    status_list = []
 
     jobids_100_at_a_time = [jobid[i:i+100] for i in range(0, len(jobid), 100)]
 
@@ -22,7 +24,10 @@ def main(jobid, verbose=False):
         response = client.describe_jobs(jobs=jobidlist)
 
         for job in response['jobs']:
-            print(f"{job['jobId']} | {job['status']:<9} | {job['jobName']}")
+            jobstatus = job['status']
+            status_list.append(jobstatus)
+
+            print(f"{job['jobId']} | {jobstatus:<9} | {job['jobName']}")
             for attempt in job['attempts']:
                 if 'exitCode' in attempt['container']:
                     exitcode = attempt['container']['exitCode']
@@ -32,6 +37,9 @@ def main(jobid, verbose=False):
                 if verbose and ('reason' in attempt['container']):
                     print(f"    reason: {attempt['container']['reason']}")
 
+    summary_counts = dict(Counter(status_list))
+    print("\n*** Summary (count of each job status) ***")
+    print('\n'.join("{}: {}".format(k, v) for k, v in summary_counts.items()))
 
 def parse_cli_arguments():
     """ Input arguments are parsed. """
