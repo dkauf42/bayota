@@ -60,7 +60,7 @@ def parse_cli_arguments():
 
 
     parser.add_argument('jobid', metavar='ID', type=str, nargs='+',
-                        help='a job for which to get its logstream ids')
+                        help='a job (or list of jobs) for which to get logstream id(s) and status(es)')
 
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='modify output verbosity to include "reasons" for failed jobs')
