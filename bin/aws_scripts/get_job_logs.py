@@ -7,6 +7,7 @@
 #   >> aws logs get-log-events --log-group-name /aws/batch/job --log-stream-name Modeling-Bayota/default/b9c15a9d-f26b-4c3b-8516-6eb3f39bb02c --output text
 
 import sys
+import fileinput
 import argparse
 from collections import Counter
 
@@ -59,7 +60,7 @@ def parse_cli_arguments():
     """ Input arguments are parsed. """
     parser = argparse.ArgumentParser(description='get some logs.')
 
-    parser.add_argument('jobid', metavar='ID', type=str, nargs='+',
+    parser.add_argument('jobid', metavar='ID', type=str, nargs='*',
                         help='a job (or list of jobs) for which to get logstream id(s) and status(es)')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='modify output verbosity to include "reasons" for failed jobs')
@@ -71,7 +72,13 @@ def parse_cli_arguments():
 
 if __name__ == '__main__':
     opt = parse_cli_arguments()
+    
+    if not len(sys.argv) > 1:
+        strings = sys.stdin.readlines()[0]
+        jobid_list = strings.split()
+    else:
+        jobid_list = opt.jobid    
 
-    sys.exit(main(opt.jobid,
+    sys.exit(main(jobid_list,
                   verbose=opt.verbose,
                   summaryonly=opt.summary))
