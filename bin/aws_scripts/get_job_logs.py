@@ -15,10 +15,11 @@ client = boto3.client('batch')
 
 
 def main(jobid, verbose=False, summaryonly=False):
+    number_of_jobs = len(jobid)
     status_list = []
 
     # List of jobs is broken into chunks of 100 so that boto3's describe_jobs() method can handle them.
-    jobids_100_at_a_time = [jobid[i:i+100] for i in range(0, len(jobid), 100)]
+    jobids_100_at_a_time = [jobid[i:i+100] for i in range(0, number_of_jobs, 100)]
 
     # A header row is printed first.
     printc("jobid | status | jobname", summaryonly)
@@ -44,7 +45,7 @@ def main(jobid, verbose=False, summaryonly=False):
                     printc(f"    reason: {attempt['container']['reason']}", summaryonly)
 
     summary_counts = dict(Counter(status_list))
-    print("\n*** Summary (count of each job status) ***")
+    print("\n*** Summary of %s jobs (count of each job status) ***" % number_of_jobs)
     print('\n'.join("{}: {}".format(k, v) for k, v in sorted(summary_counts.items())))
 
 
