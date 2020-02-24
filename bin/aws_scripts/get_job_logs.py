@@ -6,6 +6,9 @@
 # Example usage:
 #   ./get_job_logs.py abea20c8-e12e-478c-aa85-bda50679debf d9d4b758-783f-49ab-bc97-1b3b0be83bb6
 #
+# Can also be used with a pipe, for example with the extract_ids script:
+#   ./bin/extract_ids <filename> | ./bin/aws_scripts/get_job_logs.py
+#
 ###CLI Options
 # -v || --verbose  = Modify output verbosity to include "reasons" for failed jobs
 # -s || --summary  = Only print summary counts of job statuses
@@ -80,7 +83,7 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opt = parse_cli_arguments()
     
-    if not len(sys.argv) > 1:
+    if len(opt.jobid) < 1:
         strings = sys.stdin.readlines()[0]
         jobid_list = strings.split()
     else:
