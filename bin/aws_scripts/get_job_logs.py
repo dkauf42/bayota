@@ -45,7 +45,7 @@ def main(jobid, verbose=False, summaryonly=False):
 
     summary_counts = dict(Counter(status_list))
     print("\n*** Summary (count of each job status) ***")
-    print('\n'.join("{}: {}".format(k, v) for k, v in summary_counts.items()))
+    print('\n'.join("{}: {}".format(k, v) for k, v in sorted(summary_counts.items())))
 
 
 def printc(msg, /, summaryonly=False):
