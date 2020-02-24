@@ -272,8 +272,10 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                 myprint(v)
             else:
                 print(v, end=' ')
+    
     print('jobids all together:')
     print('------------------------------')
+    print('jobids=', end='')
     myprint(jobids)
     print('\n------------------------------')
 
