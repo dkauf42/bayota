@@ -59,10 +59,8 @@ def parse_cli_arguments():
     """ Input arguments are parsed. """
     parser = argparse.ArgumentParser(description='get some logs.')
 
-
     parser.add_argument('jobid', metavar='ID', type=str, nargs='+',
                         help='a job (or list of jobs) for which to get logstream id(s) and status(es)')
-
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='modify output verbosity to include "reasons" for failed jobs')
     parser.add_argument('-s', '--summary', action='store_true',
