@@ -45,7 +45,7 @@ def main(jobid, verbose=False, summaryonly=False):
                     printc(f"    reason: {attempt['container']['reason']}", summaryonly)
 
     summary_counts = dict(Counter(status_list))
-    print("\n*** Summary of %s jobs (count of each job status) ***" % number_of_jobs)
+    print("\n*** Summary of %s jobs (count of each status) ***" % number_of_jobs)
     print('\n'.join("{}: {}".format(k, v) for k, v in sorted(summary_counts.items())))
 
 
