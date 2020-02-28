@@ -132,7 +132,7 @@ def main(control_file, dryrun=False, use_s3_ws=False, save_to_s3=False, log_leve
 
         # The progress file is updated, then moved to output directory in s3.
         progress_dict['run_timestamps']['step4_trial_done'] = datetime.datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
-        iters, ipopt_time, regu, n_vars, n_ineq_constraints, n_eq_constraints = IpoptParser().quickparse(solver_log_file)
+        iters, ipopt_time, n_vars, n_ineq_constraints, n_eq_constraints = IpoptParser().quickparse(solver_log_file)
         progress_dict['solve_characteristics'] = {'n_iterations': iters,
                                                   'solve_time (s)': ipopt_time,
                                                   'n_variables': n_vars,
