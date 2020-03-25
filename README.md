@@ -156,15 +156,19 @@ These are defined in `bayota/bin/specification_files/`, and there are 3 types:
 #### 1⌨ Running from the command line
 -- First, change directory to the project root (`cd bayota/`).
 
-Five 'run' scripts are provided.  They provide the ability to run a batch of optimization studies automatically, \
-or with individual steps run separately. They are, in order of their automated execution during a batch submission:
-1) `run_step0_batch_of_studies.py`
-2) `run_step1_single_study.py`
-3) `run_step2_generatemodel.py`
-4) `run_step3_conductexperiment.py`
-5) `run_step4_solveonetrial.py`
+Two methods of running are provided. \
+They each provide the ability to run a batch of optimization studies automatically. The options are to use either the 
+Slurm job manager or AWS Batch in docker containers.  To execute, one would run either:
+`bin/run_scripts/docker_batch_runner.py`
+or
+`bin/run_scripts/slurm_batch_runner.py`
 
-###### Batch runs are set up using 'specification files'. These can be found in `bayota/bin/specification_files`.
+Note: When either of these are run, they will automatically call the following run_steps during execution:
+1) `bin/run_steps/step1_generatemodel.py`
+2) `bin/run_steps/step2_modifymodel.py`
+3) `bin/run_steps/step3_solveonetrial.py`
+
+###### Batch runs are set up using 'specification files'. These will be in one's workspace.
 
 -- Example command for a batch of studies:
 * `-d` (or `--dryrun`) argument can be included to only print the commands that would be submitted without running them
