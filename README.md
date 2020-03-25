@@ -224,32 +224,42 @@ bayota
 ├── CHANGELOG.md           <- Documentation of notable changes to this project
 │
 ├── bin                    <- scripts for running from the command-line and performing analyses
+│   ├── aws_scripts/
+│   ├── run_scripts/
+│   ├── run_steps/
 │   ├── python_scripts/
-│   └── run_scripts/
+│   └── my_test_scripts/
 │
-├── data                   <- source data CSVs, excel files
+├── bayom_e                <- *Python package* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+│   ├── config.py
+│   ├── data_handling/
+│   ├── model_handling/
+│   ├── solver_handling/
+│   ├── solution_handling/
+│   └── ...
+|
+├── castjeeves             <- *Python package* to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+│   ├── jeeves.py
+│   ├── sourcehooks/
+│   ├── sqltables/
+│   └── ...
 │
-├── castjeeves             <- Python *PACKAGE* to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+├── bayota_settings        <- *Python package* that configures directory paths (output, graphics, & logging). Contains example config files.
+│   ├── base.py
+│   ├── log_setup.py
+│   └── ...
+│
+├── bayota_util            <- *Python package* for utility methods that haven't yet found a home elsewhere
+│   ├── s3_operations.py
+│   ├── spec_and_control_handler.py
+│   ├── str_manip.py
+│   └── ...
+│
+├── sandbox                <- *Python package* (out-of-date) for automated generation of valid BMP input files for use with CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── bayom_e                <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
-│   ├── __init__.py
-│   └── ...
-│
-├── sandbox                <- Python *PACKAGE* for automated generation of valid BMP input files for use with CAST
-│   ├── __init__.py
-│   └── ...
-│
-├── bayota_settings        <- Python *PACKAGE* that configures directory paths (output, graphics, & logging). Contains example config files.
-│   ├── __init__.py
-│   └── ...
-│
-├── bayota_util            <- Python *PACKAGE* for utility methods that haven't yet found a home elsewhere
-│   ├── __init__.py
-│   └── ...
-│
-├── Dockerfile_37_multistage
+├── Dockerfile
 ├── LICENSE
 ├── MANIFEST.in
 ├── setup.py
