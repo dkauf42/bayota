@@ -214,7 +214,7 @@ python setup.py clean
 
 #### Components
 
-<img src="./.images/components_20190621.png" alt="components" width="503" height="377"/>
+<img src="./.images/components_20200325.png" alt="components" width="503" height="377"/>
 
 #### Directory Tree
 ```
