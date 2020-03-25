@@ -156,15 +156,19 @@ These are defined in `bayota/bin/specification_files/`, and there are 3 types:
 #### 1⌨ Running from the command line
 -- First, change directory to the project root (`cd bayota/`).
 
-Five 'run' scripts are provided.  They provide the ability to run a batch of optimization studies automatically, \
-or with individual steps run separately. They are, in order of their automated execution during a batch submission:
-1) `run_step0_batch_of_studies.py`
-2) `run_step1_single_study.py`
-3) `run_step2_generatemodel.py`
-4) `run_step3_conductexperiment.py`
-5) `run_step4_solveonetrial.py`
+Two methods of running are provided. \
+They each provide the ability to run a batch of optimization studies automatically. The options are to use either the 
+Slurm job manager or AWS Batch in docker containers.  To execute, one would run either:
+`bin/run_scripts/docker_batch_runner.py`
+or
+`bin/run_scripts/slurm_batch_runner.py`
 
-###### Batch runs are set up using 'specification files'. These can be found in `bayota/bin/specification_files`.
+Note: When either of these are run, they will automatically call the following run_steps during execution:
+1) `bin/run_steps/step1_generatemodel.py`
+2) `bin/run_steps/step2_modifymodel.py`
+3) `bin/run_steps/step3_solveonetrial.py`
+
+###### Batch runs are set up using 'specification files'. These will be in one's workspace.
 
 -- Example command for a batch of studies:
 * `-d` (or `--dryrun`) argument can be included to only print the commands that would be submitted without running them
@@ -214,7 +218,7 @@ python setup.py clean
 
 #### Components
 
-<img src="./.images/components_20190621.png" alt="components" width="503" height="377"/>
+<img src="./.images/components_20200325.png" alt="components" width="503" height="377"/>
 
 #### Directory Tree
 ```
@@ -224,32 +228,42 @@ bayota
 ├── CHANGELOG.md           <- Documentation of notable changes to this project
 │
 ├── bin                    <- scripts for running from the command-line and performing analyses
+│   ├── aws_scripts/
+│   ├── run_scripts/
+│   ├── run_steps/
 │   ├── python_scripts/
-│   └── run_scripts/
+│   └── my_test_scripts/
 │
-├── data                   <- source data CSVs, excel files
+├── bayom_e                <- *Python package* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
+│   ├── config.py
+│   ├── data_handling/
+│   ├── model_handling/
+│   ├── solver_handling/
+│   ├── solution_handling/
+│   └── ...
+|
+├── castjeeves             <- *Python package* to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+│   ├── jeeves.py
+│   ├── sourcehooks/
+│   ├── sqltables/
+│   └── ...
 │
-├── castjeeves             <- Python *PACKAGE* to access, query, and parse source data from the Chesapeake Bay Assessement Scenario Tool (CAST)
+├── bayota_settings        <- *Python package* that configures directory paths (output, graphics, & logging). Contains example config files.
+│   ├── base.py
+│   ├── log_setup.py
+│   └── ...
+│
+├── bayota_util            <- *Python package* for utility methods that haven't yet found a home elsewhere
+│   ├── s3_operations.py
+│   ├── spec_and_control_handler.py
+│   ├── str_manip.py
+│   └── ...
+│
+├── sandbox                <- *Python package* (out-of-date) for automated generation of valid BMP input files for use with CAST
 │   ├── __init__.py
 │   └── ...
 │
-├── bayom_e                <- Python *PACKAGE* to solve optimization problem involving 'Efficiency' Best Management Practices (BMPs) of CAST
-│   ├── __init__.py
-│   └── ...
-│
-├── sandbox                <- Python *PACKAGE* for automated generation of valid BMP input files for use with CAST
-│   ├── __init__.py
-│   └── ...
-│
-├── bayota_settings        <- Python *PACKAGE* that configures directory paths (output, graphics, & logging). Contains example config files.
-│   ├── __init__.py
-│   └── ...
-│
-├── bayota_util            <- Python *PACKAGE* for utility methods that haven't yet found a home elsewhere
-│   ├── __init__.py
-│   └── ...
-│
-├── Dockerfile_37_multistage
+├── Dockerfile
 ├── LICENSE
 ├── MANIFEST.in
 ├── setup.py

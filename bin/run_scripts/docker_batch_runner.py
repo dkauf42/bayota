@@ -272,8 +272,10 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                 myprint(v)
             else:
                 print(v, end=' ')
+    
     print('jobids all together:')
     print('------------------------------')
+    print('jobids=', end='')  # Note: this "jobids=" string is used as a key when extracting jobids from a file.
     myprint(jobids)
     print('\n------------------------------')
 

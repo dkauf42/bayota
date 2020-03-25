@@ -13,14 +13,72 @@ Each version should:
 *Fixed* for any bug fixes.
 *Security* to invite users to upgrade in case of vulnerabilities.
 
-[Current Development]
+## [0.1b2.dev1] -- [Current Development]
+### Added
+- general
+    - ability to fully run in docker containers
+    - script for getting aws job and log streams
+    - batch jobs are dependent on preceding jobs
+    - progress file that records timings
+    - s3 methods for pulling specific workspace directories
+- bayom-e
+    - parser for ipopt output that gets problem characteristics 
+
+### Changed
+- general
+    - pass IPOPT solver options using OF_ prefix instead of manually writing options file
+    - move saved model pickle to s3 after it is generated
+    - reorganize run steps and scripts for slurm vs docker operation
+- bayom-e
+    - save solver iterations and logs to a file instead of the console
+    
+### Fixed
+- general
+    - more careful copying of workspace folders to s3 and into container
+    - Slurm tasks number that matches two cpus per task
+    - workspace permissions that affect s3 and docker
 
 ## [0.1b2] -- 2019-10-08
 ### Added
+- general
+    - additional error cases
+    - additional test modules
+    - ability to move directories to s3
+    - disclaimer text
+- bayom-e
+    - random dataplate generator with appropriate component distributions
+    - component indexing by agencies and parcels
+    - check whether expression is already part of model before adding
+- castjeeves
+    - new methods for querying source data
+    - option for passing file with credential to sql extract table scripts
 
 ### Changed
+- general
+    - update license
+    - improve readme
+    - improve docker file
+    - reorganize scripts and utility module locations
+    - efficiencysubproblem is renamed bayom-e (bay optimization module - efficiency BMP)
+    - removed unnecessary setup files from subpackages
+    - reorder user config file entries 
+    - consolidate s3 move and get scripts into a class
+    - change Slurm options
+- bayom-e
+    - use now-standard "pyo" import alias for pyomo.environ
+    - make slight compatibility changes for consistency with latest CAST source data
+    - update model component names in code to better reflect written documentation
+    - streamline subdirectory structure
+    - replace ModelHandler class with ModelBuilder
 
 ### Fixed
+- general
+    - remove unused model modules
+    - removal of EOF blank line from cast-formatted output file
+- efficiencysubproblem
+    - use pyomo quicksum method instead of standard python sum where possible
+- castjeeves
+    - make return types more consistent
 
 ## [0.1b1] -- 2019-04-02
 ### Added

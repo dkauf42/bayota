@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# DKaufman
+# February 24, 2020
+#
+# Example Usage:
+#  extract_ids test_dc_singlestate_40N.out
+#
+
+FILE1=$1
+
+OUTPUT="$(cat "${FILE1}" | grep 'jobids=' | cut -f2- -d=)"
+echo "${OUTPUT}"
