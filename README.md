@@ -141,7 +141,7 @@ Optimization studies can be conducted in BayOTA in multiple ways:
 
 #### Specification Files
 Typical usage requires setting up model and run configurations in 'specification files'. 
-These are defined in `bayota/bin/specification_files/`, and there are 3 types:
+These are defined (by default) in a workspace subdirectory, and there are 3 types:
 * **batch specs** - These set up one or more studies, by specifying:
     - geographies
     - names of model and experiment spec files to use
@@ -218,7 +218,7 @@ python setup.py clean
 
 #### Components
 
-<img src="./.images/components_20200325.png" alt="components" width="503" height="377"/>
+<img src="./.images/components_20200325.png" alt="components" width="489" height="311"/>
 
 #### Directory Tree
 ```
