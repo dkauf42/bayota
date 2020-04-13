@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """ Move files between S3 and local
 
+(Note: this module can be used either from the command line or as an imported python class)
+
 Command
   {push, pull}
 
@@ -15,7 +17,7 @@ Command
   -r || --recursive = if target is a directory, this flag is required
 
 Example:
-  $ ./s3_oeprations.py pull --recursive s3://modeling-data/data_dir -l /modeling/local_dir
+  $ ./s3_operations.py pull --recursive s3://modeling-data/data_dir -l /modeling/local_dir
 
 """
 
