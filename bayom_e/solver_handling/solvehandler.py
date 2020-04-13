@@ -1,24 +1,29 @@
-import fileinput
+""" Set up optimization solver, send solve commands, and perform checks.
+"""
+
+# Generic/Built-in
 import os
 import re
 import sys
 import time
+import logging
+import fileinput
 import tempfile
-import pandas as pd
 from datetime import datetime
 
+# Computation
+import pandas as pd
 import pyomo.environ as pyo
 from pyomo.opt import SolverFactory, SolverManagerFactory, SolverStatus, TerminationCondition
 
+# BAYOTA
 from bayom_e.config import PROJECT_DIR
 from bayom_e.solution_handling.solutionhandler import SolutionHandler, \
     initial_solution_parse_to_dataframe
-from castjeeves.jeeves import Jeeves
-
 from bayota_util.infeasible import *
 from bayota_settings.base import get_output_dir, get_raw_data_dir
+from castjeeves.jeeves import Jeeves
 
-import logging
 logger = logging.getLogger(__name__)
 
 

@@ -1,16 +1,18 @@
-"""
-Generate pseudo-random data similar to the CAST source data, useful for testing and experimentation.
+""" Generate pseudo-random data similar to the CAST source data, useful for testing and experimentation.
 
 Todo:
     * Try to speed up the random generation computational time
 
 """
+
+# Generic/Built-in
 import math
 import random
 import string
 import time
 from collections import namedtuple
 
+# Computation
 import numpy as np
 from scipy.stats import skewnorm, expon, nbinom, poisson, gamma
 

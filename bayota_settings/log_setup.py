@@ -1,14 +1,19 @@
+""" Set up the logging formats for loggers used throughout Bayota """
+
+# Generic/Built-in
 import os
 import sys
 import logging
 import logging.handlers
 
+# BAYOTA
 from bayota_settings.base import get_logging_dir, log_config
-
 from bayota_util.spec_and_control_handler import read_yaml_to_dict
 
+# Read in the formats specified in the log configuration file
 log_format_config = read_yaml_to_dict(log_config)
 
+# Initialize the logging formatters
 consoleINFOfmt = logging.Formatter(log_format_config['formatters']['console']['info'][0],
                                    log_format_config['formatters']['console']['info'][1])
 consoleDEBUGfmt = logging.Formatter(log_format_config['formatters']['console']['debug'][0],

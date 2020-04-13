@@ -1,8 +1,16 @@
+""" Provide a framework for querying the CAST source data
+"""
+
+# Generic/Built-in
 import os
+import logging
+
+# Computation
 import pickle
 import numpy as np
 import pandas as pd
 
+# BAYOTA
 from bayota_settings.base import get_source_pickles_dir, get_source_csvs_dir, get_metadata_csvs_dir
 
 from castjeeves.sqltables import SourceData
@@ -20,7 +28,6 @@ from castjeeves.sourcehooks import Scenario
 from castjeeves.sourcehooks import Sector
 from castjeeves.sourcehooks import Translator
 
-import logging
 logger = logging.getLogger(__name__)
 
 

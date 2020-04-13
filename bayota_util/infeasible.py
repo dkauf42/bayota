@@ -1,9 +1,11 @@
 # -*- coding: UTF-8 -*-
-"""Module with diagnostic utilities for infeasible models."""
-from pyomo.core import Constraint, Var, value, TraversalStrategy
+""" Module with diagnostic utilities for infeasible models.
+"""
+import logging
 from math import fabs
 
-import logging
+from pyomo.core import Constraint, Var, value, TraversalStrategy
+
 logger = logging.getLogger(__name__)
 
 

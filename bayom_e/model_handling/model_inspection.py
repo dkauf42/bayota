@@ -1,9 +1,11 @@
+
+# Computation
 import numpy as np
 import pandas as pd
-
 import pyomo.environ as pyo
-from bayom_e.model_handling.utils import get_list_of_index_sets
 
+# BAYOTA
+from bayom_e.model_handling.utils import get_list_of_index_sets
 from castjeeves.jeeves import Jeeves
 
 jeeves = Jeeves()

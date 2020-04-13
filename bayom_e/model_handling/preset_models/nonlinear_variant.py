@@ -1,3 +1,6 @@
+""" Nonlinear variant of the efficiency BMP model
+"""
+
 import pyomo.environ as pyo
 
 from bayom_e.model_handling.builders.modelbuilder import ModelBuilder

@@ -1,17 +1,20 @@
 #!/usr/bin/env python
-"""
-Note: This submits a SLURM "srun" command to launch the 'step2_generatemodel' script,
-      if CLI argument '--no_slurm' is not passed.
+""" This submits a SLURM "srun" command to launch the 'step2_generatemodel' script,
+
+Note: If argument '--no_slurm' is passed, then it will try to run the optimization locally.
 
 Example usage command:
   >> ./bin/run_scripts/slurm_batch_subrunner1_study.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step1_study_control_1ccccab7-dfbe-4974-86ed-5744b659f938.yaml
 ================================================================================
 """
+
+# Generic/Built-in
 import os
 import sys
 import subprocess
 from argparse import ArgumentParser
 
+# BAYOTA
 from bayota_settings.base import get_output_dir, get_slurm_scripts_dir, get_run_steps_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 from bayota_util.spec_and_control_handler import read_spec, notdry, read_study_control_file, write_control_with_uniqueid

@@ -1,8 +1,12 @@
-from pyomo.opt import SolverFactory
-import pyomo.environ as pyo
-import pandas as pd
+
+# Generic/Built-in
 import os
 import re
+
+# Computation
+import pandas as pd
+from pyomo.opt import SolverFactory
+import pyomo.environ as pyo
 
 
 def gjh_solve(instance, keepfiles=True, amplenv=None, basegjhpath=''):

@@ -1,9 +1,11 @@
+""" Nonlinear variant of the efficiency BMP model indexed by Parcels
+"""
 import pyomo.environ as pyo
 
 from bayom_e.model_handling.builders.modelbuilder import ModelBuilder
 
 def build_model(dataplate, target_load=1):
-    """Nonlinear variant of the efficiency BMP model
+    """Nonlinear variant of the efficiency BMP model indexed by Parcels
 
     Notes:
     - no indexing by nutrient (assumed single nutrient)

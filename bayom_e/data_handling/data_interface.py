@@ -1,13 +1,15 @@
+""" Interface for retrieving DataPlate and DataHandler objects.
 """
-Interface for retrieving DataPlate and DataHandler objects.
-"""
+
+# Generic/Built-in
+import string
+
+# BAYOTA data handling
 from .randomizer import random_list_of_names, make_random_bmp_groupings, \
     randomly_assign_grps_to_loadsources, random_bmp_parameters, random_parcel_parameters
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
-
-import string
 
 
 def get_random_dataplate(name='nlp', num_lrsegs=1,

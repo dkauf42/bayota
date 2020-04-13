@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+""" Run this when switching versions so that the data files are in the necessary S3 location
 """
-Run this when switching versions so that the data files are in the necessary S3 location
-"""
+
+# Generic/Built-in
 import sys
 
+# BAYOTA
 from bayota_settings.base import get_bayota_version, get_source_csvs_dir, get_raw_data_dir, get_metadata_csvs_dir
 from bayota_settings.log_setup import root_logger_setup
 from bayota_util.s3_operations import establish_s3_connection

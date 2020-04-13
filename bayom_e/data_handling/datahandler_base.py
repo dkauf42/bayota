@@ -1,18 +1,23 @@
+""" Provide formatted/parsed/wrangled data for efficiency BMP models """
+
+# Generic/Built-in
 import os
+import logging
+
+# Computation
 import numpy as np
 import pandas as pd
 
+# BAYOTA
 from bayota_settings.base import get_model_instances_dir, get_raw_data_dir
 from .bmp_exclusions import excluded_bmps_list
-
 from castjeeves.jeeves import Jeeves
 
-import logging
 logger = logging.getLogger(__name__)
 
 
 class DataHandlerBase:
-    """Base Class for data loader classes.
+    """Base Class for data loader classes - provides formatted/parsed/wrangled data for efficiency BMP models
 
     Attributes:
         save2file ():

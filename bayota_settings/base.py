@@ -1,5 +1,4 @@
-"""
-This script sets up a user's workspace directory during install,
+""" This module sets up a user's workspace directory during install,
  and also provides methods for grabbing required directories during a run.
 ================================================================================
 """

@@ -1,16 +1,20 @@
 #!/usr/bin/env python
-import datetime
-import itertools
+""" Manage specification and control files for Bayota optimization runs
+"""
+
+# Generic/Built-in
 import os
 import uuid
+import datetime
+import itertools
 
 import yaml
 
+# BAYOTA
 from bayota_settings.base import get_bayota_version
 from bayota_settings.base import get_model_instances_dir, get_control_dir, \
     get_batch_studies_specs_dir, get_experiment_specs_dir, get_model_specs_dir
 from bayota_util.str_manip import compact_capitalized_geography_string
-
 from castjeeves.jeeves import Jeeves
 
 
