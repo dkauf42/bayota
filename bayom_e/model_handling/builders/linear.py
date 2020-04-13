@@ -1,12 +1,18 @@
-import numpy as np
-import pandas as pd
+""" Build a LP variant of the Efficiency BMP model (A subclass of ModelBuilder)
+"""
+
+# Generic/Built-in
+import logging
 from typing import Dict
 from itertools import product
+
+# Computation
+import pandas as pd
 import pyomo.environ as pyo
 
+# BAYOTA
 from bayom_e.model_handling.builders.modelbuilder import ModelBuilder
 
-import logging
 default_logger = logging.getLogger(__name__)
 
 
