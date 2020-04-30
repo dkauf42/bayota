@@ -402,8 +402,7 @@ class DataHandlerBase:
                                                     bmpsrclinkssubtbl.loadsourceshortname.tolist()))
         # then, also as a {loadsource: bmps} dictionary
         grouped = bmpsrclinkssubtbl.groupby(['loadsourceshortname'])
-        bmpsrclinks_dict = grouped['bmpshortname'].apply(lambda x: list(x)).to_dict()
-        self.BMPSRCLINKS = bmpsrclinks_dict
+        self.BMPSRCLINKS = grouped['bmpshortname'].apply(lambda x: list(x)).to_dict()
         if self.save2file:
             bmpsrclinkssubtbl.loc[:, ['bmpshortname',
                                       'loadsourceshortname']].to_csv(os.path.join(self.instdatadir, 'data_BMPSRCLINKS.tab'),
