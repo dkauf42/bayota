@@ -65,7 +65,7 @@ class NonlinearVariant(ModelBuilder):
         # IMMUTABLE PARAMETERS
         # *************************
         model.tau = pyo.Param(model.BMPS,
-                              doc="""cost per acre of BMP b ($)""",
+                              doc="""cost per acre of BMP b ($/ac)""",
                               within=pyo.NonNegativeReals,
                               initialize=dataplate.tau)
 
