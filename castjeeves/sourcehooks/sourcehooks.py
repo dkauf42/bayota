@@ -25,7 +25,8 @@ class SourceHook:
         self.source = sourcedata
         self.metadata_tables = metadata
 
-        self._method_dict_for_mapping_type = {list: self._map_LIST_using_sourcetbl,
+        self._method_dict_for_mapping_type = {str: self._map_STR_using_sourcetbl,
+                                              list: self._map_LIST_using_sourcetbl,
                                               pd.DataFrame: self._map_DATAFRAME_using_sourcetbl,
                                               pd.Series: self._map_SERIES_using_sourcetbl}
 
@@ -124,6 +125,39 @@ class SourceHook:
         return self._method_dict_for_mapping_type[type(values)](values, sourcetable,
                                                                 tocol, fromcol,
                                                                 todict=todict, flatten_to_set=flatten_to_set)
+
+    @staticmethod
+    def _map_STR_using_sourcetbl(vals: str,
+                                 sourcetable: pd.DataFrame,
+                                 tocol: str,
+                                 fromcol: str,
+                                 todict=False,
+                                 flatten_to_set=False):
+        """ Return a value string that has been translated using two columns in a source table """
+        if not isinstance(vals, str):
+            raise TypeError(f"unexpected type <{type(vals)}>")
+        if todict and flatten_to_set:
+            raise ValueError(f"todict and flatten_to_set arguments are mutually exclusive; "
+                             f"only one can be set to True")
+
+        translate_series = pd.Series(sourcetable[tocol].values, index=sourcetable[fromcol])
+
+        if any(translate_series.index.duplicated()) & (not todict) & (not flatten_to_set):
+            raise ValueError('duplicate values in the tocol will be dropped when translating a list! '
+                             'try setting todict=True or flatten=True, '
+                             'or using a Series or DataFrame instead of a list')
+
+        if todict:
+            df = sourcetable.loc[:, [fromcol, tocol]]
+            my_series = df.groupby(fromcol)[tocol].apply(list)
+            return my_series.loc[vals].to_dict()
+        elif flatten_to_set:
+            df = sourcetable.loc[:, [fromcol, tocol]]
+            my_series = df.groupby(fromcol)[tocol].apply(list)
+            return set([item for sublist in my_series.loc[vals] for item in sublist])
+        else:
+            translate_dict = translate_series.to_dict()
+            return translate_dict[vals]
 
     @staticmethod
     def _map_LIST_using_sourcetbl(vals: list,
