@@ -62,30 +62,15 @@ up and running.
 
 # ⚙ How do I get set up?
 
-### Install
+Bayom-e is part of the BAYOTA package, bayom-e does not have separate installation procedures.
 
 ###### Note: The Ipopt solver must be installed/compiled separately in order to solve Efficiency BMP optimization problems.
 - Instructions can be found at https://www.coin-or.org/Ipopt/documentation/node14.html
 - After installation, the Ipopt executable location must be added to the environment $PATH variable
 
-
-To be determined...
-* Commands
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* Deployment instructions
-
-#### Run the unittests
-
->> python setup.py test
-
 # ▶ Usage
 
 To be determined...
-###### A simple example (to run using GUI):
-
 
 # commands
 
