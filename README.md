@@ -27,7 +27,8 @@ which is the CBP Phase 6 time-averaged watershed model.
 * [Project structure](#-project-structure)
     - [Components](#components)
     - [Directory Tree](#directory-tree)
-* [Uninstall](#-uninstall)
+* [Updating](#-updating)
+* [Uninstalling](#-uninstalling)
 * [Other Notes](#-other-notes)
 * [Credits](#-credits)
 * [Disclaimer](#-disclaimer)
@@ -270,7 +271,20 @@ bayota
 ├── VERSION
 ```
 
-# 🚮 Uninstall
+# 🚮 Updating
+
+--- To use the latest version of this repository:
+- Enter the `bayota/` directory
+- Activate your desired environment
+- Run the commands:
+
+   ```
+   git pull
+   git checkout master
+   pip install . --upgrade
+   ```
+
+# 🚮 Uninstalling
 
 --- To uninstall the python packages from your environment (site-packages):
 
