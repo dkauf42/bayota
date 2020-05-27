@@ -1,26 +1,29 @@
 #!/usr/bin/env python
-# get_job_logs.py
-# Get aws log stream and status from job id(s)
-# Author: DKaufman
-#
-# Example usage:
-#   ./get_job_logs.py abea20c8-e12e-478c-aa85-bda50679debf d9d4b758-783f-49ab-bc97-1b3b0be83bb6
-#
-# Can also be used with a pipe, for example with the extract_ids script:
-#   ./bin/extract_ids <filename> | ./bin/aws_scripts/get_job_logs.py
-#
-###CLI Options
-# -v || --verbose  = Modify output verbosity to include "reasons" for failed jobs
-# -s || --summary  = Only print summary counts of job statuses
-#
-# Note: To get the text of a log using the logstream ID, use:
-#   >> aws logs get-log-events --log-group-name /aws/batch/job --log-stream-name Modeling-Bayota/default/b9c15a9d-f26b-4c3b-8516-6eb3f39bb02c --output text
+""" Get aws log stream and status from job id(s)
 
+Example usage:
+  ./get_job_logs.py abea20c8-e12e-478c-aa85-bda50679debf d9d4b758-783f-49ab-bc97-1b3b0be83bb6
+
+Can also be used with a pipe, for example with the extract_ids script:
+  ./bin/extract_ids <filename> | ./bin/aws_scripts/get_job_logs.py
+
+CLI Options:
+  -v || --verbose  = Modify output verbosity to include "reasons" for failed jobs
+  -s || --summary  = Only print summary counts of job statuses
+
+Note: To get the text of a log using the logstream ID with the AWS CLI, use:
+  >> aws logs get-log-events
+         --log-group-name /aws/batch/job
+         --log-stream-name Modeling-Bayota/default/b9c15a9d-f26b-4c3b-8516-6eb3f39bb02c
+         --output text
+"""
+
+# Generic/Built-in
 import sys
-import fileinput
 import argparse
 from collections import Counter
 
+# AWS
 import boto3
 client = boto3.client('batch')
 

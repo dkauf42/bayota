@@ -1,6 +1,6 @@
 """ Here, info is extracted from the solutions.
-
 """
+
 import math
 import numpy as np
 import pandas as pd

@@ -1,15 +1,19 @@
 #!/usr/bin/env python
-# get_log_stream.py
-# Get aws log streams
-# Author: DKaufman
+""" Get aws log streams
 
-# To get the text of a log using the logstream ID, use:
-#   >> aws logs get-log-events --log-group-name /aws/batch/job --log-stream-name Modeling-Bayota/default/b9c15a9d-f26b-4c3b-8516-6eb3f39bb02c --output text
+To get the text of a log using the logstream ID with the AWS CLI, use:
+  >> aws logs get-log-events
+         --log-group-name /aws/batch/job
+         --log-stream-name Modeling-Bayota/default/b9c15a9d-f26b-4c3b-8516-6eb3f39bb02c
+         --output text
+"""
 
+# Generic/Built-in
 import sys
 import argparse
-import boto3
 
+# AWS
+import boto3
 client = boto3.client('logs')
 
 

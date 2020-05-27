@@ -1,5 +1,4 @@
-"""
-This script sets up a user's workspace directory during install,
+""" This module sets up a user's workspace directory during install,
  and also provides methods for grabbing required directories during a run.
 ================================================================================
 """
@@ -123,9 +122,9 @@ def get_workspace_dir(s3=False) -> str:
         os.makedirs(my_dir, exist_ok=True)
     return my_dir
 
-def get_workspace_subdir(subdir=None, s3=False) -> str:
+def get_workspace_subdir(subdir=None, s3=False, makenew=True) -> str:
     my_dir = get_workspace_dir(s3=s3) + subdir + '/'
-    if not s3:
+    if (not s3) and makenew:
         os.makedirs(my_dir, exist_ok=True)
     return my_dir
 
@@ -134,22 +133,18 @@ def get_data_dir(s3=False) -> str:
                                 s3=s3)
 
 def get_source_csvs_dir(s3=False) -> str:
-    my_dir = get_workspace_dir(s3=s3) + \
-             _parse_user_config()['workspace_directories']['data'] + \
-             _parse_user_config()['data_directories']['sourcecsvs']
-    if not s3:
-        # datadir_top_level = _parse_user_config()['data_directories']['sourcecsvs']
-        if not os.path.isdir(my_dir):
-            raise ValueError('Source CSVs directory (%s) specified in config does not exist!' % my_dir)
+    my_dir = get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['data'] +
+                                         _parse_user_config()['data_directories']['sourcecsvs'],
+                                  s3=s3, makenew=False)
+    if (not s3) and (not os.path.isdir(my_dir)):
+        raise ValueError('Source CSVs directory (%s) specified in config does not exist!' % my_dir)
     return my_dir
 def get_metadata_csvs_dir(s3=False) -> str:
-    my_dir = get_workspace_dir(s3=s3) + \
-                 _parse_user_config()['workspace_directories']['data'] + \
-                 _parse_user_config()['data_directories']['metadatacsvs']
-    # datadir_top_level = _parse_user_config()['data_directories']['metadatacsvs']
-    if not s3:
-        if not os.path.isdir(my_dir):
-            raise ValueError('Metadata CSVs directory (%s) specified in config does not exist!' % my_dir)
+    my_dir = get_workspace_subdir(subdir=_parse_user_config()['workspace_directories']['data'] +
+                                         _parse_user_config()['data_directories']['metadatacsvs'],
+                                  s3=s3, makenew=False)
+    if (not s3) and (not os.path.isdir(my_dir)):
+        raise ValueError('Metadata CSVs directory (%s) specified in config does not exist!' % my_dir)
     return my_dir
 def get_raw_data_dir(s3=False) -> str:
     my_dir = get_workspace_dir(s3=s3) + \

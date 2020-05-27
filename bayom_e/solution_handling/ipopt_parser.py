@@ -1,6 +1,12 @@
+""" Parse ouput from the IPOPT solver
+"""
+
+# Generic/Built-in
 import re
-import pandas as pd
 from collections import OrderedDict
+
+# Computation
+import pandas as pd
 
 
 class IpoptParser:

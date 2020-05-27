@@ -1,9 +1,14 @@
-""" DATAPLATE class
-
+""" Keep track of data for a particular kind of model
 """
+
+# Generic/Built-in
 from typing import List, Tuple, Dict, Set
-import pandas as pd
 from dataclasses import dataclass, InitVar
+
+# Computation
+import pandas as pd
+
+# BAYOTA
 from bayota_util.str_manip import numstr
 
 

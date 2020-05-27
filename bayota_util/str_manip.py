@@ -1,3 +1,6 @@
+""" Helpful string manipulation methods used throughout the Bayota package
+"""
+
 
 def numstr(number, decimalpoints: int) -> str:
     """ Add commas, and restrict decimal places """

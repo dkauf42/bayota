@@ -1,13 +1,15 @@
+""" Interface for retrieving DataPlate and DataHandler objects.
 """
-Interface for retrieving DataPlate and DataHandler objects.
-"""
+
+# Generic/Built-in
+import string
+
+# BAYOTA data handling
 from .randomizer import random_list_of_names, make_random_bmp_groupings, \
     randomly_assign_grps_to_loadsources, random_bmp_parameters, random_parcel_parameters
 from .datahandler_base import DataHandlerBase
 from .dataloader_geography_mixins import DataCountyGeoentitiesMixin, DataLrsegGeoentitiesMixin
 from .dataplate import NLP_DataPlate
-
-import string
 
 
 def get_random_dataplate(name='nlp', num_lrsegs=1,
@@ -143,6 +145,20 @@ class DataHandlerLrseg(DataLrsegGeoentitiesMixin, DataHandlerBase):
     def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
         DataHandlerBase.__init__(self, save2file=save2file, geolist=geolist, baseloadingfilename=baseloadingfilename)
 
+    def __repr__(self):
+        obj_attributes = sorted([k for k in self.__dict__.keys()
+                                 if not k.startswith('_')])
+        n_lrsegs = len(self.LRSEGS)
+        n_parcels = len(self.PARCELS)
+
+        strrep = f"DataHandlerLrseg: \n" \
+                 f"\t- includes <{n_lrsegs}> land river {'segment' if n_lrsegs==1 else 'segments'}\n" \
+                 f"\t- includes <{n_parcels}> {'parcel' if n_parcels==1 else 'parcels'}\n" \
+                 f"\n" \
+                 f"\t all attributes:%s" % '\n\t\t\t'.join(obj_attributes)
+
+        return strrep
+
 
 class DataHandlerCounty(DataCountyGeoentitiesMixin, DataHandlerBase):
     def __init__(self, save2file=True, geolist=None, baseloadingfilename=''):
@@ -153,3 +169,19 @@ class DataHandlerCounty(DataCountyGeoentitiesMixin, DataHandlerBase):
         self.CNTYLRSEGLINKS = []
 
         DataHandlerBase.__init__(self, save2file=save2file, geolist=geolist, baseloadingfilename=baseloadingfilename)
+
+    def __repr__(self):
+        obj_attributes = sorted([k for k in self.__dict__.keys()
+                                 if not k.startswith('_')])
+        n_counties = len(self.COUNTIES)
+        n_lrsegs = len(self.LRSEGS)
+        n_parcels = len(self.PARCELS)
+
+        strrep = f"DataHandlerCounty: \n" \
+                 f"\t- includes <{n_counties}> {'county' if n_counties==1 else 'counties'}\n" \
+                 f"\t- includes <{n_lrsegs}> land river {'segment' if n_lrsegs==1 else 'segments'}\n" \
+                 f"\t- includes <{n_parcels}> {'parcel' if n_parcels==1 else 'parcels'}\n" \
+                 f"\n" \
+                 f"\t all attributes:%s" % '\n\t\t\t'.join(obj_attributes)
+
+        return strrep

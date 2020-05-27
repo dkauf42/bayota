@@ -1,18 +1,21 @@
 #!/usr/bin/env python
-"""
-Note: This submits a SLURM "srun" command to launch the 'step4_solveonetrial' script,
-      if CLI argument '--no_slurm' is not passed.
+""" This submits a SLURM "srun" command to launch the 'step4_solveonetrial' script,
+
+Note: If argument '--no_slurm' is passed, then it will try to run the optimization locally.
 
 Example usage command:
   >> ./bin/run_scripts/slurm_batch_subrunner2_experiment.py --dryrun -cf ~/bayota_ws_0.1a1.dev4/control/step3_experiment_control_b940a328-bf05-4bc0-94e0-bb166eb5880a.yaml
 ================================================================================
 """
+
+# Generic/Built-in
 import os
 import sys
 import datetime
 import subprocess
 from argparse import ArgumentParser
 
+# BAYOTA
 from bayota_settings.base import get_bayota_version, get_run_steps_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
 from bayota_util.spec_and_control_handler import notdry, read_expcon_file, write_control_with_uniqueid

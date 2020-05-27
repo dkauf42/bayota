@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-"""
-This submits Docker CMDs to launch the model generation, experiments, and trials.
+""" This submits Docker CMDs to launch the model generation, experiments, and trials.
 
 (This takes the place of:
   - slurm_batch_runner.py
@@ -20,24 +19,27 @@ Example usage command:
 ================================================================================
 """
 
+# Generic/Built-in
 import os
 import sys
 import time
-import boto3
-import docker
 import datetime
 import subprocess
 from argparse import ArgumentParser
 
+# BAYOTA
 from bayota_util.spec_and_control_handler import read_spec, notdry, parse_batch_spec, \
     read_study_control_file, read_expcon_file, write_control_with_uniqueid
 from bayota_settings.base import get_bayota_version, get_docker_image_name, get_spec_files_dir
 from bayota_settings.log_setup import root_logger_setup
-
 from bayota_util.s3_operations import move_controlfile_to_s3, establish_s3_connection
 
+# AWS
+import boto3
 batch = boto3.client('batch', region_name='us-east-1')
 
+# Docker
+import docker
 docker_client = docker.from_env()
 docker_image = get_docker_image_name()
 

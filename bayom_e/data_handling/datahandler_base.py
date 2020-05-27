@@ -1,18 +1,23 @@
+""" Provide formatted/parsed/wrangled data for efficiency BMP models """
+
+# Generic/Built-in
 import os
+import logging
+
+# Computation
 import numpy as np
 import pandas as pd
 
+# BAYOTA
 from bayota_settings.base import get_model_instances_dir, get_raw_data_dir
 from .bmp_exclusions import excluded_bmps_list
-
 from castjeeves.jeeves import Jeeves
 
-import logging
 logger = logging.getLogger(__name__)
 
 
 class DataHandlerBase:
-    """Base Class for data loader classes.
+    """Base Class for data loader classes - provides formatted/parsed/wrangled data for efficiency BMP models
 
     Attributes:
         save2file ():
@@ -397,8 +402,7 @@ class DataHandlerBase:
                                                     bmpsrclinkssubtbl.loadsourceshortname.tolist()))
         # then, also as a {loadsource: bmps} dictionary
         grouped = bmpsrclinkssubtbl.groupby(['loadsourceshortname'])
-        bmpsrclinks_dict = grouped['bmpshortname'].apply(lambda x: list(x)).to_dict()
-        self.BMPSRCLINKS = bmpsrclinks_dict
+        self.BMPSRCLINKS = grouped['bmpshortname'].apply(lambda x: list(x)).to_dict()
         if self.save2file:
             bmpsrclinkssubtbl.loc[:, ['bmpshortname',
                                       'loadsourceshortname']].to_csv(os.path.join(self.instdatadir, 'data_BMPSRCLINKS.tab'),

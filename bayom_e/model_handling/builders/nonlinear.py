@@ -1,9 +1,16 @@
+""" Build a NLP variant of the Efficiency BMP model (A subclass of ModelBuilder)
+"""
+
+# Generic/Built-in
+import logging
 from typing import Dict
+
+# Computation
 import pyomo.environ as pyo
 
+# BAYOTA
 from bayom_e.model_handling.builders.modelbuilder import ModelBuilder
 
-import logging
 default_logger = logging.getLogger(__name__)
 
 
@@ -58,7 +65,7 @@ class NonlinearVariant(ModelBuilder):
         # IMMUTABLE PARAMETERS
         # *************************
         model.tau = pyo.Param(model.BMPS,
-                              doc="""cost per acre of BMP b ($)""",
+                              doc="""cost per acre of BMP b ($/ac)""",
                               within=pyo.NonNegativeReals,
                               initialize=dataplate.tau)
 

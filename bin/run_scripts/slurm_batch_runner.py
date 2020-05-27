@@ -1,18 +1,21 @@
 #!/usr/bin/env python
-"""
-Note: This submits a SLURM "sbatch" command to launch the 'step1_single_study' script,
-      if CLI argument '--no_slurm' is not passed.
+""" This submits a SLURM "sbatch" command to launch the 'step1_single_study' script
+
+Note: If argument '--no_slurm' is passed, then it will try to run the optimization locally.
 
 Example usage command:
   >> ./bin/run_scripts/slurm_batch_runner.py --dryrun -n maryland_counties
 ================================================================================
 """
+
+# Generic/Built-in
 import os
 import sys
 import datetime
 import subprocess
 from argparse import ArgumentParser
 
+# BAYOTA
 from bayota_settings.base import get_bayota_version, get_slurm_scripts_dir
 from bayota_settings.log_setup import root_logger_setup
 from bayota_util.spec_and_control_handler import notdry, parse_batch_spec, write_control_with_uniqueid

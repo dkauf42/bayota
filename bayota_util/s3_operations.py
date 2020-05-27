@@ -1,35 +1,38 @@
 #!/usr/bin/env python
-##################################################
-# Danny Kaufman
-# 2019 Aug 27
-#
-# Move files between S3 and local
-#
-# Command
-#   {push, pull}
-#
-# [pull] Arguments:
-#   s3_path           = s3 path of file/directory
-#   local_path        = local path to which file/directory should be moved
-#   -r || --recursive = if target is a directory, this flag is required
-#
-# [push] Arguments:
-#   local_path        = local path of file/directory
-#   s3_path           = s3 path to which file/directory should be moved
-#   -r || --recursive = if target is a directory, this flag is required
-#
-# Example:
-#   $ ./s3_oeprations.py pull --recursive s3://modeling-data/data_dir -l /modeling/local_dir
-#
-##################################################
+""" Move files between S3 and local
+
+(Note: this module can be used either from the command line or as an imported python class)
+
+Command
+  {push, pull}
+
+[pull] Arguments:
+  s3_path           = s3 path of file/directory
+  local_path        = local path to which file/directory should be moved
+  -r || --recursive = if target is a directory, this flag is required
+
+[push] Arguments:
+  local_path        = local path of file/directory
+  s3_path           = s3 path to which file/directory should be moved
+  -r || --recursive = if target is a directory, this flag is required
+
+Example:
+  $ ./s3_operations.py pull --recursive s3://modeling-data/data_dir -l /modeling/local_dir
+
+"""
+
+# Generic/Built-in
 import os
 import sys
-import boto3
-import botocore
-import requests
 import subprocess
 from argparse import ArgumentParser
 
+# AWS
+import boto3
+import botocore
+import requests
+
+# BAYOTA
 from bayota_settings.base import get_workspace_dir, get_control_dir, get_data_dir, \
     get_model_instances_dir, get_spec_files_dir
 from bayota_settings.log_setup import set_up_detailedfilelogger
@@ -37,7 +40,7 @@ from bayota_settings.log_setup import set_up_detailedfilelogger
 
 class S3ops:
     def __init__(self, bucketname='modeling-data.chesapeakebay.net', log_level='INFO'):
-        """
+        """ Move files between S3 and local
 
         Args:
             bucketname:

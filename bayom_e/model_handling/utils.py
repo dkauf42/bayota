@@ -1,13 +1,19 @@
+""" Helpful methods used when handling pyomo models
+"""
+
+# Generic/Built-in
 import time
-import cloudpickle
-import numpy as np
+import logging
 from itertools import compress
 
+# Computation
+import cloudpickle
+import numpy as np
 import pyomo.environ as pyo
 
+# BAYOTA
 from bayota_util.spec_and_control_handler import notdry
 
-import logging
 logger = logging.getLogger('root')
 
 

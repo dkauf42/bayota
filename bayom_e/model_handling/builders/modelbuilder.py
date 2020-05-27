@@ -1,10 +1,16 @@
+""" Provide base structure for NLP and LP model builders """
+
+# Generic/Built-in
+import logging
 from typing import Dict
+
+# Computation
 import numpy as np
 from pyomo import environ as pyo
 
+# BAYOTA
 from bayom_e.model_handling import model_components, model_expressions
 
-import logging
 default_logger = logging.getLogger(__name__)
 
 

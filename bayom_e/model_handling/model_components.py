@@ -1,3 +1,6 @@
+""" Components that are defined here can be added to a Pyomo model
+"""
+
 import pyomo.environ as pyo
 
 
