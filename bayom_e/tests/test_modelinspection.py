@@ -7,9 +7,7 @@ from bayom_e.model_handling.model_inspection import get_dataframe_of_original_lo
 
 @pytest.fixture(scope='module')
 def costmin_model_for_county(request):
-    THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-
-    model, dataplate = build_model(model_spec=os.path.join(THIS_DIR, 'costmin_total_Npercentreduction.yaml'),
+    model, dataplate = build_model(model_spec_name='costmin_total_Npercentreduction',
                                    geoscale='county',
                                    geoentities='Adams, PA',
                                    savedata2file=False,
