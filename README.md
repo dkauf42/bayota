@@ -260,10 +260,6 @@ bayota
 │   ├── str_manip.py
 │   └── ...
 │
-├── sandbox                <- *Python package* (out-of-date) for automated generation of valid BMP input files for use with CAST
-│   ├── __init__.py
-│   └── ...
-│
 ├── Dockerfile
 ├── LICENSE
 ├── MANIFEST.in
