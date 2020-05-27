@@ -74,9 +74,9 @@ git checkout develop
 Set up where you would like to have a bayota 'workspace',  \
 by specifying this in the install configuration before installing...
 
--- Customize the following values in `bayota_settings/install_config.ini`:
-- `project_home`
-- `repo_top` (should point to the directory where the bayota repo is located)
+-- Customize the following values in `bayota_settings/install_config.ini` (or use the default ENV variables):
+- `repo` (should point to the directory where the bayota repo is located)
+- `local_workspace_stem`
 
 ***Note:*** *Important filepaths are set (during install) by the `bayota_settings` package.\
 These paths include general output, logging, temporary files, etc., and are defined in the following three config files:*
