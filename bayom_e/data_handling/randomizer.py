@@ -131,7 +131,7 @@ def random_bmp_parameters(bmp_list, pollutants_list, lrseg_list, loadsrc_list,
         for p in pollutants_list:
             for l in lrseg_list:
                 for u in loadsrc_list:
-                    eta_dict[(b, p, l, u)] = round(eta_list.pop(), 2)
+                    eta_dict[(b, l, u, p)] = round(eta_list.pop(), 2)
     return tau_dict, eta_dict
 
 
