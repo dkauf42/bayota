@@ -144,10 +144,12 @@ class ModelBuilder:
                         'with "%s" bound defined by <%s> parameter' %
                         (i, constraint_name, boundtype, boundparamname))
             model = self._add_expression_to_model(model, expr_name=expr)
+            constraint_expr_is_scalar = model.component(expr)._index == {None}
+            if constraint_expr_is_scalar:
+                self.logger.debug(f"constraint {constraint_name} is a scalar (i.e. isn't indexed over any Sets)")
 
             if not model.component(boundparamname):  # check if parameter already exists in model object
-                # Check if component is scalar (i.e. isn't indexed over any Sets)
-                if model.component(expr)._index == {None}:
+                if constraint_expr_is_scalar:
                     boundparamobj = pyo.Param(initialize=0,
                                               within=pyo.NonNegativeReals,
                                               mutable=True)
@@ -161,8 +163,7 @@ class ModelBuilder:
                 self.logger.info('parameter <%s> already exists in model object' % boundparamname)
 
             if boundtype == 'lower':
-                # Check if component is scalar (i.e. isn't indexed over any Sets)
-                if model.component(expr)._index == {None}:
+                if constraint_expr_is_scalar:
                     cobj = pyo.Constraint(rule=lambda m: (m.component(boundparamname),
                                                           m.component(expr),
                                                           None))
@@ -172,8 +173,7 @@ class ModelBuilder:
                                                                        m_with_indices[0].component(expr)[m_with_indices[1:]],
                                                                        None))
             elif boundtype == 'upper':
-                # Check if component is scalar (i.e. isn't indexed over any Sets)
-                if model.component(expr)._index == {None}:
+                if constraint_expr_is_scalar:
                     cobj = pyo.Constraint(rule=lambda m: (None,
                                                           m.component(expr),
                                                           m.component(boundparamname)))
