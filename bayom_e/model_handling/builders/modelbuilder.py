@@ -146,7 +146,7 @@ class ModelBuilder:
             model = self._add_expression_to_model(model, expr_name=expr)
             constraint_expr_is_scalar = model.component(expr)._index == {None}
             if constraint_expr_is_scalar:
-                self.logger.debug(f"constraint {constraint_name} is a scalar (i.e. isn't indexed over any Sets)")
+                self.logger.info(f"constraint {constraint_name} is a scalar (i.e. isn't indexed over any Sets)")
 
             if not model.component(boundparamname):  # check if parameter already exists in model object
                 if constraint_expr_is_scalar:
