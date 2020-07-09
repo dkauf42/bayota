@@ -12,7 +12,7 @@ A modify_model_script: "step2_modifymodel.py"
 A solve_trial_script: "step3_solveonetrial.py"
 
 Example usage command:
-  >> ./bin/run_scripts/docker_batch_runner.py --dryrun -cf ./bin/study_specs/batch_study_specs/maryland_counties.yaml
+  >> ./bin/run_scripts/docker_batch_runner.py --dryrun maryland_counties
 
 # Daniel Kaufman, Chesapeake Research Consortium, Inc.
 # 23 August 2019
@@ -259,7 +259,8 @@ def main(batch_spec_file, dryrun=False, no_s3=False, no_docker=False, log_level=
                                                 jobDefinition='Modeling-Bayota:6',
                                                 dependsOn=[{'jobId': jobids['study'][studyid]['exp'][expid]['self']}],
                                                 containerOverrides={"command": CMD},
-                                                retryStrategy={'attempts': 10}
+                                                retryStrategy={'attempts': 10},
+                                                timeout={'attemptDurationSeconds': 3600}
                                                 )
                     print(f"submitted command: {CMD}")
                     print("Job ID is {}.".format(response['jobId']))
