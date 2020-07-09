@@ -10,6 +10,8 @@ import logging
 import fileinput
 import tempfile
 from datetime import datetime
+import pyutilib
+import traceback
 
 # Computation
 import pandas as pd
@@ -254,8 +256,13 @@ def solve(localsolver, solvername, instance,
             instance.ipopt_zU_out = pyo.Suffix(direction=pyo.Suffix.IMPORT)
             setattr(instance, 'lambda', pyo.Suffix(direction=pyo.Suffix.IMPORT))  # use setattr because 'lambda' is reserved keyword
 
-        results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
-                               keepfiles=False, logfile=logfilename)
+        try:
+            results = solver.solve(instance, tee=True, symbolic_solver_labels=True,
+                                   keepfiles=False, logfile=logfilename)
+        except pyutilib.common._exceptions.ApplicationError:
+            traceback.print_exc()
+            return None
+
 
     else:
         opt = SolverFactory("cbc")
