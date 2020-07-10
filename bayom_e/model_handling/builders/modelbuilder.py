@@ -147,6 +147,8 @@ class ModelBuilder:
             constraint_expr_is_scalar = model.component(expr)._index == {None}
             if constraint_expr_is_scalar:
                 self.logger.info(f"constraint {constraint_name} is a scalar (i.e. isn't indexed over any Sets)")
+            else:
+                self.logger.info(f"constraint {constraint_name} is an indexed component")
 
             if not model.component(boundparamname):  # check if parameter already exists in model object
                 if constraint_expr_is_scalar:
