@@ -7,6 +7,7 @@ from typing import Dict
 # Computation
 import numpy as np
 from pyomo import environ as pyo
+from pyomo.core.base.global_set import UnindexedComponent_set
 
 # BAYOTA
 from bayom_e.model_handling import model_components, model_expressions
@@ -102,7 +103,7 @@ class ModelBuilder:
         # print(extract_indexed_expression_values(model.component(expr)))
 
         # Check if component is scalar (i.e. isn't indexed over any Sets)
-        if model.component(expr)._index == {None}:
+        if model.component(expr)._index == UnindexedComponent_set:
             objective_object = pyo.Objective(rule=lambda m: m.component(expr),
                                              sense=sense)
         else:
@@ -144,11 +145,12 @@ class ModelBuilder:
                         'with "%s" bound defined by <%s> parameter' %
                         (i, constraint_name, boundtype, boundparamname))
             model = self._add_expression_to_model(model, expr_name=expr)
-            constraint_expr_is_scalar = model.component(expr)._index == {None}
+            constraint_expr_is_scalar = model.component(expr)._index == UnindexedComponent_set
             if constraint_expr_is_scalar:
                 self.logger.info(f"constraint {constraint_name} is a scalar (i.e. isn't indexed over any Sets)")
             else:
-                self.logger.info(f"constraint {constraint_name} is an indexed component")
+                self.logger.info(f"constraint {constraint_name} is an indexed component "
+                                f"with indices {str(model.component(expr)._index)}")
 
             if not model.component(boundparamname):  # check if parameter already exists in model object
                 if constraint_expr_is_scalar:
