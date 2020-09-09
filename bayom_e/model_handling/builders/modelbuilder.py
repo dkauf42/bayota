@@ -7,7 +7,7 @@ from typing import Dict
 # Computation
 import numpy as np
 from pyomo import environ as pyo
-from pyomo.core.base.global_set import UnindexedComponent_set
+from pyomo.core.base.indexed_component import UnindexedComponent_set
 
 # BAYOTA
 from bayom_e.model_handling import model_components, model_expressions
