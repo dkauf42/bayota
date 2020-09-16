@@ -17,13 +17,16 @@ import boto3
 client = boto3.client('logs')
 
 
-def main(logstreamname):
+def main(logstreamname, verbose=False):
     response = client.get_log_events(
             logGroupName='/aws/batch/job',
             logStreamName=logstreamname)
 
     for e in response['events']:
-        print(e)
+        if not verbose:
+            print(e['message'])
+        else:
+            print(e)
     print(f"nextForwardToken: {response['nextForwardToken']}")
     print(f"nextBackwardToken: {response['nextBackwardToken']}")
 
@@ -34,6 +37,8 @@ def parse_cli_arguments():
 
     parser.add_argument('logstreamname', metavar='NAME', type=str,
                         help='logstream names for which to get the text')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help="include 'timestamp's and 'ingestionTime's in log events")
 
     return parser.parse_args()
 
@@ -41,4 +46,4 @@ def parse_cli_arguments():
 if __name__ == '__main__':
     opt = parse_cli_arguments()
 
-    sys.exit(main(opt.logstreamname))
+    sys.exit(main(opt.logstreamname, verbose=opt.verbose))

@@ -29,6 +29,18 @@ class Agency(SourceHook):
         return self._map_using_sourcetbl(agencycodes, tbl='TblAgency',
                                          fromcol='agencycode', tocol='agencyid')
 
+    def agencycodes_from_fullnames(self, fullnames=None):
+        """
+
+        Args:
+            agencyfullnames (list, pd.Series, or pd.DataFrame):
+
+        Returns:
+            same type as input
+        """
+        return self._map_using_sourcetbl(fullnames, tbl='TblAgency',
+                                         fromcol='agencyfullname', tocol='agencycode')
+
     def ids_from_fullnames(self, fullnames=None):
         """
 
