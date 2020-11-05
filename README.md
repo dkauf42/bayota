@@ -331,12 +331,13 @@ Funding Acknowledgment:
 
 This is a beta version of the Bay Optimization Tools for Analysis (BayOTA), in the process of being tested. It is provided on an “as is” and “as available” basis and is believed to contain defects. A primary purpose of this beta testing release is to solicit feedback on performance and defects. The Chesapeake Bay Program Office (CBPO) does not give any express or implied warranties of any kind, including warranties of suitability or usability of the website, its software, or any of its content, or warranties of fitness for any particular purpose.
 All users of BayOTA are advised to safeguard important data, to use caution, and not to rely in any way on correct functioning or performance of the beta release and/or accompanying materials. CBPO will not be liable for any loss (including direct, indirect, special, or consequential losses) suffered by any party as a result of the use of or inability to use BayOTA, its software, or its content, even if CBPO has been advised of the possibility of such loss.
-Should you encounter any bugs, glitches, lack of functionality, or other problems on the website, please let us know. We can be reached at e-mail address dkaufman@chesapeakebay.net. Your help in this regard is greatly appreciated!
+Should you encounter any bugs, glitches, lack of functionality, or other problems on the website, please let us know. We can be reached at <https://www.chesapeakebay.net/who/group/modeling_team>. Your help in this regard is greatly appreciated!
+
+The contents of this document do not necessarily reflect the views and policies of the Environmental Protection Agency, nor does the EPA endorse trade names or recommend the use of commercial products mentioned in this document.
 
 ## 🎓 License
 The 3-Clause BSD License
 
 ## 📧 Who do I talk to?
 
-* The U.S. EPA Chesapeake Bay Program
-* Daniel E. Kaufman: dkaufman@chesapeakebay.net
+The U.S. EPA Chesapeake Bay Program, Modeling Team (https://www.chesapeakebay.net/who/group/modeling_team)
