@@ -91,7 +91,7 @@ with open('LICENSE') as f:
 
 install_requires = ['pyomo',
                     'cloudpickle',
-                    'pyyaml<5.3',
+                    'pyyaml',
                     'numpy',
                     'pandas',
                     'matplotlib',
