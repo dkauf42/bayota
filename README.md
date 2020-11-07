@@ -90,9 +90,9 @@ These paths include general output, logging, temporary files, etc., and are defi
 
 *These three config files are required for conducting BayOTA optimization studies, and will be copied into `~/bayota_ws_{version}/config/` during the first install (or first test run).*
 
-***Note: The CAST Source data is included in the 'source_data_subset' folder in this repository. \
-The path to the source must be specific in the user_config.ini file, as \
-full installation and usage is not possible without the source data.***
+***Note: A subset of downloaded CAST source data is included in the 'source_data_subset' folder in this repository. \
+The path to these data must be specific in the user_config.ini file, as \
+full installation and usage is not possible otherwise.***
 
 *These files will not be programmatically changed by subsequent code executions after being generated.*\
 *The example/default config files can be found in the `bayota_settings` package.*
