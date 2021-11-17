@@ -158,7 +158,7 @@ These are defined (by default) in a workspace subdirectory, and there are 3 type
 
 #### Batch Sequence
 
-<img src="./.images/code_organization_specification_files_colored_like_graph_simple.png" alt="batch_sequence" width="295" height="377"/>
+<img src="./.images/code_organization_specification_files.png" alt="batch_sequence" width="295" height="377"/>
 
 #### 1⌨ Running from the command line
 -- First, change directory to the project root (`cd bayota/`).
